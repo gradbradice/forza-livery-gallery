@@ -80,7 +80,7 @@ internal enum AutoBackupOutcome
 /// schedule. A backup is made only when the newest one does not already hold the save as it is; each account keeps its
 /// newest <see cref="AutoBackupSettings.Keep"/> automatic backups, the user's own are never removed
 /// </summary>
-internal sealed class AutoBackups(LiveryBackups backups, AppSettingsData settings)
+internal sealed class AutoBackups(AccountStorage storage, AppSettingsData settings)
 {
     private readonly SemaphoreSlim _one = new(1, 1);
 
@@ -95,13 +95,18 @@ internal sealed class AutoBackups(LiveryBackups backups, AppSettingsData setting
         if (moment == AutoBackupMoment.BeforeArchive ? !config.BeforeArchive : !config.OnChange && !config.Periodic)
             return AutoBackupOutcome.NotDue;
         if (entries.Count == 0) return AutoBackupOutcome.NotDue;
+        // Each account's backups are its own: without an account there is nowhere to put one
+        if (account is null || !Configuration.GamePaths.IsFolderName(account.Key)) return AutoBackupOutcome.NotDue;
+        var backups = storage.BackupsOf(account.Key);
 
         // One at a time: a scan finishing while the backup before an archive is written must not make a second one
         await _one.WaitAsync().ConfigureAwait(true);
         try
         {
-            bool Mine(LiveryBackupManifest m) => m.SourceAccount is null || account is null
-                || string.Equals(m.SourceAccount.Key, account.Key, StringComparison.OrdinalIgnoreCase);
+            // Everything in the account's folder is its own; an entry naming another account was put there by hand. The
+            // storage's backups lie there too: they count apart (RunStorageAsync)
+            bool Mine(LiveryBackupManifest m) => !m.IsOfArchive && (m.SourceAccount is null
+                || string.Equals(m.SourceAccount.Key, account.Key, StringComparison.OrdinalIgnoreCase));
             var mine = await Task.Run(() => backups.GetAll().Select(b => b.Manifest).OfType<LiveryBackupManifest>().Where(Mine).ToList())
                 .ConfigureAwait(true);
             var newest = mine.MaxBy(m => m.CreatedAtUtc);
@@ -122,6 +127,55 @@ internal sealed class AutoBackups(LiveryBackups backups, AppSettingsData setting
                 return AutoBackupOutcome.Failed;
             }
             await Task.Run(() => backups.PruneAutomatic(config.Keep, Mine)).ConfigureAwait(true);
+            return AutoBackupOutcome.Made;
+        }
+        finally
+        {
+            _one.Release();
+        }
+    }
+
+    /// <summary>
+    /// The storage's own automatic backups (docs/storage.md, stage 6): by the same settings as the save's (after it
+    /// changed, at most once a day, and on the schedule), only when the newest backup of the storage does not hold it as
+    /// it is, kept apart from the save's (their own <see cref="AutoBackupSettings.Keep"/> newest)
+    /// </summary>
+    /// <param name="store">The account's storage</param>
+    /// <param name="account">The open account</param>
+    public async Task<AutoBackupOutcome> RunStorageAsync(LiveryArchive store, AccountRef? account)
+    {
+        ArgumentNullException.ThrowIfNull(store);
+        var config = AutoBackupSettings.From(settings);
+        if (!config.OnChange && !config.Periodic) return AutoBackupOutcome.NotDue;
+        if (account is null || !Configuration.GamePaths.IsFolderName(account.Key) || account.Key == Configuration.GamePaths.Unassigned)
+            return AutoBackupOutcome.NotDue;
+        var entries = store.GetAll().Select(e => e.Data).ToList();
+        if (entries.Count == 0) return AutoBackupOutcome.NotDue;
+        var backups = storage.BackupsOf(account.Key);
+
+        await _one.WaitAsync().ConfigureAwait(true);
+        try
+        {
+            static bool OfStorage(LiveryBackupManifest m) => m.IsOfArchive;
+            var mine = await Task.Run(() => backups.GetAll().Select(b => b.Manifest).OfType<LiveryBackupManifest>().Where(OfStorage).ToList())
+                .ConfigureAwait(true);
+            var newest = mine.MaxBy(m => m.CreatedAtUtc);
+            bool same = newest is not null && newest.Archive!.Entries.Count == entries.Count && LiveryBackups.HoldsTheSame(newest, entries);
+            if (AutoBackupPolicy.Due(AutoBackupMoment.AfterScan, config, DateTime.UtcNow, mine, same) is not { } kind) return AutoBackupOutcome.NotDue;
+            try
+            {
+                await backups.CreateFromArchiveAsync(store, null, account, kind).ConfigureAwait(true);
+            }
+            catch (OperationCanceledException) when (backups.IsClosing)
+            {
+                return AutoBackupOutcome.NotDue;
+            }
+            catch (Exception ex)
+            {
+                AppLog.LogError($"Failed to make an automatic backup of the storage ({kind})", ex);
+                return AutoBackupOutcome.Failed;
+            }
+            await Task.Run(() => backups.PruneAutomatic(config.Keep, OfStorage)).ConfigureAwait(true);
             return AutoBackupOutcome.Made;
         }
         finally

@@ -1,6 +1,7 @@
 using ForzaToolkit.Games.Installation;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ForzaToolkit.UI.Controls;
 using ForzaToolkit.StringTables;
 using LiveryGallery.Enums;
 using LiveryGallery.Localisation;
@@ -54,9 +55,16 @@ internal sealed partial class SettingsViewModel : ObservableObject
     private int _savedPossibleDuplicateThreshold;
     private bool _savedServerConnectionEnabled;
     private MyDesignsRowsMode _savedRowsMode;
+    private int _savedServerLiveries;
     private int _savedKeyInterval;
     private bool _savedShowChangesSinceLastLaunch;
     private bool _savedWarnFewFreeSlots;
+    private bool _savedWarnArchiveWithoutInstalledData;
+    private bool _savedWarnArchiveWithOutdatedInstalledData;
+    private bool _savedBetaUpdates;
+    private bool _savedScreenshotsWebP;
+    private int _savedScreenshotsWebPQuality;
+    private bool _savedScreenshotsInBackups;
     private bool _savedAutoBackupBeforeArchive;
     private bool _savedAutoBackupOnChange;
     private bool _savedAutoBackupPeriodic;
@@ -86,9 +94,16 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _savedPossibleDuplicateThreshold = DuplicateThreshold.Clamp(settings.PossibleDuplicateThresholdPercent);
         _savedServerConnectionEnabled = settings.ServerConnectionEnabled;
         _savedRowsMode = settings.MyDesignsRowsMode;
+        _savedServerLiveries = Math.Clamp(settings.ServerLiveries, 0, MyDesignsGrid.MaxServerLiveries);
         _savedKeyInterval = NavigationTiming.ClampKeyInterval(settings.NavigationKeyIntervalMs);
         _savedShowChangesSinceLastLaunch = settings.ShowChangesSinceLastLaunch;
         _savedWarnFewFreeSlots = settings.WarnFewFreeSlots;
+        _savedWarnArchiveWithoutInstalledData = settings.WarnArchiveWithoutInstalledData;
+        _savedWarnArchiveWithOutdatedInstalledData = settings.WarnArchiveWithOutdatedInstalledData;
+        _savedBetaUpdates = settings.BetaUpdates;
+        _savedScreenshotsWebP = settings.ScreenshotsWebP;
+        _savedScreenshotsWebPQuality = Math.Clamp(settings.ScreenshotsWebPQuality, MinScreenshotsQuality, MaxScreenshotsQuality);
+        _savedScreenshotsInBackups = settings.ScreenshotsInBackups;
         _savedAutoBackupBeforeArchive = settings.AutoBackupBeforeArchive;
         _savedAutoBackupOnChange = settings.AutoBackupOnChange;
         _savedAutoBackupPeriodic = settings.AutoBackupPeriodic;
@@ -106,9 +121,16 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _possibleDuplicateThreshold = _savedPossibleDuplicateThreshold;
         _serverConnectionEnabled = _savedServerConnectionEnabled;
         _rowsMode = _savedRowsMode;
+        _serverLiveries = _savedServerLiveries;
         _keyInterval = _savedKeyInterval;
         _showChangesSinceLastLaunch = _savedShowChangesSinceLastLaunch;
         _warnFewFreeSlots = _savedWarnFewFreeSlots;
+        _warnArchiveWithoutInstalledData = _savedWarnArchiveWithoutInstalledData;
+        _warnArchiveWithOutdatedInstalledData = _savedWarnArchiveWithOutdatedInstalledData;
+        _betaUpdates = _savedBetaUpdates;
+        _screenshotsWebP = _savedScreenshotsWebP;
+        _screenshotsWebPQuality = _savedScreenshotsWebPQuality;
+        _screenshotsInBackups = _savedScreenshotsInBackups;
         _autoBackupBeforeArchive = _savedAutoBackupBeforeArchive;
         _autoBackupOnChange = _savedAutoBackupOnChange;
         _autoBackupPeriodic = _savedAutoBackupPeriodic;
@@ -118,14 +140,17 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _carTextLanguages = carTextLanguages ?? [];
         HasGameCarTexts = _carTextLanguages.Count > 0;
         CarTextLanguageOptions = BuildCarTextLanguageOptions();
+        // The rows the game's menu can have (FH6: two, or three with a menu mod)
+        var rowChoices = profile.MyDesigns?.RowChoices ?? [];
         RowsModeOptions =
         [
             new(MyDesignsRowsMode.Auto, RowsModeName(MyDesignsRowsMode.Auto)),
-            new(MyDesignsRowsMode.Two, RowsModeName(MyDesignsRowsMode.Two)),
-            new(MyDesignsRowsMode.Three, RowsModeName(MyDesignsRowsMode.Three)),
+            .. new[] { MyDesignsRowsMode.Two, MyDesignsRowsMode.Three }
+                .Where(mode => rowChoices.Contains((int)mode))
+                .Select(mode => new RowsModeOption(mode, RowsModeName(mode))),
         ];
 
-        _gameFolderCheckTask = CheckGameFolderAsync(_gamePath);
+        _gameFolderCheckTask = CheckGameFolderAsync(GamePathInUse);
     }
 
     /// <summary>
@@ -173,7 +198,7 @@ internal sealed partial class SettingsViewModel : ObservableObject
         if (_shownGameFolderCheck is { } shown) ApplyGameFolderCheck(shown); // also the rows status
         else
         {
-            GameFolderStatusText = string.IsNullOrWhiteSpace(GamePath) ? Strings.GameFolderNotSetHint : Strings.GameFolderChecking;
+            GameFolderStatusText = string.IsNullOrWhiteSpace(GamePathInUse) ? Strings.GameFolderNotSetHint : Strings.GameFolderChecking;
             UpdateRowsStatus();
         }
 
@@ -244,8 +269,21 @@ internal sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     private string _gameFolderStatusText = "";
 
+    /// <summary>The mark beside <see cref="GameFolderStatusText"/></summary>
     [ObservableProperty]
-    private bool _gameFolderStatusIsError;
+    private GameFolderStatusKind _gameFolderStatusKind;
+
+    /// <summary>The game's folder found on this PC: used, and checked, while <see cref="GamePath"/> is empty</summary>
+    [ObservableProperty]
+    private string? _foundGamePath;
+
+    /// <summary>The folder checked: the one given, else the one found</summary>
+    private string GamePathInUse => string.IsNullOrWhiteSpace(GamePath) ? FoundGamePath ?? "" : GamePath;
+
+    partial void OnFoundGamePathChanged(string? value)
+    {
+        if (string.IsNullOrWhiteSpace(GamePath)) _gameFolderCheckTask = CheckGameFolderAsync(GamePathInUse);
+    }
 
     private int _gameFolderCheckVersion;
     private Task _gameFolderCheckTask = Task.CompletedTask;
@@ -254,7 +292,16 @@ internal sealed partial class SettingsViewModel : ObservableObject
     /// <summary>The check the status line shows; null while it shows "not set" or "checking"</summary>
     private GameFolderReport? _shownGameFolderCheck;
 
-    partial void OnGamePathChanged(string value) => _gameFolderCheckTask = CheckGameFolderAsync(value);
+    partial void OnGamePathChanged(string value)
+    {
+        // "Automatic" in the folder box clears the folder with null
+        if (value is null)
+        {
+            GamePath = "";
+            return;
+        }
+        _gameFolderCheckTask = CheckGameFolderAsync(GamePathInUse);
+    }
 
     private async Task CheckGameFolderAsync(string path)
     {
@@ -264,7 +311,7 @@ internal sealed partial class SettingsViewModel : ObservableObject
             _gameFolderCheck = null;
             _shownGameFolderCheck = null;
             GameFolderStatusText = Strings.GameFolderNotSetHint;
-            GameFolderStatusIsError = false;
+            GameFolderStatusKind = GameFolderStatusKind.None;
             UpdateRowsStatus();
             return;
         }
@@ -278,13 +325,13 @@ internal sealed partial class SettingsViewModel : ObservableObject
 
         _shownGameFolderCheck = null;
         GameFolderStatusText = Strings.GameFolderChecking;
-        GameFolderStatusIsError = false;
+        GameFolderStatusKind = GameFolderStatusKind.Busy;
 
         var check = await _gameFolderChecker.CheckAsync(path);
         if (version != _gameFolderCheckVersion) return;
 
         _gameFolderCheck = check;
-        if (check.IsValid && check.WasCorrected && check.GameDirectory is { } root)
+        if (check.IsValid && check.WasCorrected && check.GameDirectory is { } root && !string.IsNullOrWhiteSpace(GamePath))
         {
             GamePath = root;
             return;
@@ -300,7 +347,7 @@ internal sealed partial class SettingsViewModel : ObservableObject
         {
             GameFolderStatusText = string.Format(Strings.GameFolderInvalidFormat,
                 GameFolderText.FirstError(check) ?? Strings.GameFolderProblemUnknown);
-            GameFolderStatusIsError = true;
+            GameFolderStatusKind = GameFolderStatusKind.Error;
             return;
         }
 
@@ -308,7 +355,7 @@ internal sealed partial class SettingsViewModel : ObservableObject
         GameFolderStatusText = warnings.Length == 0
             ? string.Format(Strings.GameFolderValidFormat, check.CarArchiveCount)
             : string.Format(Strings.GameFolderValidWithWarningsFormat, check.CarArchiveCount, warnings);
-        GameFolderStatusIsError = false;
+        GameFolderStatusKind = warnings.Length == 0 ? GameFolderStatusKind.Ok : GameFolderStatusKind.Warning;
     }
 
     private async Task<bool> IsGameFolderAcceptableAsync()
@@ -353,6 +400,53 @@ internal sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDirty))]
     private bool _warnFewFreeSlots;
+
+    /// <summary>The question before archiving when it is not known which liveries are on cars ("do not ask again" turns it off)</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    private bool _warnArchiveWithoutInstalledData;
+
+    /// <summary>The question before archiving when the list of liveries on cars may be out of date</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    private bool _warnArchiveWithOutdatedInstalledData;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    private bool _betaUpdates;
+
+    public const int MinScreenshotsQuality = 50;
+    public const int MaxScreenshotsQuality = 100;
+
+    /// <summary>New screenshots are re-encoded as WebP; off: kept as they are (the default)</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    [NotifyPropertyChangedFor(nameof(ScreenshotsKeepOriginal))]
+    private bool _screenshotsWebP;
+
+    /// <summary>The other choice of the pair of radio buttons</summary>
+    public bool ScreenshotsKeepOriginal
+    {
+        get => !ScreenshotsWebP;
+        set => ScreenshotsWebP = !value;
+    }
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    [NotifyPropertyChangedFor(nameof(ScreenshotsWebPQualityText))]
+    private int _screenshotsWebPQuality;
+
+    public string ScreenshotsWebPQualityText => ScreenshotsWebPQuality.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    private bool _screenshotsInBackups;
+
+    /// <summary>
+    /// The open game, on the plate beside the settings that are its own (each game keeps its own, see GameSettingsData);
+    /// the dialog of another game's window shows that game
+    /// </summary>
+    public string GameName => _profile.Game.Name;
 
     /// <summary>Filled by the dialog once it is open (the sizes take disk work); not part of the saved settings</summary>
     public ObservableCollection<StoredAccountRowViewModel> StoredAccounts { get; } = [];
@@ -463,6 +557,17 @@ internal sealed partial class SettingsViewModel : ObservableObject
 
     partial void OnRowsModeChanged(MyDesignsRowsMode value) => UpdateRowsStatus();
 
+    /// <summary>The numbers of liveries on the game's servers to choose from: none up to <see cref="MyDesignsGrid.MaxServerLiveries"/></summary>
+    public IReadOnlyList<int> ServerLiveriesOptions { get; } = [.. Enumerable.Range(0, MyDesignsGrid.MaxServerLiveries + 1)];
+
+    /// <summary>
+    /// Liveries the game keeps on its servers for this player (not in the save): first in My Designs, so "Find in game"
+    /// counts them before the save's
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    private int _serverLiveries;
+
     [ObservableProperty]
     private string _rowsStatusText = "";
 
@@ -523,9 +628,16 @@ internal sealed partial class SettingsViewModel : ObservableObject
         || _possibleDuplicateThreshold != _savedPossibleDuplicateThreshold
         || ServerConnectionEnabled != _savedServerConnectionEnabled
         || RowsMode != _savedRowsMode
+        || ServerLiveries != _savedServerLiveries
         || _keyInterval != _savedKeyInterval
         || ShowChangesSinceLastLaunch != _savedShowChangesSinceLastLaunch
         || WarnFewFreeSlots != _savedWarnFewFreeSlots
+        || WarnArchiveWithoutInstalledData != _savedWarnArchiveWithoutInstalledData
+        || WarnArchiveWithOutdatedInstalledData != _savedWarnArchiveWithOutdatedInstalledData
+        || BetaUpdates != _savedBetaUpdates
+        || ScreenshotsWebP != _savedScreenshotsWebP
+        || ScreenshotsWebPQuality != _savedScreenshotsWebPQuality
+        || ScreenshotsInBackups != _savedScreenshotsInBackups
         || AutoBackupBeforeArchive != _savedAutoBackupBeforeArchive
         || AutoBackupOnChange != _savedAutoBackupOnChange
         || AutoBackupPeriodic != _savedAutoBackupPeriodic
@@ -558,9 +670,16 @@ internal sealed partial class SettingsViewModel : ObservableObject
         candidate.PossibleDuplicateThresholdPercent = _possibleDuplicateThreshold;
         candidate.ServerConnectionEnabled = ServerConnectionEnabled;
         candidate.MyDesignsRowsMode = RowsMode;
+        candidate.ServerLiveries = ServerLiveries;
         candidate.NavigationKeyIntervalMs = _keyInterval;
         candidate.ShowChangesSinceLastLaunch = ShowChangesSinceLastLaunch;
         candidate.WarnFewFreeSlots = WarnFewFreeSlots;
+        candidate.WarnArchiveWithoutInstalledData = WarnArchiveWithoutInstalledData;
+        candidate.WarnArchiveWithOutdatedInstalledData = WarnArchiveWithOutdatedInstalledData;
+        candidate.BetaUpdates = BetaUpdates;
+        candidate.ScreenshotsWebP = ScreenshotsWebP;
+        candidate.ScreenshotsWebPQuality = ScreenshotsWebPQuality;
+        candidate.ScreenshotsInBackups = ScreenshotsInBackups;
         candidate.AutoBackupBeforeArchive = AutoBackupBeforeArchive;
         candidate.AutoBackupOnChange = AutoBackupOnChange;
         candidate.AutoBackupPeriodic = AutoBackupPeriodic;
@@ -594,9 +713,16 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _savedPossibleDuplicateThreshold = _possibleDuplicateThreshold;
         _savedServerConnectionEnabled = ServerConnectionEnabled;
         _savedRowsMode = RowsMode;
+        _savedServerLiveries = ServerLiveries;
         _savedKeyInterval = _keyInterval;
         _savedShowChangesSinceLastLaunch = ShowChangesSinceLastLaunch;
         _savedWarnFewFreeSlots = WarnFewFreeSlots;
+        _savedWarnArchiveWithoutInstalledData = WarnArchiveWithoutInstalledData;
+        _savedWarnArchiveWithOutdatedInstalledData = WarnArchiveWithOutdatedInstalledData;
+        _savedBetaUpdates = BetaUpdates;
+        _savedScreenshotsWebP = ScreenshotsWebP;
+        _savedScreenshotsWebPQuality = ScreenshotsWebPQuality;
+        _savedScreenshotsInBackups = ScreenshotsInBackups;
         _savedAutoBackupBeforeArchive = AutoBackupBeforeArchive;
         _savedAutoBackupOnChange = AutoBackupOnChange;
         _savedAutoBackupPeriodic = AutoBackupPeriodic;

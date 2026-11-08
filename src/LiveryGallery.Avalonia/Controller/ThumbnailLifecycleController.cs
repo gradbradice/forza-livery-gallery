@@ -50,6 +50,23 @@ internal static class ThumbnailLifecycleController
         }
     }
 
+    /// <summary>The cards on screen that show this livery load its picture again (a screenshot became its cover, or not)</summary>
+    public static void ReloadThumbnailsOf(IThumbnailHost host)
+    {
+        Dispatcher.UIThread.VerifyAccess();
+        if (_shuttingDown) return;
+        var showing = new List<Control>();
+        foreach (var (control, bound) in _hostByControl)
+            if (ReferenceEquals(bound, host) && ReferenceEquals(control.DataContext, host) && TopLevel.GetTopLevel(control) is not null)
+                showing.Add(control);
+        foreach (var control in showing)
+        {
+            ThumbnailCacheService.ReleaseFor(control);
+            Unbind(control);
+            _ = ReloadSafelyAsync(control, host);
+        }
+    }
+
     public static async Task OnAttachedAsync(Control control)
     {
         if (_shuttingDown) return;
@@ -90,14 +107,15 @@ internal static class ThumbnailLifecycleController
             string? drawn = await rendered.GetPathAsync(entry, wait.Token);
             if (wait.IsCancellationRequested || _shuttingDown) return; // the card left or shows another livery
             EndRenderWait(control, wait);
-            if (!ReferenceEquals(control.DataContext, host) || TopLevel.GetTopLevel(control) is null) return;
+            if (!ReferenceEquals(control.DataContext, host) || TopLevel.GetTopLevel(control) is null || Views.ThumbnailRows.IsParked(control)) return;
             entry.RenderedThumbnailPath = drawn;
         }
 
         var (wasSuperseded, bitmap) = await ThumbnailCacheService.AcquireForAsync(control, host.ThumbnailPath);
         if (wasSuperseded) return;
 
-        if (!ReferenceEquals(control.DataContext, host) || TopLevel.GetTopLevel(control) is null)
+        // The card shows another livery, left the window, or was hidden away meanwhile: the picture is not its
+        if (!ReferenceEquals(control.DataContext, host) || TopLevel.GetTopLevel(control) is null || Views.ThumbnailRows.IsParked(control))
         {
             if (!_hostByControl.TryGetValue(control, out var bound) || !ReferenceEquals(bound, host))
                 ThumbnailCacheService.ReleaseFor(control);

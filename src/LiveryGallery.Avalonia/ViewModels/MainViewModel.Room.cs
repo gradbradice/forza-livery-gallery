@@ -44,9 +44,11 @@ internal sealed partial class MainViewModel
         if (savePathService.Profile.MaxLiveries is not { } limit || savePathService.SavePath is null)
         {
             HasSlotsLimit = false;
+            RefreshGameCountText(SaveRoom.Counted(GameEntries), null);
             return;
         }
-        int counted = SaveRoom.Counted(Gallery.AllEntries);
+        int counted = SaveRoom.Counted(GameEntries);
+        RefreshGameCountText(counted, limit);
         int free = Math.Max(0, limit - counted);
         var culture = AppLocalisationService.Culture;
         SlotsText = $"{counted.ToString("N0", culture)} / {limit.ToString("N0", culture)}";
@@ -68,7 +70,7 @@ internal sealed partial class MainViewModel
         if (_roomChecked || savePathService.Profile.MaxLiveries is not { } limit) return;
         _roomChecked = true;
         if (!settings.WarnFewFreeSlots) return;
-        int counted = SaveRoom.Counted(Gallery.AllEntries);
+        int counted = SaveRoom.Counted(GameEntries);
         if (SaveRoom.IsFew(counted, limit)) FewFreeSlotsFound?.Invoke(Math.Max(0, limit - counted), limit);
     }
 }

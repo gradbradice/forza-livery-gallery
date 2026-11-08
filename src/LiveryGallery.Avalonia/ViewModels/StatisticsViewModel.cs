@@ -90,7 +90,25 @@ internal sealed record StatisticsHost(
 
     /// <summary>Every account's collection at a glance (does disk work: called once per window)</summary>
     public Func<Task<IReadOnlyList<AccountSummary>>>? Accounts { get; init; }
+
+    /// <summary>
+    /// The main window shows the storage (docs/storage.md, stage 5): the statistics are the storage's, with no room of
+    /// the save, no cars and no auction, and time by the day each livery went there
+    /// </summary>
+    public Func<bool>? IsStorage { get; init; }
+
+    /// <summary>How many liveries the game's limit counts (the room shown while the storage is)</summary>
+    public Func<int>? GameCounted { get; init; }
+
+    /// <summary>The storage's folders and size; null without a storage</summary>
+    public Func<StorageStatistics?>? Storage { get; init; }
 }
+
+/// <summary>What the statistics show of the storage beside its liveries</summary>
+/// <param name="Folders">How many folders</param>
+/// <param name="WithoutFolder">How many liveries are in none</param>
+/// <param name="Bytes">Its files on disk</param>
+internal sealed record StorageStatistics(int Folders, int WithoutFolder, long Bytes);
 
 /// <summary>One number in a tile</summary>
 internal sealed record StatTileViewModel(string Value, string Label, string Detail, string? Tooltip, ICommand? Command)
@@ -213,6 +231,7 @@ internal sealed partial class StatisticsViewModel : ObservableObject
     /// <summary>Reads the gallery and the journal again (the scope, a filter or the liveries changed); the open page is computed again</summary>
     public void Refresh()
     {
+        IsStorage = _host.IsStorage?.Invoke() == true;
         _all = _host.All();
         var shown = _host.Shown();
         _items = IsShownScope ? shown : _all;

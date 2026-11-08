@@ -19,11 +19,12 @@ internal sealed class GameRunningGuard(Func<ForzaGame> game)
     {
         if (IsRunningOverride is { } overridden) return overridden();
         if (GameWindowTarget.TryFor(game()) is not { } target) return false;
-        Process[] processes = [];
+        var processes = new List<Process>();
         try
         {
-            processes = Process.GetProcessesByName(target.ProcessName);
-            return processes.Length > 0;
+            // One name per build when the builds' executables differ (FM2023)
+            foreach (string name in target.ProcessNames) processes.AddRange(Process.GetProcessesByName(name));
+            return processes.Count > 0;
         }
         catch (Exception ex)
         {

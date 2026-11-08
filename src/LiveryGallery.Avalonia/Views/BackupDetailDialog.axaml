@@ -105,13 +105,21 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Border Grid.Row="0" IsVisible="{Binding IsFromOtherAccount}" Margin="0,0,0,10" Padding="12,8"
+            <StackPanel Grid.Row="0">
+            <Border IsVisible="{Binding IsFromOtherAccount}" Margin="0,0,0,10" Padding="12,8"
                     CornerRadius="8" BorderThickness="1" BorderBrush="{DynamicResource WarningBrush}"
                     Background="{DynamicResource SurfaceBrush}">
                 <TextBlock Text="{Binding OtherAccountNote}" FontSize="12" TextWrapping="Wrap" />
             </Border>
+            <!-- A backup of the storage: it goes back there, not into the game -->
+            <Border IsVisible="{Binding IsStorageBackup}" Margin="0,0,0,10" Padding="12,8"
+                    CornerRadius="8" BorderThickness="1" BorderBrush="{DynamicResource StorageBrush}"
+                    Background="{DynamicResource StorageSoftBrush}">
+                <TextBlock Text="{x:Static loc:Strings.BackupRestoreIntoStorageNote}" FontSize="12" TextWrapping="Wrap" />
+            </Border>
+            </StackPanel>
 
-            <TabControl Grid.Row="1">
+            <TabControl Grid.Row="1" Classes="segments">
                 <TabItem Header="{x:Static loc:Strings.BackupRemovedSectionLabel}">
                     <Grid>
                         <Grid.RowDefinitions>

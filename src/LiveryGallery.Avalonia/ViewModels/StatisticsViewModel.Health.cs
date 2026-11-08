@@ -50,11 +50,26 @@ internal sealed partial class StatisticsViewModel
     [ObservableProperty]
     private bool _hasAccounts;
 
+    /// <summary>The storage's statistics (<see cref="StatisticsHost.IsStorage"/>)</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FlowLegend), nameof(IsGame))]
+    private bool _isStorage;
+
+    public bool IsGame => !IsStorage;
+
+    /// <summary>The stored liveries the game has too</summary>
+    private List<string> StoredInGame() => [.. _all.Where(e => e.IsStored && e.CopyKind == CopyKind.Same).Select(e => e.FolderName)];
+
+    // As the backups' window writes sizes
+    private static string Size(long bytes) => ByteSizeFormatter.Format(bytes, AppLocalisationService.Culture);
+
     private void BuildOverview()
     {
         var recent = LiveryTimelineCalculator.Summarize(_events, DateTime.UtcNow - RecentPeriod, _timelineOptions);
         var o = LiveryStatistics.Overview(_items, _host.Source.AuthorKey);
-        bool installedKnown = _host.IsInstalledKnown();
+        bool installedKnown = !IsStorage && _host.IsInstalledKnown();
+        var storage = IsStorage ? _host.Storage?.Invoke() : null;
+        var inGame = IsStorage ? StoredInGame() : [];
         Tiles =
         [
             new(N(o.Liveries), Strings.StatsTileLiveries,
@@ -66,12 +81,19 @@ internal sealed partial class StatisticsViewModel
                 Strings.StatsTileCarsTooltip, Go(StatisticsTarget.ByManufacturer)),
             new(N(o.Favorites), Strings.StatsTileFavorites, Share(o.Favorites, o.Liveries),
                 Strings.StatsTileFavoritesTooltip, Go(StatisticsTarget.Favorites)),
-            installedKnown
+            // The storage has no cars and no auction: what it shares with the game, and its folders
+            IsStorage
+                ? new(N(inGame.Count), Strings.StatsTileInGame, Share(inGame.Count, o.Liveries), Strings.StatsTileInGameTooltip,
+                    Show(inGame, Strings.StatsTileInGame))
+                : installedKnown
                 ? new(N(o.Installed), Strings.StatsTileInstalled, string.Format(Strings.StatsTileInstalledCarsFormat, N(o.InstalledCars)),
                     Strings.StatsTileInstalledTooltip, Go(StatisticsTarget.Installed))
                 : new("—", Strings.StatsTileInstalled, Strings.StatsTileInstalledUnknown, Strings.InstalledFilterNeedsServer, null),
-            new(N(o.Auction), Strings.StatsTileAuction, Share(o.Auction, o.Liveries),
-                Strings.StatsTileAuctionTooltip, Go(StatisticsTarget.Auction)),
+            IsStorage
+                ? new(N(storage?.Folders ?? 0), Strings.StatsTileFolders,
+                    string.Format(Strings.StatsTileNoFolderFormat, N(storage?.WithoutFolder ?? 0)), null, null)
+                : new(N(o.Auction), Strings.StatsTileAuction, Share(o.Auction, o.Liveries),
+                    Strings.StatsTileAuctionTooltip, Go(StatisticsTarget.Auction)),
         ];
 
         var health = Health();
@@ -122,11 +144,11 @@ internal sealed partial class StatisticsViewModel
         var archived = _host.Archive?.Invoke() ?? [];
         return LiveryHealthCalculator.Calculate(_all, new LiveryHealthOptions<LiveryEntry>
         {
-            Limit = _host.MaxLiveries,
+            Limit = IsStorage ? null : _host.MaxLiveries, // the storage has no limit
             IsBackedUp = backedUp is null ? null
                 : e => backedUp.Contains(e.CLiveryHash is { Length: > 0 } hash ? hash : "key:" + e.FolderName),
             LastBackupUtc = lastBackup,
-            InstalledKnown = _host.IsInstalledKnown(),
+            InstalledKnown = !IsStorage && _host.IsInstalledKnown(), // no stored livery is on a car
             // Exact copies only: a possible duplicate between two groups does not make them one ("free up room" counts so)
             DuplicatesOf = FreeSpacePlanner.ExactDuplicatesOf,
             ArchivedCount = archived.Count,
@@ -155,17 +177,20 @@ internal sealed partial class StatisticsViewModel
 
     private void UpdateSlots(LiveryHealth health)
     {
-        HasLimit = health.Limit is not null;
-        if (health.Limit is not { } limit) return;
-        double share = health.UsedShare ?? 0;
-        SlotsFraction = share;
-        SlotsText = $"{N(health.Counted)} / {N(limit)}";
-        SlotsLevel = SaveRoom.Level(health.Counted, limit); // the main window's counter takes the same colour
+        // While the storage is shown, the room is still the game's: what may come back
+        int? limitOrNull = IsStorage ? _host.MaxLiveries : health.Limit;
+        HasLimit = limitOrNull is not null;
+        if (limitOrNull is not { } limit) return;
+        int counted = IsStorage ? _host.GameCounted?.Invoke() ?? 0 : health.Counted;
+        int free = Math.Max(0, limit - counted);
+        SlotsFraction = limit > 0 ? Math.Min(1, (double)counted / limit) : 0;
+        SlotsText = $"{N(counted)} / {N(limit)}";
+        SlotsLevel = SaveRoom.Level(counted, limit); // the main window's counter takes the same colour
         SlotsDetail = SlotsLevel switch
         {
             SlotsLevel.Full => Strings.StatsSlotsFull,
-            SlotsLevel.Warning => string.Format(Strings.StatsSlotsAlmostFormat, N(health.Free ?? 0)),
-            _ => string.Format(Strings.StatsSlotsFreeFormat, N(health.Free ?? 0)),
+            SlotsLevel.Warning => string.Format(Strings.StatsSlotsAlmostFormat, N(free)),
+            _ => string.Format(Strings.StatsSlotsFreeFormat, N(free)),
         };
     }
 
@@ -194,11 +219,26 @@ internal sealed partial class StatisticsViewModel
             new(Strings.StatsHealthPossible, N(health.PossibleDuplicates.Count), Show(health.PossibleDuplicates, Strings.StatsHealthPossible), Strings.StatsShowTheseTooltip),
         ]));
 
-        cards.Add(new HealthCardViewModel(Strings.StatsHealthUnusedTitle,
-            health.Unused is null ? Strings.InstalledFilterNeedsServer : Strings.StatsHealthUnusedNote,
-            health.Unused is { } unused
-                ? [new(Strings.StatsHealthUnused, N(unused.Count), Show(unused, Strings.StatsHealthUnused), Strings.StatsShowTheseTooltip)]
-                : []));
+        if (IsStorage)
+        {
+            var storage = _host.Storage?.Invoke();
+            var inGame = StoredInGame();
+            cards.Add(new HealthCardViewModel(Strings.StatsHealthStorageTitle, Strings.StatsHealthStorageNote,
+            [
+                new(Strings.StatsTileInGame, N(inGame.Count), Show(inGame, Strings.StatsTileInGame), Strings.StatsShowTheseTooltip),
+                new(Strings.StatsTileFolders, N(storage?.Folders ?? 0), null),
+                new(Strings.StatsHealthNoFolder, N(storage?.WithoutFolder ?? 0), null),
+                new(Strings.StatsHealthStorageSize, Size(storage?.Bytes ?? 0), null),
+            ]));
+        }
+        else
+        {
+            cards.Add(new HealthCardViewModel(Strings.StatsHealthUnusedTitle,
+                health.Unused is null ? Strings.InstalledFilterNeedsServer : Strings.StatsHealthUnusedNote,
+                health.Unused is { } unused
+                    ? [new(Strings.StatsHealthUnused, N(unused.Count), Show(unused, Strings.StatsHealthUnused), Strings.StatsShowTheseTooltip)]
+                    : []));
+        }
 
         cards.Add(new HealthCardViewModel(Strings.StatsHealthArchiveTitle, null,
         [

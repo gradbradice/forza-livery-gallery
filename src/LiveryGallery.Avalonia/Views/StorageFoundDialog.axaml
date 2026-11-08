@@ -1,0 +1,31 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="LiveryGallery.Views.StorageFoundDialog"
+        Width="760" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        CanResize="False" ShowInTaskbar="False"
+        Background="{DynamicResource BgBrush}"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1">
+
+    <!-- "Details" of the banner (docs/storage.md, "Own folder"): what was found by hand and what became of each livery.
+         The liveries added as they were folded, the others open; "Show in folder" beside each one that stayed -->
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="{DynamicResource ToolbarBrush}" Height="36" PointerPressed="TitleBar_PointerPressed">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock x:Name="TitleBarText" FontSize="12" Margin="12,0,0,0" VerticalAlignment="Center"
+                           IsHitTestVisible="False" Foreground="{DynamicResource TextSecondaryBrush}" />
+                <Button Grid.Column="1" Classes="titlebar close" Click="CloseButton_Click">
+                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
+                </Button>
+            </Grid>
+        </Border>
+        <DockPanel Margin="24,16,24,18">
+            <Button x:Name="DoneButton" DockPanel.Dock="Bottom" Classes="primary storage" MinWidth="110" HorizontalAlignment="Right"
+                    Margin="0,14,0,0" Click="CloseButton_Click" />
+            <ScrollViewer MaxHeight="560" Classes="edge" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel x:Name="Sections" Spacing="14" />
+            </ScrollViewer>
+        </DockPanel>
+    </DockPanel>
+</Window>

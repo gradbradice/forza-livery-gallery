@@ -2,17 +2,23 @@ using Avalonia.Threading;
 using ForzaToolkit.Games.Installation;
 using ForzaToolkit.LiveryRender;
 using ForzaToolkit.LiveryRender.Assets;
+using Microsoft.Extensions.Logging;
 
 namespace LiveryGallery.Render;
 
 internal sealed class LiveryRenderService : IDisposable
 {
-    // Disk caches of the render library: car index (cars.tsv), vinyl shapes (vinyls.bin), shader defaults
-    // (shaders.tsv). The library validates them against the game files and rebuilds
-    // whatever is stale when archives change or new ones appear. In the program's local folder (AppIdentity).
-    private static readonly string CacheDirectory = Path.Combine(LiveryGallery.Configuration.AppSettings.LocalCachePath, "render-cache");
+    // Disk caches of the render library: car index (cars-fh6.v1.tsv), vinyl shapes (vinyls-fh6.v1.bin), shader
+    // defaults (shaders-fh6.v2.tsv). The library validates them against the game files and rebuilds whatever is stale
+    // when archives change or new ones appear. Shared with the toolkit's other programs (the converter, Forza Livery
+    // Craft): %LOCALAPPDATA%\ForzaToolkit\render-cache, so the game's files are scanned once for all of them
+    private static readonly string CacheDirectory = RenderCacheFolders.Shared;
 
     private static readonly TimeSpan MemoryReleaseDelay = TimeSpan.FromSeconds(2);
+
+    // The game whose cars and shapes the renderer draws: its caches are cars-<game>.tsv and vinyls-<game>.bin
+    // (LiveryRender names them by the game)
+    private readonly string _gameId;
 
     private readonly DispatcherTimer _memoryReleaseTimer = new() { Interval = MemoryReleaseDelay };
     private readonly Func<int, CarWheels?>? _wheels;
@@ -37,8 +43,10 @@ internal sealed class LiveryRenderService : IDisposable
 
     /// <param name="wheels">A car's stock wheels from the car list; the renderer places the wheels from the game files
     /// for a car it gives none for</param>
-    public LiveryRenderService(Func<int, CarWheels?>? wheels = null)
+    public LiveryRenderService(string gameId, Func<int, CarWheels?>? wheels = null)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(gameId);
+        _gameId = gameId;
         _wheels = wheels;
         _memoryReleaseTimer.Tick += (_, _) =>
         {
@@ -68,6 +76,7 @@ internal sealed class LiveryRenderService : IDisposable
             {
                 GameDirectory = root,
                 CacheDirectory = CacheDirectory,
+                GameId = _gameId,
                 MaxCachedCars = 1,
                 WheelSizes = _wheels is null ? null : CarWheelSizes.From(_wheels),
             });
@@ -148,7 +157,7 @@ internal sealed class LiveryRenderService : IDisposable
         {
             await previousPreparation.ConfigureAwait(ConfigureAwaitOptions.SuppressThrowing);
             if (!string.Equals(_preparationTarget, root, StringComparison.OrdinalIgnoreCase)) return;
-            PrepareRenderCaches(root);
+            PrepareRenderCaches(root, _gameId);
         });
         _ = _carIndexPreparation.ContinueWith(
             _ => Dispatcher.UIThread.Post(ScheduleMemoryRelease),
@@ -160,15 +169,15 @@ internal sealed class LiveryRenderService : IDisposable
     /// car archive and parses Vinyls.zip; later runs only compare sizes and dates and rebuild what changed
     /// (game update, new cars), so the 3D viewer opens without rescanning the archives.
     /// </summary>
-    private static void PrepareRenderCaches(string root)
+    private static void PrepareRenderCaches(string root, string gameId)
     {
-        DeleteOldDrawnPreviews();
         try
         {
             using var renderer = new LiveryRenderer(new LiveryRendererOptions
             {
                 GameDirectory = root,
                 CacheDirectory = CacheDirectory,
+                GameId = gameId,
             });
             var result = renderer.PrepareCaches();
             if (result.Warnings.Count > 0)
@@ -182,19 +191,18 @@ internal sealed class LiveryRenderService : IDisposable
         }
     }
 
-    // A build of 1.5.0 kept the previews it drew in the renderer's thumbnail cache; they live with the game's
-    // previews now (RenderedThumbnails), and the gallery does not use that cache
-    private static void DeleteOldDrawnPreviews()
+    /// <summary>
+    /// Deletes, in the background, the render caches the gallery kept in its own folder before they were shared:
+    /// 1.6.0's (<c>%LOCALAPPDATA%\FH6LiveryGallery\render-cache</c>) and the test builds' of 1.7.0
+    /// (<c>%LOCALAPPDATA%\ForzaLiveryGallery\render-cache</c>). What another running copy holds open goes on the next start
+    /// </summary>
+    internal static void RemoveOldCaches()
     {
-        string thumbs = Path.Combine(CacheDirectory, "thumbs");
-        try
-        {
-            if (Directory.Exists(thumbs)) Directory.Delete(thumbs, recursive: true);
-        }
-        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-        {
-            AppLog.LogErrorThrottled(thumbs, $"Failed to delete the old drawn previews in '{thumbs}'", ex);
-        }
+        var logger = AppLog.LoggerFactory.CreateLogger("LiveryGallery.Rendering");
+        string local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        foreach (string? folder in new[] { LiveryGallery.Configuration.AppSettings.Identity.PreviousFolderName, LiveryGallery.Configuration.AppSettings.Identity.FolderName })
+            if (!string.IsNullOrWhiteSpace(folder))
+                _ = RenderCacheFolders.RemoveOld(Path.Combine(local, folder, "render-cache"), logger);
     }
 
     private void ClearRenderer()
@@ -232,9 +240,9 @@ internal sealed class LiveryRenderService : IDisposable
 
     private void RequestMemoryRelease()
     {
-        // The paints' decoded textures outlive the renderer (a cache for the whole process): with no renderer left
-        // they go too, and the next one reads them again
-        if (!_hasRenderer) PaintLibrary.ClearCache();
+        // The paints' decoded textures and the livery canvases kept for the next livery outlive the renderer (shared by
+        // the whole process): with no renderer left they go too, and the next one makes them again
+        if (!_hasRenderer) LiveryRenderer.TrimSharedMemory();
         MemoryReclaimer.ReclaimAfterLargeRelease("3D renderer released", () => !_hasRenderer && !_disposed);
     }
 

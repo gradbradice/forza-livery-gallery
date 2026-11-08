@@ -1,5 +1,4 @@
-using System.Reflection;
-using LiveryGallery.Viewer3D;
+using ForzaToolkit.UI.Dialogs;
 
 namespace LiveryGallery.Services;
 
@@ -23,35 +22,8 @@ internal static class ComponentVersions
             typeof(global::ForzaToolkit.GameInput.GameNavigator),
             typeof(global::ForzaToolkit.UI.WindowExtensions),
         }
-        .Select(Of)
+        .Select(ComponentVersion.Of)
         .DistinctBy(c => c.Name, StringComparer.Ordinal)
         .OrderBy(c => c.Name, StringComparer.Ordinal),
     ];
-
-    /// <summary>The package that holds <paramref name="anchor"/>: its assembly name and version</summary>
-    public static ComponentVersion Of(Type anchor)
-    {
-        ArgumentNullException.ThrowIfNull(anchor);
-        var assembly = anchor.Assembly;
-        return new ComponentVersion(assembly.GetName().Name ?? anchor.Namespace ?? "?", PackageVersion(assembly));
-    }
-
-    /// <summary>The package version (informational version without the commit hash), or "?"</summary>
-    public static string PackageVersion(Assembly assembly)
-    {
-        ArgumentNullException.ThrowIfNull(assembly);
-        try
-        {
-            string? version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-                ?? assembly.GetName().Version?.ToString();
-            if (version is null) return "?";
-            int plus = version.IndexOf('+');
-            return plus >= 0 ? version[..plus] : version;
-        }
-        catch (Exception ex)
-        {
-            AppLog.LogError($"Failed to read the package version of {assembly.GetName().Name}", ex);
-            return "?";
-        }
-    }
 }

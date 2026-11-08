@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="LiveryGallery" />
+    <InternalsVisibleTo Include="ForzaLiveryGallery" />
     <InternalsVisibleTo Include="LiveryGallery.Render" />
     <InternalsVisibleTo Include="LiveryGallery.Tests" />
   </ItemGroup>
@@ -24,17 +24,8 @@
     <PackageReference Include="Avalonia" Version="12.1.1" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
-    <PackageReference Include="ForzaToolkit.AppHost" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.CarDatabase" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.Core" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.GameInput" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.Games" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.Liveries" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.Liveries.Server" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.Saves" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.StringTables" Version="0.28.0" />
-    <PackageReference Include="ForzaToolkit.UI.Avalonia" Version="0.28.0" />
-    <PackageReference Include="MarkView.Avalonia" Version="12.2.0" />
+    <!-- Screenshots: WebP encoding and picture sizes (the same SkiaSharp the Avalonia.Skia of the host brings) -->
+    <PackageReference Include="SkiaSharp" Version="3.119.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +41,36 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>strings.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <!-- ForzaToolkit: its projects in source mode, its packages otherwise (UseToolkitSource, Directory.Build.props) -->
+  <ItemGroup Condition="'$(UseToolkitSource)' == 'true'">
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.AppHost/ForzaToolkit.AppHost.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.AppHost.Updates/ForzaToolkit.AppHost.Updates.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.CarDatabase/ForzaToolkit.CarDatabase.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Core/ForzaToolkit.Core.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.GameInput/ForzaToolkit.GameInput.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games/ForzaToolkit.Games.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Liveries/ForzaToolkit.Liveries.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Liveries.Server/ForzaToolkit.Liveries.Server.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Saves/ForzaToolkit.Saves.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.StringTables/ForzaToolkit.StringTables.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.UI.Avalonia/ForzaToolkit.UI.Avalonia.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.UI.Avalonia.Updates/ForzaToolkit.UI.Avalonia.Updates.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseToolkitSource)' != 'true'">
+    <PackageReference Include="ForzaToolkit.AppHost" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.AppHost.Updates" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.CarDatabase" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Core" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.GameInput" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Liveries" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Liveries.Server" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Saves" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.StringTables" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.UI.Avalonia" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.UI.Avalonia.Updates" Version="$(ForzaToolkitVersion)" />
   </ItemGroup>
 
 </Project>

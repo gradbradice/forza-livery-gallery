@@ -90,6 +90,13 @@
 
             <Grid Grid.Row="0" ColumnDefinitions="*,Auto" Margin="0,0,0,14">
                 <TextBlock x:Name="TitleText" Grid.Column="0" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" />
+                <!-- Liveries an earlier version archived without the account: put with this one when the user says so -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
+                            IsVisible="{Binding HasUnassigned}">
+                    <TextBlock Text="{Binding UnassignedText}" FontSize="11.5" VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <Button x:Name="TakeUnassignedButton" FontSize="12.5" Command="{Binding TakeUnassignedCommand}" />
+                </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" VerticalAlignment="Center"
                             IsVisible="{Binding CanFilterByAccount}">
                     <TextBlock Text="{Binding HiddenByAccountText}" IsVisible="{Binding HasHiddenByAccount}"
@@ -138,6 +145,9 @@
                         Margin="0,14,0,0">
                 <Button x:Name="DeleteButton" Classes="danger" MinWidth="140"
                         Command="{Binding RequestDeleteCommand}" />
+                <!-- Kept for good instead of deleted: into the account's storage, the save untouched -->
+                <Button x:Name="ToStorageButton" Classes="secondary" MinWidth="140" IsVisible="{Binding HasStorage}"
+                        IsEnabled="{Binding HasSelection}" Command="{Binding MoveSelectedToStorageCommand}" />
                 <Button x:Name="RestoreButton" Classes="primary" MinWidth="140"
                         Command="{Binding RestoreSelectedCommand}" />
             </StackPanel>

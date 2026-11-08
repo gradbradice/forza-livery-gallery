@@ -1,5 +1,7 @@
 using ForzaToolkit.Games.Installation;
 using ForzaToolkit.Liveries.Scanning;
+using LiveryGallery.Configuration;
+using LiveryGallery.Services;
 
 namespace LiveryGallery.Profiles;
 
@@ -11,6 +13,19 @@ internal sealed record GameFeatures
 
     /// <summary>The livery server that tells which liveries are installed on cars</summary>
     public bool LiveryServer { get; init; }
+}
+
+/// <summary>How a game's save holds its liveries: what in it the gallery watches for changes</summary>
+internal enum GameSaveLayout
+{
+    /// <summary>FH6: <c>&lt;container&gt;\ContainersRoot\&lt;key&gt;\…</c>, a folder per livery, the profile beside them</summary>
+    LiveryFolders,
+
+    /// <summary>
+    /// FH3 to FH5: a Steam save's flat files <c>&lt;key&gt;.&lt;part&gt;</c>, or a Microsoft Store save's containers,
+    /// whose <c>containers.index</c> the game writes again on every change
+    /// </summary>
+    SaveItems,
 }
 
 /// <summary>Where the number of rows of a game's livery menu comes from</summary>
@@ -42,12 +57,21 @@ internal sealed record GridRows(int? Rows, GridRowsSource Source, DateTime? ModW
 /// may change it) and where each livery of the save is in the grid
 /// </summary>
 /// <param name="DetectRows">The rows of the game installed in a folder (null: the folder is not known)</param>
-/// <param name="Layout">The grid of a save folder for a number of rows</param>
+/// <param name="Layout">
+/// The grid of a save folder for a number of rows, after the liveries the game keeps on its servers (the third number,
+/// Settings › Find in game: they are not in the save and come first)
+/// </param>
 /// <param name="DefaultRows">The rows of the game's own menu, used while the game folder is not known</param>
+/// <param name="RowChoices">The rows the menu can have, which Settings offers besides "find out" (FH6: 2 and 3)</param>
 internal sealed record MyDesignsGrid(
     Func<string?, GridRows> DetectRows,
-    Func<string, int, GridLayout> Layout,
-    int DefaultRows);
+    Func<string, int, int, GridLayout> Layout,
+    int DefaultRows,
+    IReadOnlyList<int> RowChoices)
+{
+    /// <summary>The most liveries on the game's servers Settings offers</summary>
+    public const int MaxServerLiveries = 9;
+}
 
 /// <summary>The game's own cache of previews of liveries it only lists (FH6: the auction house)</summary>
 /// <param name="FindDirectory">The cache folder on this PC; null when there is none</param>
@@ -73,17 +97,38 @@ internal sealed class GameProfile
     /// <summary>The game in the toolkit's catalog: names, install and save hints, the window to send keys to</summary>
     public required ForzaGame Game { get; init; }
 
-    /// <summary>The game's save folders on this PC</summary>
-    public required PcGameSaveStore Saves { get; init; }
+    /// <summary>
+    /// The game's save folders on this PC: FH6's PC GameSave (<see cref="PcGameSaveStore"/>), any other game's every
+    /// place (<see cref="GameSaveFolders"/>)
+    /// </summary>
+    public required IGameSaveFolders Saves { get; init; }
 
     /// <summary>How a save keeps liveries: for the scanner, the archive, backups and the windows</summary>
     public required ILiveryStore Liveries { get; init; }
 
-    /// <summary>The names of the game's previews of a livery, the better one first (as <see cref="ILiveryStore.ListFiles"/> names them)</summary>
+    /// <summary>
+    /// The names of the game's previews of a livery, the better one first (as <see cref="ILiveryStore.ListFiles"/> names
+    /// them; a flat save's with the key in front, <c>&lt;key&gt;.bigThumb.png</c>)
+    /// </summary>
     public required IReadOnlyList<string> PreviewFileNames { get; init; }
+
+    /// <summary>How the save holds its liveries (what the gallery watches); FH6's folders when not told</summary>
+    public GameSaveLayout SaveLayout { get; init; } = GameSaveLayout.LiveryFolders;
 
     /// <summary>What the gallery can do in this game</summary>
     public required GameFeatures Features { get; init; }
+
+    /// <summary>
+    /// The closed parts of the game's scan, the parser of its livery files and their duplicate check, given the game's
+    /// folders (the check keeps what it compares there)
+    /// </summary>
+    public required Func<GamePaths, LiveryScanParts> ScanParts { get; init; }
+
+    /// <summary>
+    /// The settings of the game before the user changes any (its "Find in game" timings): what a game shown the
+    /// first time starts with
+    /// </summary>
+    public Func<GameSettingsData> NewSettings { get; init; } = () => new GameSettingsData();
 
     /// <summary>The My Designs grid for "Find in game"; null when the gallery cannot find liveries in this game</summary>
     public MyDesignsGrid? MyDesigns { get; init; }
@@ -104,11 +149,19 @@ internal sealed class GameProfile
     public bool IsAuction(string key) => Features.Auction && Liveries.IsExternalListing(key);
 
     /// <summary>The game's preview of a livery in the save, the better one first; null when there is none</summary>
-    public string? FindPreview(string saveDataPath, string key)
+    public string? FindPreview(string saveDataPath, string key) => FindPreviewAmong(Liveries.ListFiles(saveDataPath, key), key);
+
+    /// <summary>
+    /// The preview among a livery's files wherever they lie (the save, or a folder of the gallery's storage where they keep
+    /// the names the save gave them); null when none
+    /// </summary>
+    public string? FindPreviewAmong(IReadOnlyList<LiveryFileRef> files, string key)
     {
-        var files = Liveries.ListFiles(saveDataPath, key);
+        ArgumentNullException.ThrowIfNull(files);
+        // A folder's file is named as the game names it (bigThumb.webp), a flat save's with the key in front
         foreach (string name in PreviewFileNames)
-            if (files.FirstOrDefault(f => string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase)) is { Path: { } path }
+            if (files.FirstOrDefault(f => string.Equals(f.Name, name, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(f.Name, key + "." + name, StringComparison.OrdinalIgnoreCase)) is { Path: { } path }
                 && File.Exists(path))
                 return path;
         return null;

@@ -1,0 +1,30 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:LiveryGallery.ViewModels.Collections"
+             x:Class="LiveryGallery.Views.Collections.CollectionGroupHeader"
+             x:DataType="vmc:CollectionGroupViewModel">
+    <!-- A group's heading: a click anywhere on it folds the group (the whole row, its height with the space above and
+         below too, up to the link: a plain area that hears the tap, not a button, whose own check of the pointer missed
+         the clicks on the arrow at the left edge); the link does what its owner says -->
+    <Grid ColumnDefinitions="*,Auto">
+        <Border Classes="groupFold" Tapped="Fold_Tapped" Padding="0,6,12,10">
+            <StackPanel Orientation="Horizontal" Spacing="10">
+                <Path Data="{StaticResource IconChevronDown}" Width="10" Height="5" Stretch="Uniform" VerticalAlignment="Center"
+                      Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round"
+                      Classes.folded="{Binding !IsExpanded}" />
+                <Border Width="44" Height="25" CornerRadius="4" ClipToBounds="True" VerticalAlignment="Center"
+                        IsVisible="{Binding Thumbnail, Converter={x:Static ObjectConverters.IsNotNull}}">
+                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                </Border>
+                <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="{Binding Subtitle}" FontSize="13" VerticalAlignment="Center" IsVisible="{Binding HasSubtitle}"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                <TextBlock Text="{Binding CountText}" FontSize="12" VerticalAlignment="Center"
+                           Foreground="{DynamicResource TextTertiaryBrush}" />
+            </StackPanel>
+        </Border>
+        <Button Grid.Column="1" Classes="linkText" FontSize="12.5" VerticalAlignment="Center" Margin="0,6,0,10" Content="{Binding LinkText}"
+                IsVisible="{Binding HasLink}" Click="Link_Click" />
+    </Grid>
+</UserControl>

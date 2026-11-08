@@ -12,6 +12,13 @@ internal partial class MainWindow
     {
         Title = AppSettings.Identity.Name;
         CustomTitleBarText.Text = AppSettings.Identity.Name;
+        GameButtonText.Text = _profile.Game.Name;
+        ApplyModeTexts();
+        ApplyStorageFoldersTexts();
+        ApplyScreenshotsTexts();
+        GameButton.SetValue(ToolTip.TipProperty, Strings.GameSwitcherTooltip);
+        ChooseSaveFolderButton.Content = Strings.ChooseSaveFolderButton;
+        SearchSaveAgainButton.Content = Strings.SearchSaveAgainButton;
         MinimizeButtonEl.SetValue(ToolTip.TipProperty, Strings.MinimizeTooltip);
         MaximizeButtonEl.SetValue(ToolTip.TipProperty, Strings.MaximizeTooltip);
         CloseButtonEl.SetValue(ToolTip.TipProperty, Strings.CloseTooltip);
@@ -25,7 +32,7 @@ internal partial class MainWindow
         OpenBackupsMenuItem.Header = Strings.MenuOpenBackups;
         ShortcutsMenuItem.Header = Strings.ShortcutsTitle;
         ContactsMenuItem.Header = Strings.SettingsMenuContacts;
-        AboutMenuItem.Header = string.Format(Strings.AboutTitleFormat, AppSettings.Identity.Name);
+        AboutMenuItem.Header = ForzaToolkit.UI.Localisation.UiStrings.AboutTitleFormat.Replace("{0}", AppSettings.Identity.Name, StringComparison.Ordinal);
         SearchBox.PlaceholderText = Strings.SearchPlaceholder;
 
         DisplayFilterButton.SetValue(ToolTip.TipProperty, Strings.DisplayFilterTooltip);
@@ -54,6 +61,8 @@ internal partial class MainWindow
         InstalledNoneItem.Header = Strings.InstalledAllToggle;
         InstalledFirstItemText.Text = Strings.InstalledFirstToggle;
         InstalledOnlyItemText.Text = Strings.OnlyInstalledToggle;
+        NotInstalledFirstItemText.Text = Strings.NotInstalledFirstToggle;
+        NotInstalledOnlyItemText.Text = Strings.OnlyNotInstalledToggle;
         MineNoneItem.Header = Strings.NormalOrderToggle;
         MineFirstItemText.Text = Strings.MineFirstToggle;
         MineOnlyItemText.Text = Strings.OnlyMineToggle;
@@ -84,9 +93,10 @@ internal partial class MainWindow
         _mainViewModel.Gallery.RefreshCountsOnly();
         _mainViewModel.FilterBar.RefreshLocalizedText();
         _mainViewModel.ServerStatus.RefreshLocalizedText();
+        _mainViewModel.RefreshModeTexts();
         _ = _mainViewModel.RefreshAccountsAsync(); // the switcher's "Account …1234" and livery counts
         bool authorLabelsChanged = false;
-        foreach (var entry in _mainViewModel.Gallery.AllEntries)
+        foreach (var entry in _mainViewModel.Gallery.AllEntries.Concat(_mainViewModel.IsStorageMode ? _mainViewModel.GameEntries : []))
         {
             authorLabelsChanged |= entry.RefreshAuthorLabel();
             entry.RefreshLocalizedText();
@@ -118,7 +128,7 @@ internal partial class MainWindow
                 _collapsedGroupKeys.Add(group.Key);
         }
 
-        _mainViewModel.Update.RefreshLocalizedBannerText();
+        _mainViewModel.UpdateBanner.Refresh();
         // Car texts "as in the interface" follow it: the country and car type groups are named again
         _mainViewModel.RefreshCarTextsIfLanguageChanged();
     }

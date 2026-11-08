@@ -38,7 +38,7 @@ internal sealed partial class MainViewModel
         if (blocks != _selectionBlocksNavigation)
         {
             _selectionBlocksNavigation = blocks;
-            foreach (var entry in Gallery.AllEntries) entry.SelectionBlocksNavigation = blocks;
+            foreach (var entry in GameEntries) entry.SelectionBlocksNavigation = blocks;
         }
         NotifyNavigationCommands();
     }
@@ -73,6 +73,9 @@ internal sealed partial class MainViewModel
         return (rows, detection, false);
     }
 
+    // The liveries the game keeps on its servers (Settings › Find in game): first in the grid, before the save's
+    private int ServerLiveries => Math.Clamp(settings.ServerLiveries, 0, MyDesignsGrid.MaxServerLiveries);
+
     /// <summary>Recomputes the badges: after a scan, a settings change or a game folder change</summary>
     /// <param name="refreshGallery">False when the caller rebuilds the gallery right after anyway</param>
     public void RefreshGamePositions(bool refreshGallery = true)
@@ -84,7 +87,7 @@ internal sealed partial class MainViewModel
         {
             try
             {
-                layout = grid.Layout(saveDataPath, rowCount);
+                layout = grid.Layout(saveDataPath, rowCount, ServerLiveries);
             }
             catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
             {
@@ -98,7 +101,7 @@ internal sealed partial class MainViewModel
     {
         bool changed = _gridLayout?.Signature != layout?.Signature;
         _gridLayout = layout;
-        foreach (var entry in Gallery.AllEntries)
+        foreach (var entry in GameEntries)
         {
             entry.SelectionBlocksNavigation = _selectionBlocksNavigation; // entries may be new after a scan
             entry.GamePosition = layout is not null && !entry.IsAuction && layout.TryGetSlot(entry.FolderName, out var slot)
@@ -166,7 +169,8 @@ internal sealed partial class MainViewModel
         GridLayout layout;
         try
         {
-            layout = await Task.Run(() => grid.Layout(saveDataPath, rowCount), ShutdownToken);
+            int serverLiveries = ServerLiveries;
+            layout = await Task.Run(() => grid.Layout(saveDataPath, rowCount, serverLiveries), ShutdownToken);
         }
         catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
         {

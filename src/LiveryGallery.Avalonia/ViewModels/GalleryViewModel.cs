@@ -19,7 +19,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
     public IReadOnlySet<string> ExcludedTags => _excludedTags;
     public bool HasTagFilter => _selectedTags.Count > 0 || _excludedTags.Count > 0;
     private readonly HashSet<string> _selectedFolderNames = new(StringComparer.Ordinal);
-    public ObservableCollection<LiveryEntry> SelectedEntries { get; } = [];
+    public SelectedLiveries SelectedEntries { get; } = [];
     public bool HasSelection => SelectedEntries.Count > 0;
     public int SelectedCount => SelectedEntries.Count;
     public string SelectionSummaryText => string.Format(Strings.SelectedCountLabel, SelectedCount);
@@ -43,6 +43,16 @@ internal sealed partial class GalleryViewModel : ObservableObject
     public event Action<IReadOnlyList<LiveryEntry>>? EditTagsRequested;
     public event Action<LiveryEntry>? ViewPreviewRequested;
     public event Action<LiveryEntry>? View3DRequested;
+
+    /// <summary>The livery window: a double click on a card, Enter, the context menu, the note's mark</summary>
+    public event Action<LiveryEntry>? OpenDetailsRequested;
+
+    [RelayCommand]
+    private void OpenDetails(LiveryEntry? entry)
+    {
+        var target = entry ?? (SelectedEntries.Count == 1 ? SelectedEntries[0] : null);
+        if (target is not null) OpenDetailsRequested?.Invoke(target);
+    }
     public event Action<GalleryCountsSnapshot>? CountsUpdated;
     public event Action? SelectedTagsChanged;
     /// <summary>A livery was locked or unlocked: what may go to the archive changed</summary>
@@ -99,14 +109,21 @@ internal sealed partial class GalleryViewModel : ObservableObject
         OnPropertyChanged(nameof(UnassignAuthorMenuHeader));
     }
 
+    /// <summary>
+    /// A part of the liveries the grid shows before any filter (the storage's folder); all when null. The caller shows
+    /// the gallery again after setting it
+    /// </summary>
+    public Func<LiveryEntry, bool>? Scope { get; set; }
+
     public List<LiveryEntry> GetFilteredEntries() =>
         GalleryFilterService.Apply(
-            _allEntries, _filter.SearchText, _selectedTags, _excludedTags,
+            Scope is { } scope ? [.. _allEntries.Where(scope)] : _allEntries, _filter.SearchText, _selectedTags, _excludedTags,
             _filter.FavoriteMode == FavoriteMode.OnlyFavorites, _filter.MineMode == MineMode.OnlyMine,
             _filter.DuplicatesFilterMode, _filter.GeneratedFilterMode, _filter.PaintFilterMode,
             _filter.SearchByFolderName, _filter.QuickFilters,
             auctionFilterMode: _filter.AuctionFilterMode,
-            onlyInstalled: _filter.InstalledMode == InstalledMode.OnlyInstalled);
+            onlyInstalled: _filter.InstalledMode == InstalledMode.OnlyInstalled,
+            onlyNotInstalled: _filter.InstalledMode == InstalledMode.OnlyNotInstalled);
 
     /// <summary>The star on a card: that livery alone</summary>
     [RelayCommand]
@@ -303,7 +320,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
             filtered, filter.SortMode, filter.FavoriteMode, filter.MineMode, filter.AuctionFilterMode,
             filter.GroupingEnabled, GroupWidth, filter.InstalledMode);
         ReplaceGroups(groups);
-        CountsUpdated?.Invoke(new GalleryCountsSnapshot(filtered, _allEntries.Count, filter.SearchText));
+        CountsUpdated?.Invoke(new GalleryCountsSnapshot(filtered, ScopedCount, filter.SearchText));
     }
 
     private void ApplyGroupWidthToDisplayedGroups()
@@ -313,7 +330,10 @@ internal sealed partial class GalleryViewModel : ObservableObject
     }
 
     public void RefreshCountsOnly() =>
-        CountsUpdated?.Invoke(new GalleryCountsSnapshot(GetFilteredEntries(), _allEntries.Count, _filter.SearchText));
+        CountsUpdated?.Invoke(new GalleryCountsSnapshot(GetFilteredEntries(), ScopedCount, _filter.SearchText));
+
+    // "Shown: 12 of 40": of the scope (the storage's folder), not of every livery
+    private int ScopedCount => Scope is { } scope ? _allEntries.Count(scope) : _allEntries.Count;
 
     public void ReplaceGroups(List<LiveryGroup> newGroups)
     {
@@ -370,6 +390,38 @@ internal sealed partial class GalleryViewModel : ObservableObject
         return true;
     }
 
+    /// <summary>What the gallery shows of one mode of the main window: the selection, the tags that filter, the cursor</summary>
+    public GalleryViewState CaptureView() =>
+        new([.. _selectedFolderNames], [.. _selectedTags], [.. _excludedTags], _cursorFolderName, _anchorFolderName);
+
+    /// <summary>
+    /// Shows another mode's liveries (the game's, the storage's) with what was selected and filtered by tags there
+    /// (<paramref name="view"/>; nothing when null). The caller shows the groups again
+    /// </summary>
+    public void SwapEntries(List<LiveryEntry> entries, GalleryViewState? view)
+    {
+        ArgumentNullException.ThrowIfNull(entries);
+        foreach (var entry in SelectedEntries) entry.IsSelected = false;
+        SelectedEntries.Clear();
+        _selectedFolderNames.Clear();
+        ShowCursorOn(null);
+        _selectedTags.Clear();
+        _excludedTags.Clear();
+        _cursorFolderName = view?.Cursor;
+        _anchorFolderName = view?.Anchor;
+        _cursorRow = -1;
+        if (view is not null)
+        {
+            _selectedTags.UnionWith(view.ShownTags);
+            _excludedTags.UnionWith(view.HiddenTags);
+            _selectedFolderNames.UnionWith(view.Selected);
+        }
+        _allEntries = entries;
+        ApplyInstalledCounts();
+        ReconcileSelection();
+        SelectedTagsChanged?.Invoke();
+    }
+
     public void ReplaceEntries(List<LiveryEntry> entries)
     {
         _allEntries = entries;
@@ -394,7 +446,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
     private void ApplyInstalledCounts()
     {
         foreach (var entry in _allEntries)
-            entry.InstalledCarCount = _installedCounts is not null && _installedCounts.TryGetValue(entry.FolderName, out int n) ? n : 0;
+            entry.InstalledCarCount = !entry.IsStored && _installedCounts is not null && _installedCounts.TryGetValue(entry.FolderName, out int n) ? n : 0;
         InstalledCountsChanged?.Invoke();
     }
 
@@ -405,13 +457,14 @@ internal sealed partial class GalleryViewModel : ObservableObject
         var byName = _allEntries.ToDictionary(e => e.FolderName);
         _selectedFolderNames.RemoveWhere(name => !byName.ContainsKey(name));
 
-        SelectedEntries.Clear();
+        var selected = new List<LiveryEntry>(_selectedFolderNames.Count);
         foreach (var name in _selectedFolderNames)
         {
             var entry = byName[name];
             entry.IsSelected = true;
-            SelectedEntries.Add(entry);
+            selected.Add(entry);
         }
+        SelectedEntries.ReplaceAll(selected);
     }
 
     [RelayCommand]
@@ -442,6 +495,163 @@ internal sealed partial class GalleryViewModel : ObservableObject
         SelectedEntries.Add(entry);
     }
 
+    // Where a Shift-click range starts: the last card clicked without Shift (as in Explorer). Kept when the selection is
+    // cleared; a range from a card no longer shown is the clicked card alone
+    private string? _anchorFolderName;
+
+    /// <summary>The liveries on screen, in their order: the groups as shown, a folded group's liveries left out</summary>
+    public List<LiveryEntry> ShownEntries()
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var shown = new List<LiveryEntry>();
+        foreach (var group in DisplayedGroups)
+        {
+            if (!group.IsExpanded) continue;
+            foreach (var entry in group.Items)
+                if (seen.Add(entry.FolderName)) shown.Add(entry);
+        }
+        return shown;
+    }
+
+    /// <summary>
+    /// A left click on a card, as in Explorer: alone it selects only this card; with Ctrl it adds the card to the
+    /// selection or takes it out; with Shift it selects every card on screen from the last one clicked to this one, and
+    /// with Ctrl+Shift adds them to the selection
+    /// </summary>
+    public void ClickSelect(LiveryEntry entry, bool ctrl, bool shift)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        if (shift)
+        {
+            SelectMany(GallerySelection.Range(ShownEntries(), _anchorFolderName, entry), add: ctrl);
+            return;
+        }
+        _anchorFolderName = entry.FolderName;
+        // The keys go on from the card clicked; the cursor is shown again once they move it
+        _cursorFolderName = entry.FolderName;
+        _cursorRow = -1;
+        ShowCursorOn(null);
+        if (ctrl) ToggleSelection(entry);
+        else SelectOnly(entry);
+    }
+
+    // The cursor of the keys: the card last clicked or moved to, and its row on screen (a livery in two groups is on
+    // two rows); the card that shows it
+    private string? _cursorFolderName;
+    private int _cursorRow = -1;
+    private LiveryEntry? _cursorShownOn;
+
+    /// <summary>The first row on screen with <paramref name="entry"/>; null when it is not shown</summary>
+    public GalleryRow? RowOf(LiveryEntry entry) =>
+        ShownRows().FirstOrDefault(r => r.Items.Any(e => string.Equals(e.FolderName, entry.FolderName, StringComparison.Ordinal)));
+
+    /// <summary>The rows on screen, top first: each unfolded group's</summary>
+    public List<GalleryRow> ShownRows() => [.. DisplayedGroups.Where(g => g.IsExpanded).SelectMany(g => g.Rows)];
+
+    /// <summary>
+    /// An arrow, Home, End, Page Up or Page Down (<see cref="GalleryKeyboard"/>): moves the cursor and the selection as
+    /// in Explorer. Returns the row moved to, for the window to scroll to it; null when there is no card
+    /// </summary>
+    /// <param name="pageRows">How many rows a page holds</param>
+    /// <param name="firstInView">The first row in view: a cursor not on screen starts there</param>
+    public GalleryRow? MoveCursor(GalleryMove move, GalleryMoveSelection selection, int pageRows, GalleryRow? firstInView)
+    {
+        var rows = ShownRows();
+        var (row, column) = FindCursor(rows);
+        int start = firstInView is null ? -1 : rows.IndexOf(firstInView);
+        if (GalleryKeyboard.Target([.. rows.Select(r => r.Items.Count)], row, column, move, pageRows, start) is not { } target
+            || rows[target.Row].Items.Count == 0)
+            return null;
+        var entry = rows[target.Row].Items[target.Column];
+        // Shift from a cursor without an anchor: the range starts where the cursor was
+        if (_anchorFolderName is null && row >= 0) _anchorFolderName = rows[row].Items[column].FolderName;
+        _cursorFolderName = entry.FolderName;
+        _cursorRow = target.Row;
+        ShowCursorOn(entry);
+        switch (selection)
+        {
+            case GalleryMoveSelection.SelectOnly:
+                _anchorFolderName = entry.FolderName;
+                SelectOnly(entry);
+                break;
+            case GalleryMoveSelection.Extend:
+            case GalleryMoveSelection.ExtendAdd:
+                SelectMany(GallerySelection.Range(ShownEntries(), _anchorFolderName, entry), add: selection == GalleryMoveSelection.ExtendAdd);
+                break;
+        }
+        return rows[target.Row];
+    }
+
+    /// <summary>
+    /// Space: the card under the cursor goes into the selection or out of it (a cursor not on screen starts at the first
+    /// row in view). Returns its row; null when there is no card
+    /// </summary>
+    public GalleryRow? ToggleCursor(GalleryRow? firstInView)
+    {
+        var rows = ShownRows();
+        var (row, column) = FindCursor(rows);
+        if (row < 0)
+        {
+            row = firstInView is null ? 0 : Math.Max(0, rows.IndexOf(firstInView));
+            column = 0;
+            if (row >= rows.Count || rows[row].Items.Count == 0) return null;
+        }
+        var entry = rows[row].Items[column];
+        _cursorFolderName = entry.FolderName;
+        _cursorRow = row;
+        _anchorFolderName = entry.FolderName;
+        ShowCursorOn(entry);
+        ToggleSelection(entry);
+        return rows[row];
+    }
+
+    // The cursor's place in the rows: its own row when it is still there, else the first with its card; -1 for none
+    private (int Row, int Column) FindCursor(List<GalleryRow> rows)
+    {
+        if (_cursorFolderName is not { } name) return (-1, 0);
+        int Column(int r)
+        {
+            var items = rows[r].Items;
+            for (int c = 0; c < items.Count; c++)
+                if (string.Equals(items[c].FolderName, name, StringComparison.Ordinal)) return c;
+            return -1;
+        }
+        if (_cursorRow >= 0 && _cursorRow < rows.Count && Column(_cursorRow) is >= 0 and var own) return (_cursorRow, own);
+        for (int r = 0; r < rows.Count; r++)
+            if (Column(r) is >= 0 and var c) return (r, c);
+        return (-1, 0);
+    }
+
+    private void ShowCursorOn(LiveryEntry? entry)
+    {
+        if (ReferenceEquals(_cursorShownOn, entry)) return;
+        if (_cursorShownOn is not null) _cursorShownOn.IsCurrent = false;
+        _cursorShownOn = entry;
+        if (entry is not null) entry.IsCurrent = true;
+    }
+
+    /// <summary>
+    /// The selection becomes <paramref name="entries"/> (with <paramref name="add"/>, gets them too), as one change of
+    /// <see cref="SelectedEntries"/>: a card stays selected without going out and in again
+    /// </summary>
+    private void SelectMany(IEnumerable<LiveryEntry> entries, bool add)
+    {
+        var names = add ? _selectedFolderNames : new HashSet<string>(StringComparer.Ordinal);
+        var next = add ? new List<LiveryEntry>(SelectedEntries) : [];
+        foreach (var entry in entries)
+            if (names.Add(entry.FolderName)) next.Add(entry);
+        if (!add)
+        {
+            var kept = new HashSet<LiveryEntry>(next, ReferenceEqualityComparer.Instance);
+            foreach (var old in SelectedEntries)
+                if (!kept.Contains(old)) old.IsSelected = false;
+            _selectedFolderNames.Clear();
+            _selectedFolderNames.UnionWith(names);
+        }
+        foreach (var entry in next) entry.IsSelected = true;
+        SelectedEntries.ReplaceAll(next);
+    }
+
     [RelayCommand]
     private void ClearSelection()
     {
@@ -454,20 +664,14 @@ internal sealed partial class GalleryViewModel : ObservableObject
     [RelayCommand]
     private void SelectAll()
     {
-        foreach (var entry in SelectedEntries) entry.IsSelected = false;
-        _selectedFolderNames.Clear();
-        SelectedEntries.Clear();
-        foreach (var entry in GetFilteredEntries())
-        {
-            entry.IsSelected = true;
-            _selectedFolderNames.Add(entry.FolderName);
-            SelectedEntries.Add(entry);
-        }
+        SelectMany(GetFilteredEntries(), add: false);
     }
 
-    public List<LiveryEntry> MergeWithLocalState(List<LiveryEntry> freshEntries)
+    /// <param name="freshEntries">The liveries as just built</param>
+    /// <param name="replaced">The cards they replace; the shown ones when null (the game's, while the storage is shown)</param>
+    public List<LiveryEntry> MergeWithLocalState(List<LiveryEntry> freshEntries, IReadOnlyList<LiveryEntry>? replaced = null)
     {
-        var previousByName = _allEntries.ToDictionary(e => e.FolderName);
+        var previousByName = (replaced ?? _allEntries).ToDictionary(e => e.FolderName);
         var mergedEntries = new List<LiveryEntry>(freshEntries.Count);
         foreach (var newEntry in freshEntries)
         {
@@ -533,3 +737,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
         return a.ToHashSet().SetEquals(b);
     }
 }
+
+/// <summary>The selection, the tags that show or hide liveries, and the keys' cursor of one mode of the main window</summary>
+internal sealed record GalleryViewState(
+    IReadOnlyList<string> Selected, IReadOnlyList<string> ShownTags, IReadOnlyList<string> HiddenTags, string? Cursor, string? Anchor);

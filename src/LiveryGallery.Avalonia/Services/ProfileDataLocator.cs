@@ -2,10 +2,11 @@ namespace LiveryGallery.Services;
 
 /// <summary>
 /// Finds the profile save (C_ProfileData) of a save folder: what the livery server reads the installed liveries from.
-/// Open: it only looks in the save, whichever client sends the file.
+/// Open: it only looks in the save, whichever client sends the file. FH6's layout (the livery server is FH6's): in
+/// another game's save it finds nothing.
 /// </summary>
 /// <param name="saves">The game's save folders: whose save a folder is</param>
-internal sealed class ProfileDataLocator(PcGameSaveStore saves)
+internal sealed class ProfileDataLocator(IGameSaveFolders saves)
 {
     public const string ProfileDataFileName = "C_ProfileData";
     public const string ProfileUserFolderPrefix = "User_";
@@ -50,6 +51,6 @@ internal sealed class ProfileDataLocator(PcGameSaveStore saves)
         var uFolder = containerDir?.Parent;
         if (containerDir is null || uFolder is null) return null;
         int? containerId = int.TryParse(containerDir.Name, out int id) ? id : null;
-        return saves.ResolveIdentity(uFolder.FullName, containerId)?.UserId;
+        return saves.ResolveUserId(uFolder.FullName, containerId);
     }
 }

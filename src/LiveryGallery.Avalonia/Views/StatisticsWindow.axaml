@@ -316,6 +316,9 @@
             <Border Grid.Column="0" Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush2}" BorderThickness="0,0,1,0">
                 <DockPanel Margin="12,20,12,16">
                     <TextBlock DockPanel.Dock="Top" Text="{x:Static loc:Strings.StatsTitle}" FontSize="16" FontWeight="Bold" Margin="10,0,0,16" />
+                    <!-- While the main window shows the storage: these are its liveries -->
+                    <TextBlock DockPanel.Dock="Top" Text="{x:Static loc:Strings.StatsStorageModeNote}" FontSize="12.5" FontWeight="SemiBold"
+                               Margin="10,-10,0,14" IsVisible="{Binding IsStorage}" Foreground="{DynamicResource StorageTextBrush}" />
                     <StackPanel DockPanel.Dock="Bottom" Spacing="6">
                         <TextBlock Text="{x:Static loc:Strings.StatsScopeLabel}" FontSize="11.5" Classes="muted" Margin="10,0,0,0" />
                         <Border Background="{DynamicResource BgBrush}" BorderBrush="{DynamicResource BorderBrush2}" BorderThickness="1"
@@ -532,7 +535,8 @@
                             </StackPanel>
                         </Border>
 
-                        <UniformGrid Columns="{Binding SizeAndAuthorsColumns}">
+                        <!-- From the game's journal: not the storage's -->
+                        <UniformGrid Columns="{Binding SizeAndAuthorsColumns}" IsVisible="{Binding IsGame}">
                             <Border Classes="statCard chartCard" IsVisible="{Binding HasSize}">
                                 <StackPanel>
                                     <TextBlock Classes="cardTitle" Text="{x:Static loc:Strings.StatsSizeTitle}" />

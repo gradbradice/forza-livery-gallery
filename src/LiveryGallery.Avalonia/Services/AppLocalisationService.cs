@@ -52,6 +52,12 @@ internal static class AppLocalisationService
         // The tooltips of a card's buttons show the key of their action
         app.Resources["Loc_FavoriteToggleTooltip"] = new ShortcutTip(Strings.FavoriteToggleTooltip, GalleryShortcut.Favorite);
         app.Resources["Loc_DuplicateBadgeTooltip"] = Strings.DuplicateBadgeTooltip;
+        app.Resources["Loc_AddedByHandBadgeLabel"] = Strings.AddedByHandBadgeLabel;
+        app.Resources["Loc_AddedByHandBadgeTooltip"] = Strings.AddedByHandBadgeTooltip;
+        app.Resources["Loc_CollectionRename"] = Strings.CollectionRename;
+        app.Resources["Loc_CollectionDelete"] = Strings.CollectionDelete;
+        app.Resources["Loc_CollectionMoveUp"] = Strings.CollectionMoveUp;
+        app.Resources["Loc_CollectionMoveDown"] = Strings.CollectionMoveDown;
         app.Resources["Loc_DuplicateBadgeLabel"] = Strings.DuplicateBadgeLabel;
         app.Resources["Loc_PossibleDuplicateBadgeTooltip"] = Strings.PossibleDuplicateBadgeTooltip;
         app.Resources["Loc_PossibleDuplicateBadgeLabel"] = Strings.PossibleDuplicateBadgeLabel;
@@ -68,14 +74,19 @@ internal static class AppLocalisationService
         app.Resources["Loc_DateLabel"] = Strings.DateLabel;
         app.Resources["Loc_EditTagsTooltip"] = new ShortcutTip(Strings.EditTagsTooltip, GalleryShortcut.Tags);
         app.Resources["Loc_TagChipTooltip"] = Strings.TagChipTooltip;
-        app.Resources["Loc_ViewPreviewTooltip"] = new ShortcutTip(Strings.ViewPreviewTooltip, GalleryShortcut.Preview);
+        app.Resources["Loc_ViewPreviewTooltip"] = Strings.ViewPreviewTooltip;
         app.Resources["Loc_ClearSelectionLabel"] = Strings.ClearSelectionLabel;
         app.Resources["Loc_ClearSelectionTip"] = new ShortcutTip(Strings.ClearSelectionLabel, GalleryShortcut.Escape);
         app.Resources["Loc_AuctionBadgeLabel"] = Strings.AuctionBadgeLabel;
         app.Resources["Loc_InstalledBadgeLabel"] = Strings.InstalledBadgeLabel;
         app.Resources["Loc_AuctionBadgeTooltip"] = Strings.AuctionBadgeTooltip;
         app.Resources["Loc_ContextMenuMoveToArchive"] = Strings.ContextMenuMoveToArchive;
+        app.Resources["Loc_ContextMenuMoveToStorage"] = Strings.ContextMenuMoveToStorage;
+        app.Resources["Loc_ContextMenuReturnToGame"] = Strings.ContextMenuReturnToGame;
+        app.Resources["Loc_ContextMenuMoveToFolder"] = Strings.ContextMenuMoveToFolder;
+        app.Resources["Loc_ReturnToGameTooltip"] = Strings.ReturnToGameTooltip;
         app.Resources["Loc_ContextMenuNavigateInGame"] = Strings.ContextMenuNavigateInGame;
+        app.Resources["Loc_ContextMenuOpenDetails"] = Strings.ContextMenuOpenDetails;
         app.Resources["Loc_ContextMenuOnlyThisCar"] = Strings.ContextMenuOnlyThisCar;
         app.Resources["Loc_ContextMenuOnlyThisManufacturer"] = Strings.ContextMenuOnlyThisManufacturer;
         app.Resources["Loc_ContextMenuOnlyThisAuthor"] = Strings.ContextMenuOnlyThisAuthor;

@@ -15,13 +15,24 @@ internal static class DiagnosticsSettingsSanitizer
     public static JsonObject Sanitize(AppSettingsData settings, JsonSerializerOptions options)
     {
         var json = JsonSerializer.SerializeToNode(settings, options)?.AsObject() ?? new JsonObject();
+        SanitizeObject(json);
+        return json;
+    }
+
+    /// <summary>Every level: each game's settings are an object of their own (<c>Games</c>)</summary>
+    private static void SanitizeObject(JsonObject json)
+    {
         foreach (string name in json.Select(p => p.Key).ToList())
         {
+            if (json[name] is JsonObject inner)
+            {
+                SanitizeObject(inner);
+                continue;
+            }
             if (json[name] is not JsonValue value) continue; // null stays null
             if (IsSensitiveName(name) || (value.TryGetValue(out string? text) && LooksLikePath(text)))
                 json[name] = Removed;
         }
-        return json;
     }
 
     internal static bool IsSensitiveName(string name) =>

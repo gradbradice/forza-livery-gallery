@@ -10,7 +10,7 @@ internal partial class MainWindow
 {
     private void InitializeRoom()
     {
-        _mainViewModel.AutoBackups = new AutoBackups(_backupService, _settings);
+        _mainViewModel.AutoBackups = new AutoBackups(_storage, _settings);
         _mainViewModel.ConfirmArchiveWithoutBackupAsync = () => ConfirmDialog.AskAsync(
             this, Strings.AutoBackupFailedTitle, Strings.AutoBackupFailedMessage, Strings.AutoBackupFailedContinueButton, Strings.ButtonCancel);
         _mainViewModel.FewFreeSlotsFound += (free, limit) => RunUiTask(() => WarnFewFreeSlotsAsync(free, limit), "few free slots");
@@ -45,7 +45,7 @@ internal partial class MainWindow
     private async Task OpenFreeSpaceAsync()
     {
         var gallery = _mainViewModel.Gallery;
-        var all = gallery.AllEntries.ToList();
+        var all = _mainViewModel.GameEntries.ToList();
         var plan = FreeSpacePlanner.Plan(all, gallery.IsInstalledDataKnown);
         var dialog = new FreeSpaceDialog(new FreeSpaceViewModel(plan, SaveRoom.Counted(all), _profile.MaxLiveries));
         var chosen = await dialog.ShowDialog<IReadOnlyList<LiveryEntry>?>(this);

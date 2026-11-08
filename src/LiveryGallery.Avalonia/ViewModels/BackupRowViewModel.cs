@@ -24,6 +24,9 @@ internal sealed class BackupRowViewModel(
 
     public string SizeText => ByteSizeFormatter.Format(summary.SizeBytes);
 
+    /// <summary>A backup of the storage (<see cref="LiveryBackupManifest.IsOfArchive"/>), not of the save</summary>
+    public bool IsStorage => Manifest?.IsOfArchive == true;
+
     /// <summary>The gallery made it on its own (<see cref="LiveryBackupManifest.IsAutomatic"/>)</summary>
     public bool IsAutomatic => Manifest?.IsAutomatic == true;
 
@@ -33,7 +36,7 @@ internal sealed class BackupRowViewModel(
     public string KindTooltip => Manifest?.Kind switch
     {
         LiveryBackupKind.BeforeArchive => Strings.BackupKindBeforeArchive,
-        LiveryBackupKind.SaveChanged => Strings.BackupKindSaveChanged,
+        LiveryBackupKind.SaveChanged => IsStorage ? Strings.BackupKindStorageChanged : Strings.BackupKindSaveChanged,
         LiveryBackupKind.Scheduled => Strings.BackupKindScheduled,
         _ => "",
     } + Environment.NewLine + Strings.BackupKindPrunedNote;

@@ -98,10 +98,10 @@ internal sealed class SaveFolderWatcher : IDisposable
 
     public event Action? ProfileChanged;
 
-    // Only <containerId>\ContainersRoot\User_<hex>\C_ProfileData counts as the profile
+    // Only <containerId>\ContainersRoot\User_<hex>\C_ProfileData counts as the profile (FH6's: the livery server's)
     private bool IsProfileData(string? path)
     {
-        if (path is null || _savePath is null) return false;
+        if (path is null || _savePath is null || _profile.SaveLayout != GameSaveLayout.LiveryFolders) return false;
         if (!string.Equals(Path.GetFileName(path), ProfileDataLocator.ProfileDataFileName, StringComparison.OrdinalIgnoreCase))
             return false;
 
@@ -118,7 +118,7 @@ internal sealed class SaveFolderWatcher : IDisposable
 
     private void OnThumbnailCacheEvent(object sender, FileSystemEventArgs e) => Dispatcher.UIThread.Post(RequestRefresh);
 
-    private bool IsRelevantSavePath(string? fullPath)
+    internal bool IsRelevantSavePath(string? fullPath)
     {
         if (fullPath is null || _savePath is null) return false;
 
@@ -127,6 +127,11 @@ internal sealed class SaveFolderWatcher : IDisposable
         catch (ArgumentException) { return false; } // not a path below the save folder
 
         var parts = relative.Split(PathSeparators, StringSplitOptions.RemoveEmptyEntries);
+        // FH3–FH5: a livery's own file next to the others (Livery_….header), or the containers' index the game rewrites
+        if (_profile.SaveLayout == GameSaveLayout.SaveItems)
+            return parts.Length == 1
+                && (string.Equals(parts[0], ForzaToolkit.Saves.WgsContainerIndex.FileName, StringComparison.OrdinalIgnoreCase)
+                    || _profile.Liveries.IsLiveryKey(parts[0].Split('.')[0]));
         return parts.Length switch
         {
             0 => false,

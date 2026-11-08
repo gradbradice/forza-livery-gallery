@@ -1,6 +1,7 @@
 using ForzaToolkit.Formats;
 using ForzaToolkit.LiveryRender;
 using ForzaToolkit.LiveryRender.Avalonia;
+using ForzaToolkit.UI.Dialogs;
 using LiveryGallery.Services;
 using LiveryGallery.Viewer3D;
 
@@ -21,7 +22,7 @@ internal static class RenderComponents
             typeof(LiveryViewer),
             typeof(global::ForzaToolkit.Crypto.Client.ForzaLiveryClient),
         }
-        .Select(ComponentVersions.Of)
+        .Select(ComponentVersion.Of)
         .OrderBy(c => c.Name, StringComparer.Ordinal),
         new ComponentVersion("fdata (native)", SafeNativeVersion()),
     ]);

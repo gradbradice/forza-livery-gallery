@@ -12,8 +12,8 @@ internal sealed partial class BackupLiveryRowViewModel : ObservableObject, IThum
         ThumbnailPath = thumbnailPath;
     }
 
-    public static BackupLiveryRowViewModel FromBackup(LiveryData data, string? previewPath = null) =>
-        new(data, previewPath ?? BackupPreviews.FindExisting(data.ThumbnailPath));
+    public static BackupLiveryRowViewModel FromBackup(LiveryData data, BackupPreviews previews, string? previewPath = null) =>
+        new(data, previewPath ?? previews.FindExisting(data.ThumbnailPath));
 
     public bool NeedsPreview => ThumbnailPath is null && !string.IsNullOrEmpty(Data.ThumbnailPath);
     public static BackupLiveryRowViewModel FromCurrent(LiveryData data) =>

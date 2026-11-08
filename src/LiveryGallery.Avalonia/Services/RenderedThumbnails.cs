@@ -47,6 +47,40 @@ internal sealed class RenderedThumbnails
         _saveFolderLock = saveFolderLock;
     }
 
+    /// <summary>
+    /// The way previews are drawn now. 1: LiveryRender 0.19.0 places a livery on a car whose section masks are 1024 wide
+    /// (22 cars of FH6, those without windows: buggies, trophy trucks, BAC Mono) at its width; before, it was drawn half
+    /// as wide. 2: LiveryRender 0.21.0 paints the parts of a model whose paint groups are slot masks (as FH4's and FH5's
+    /// are) from the livery's records of those parts. 3: LiveryRender 0.22.0 reads the car library's additions
+    /// (<c>Materials_pri_&lt;N&gt;.zip</c>) over its base archive. 4: LiveryRender 0.26.0 paints a part set back to the
+    /// factory paint in the car's factory colour, not in the colour last picked for it that FH6 keeps in the record
+    /// </summary>
+    public const int DrawingRevision = 4;
+
+    /// <summary>
+    /// Deletes the previews the gallery drew in an older way (<paramref name="revision"/> below
+    /// <see cref="DrawingRevision"/>): they are drawn again when their cards show. The game's previews stay. Returns
+    /// how many were deleted
+    /// </summary>
+    public static int DeleteOutdated(string previewDirectory, int revision)
+    {
+        if (revision >= DrawingRevision || !Directory.Exists(previewDirectory)) return 0;
+        int deleted = 0;
+        foreach (var file in Directory.EnumerateFiles(previewDirectory, LiveryDrawnPreviews.FilePrefix + "*.png"))
+        {
+            try
+            {
+                File.Delete(file);
+                deleted++;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                AppLog.LogErrorThrottled(file, $"Failed to delete the outdated drawn preview '{file}'", ex);
+            }
+        }
+        return deleted;
+    }
+
     /// <summary>A preview was drawn and written: a scan makes it the livery's preview</summary>
     public event Action? Drawn;
 

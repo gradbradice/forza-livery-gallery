@@ -36,6 +36,10 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
     [ObservableProperty]
     private bool _isEmptyStateVisible;
 
+    /// <summary>The empty gallery is because the game's save was not found: its buttons are shown</summary>
+    [ObservableProperty]
+    private bool _isSaveMissing;
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanRefresh))]
     private bool _isScanRunning;
@@ -62,6 +66,15 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
     {
         EmptyStateText = text;
         IsEmptyStateVisible = true;
+        IsSaveMissing = false;
+    }
+
+    /// <summary>The game's save was not found: said in place of the gallery, with a way to choose it</summary>
+    public void ShowSaveMissing(string text)
+    {
+        EmptyStateText = text;
+        IsEmptyStateVisible = true;
+        IsSaveMissing = true;
     }
 
     public void SetLoading(bool loading, string? text = null)
@@ -70,9 +83,13 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
         if (text is not null) LoadingText = text;
     }
 
-    public void UpdateCountsAndEmptyState(List<LiveryEntry> filtered, int allEntriesCount, string? searchText)
+    /// <param name="storage">The storage is shown: an empty one says how liveries get there</param>
+    /// <param name="emptyText">What an empty view says instead (an empty folder of the storage)</param>
+    public void UpdateCountsAndEmptyState(List<LiveryEntry> filtered, int allEntriesCount, string? searchText, bool storage = false,
+        string? emptyText = null)
     {
         string search = searchText?.Trim() ?? string.Empty;
+        IsSaveMissing = false;
         var stats = GalleryStatisticsService.Calculate(filtered);
 
         CountText = allEntriesCount == 0 ? string.Empty : string.Format(Strings.CountShowing, filtered.Count, allEntriesCount);
@@ -82,7 +99,7 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
 
         if (allEntriesCount == 0)
         {
-            EmptyStateText = Strings.EmptyNoLiveries;
+            EmptyStateText = emptyText ?? (storage ? Strings.StorageEmptyHint : Strings.EmptyNoLiveries);
             IsEmptyStateVisible = true;
         }
         else if (filtered.Count == 0)

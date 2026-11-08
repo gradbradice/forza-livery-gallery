@@ -15,10 +15,13 @@ internal partial class ArchiveDialog : Window
     public ArchiveDialog(
         LiveryArchive archiveService, SavePathService savePathService,
         Func<IReadOnlyList<LiveryData>> getCurrentEntries, Func<Task> onRestored, AccountContext accounts,
-        bool searchByFolderName = false)
+        bool searchByFolderName = false, LiveryArchive? unassigned = null, Services.Screenshots.ScreenshotStore? screenshots = null,
+        LiveryArchive? storage = null)
     {
         InitializeComponent();
-        _viewModel = new ArchiveViewModel(archiveService, savePathService, getCurrentEntries, onRestored, accounts, searchByFolderName);
+        _screenshots = screenshots;
+        _viewModel = new ArchiveViewModel(archiveService, savePathService, getCurrentEntries, onRestored, accounts, searchByFolderName, unassigned,
+            storage);
         DataContext = _viewModel;
         _work = new DialogWorkScope(this, () => _viewModel.RestoreSelectedCommand.ExecutionTask);
 
@@ -36,12 +39,18 @@ internal partial class ArchiveDialog : Window
         TitleBarText.Text = Strings.ArchiveDialogTitle;
         TitleText.Text = Strings.ArchiveDialogTitle;
         RestoreButton.Content = Strings.ArchiveRestoreButton;
+        ToStorageButton.Content = Strings.ArchiveToStorageButton;
+        ToolTip.SetTip(ToStorageButton, Strings.ArchiveToStorageTooltip);
         DeleteButton.Content = Strings.ArchiveDeleteButton;
+        TakeUnassignedButton.Content = Strings.UnassignedTakeButton;
+        ToolTip.SetTip(TakeUnassignedButton, Strings.ArchiveUnassignedTooltip);
     }
 
     private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
 
     private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
+
+    private readonly Services.Screenshots.ScreenshotStore? _screenshots;
 
     private async Task ConfirmDeleteAsync(List<ArchivedLiveryRowViewModel> rows)
     {
@@ -50,7 +59,15 @@ internal partial class ArchiveDialog : Window
             this, Strings.ArchiveDeleteConfirmTitle, string.Format(Strings.ArchiveDeleteConfirmMessage, names));
         if (!confirmed) return;
 
+        // The user's screenshots of these liveries: asked about apart, they may want to keep the pictures
+        var keys = rows.Select(r => r.FolderName).ToList();
+        int screenshots = _screenshots is { } store ? keys.Sum(k => store.Summary(k).Count) : 0;
+        bool deleteScreenshots = screenshots > 0 && await ConfirmDialog.AskAsync(
+            this, Strings.ArchiveDeleteConfirmTitle, string.Format(Strings.ScreenshotsDeleteWithLiveryFormat, screenshots));
+
         await _viewModel.DeleteConfirmedAsync(rows);
+        if (deleteScreenshots)
+            foreach (string key in keys) _screenshots!.DeleteAll(key);
     }
 
 }
