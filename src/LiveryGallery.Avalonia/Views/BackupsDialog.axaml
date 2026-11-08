@@ -19,6 +19,11 @@
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <TextBlock Text="{Binding DateText}" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" />
                             <!-- Made by the gallery on its own: the oldest of these are removed beyond the kept number -->
+                            <!-- A backup of the storage, in its cyan -->
+                            <Border IsVisible="{Binding IsStorage}" ToolTip.Tip="{x:Static loc:Strings.BackupStorageChipTooltip}"
+                                    Background="{DynamicResource StorageBrush}" CornerRadius="6" Padding="7,2" VerticalAlignment="Center">
+                                <TextBlock Text="{x:Static loc:Strings.BackupStorageChip}" FontSize="10.5" FontWeight="SemiBold" Foreground="White" />
+                            </Border>
                             <Border Classes="kindChip" IsVisible="{Binding IsAutomatic}" ToolTip.Tip="{Binding KindTooltip}"
                                     Background="{DynamicResource ChipBackgroundBrush}" CornerRadius="6" Padding="7,2"
                                     VerticalAlignment="Center">
@@ -85,9 +90,22 @@
             <TextBlock x:Name="TitleText" Grid.Row="0" FontSize="16" FontWeight="Bold" Margin="0,0,0,14" />
 
             <Grid Grid.Row="1" ColumnDefinitions="Auto,*" Margin="0,0,0,14">
-                <Button x:Name="CreateBackupButton" Grid.Column="0" Classes="primary" HorizontalAlignment="Left"
-                        IsEnabled="{Binding !IsCreatingBackup}"
-                        Command="{Binding CreateBackupCommand}" />
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="CreateBackupButton" Classes="primary" HorizontalAlignment="Left"
+                            IsEnabled="{Binding !IsCreatingBackup}"
+                            Command="{Binding CreateBackupCommand}" />
+                    <Button x:Name="CreateStorageBackupButton" Classes="primary storage" IsVisible="{Binding HasStorage}"
+                            IsEnabled="{Binding !IsCreatingBackup}" Command="{Binding CreateStorageBackupCommand}"
+                            Content="{x:Static loc:Strings.BackupCreateStorageButton}"
+                            ToolTip.Tip="{x:Static loc:Strings.BackupCreateStorageTooltip}" />
+                </StackPanel>
+                <!-- Backups an earlier version made without the account: put with this one when the user says so -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right"
+                            VerticalAlignment="Center" IsVisible="{Binding HasUnassigned}">
+                    <TextBlock Text="{Binding UnassignedText}" FontSize="11.5" VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <Button x:Name="TakeUnassignedButton" FontSize="12.5" Command="{Binding TakeUnassignedCommand}" />
+                </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right"
                             VerticalAlignment="Center" IsVisible="{Binding CanFilterByAccount}">
                     <TextBlock Text="{Binding HiddenByAccountText}" IsVisible="{Binding HasHiddenByAccount}"

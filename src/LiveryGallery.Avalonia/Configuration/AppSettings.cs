@@ -1,4 +1,5 @@
 ﻿using ForzaToolkit.Core;
+using ForzaToolkit.Core.IO;
 
 namespace LiveryGallery.Configuration;
 
@@ -17,39 +18,36 @@ internal static class AppSettings
     public static AppIdentity Identity => _identity
         ?? throw new InvalidOperationException("AppSettings.Initialize was not called: the host program sets its AppIdentity at start.");
 
-    public static string Version { get; } = AppVersion.ReadDisplayVersion(typeof(AppSettings).Assembly);
+    /// <summary>The version with its pre-release label (<c>1.7.1-beta.1</c>; a release <c>1.7.1</c>): what "About" and the diagnostics show</summary>
+    public static string Version { get; } = AppVersion.ReadVersion(typeof(AppSettings).Assembly);
     public static string UserAgent => $"{Identity.UserAgentProduct}/{Version}";
 
     /// <summary>Set to 1 or true to leave garbage collection to the runtime (see <see cref="MemoryReclaimer"/>)</summary>
     public static string NoForcedGcVariable => Identity.EnvironmentPrefix + "_NO_FORCED_GC";
 
+    /// <summary>How Windows draws the windows: angle, wgl or software (Program.RenderingOptions); unset: Avalonia's choice</summary>
+    public static string RenderingVariable => Identity.EnvironmentPrefix + "_RENDERING";
+
     /// <summary>The program's data (%APPDATA%\&lt;folder&gt;)</summary>
-    public static string BaseCachePath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), Identity.FolderName);
+    public static string BaseCachePath => ToolkitFolders.AppData(Identity.FolderName);
 
     /// <summary>The program's caches that stay on this PC (%LOCALAPPDATA%\&lt;folder&gt;)</summary>
-    public static string LocalCachePath => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Identity.FolderName);
+    public static string LocalCachePath => ToolkitFolders.AppCache(Identity.FolderName);
 
-    public static string ThumbsPath => Path.Combine(BaseCachePath, "thumbs");
     public static string LogsPath => Path.Combine(BaseCachePath, "logs");
-    public static string ArchivePath => Path.Combine(BaseCachePath, ".archive");
-    public static string BackupsPath => Path.Combine(BaseCachePath, ".backups");
-    public static string BackupThumbsPath => Path.Combine(BaseCachePath, ".backup-thumbs");
 
-    /// <summary>Per-account data (the scan cache and what belongs to it), one folder per game account</summary>
-    public static string AccountsPath => Path.Combine(BaseCachePath, "accounts");
+    /// <summary>One folder per game, <c>games\&lt;id&gt;</c>: everything of its liveries and accounts (<see cref="GamePaths"/>)</summary>
+    public static string GamesPath => Path.Combine(BaseCachePath, "games");
 
-    /// <summary>Previews of liveries removed while the gallery was closed, kept until the next launch</summary>
-    public static string ChangesPreviewsPath => Path.Combine(BaseCachePath, ".changes-thumbs");
+    /// <summary>The folder of the program before it was renamed, whose data the first start copies; null when there is none</summary>
+    public static string? PreviousBaseCachePath => Identity.PreviousFolderName is { Length: > 0 } previous
+        ? ToolkitFolders.AppData(previous)
+        : null;
 
     public static void CheckPaths()
     {
         Directory.CreateDirectory(BaseCachePath);
-        Directory.CreateDirectory(ThumbsPath);
         Directory.CreateDirectory(LogsPath);
-        Directory.CreateDirectory(ArchivePath);
-        Directory.CreateDirectory(BackupsPath);
-        Directory.CreateDirectory(BackupThumbsPath);
+        Directory.CreateDirectory(GamesPath);
     }
 }

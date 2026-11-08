@@ -22,7 +22,7 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         _favoriteMode = settings.FavoriteMode;
         _mineMode = settings.MineMode;
         _installedMode = settings.InstalledMode;
-        _isInstalledFilterAvailable = settings.ServerConnectionEnabled;
+        _serverEnabled = settings.ServerConnectionEnabled;
         _duplicatesFilterMode = settings.DuplicatesFilterMode;
         _generatedFilterMode = settings.GeneratedFilterMode;
         _paintFilterMode = settings.PaintFilterMode;
@@ -65,6 +65,8 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsInstalledNone))]
     [NotifyPropertyChangedFor(nameof(IsInstalledFirst))]
     [NotifyPropertyChangedFor(nameof(IsInstalledOnly))]
+    [NotifyPropertyChangedFor(nameof(IsNotInstalledFirst))]
+    [NotifyPropertyChangedFor(nameof(IsNotInstalledOnly))]
     [NotifyPropertyChangedFor(nameof(InstalledValueText))]
     private InstalledMode _installedMode;
 
@@ -73,12 +75,35 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(InstalledMenuTooltip))]
     private bool _isInstalledFilterAvailable;
 
-    public InstalledMode EffectiveInstalledMode => IsInstalledFilterAvailable ? InstalledMode : InstalledMode.None;
+    public InstalledMode EffectiveInstalledMode => IsInstalledFilterAvailable && !IsStorageMode ? InstalledMode : InstalledMode.None;
 
-    public string? InstalledMenuTooltip => IsInstalledFilterAvailable ? null : Strings.InstalledFilterNeedsServer;
+    public string? InstalledMenuTooltip => IsInstalledFilterAvailable ? null
+        : _serverEnabled ? Strings.InstalledFilterWaitsForServer : Strings.InstalledFilterNeedsServer;
 
-    public void SetInstalledFilterAvailable(bool available)
+    // The livery server is on for the game; its list of the liveries on cars is there (from it or its cache)
+    private bool _serverEnabled, _installedKnown;
+
+    /// <summary>The livery server is on (or off) for the game: "On cars" works only with it</summary>
+    public void SetInstalledFilterAvailable(bool serverEnabled)
     {
+        _serverEnabled = serverEnabled;
+        UpdateInstalledAvailable();
+    }
+
+    /// <summary>
+    /// The list of the liveries on cars is there (or gone): "On cars" works only with it, so that "not on cars" does not
+    /// take every livery for one no car uses before the list comes
+    /// </summary>
+    public void SetInstalledDataKnown(bool known)
+    {
+        _installedKnown = known;
+        UpdateInstalledAvailable();
+    }
+
+    private void UpdateInstalledAvailable()
+    {
+        bool available = _serverEnabled && _installedKnown;
+        OnPropertyChanged(nameof(InstalledMenuTooltip));
         if (IsInstalledFilterAvailable == available) return;
         IsInstalledFilterAvailable = available;
         if (InstalledMode != InstalledMode.None) FiltersChanged?.Invoke();
@@ -186,7 +211,7 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         SearchText = null;
         if (FavoriteMode == FavoriteMode.OnlyFavorites) FavoriteMode = FavoriteMode.None;
         if (MineMode == MineMode.OnlyMine) MineMode = MineMode.None;
-        if (InstalledMode == InstalledMode.OnlyInstalled) InstalledMode = InstalledMode.None;
+        if (InstalledMode is InstalledMode.OnlyInstalled or InstalledMode.OnlyNotInstalled) InstalledMode = InstalledMode.None;
         if (AuctionFilterMode is AuctionFilterMode.OnlyAuction or AuctionFilterMode.HideAuction) AuctionFilterMode = AuctionFilterMode.All;
         DuplicatesFilterMode = DuplicatesFilterMode.All;
         GeneratedFilterMode = GeneratedFilterMode.All;
@@ -240,6 +265,7 @@ internal sealed partial class FilterBarViewModel : ObservableObject
 
     private void OnQuickFiltersChanged()
     {
+        if (_restoring) return;
         OnPropertyChanged(nameof(HasQuickFilters));
         FiltersChanged?.Invoke();
     }
@@ -267,6 +293,8 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     public bool IsInstalledNone => InstalledMode == InstalledMode.None;
     public bool IsInstalledFirst => InstalledMode == InstalledMode.InstalledFirst;
     public bool IsInstalledOnly => InstalledMode == InstalledMode.OnlyInstalled;
+    public bool IsNotInstalledFirst => InstalledMode == InstalledMode.NotInstalledFirst;
+    public bool IsNotInstalledOnly => InstalledMode == InstalledMode.OnlyNotInstalled;
 
     [RelayCommand]
     private void SetInstalledMode(InstalledMode mode) => InstalledMode = mode;
@@ -308,11 +336,66 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     public bool IsGameOrderAvailable { get; }
 
     /// <summary>The auction filter that applies: none for a game without an auction house (the saved choice stays)</summary>
-    public AuctionFilterMode EffectiveAuctionFilterMode => IsAuctionAvailable ? AuctionFilterMode : AuctionFilterMode.All;
+    public AuctionFilterMode EffectiveAuctionFilterMode => IsAuctionAvailable && !IsStorageMode ? AuctionFilterMode : AuctionFilterMode.All;
 
     /// <summary>The sort that applies: the game's order only where there is one (the saved choice stays)</summary>
     public SortMode EffectiveSortMode =>
-        SortMode == SortMode.GameOrder && !IsGameOrderAvailable ? SortMode.Manufacture : SortMode;
+        SortMode == SortMode.GameOrder && !ShowGameOrderSort ? SortMode.Manufacture : SortMode;
+
+    /// <summary>
+    /// The storage is shown (docs/storage.md): no auction liveries, no cars, no place in the game's grid there, so
+    /// those filters and the game's order do not apply. Its choices are not saved as the settings, which stay the game's
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowAuctionFilter), nameof(ShowGameOrderSort), nameof(ShowInstalledFilter))]
+    private bool _isStorageMode;
+
+    /// <summary>The auction filter is in the menu: the game has an auction house and the game is shown</summary>
+    public bool ShowAuctionFilter => IsAuctionAvailable && !IsStorageMode;
+
+    /// <summary>"In the game's order" is in the menu: the game has a grid and the game is shown</summary>
+    public bool ShowGameOrderSort => IsGameOrderAvailable && !IsStorageMode;
+
+    /// <summary>"Installed" is in the menu: only the game's liveries can be on a car</summary>
+    public bool ShowInstalledFilter => !IsStorageMode;
+
+    private bool _restoring;
+
+    /// <summary>What the bar shows now, to bring back when its mode is shown again</summary>
+    public FilterBarState Capture() => new(
+        SearchText, SortMode, FavoriteMode, MineMode, InstalledMode, DuplicatesFilterMode, GeneratedFilterMode,
+        PaintFilterMode, AuctionFilterMode, GroupingEnabled, ActiveQuickFilters);
+
+    /// <summary>
+    /// Shows <paramref name="state"/> (another mode's) without saving it and without <see cref="FiltersChanged"/>: the
+    /// caller shows the gallery again once the mode is in place
+    /// </summary>
+    public void Restore(FilterBarState state, bool storageMode)
+    {
+        ArgumentNullException.ThrowIfNull(state);
+        _restoring = true;
+        try
+        {
+            IsStorageMode = storageMode;
+            SearchText = state.SearchText;
+            SortMode = state.SortMode;
+            FavoriteMode = state.FavoriteMode;
+            MineMode = state.MineMode;
+            InstalledMode = state.InstalledMode;
+            DuplicatesFilterMode = state.DuplicatesFilterMode;
+            GeneratedFilterMode = state.GeneratedFilterMode;
+            PaintFilterMode = state.PaintFilterMode;
+            AuctionFilterMode = state.AuctionFilterMode;
+            GroupingEnabled = state.GroupingEnabled;
+            QuickFilters.Clear();
+            foreach (var filter in state.QuickFilters) QuickFilters.Add(new QuickFilterChipViewModel(filter));
+            OnPropertyChanged(nameof(HasQuickFilters));
+        }
+        finally
+        {
+            _restoring = false;
+        }
+    }
 
     public bool IsAuctionAll => AuctionFilterMode == AuctionFilterMode.All;
     public bool IsAuctionSeparate => AuctionFilterMode == AuctionFilterMode.AuctionSeparately;
@@ -370,6 +453,8 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         {
             InstalledMode.InstalledFirst => Strings.FilterValueFirst,
             InstalledMode.OnlyInstalled => Strings.FilterValueOnly,
+            InstalledMode.NotInstalledFirst => Strings.FilterValueNotInstalledFirst,
+            InstalledMode.OnlyNotInstalled => Strings.FilterValueNotInstalledOnly,
             _ => Strings.FilterValueAll
         };
 
@@ -437,8 +522,46 @@ internal sealed partial class FilterBarViewModel : ObservableObject
 
     private void Persist(Action<AppSettingsData> apply)
     {
-        apply(_settings);
-        AppSettingsService.Save(_settings);
+        if (_restoring) return;
+        // The settings are the game's: the storage's choices live while the app runs
+        if (!IsStorageMode)
+        {
+            apply(_settings);
+            AppSettingsService.Save(_settings);
+        }
         FiltersChanged?.Invoke();
     }
+}
+
+/// <summary>What the bar of filters shows in one mode of the main window (the game, the storage)</summary>
+internal sealed record FilterBarState(
+    string? SearchText,
+    SortMode SortMode,
+    FavoriteMode FavoriteMode,
+    MineMode MineMode,
+    InstalledMode InstalledMode,
+    DuplicatesFilterMode DuplicatesFilterMode,
+    GeneratedFilterMode GeneratedFilterMode,
+    PaintFilterMode PaintFilterMode,
+    AuctionFilterMode AuctionFilterMode,
+    bool GroupingEnabled,
+    IReadOnlyList<QuickFilter> QuickFilters)
+{
+    /// <summary>
+    /// The storage the first time it is shown: ordered and grouped as the game, but with no search, no quick
+    /// filters and no "only …" filter, so every stored livery shows
+    /// </summary>
+    public FilterBarState ForAnotherMode() => this with
+    {
+        SearchText = null,
+        QuickFilters = [],
+        FavoriteMode = FavoriteMode == FavoriteMode.OnlyFavorites ? FavoriteMode.None : FavoriteMode,
+        MineMode = MineMode == MineMode.OnlyMine ? MineMode.None : MineMode,
+        InstalledMode = InstalledMode.None,
+        DuplicatesFilterMode = DuplicatesFilterMode.All,
+        GeneratedFilterMode = GeneratedFilterMode.All,
+        PaintFilterMode = PaintFilterMode.All,
+        AuctionFilterMode = AuctionFilterMode.All,
+        SortMode = SortMode == SortMode.GameOrder ? SortMode.DownloadTime : SortMode,
+    };
 }

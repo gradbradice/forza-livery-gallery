@@ -1,9 +1,28 @@
 <Project>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <Version>1.6.0</Version>
+    <RuntimeIdentifier Condition="!$(MSBuildProjectName.EndsWith('.Tests'))">win-x64</RuntimeIdentifier>
+    <Version>1.7.0</Version>
+    <ForzaToolkitVersion>0.39.0</ForzaToolkitVersion>
+    <CryptoClientVersion>1.4.0</CryptoClientVersion>
+    <FormatsVersion>0.68.2</FormatsVersion>
+    <LiveriesFormatsVersion>0.6.10</LiveriesFormatsVersion>
+    <LiveryRenderVersion>0.27.1</LiveryRenderVersion>
+    <LiveryRenderAvaloniaVersion>0.10.1</LiveryRenderAvaloniaVersion>
+    <LiveryRenderFormatsVersion>0.3.4</LiveryRenderFormatsVersion>
+    <WarningsAsErrors>$(WarningsAsErrors);NU1603;NU1605</WarningsAsErrors>
+
   </PropertyGroup>
+
+  <PropertyGroup>
+    <ForzaToolkitOpenRoot Condition="'$(ForzaToolkitOpenRoot)' == ''">$(MSBuildThisFileDirectory)../ForzaToolkit/</ForzaToolkitOpenRoot>
+    <ForzaToolkitOpenRoot>$([MSBuild]::EnsureTrailingSlash('$(ForzaToolkitOpenRoot)'))</ForzaToolkitOpenRoot>
+    <ForzaToolkitPrivateRoot Condition="'$(ForzaToolkitPrivateRoot)' == ''">$(MSBuildThisFileDirectory)../ForzaToolkit.Private/</ForzaToolkitPrivateRoot>
+    <ForzaToolkitPrivateRoot>$([MSBuild]::EnsureTrailingSlash('$(ForzaToolkitPrivateRoot)'))</ForzaToolkitPrivateRoot>
+    <UseToolkitSource Condition="'$(UseToolkitSource)' == '' And Exists('$(ForzaToolkitOpenRoot)src/ForzaToolkit.Liveries/ForzaToolkit.Liveries.csproj') And Exists('$(ForzaToolkitPrivateRoot)src/ForzaToolkit.LiveryRender/ForzaToolkit.LiveryRender.csproj')">true</UseToolkitSource>
+  </PropertyGroup>
+
 </Project>

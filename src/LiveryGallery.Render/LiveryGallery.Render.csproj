@@ -10,23 +10,48 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="LiveryGallery" />
+    <InternalsVisibleTo Include="ForzaLiveryGallery" />
     <InternalsVisibleTo Include="LiveryGallery.Tests" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.1.1" />
-    <PackageReference Include="ForzaToolkit.Crypto.Client" Version="1.2.2" />
-    <PackageReference Include="ForzaToolkit.Formats" Version="0.66.0" />
-    <PackageReference Include="ForzaToolkit.Liveries.Formats" Version="0.6.6" />
-    <PackageReference Include="ForzaToolkit.LiveryRender" Version="0.16.0" />
-    <PackageReference Include="ForzaToolkit.LiveryRender.Avalonia" Version="0.6.0" />
-    <!-- The livery file as the renderer's input: one mapping for every app, none of its own here -->
-    <PackageReference Include="ForzaToolkit.LiveryRender.Formats" Version="0.2.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LiveryGallery.Avalonia\LiveryGallery.Avalonia.csproj" />
+  </ItemGroup>
+
+  <!-- ForzaToolkit: its projects in source mode, its packages otherwise (UseToolkitSource, Directory.Build.props).
+       LiveryRender.Formats: the livery file as the renderer's input, one mapping for every app, none of its own here -->
+  <ItemGroup Condition="'$(UseToolkitSource)' == 'true'">
+    <ProjectReference Include="$(ForzaToolkitPrivateRoot)src/ForzaToolkit.Crypto.Client/ForzaToolkit.Crypto.Client.csproj" />
+    <ProjectReference Include="$(ForzaToolkitPrivateRoot)src/ForzaToolkit.Formats/ForzaToolkit.Formats.csproj" />
+    <ProjectReference Include="$(ForzaToolkitPrivateRoot)src/ForzaToolkit.Liveries.Formats/ForzaToolkit.Liveries.Formats.csproj" />
+    <ProjectReference Include="$(ForzaToolkitPrivateRoot)src/ForzaToolkit.LiveryRender/ForzaToolkit.LiveryRender.csproj" />
+    <ProjectReference Include="$(ForzaToolkitPrivateRoot)src/ForzaToolkit.LiveryRender.Avalonia/ForzaToolkit.LiveryRender.Avalonia.csproj" />
+    <ProjectReference Include="$(ForzaToolkitPrivateRoot)src/ForzaToolkit.LiveryRender.Formats/ForzaToolkit.LiveryRender.Formats.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseToolkitSource)' != 'true'">
+    <PackageReference Include="ForzaToolkit.Crypto.Client" Version="$(CryptoClientVersion)" />
+    <PackageReference Include="ForzaToolkit.Formats" Version="$(FormatsVersion)" />
+    <PackageReference Include="ForzaToolkit.Liveries.Formats" Version="$(LiveriesFormatsVersion)" />
+    <PackageReference Include="ForzaToolkit.LiveryRender" Version="$(LiveryRenderVersion)" />
+    <PackageReference Include="ForzaToolkit.LiveryRender.Avalonia" Version="$(LiveryRenderAvaloniaVersion)" />
+    <PackageReference Include="ForzaToolkit.LiveryRender.Formats" Version="$(LiveryRenderFormatsVersion)" />
+  </ItemGroup>
+  <!-- The open packages the closed ones bring in, in the gallery's version: the closed packages were built on an older
+       one, and the open packages are taken in one version only (ForzaToolkit.AppHost's check) -->
+  <ItemGroup Condition="'$(UseToolkitSource)' != 'true'">
+    <PackageReference Include="ForzaToolkit.Artwork" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.Catalog" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FH3" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FH4" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FH5" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FH6" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FM2023" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FM7" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FMApex" Version="$(ForzaToolkitVersion)" />
   </ItemGroup>
 
 </Project>

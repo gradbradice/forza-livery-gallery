@@ -1,0 +1,87 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="LiveryGallery.Views.ScreenshotViewerWindow"
+        Width="1200" Height="780" MinWidth="720" MinHeight="460" WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="#0E1014"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1">
+    <!-- One screenshot of a livery, as large as the window; the arrows and Left/Right go through the others, Esc closes -->
+    <Window.Styles>
+        <Style Selector="Button.round">
+            <Setter Property="Width" Value="42" />
+            <Setter Property="Height" Value="42" />
+            <Setter Property="CornerRadius" Value="21" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="#99000000" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.round:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="#CC000000" />
+        </Style>
+    </Window.Styles>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0" Background="{DynamicResource ToolbarBrush}" Height="36" PointerPressed="TitleBar_PointerPressed">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock x:Name="TitleBarText" FontSize="12" Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button x:Name="MaximizeButtonEl" Classes="titlebar" Click="MaximizeButton_Click">
+                        <TextBlock x:Name="MaximizeIcon" Text="&#xE922;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
+                    </Button>
+                    <Button Classes="titlebar close" Click="CloseButton_Click">
+                        <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1">
+            <Image x:Name="ShotImage" Stretch="Uniform" />
+            <TextBlock x:Name="NotReadableText" IsVisible="False" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{DynamicResource TextTertiaryBrush}" />
+            <Button x:Name="PreviousButton" Classes="round" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="16"
+                    Click="Previous_Click">
+                <Path Data="{StaticResource IconChevronLeft}" Width="7" Height="14" Stretch="Uniform" Stroke="White" StrokeThickness="2" StrokeLineCap="Round" StrokeJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Button>
+            <Button x:Name="NextButton" Classes="round" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="16"
+                    Click="Next_Click">
+                <Path Data="{StaticResource IconChevronRight}" Width="7" Height="14" Stretch="Uniform" Stroke="White" StrokeThickness="2" StrokeLineCap="Round" StrokeJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Button>
+        </Grid>
+
+        <Border Grid.Row="2" Background="#E60E1014" Padding="18,12">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Spacing="2" VerticalAlignment="Center">
+                    <TextBlock x:Name="PositionText" FontSize="13" FontWeight="SemiBold" Foreground="White" />
+                    <TextBlock x:Name="DetailsText" FontSize="11" Foreground="#B0B6C2" />
+                </StackPanel>
+                <WrapPanel Grid.Column="1" VerticalAlignment="Center">
+                    <Button x:Name="LiveryButton" Classes="secondary" Margin="8,0,0,0" Click="Livery_Click" IsVisible="False" />
+                    <!-- The albums of the screenshot: a menu with a tick at each and "New album…" -->
+                    <Button x:Name="AlbumsButton" Classes="secondary" Margin="8,0,0,0" MaxWidth="260" Click="Albums_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+                            <TextBlock x:Name="AlbumsButtonText" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                            <Path Data="{StaticResource IconChevronDown}" Width="8" Height="4" Stretch="Uniform" VerticalAlignment="Center"
+                                  Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.5" StrokeLineCap="Round" StrokeJoin="Round" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="CoverButton" Classes="primary" Margin="8,0,0,0" Click="Cover_Click" />
+                    <Button x:Name="FolderButton" Classes="secondary" Margin="8,0,0,0" Click="Folder_Click" />
+                    <Button x:Name="CopyButton" Classes="secondary" Margin="8,0,0,0" Click="Copy_Click" />
+                    <Button x:Name="DeleteButton" Classes="secondary" Margin="8,0,0,0" Click="Delete_Click"
+                            Foreground="{DynamicResource DangerBrush}" />
+                </WrapPanel>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,474 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:LiveryGallery.ViewModels"
+        xmlns:loc="using:LiveryGallery.Localisation"
+        xmlns:shots="using:LiveryGallery.Services.Screenshots"
+        xmlns:ui="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
+        x:Class="LiveryGallery.Views.LiveryDetailsDialog"
+        DragDrop.AllowDrop="True"
+        x:DataType="vm:LiveryDetailsViewModel"
+        Width="1180" Height="860" MinWidth="960" MinHeight="640"
+        WindowStartupLocation="CenterOwner" CanResize="True" ShowInTaskbar="False"
+        Background="{DynamicResource BgBrush}"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1">
+    <Window.Styles>
+        <!-- The lock and the star beside the name: square, the icon centred by its own shape. A path with a fixed Width and
+             Height draws a Uniform shape from the top-left corner of that box (the star sat high, the lock to the left);
+             with only a maximum the path takes the scaled shape's size, and the button centres that -->
+        <Style Selector="Button.iconSquare">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.iconSquare Path">
+            <Setter Property="MaxWidth" Value="15" />
+            <Setter Property="MaxHeight" Value="15" />
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="HorizontalAlignment" Value="Center" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="UseLayoutRounding" Value="False" />
+        </Style>
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="14,12" />
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontSize" Value="11.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+        </Style>
+        <Style Selector="TextBlock.hint">
+            <Setter Property="FontSize" Value="11.5" />
+            <Setter Property="Foreground" Value="{DynamicResource TextTertiaryBrush}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="Border.tile">
+            <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="12,8" />
+        </Style>
+        <Style Selector="Border.chip">
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="10,3" />
+            <Setter Property="Margin" Value="0,0,6,6" />
+            <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+        </Style>
+        <Style Selector="Button.thumb">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        </Style>
+        <Style Selector="Button.thumb:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+        </Style>
+        <!-- A screenshot in the strip: the cover has an accent frame, the others none -->
+        <Style Selector="Border.plain">
+            <Setter Property="BorderBrush" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.square">
+            <Setter Property="Width" Value="34" />
+            <Setter Property="Height" Value="34" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Border Grid.Row="0" Background="{DynamicResource ToolbarBrush}" Height="36" PointerPressed="TitleBar_PointerPressed">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False">
+                    <Path Data="{StaticResource IconPalette}" Width="12" Height="12" Stretch="Uniform"
+                          Fill="{DynamicResource TextSecondaryBrush}" Margin="0,0,8,0" />
+                    <TextBlock Text="{Binding Title}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <Button Classes="titlebar" Click="MaximizeButton_Click">
+                        <TextBlock x:Name="MaximizeIcon" Text="&#xE922;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
+                    </Button>
+                    <Button Classes="titlebar close" Click="CloseButton_Click">
+                        <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="Auto,24,*" Margin="24,20,24,0">
+            <!-- Left: the picture, the actions, the author's other liveries, similar ones. The content is always 560 wide and
+                 the scroll bar takes a column of its own beside it (ForzaToolkit.UI.Avalonia's styles): when the bar shows,
+                 the column grows by its width instead of the panels losing it under the bar -->
+            <ScrollViewer Grid.Column="0" Classes="gutter" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="False">
+                <StackPanel Spacing="14" Width="560">
+                    <Border Classes="panel" Padding="0" Height="315" ClipToBounds="True">
+                        <Grid>
+                            <Image Source="{Binding Preview}" Stretch="Uniform" />
+                            <TextBlock Text="{x:Static loc:Strings.LiveryDetailsNoPreview}"
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextTertiaryBrush}"
+                                       IsVisible="{Binding Preview, Converter={x:Static ObjectConverters.IsNull}}" />
+                            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                                        Margin="0,0,0,12" IsVisible="{Binding HasPosition}">
+                                <Button Classes="secondary square" Click="Previous_Click" IsEnabled="{Binding CanGoPrevious}"
+                                        ToolTip.Tip="{x:Static loc:Strings.LiveryDetailsPrevTooltip}"
+                                        AutomationProperties.Name="{x:Static loc:Strings.LiveryDetailsPrevTooltip}">
+                                    <Path Data="{StaticResource IconChevronLeft}" Width="5" Height="10" Stretch="Uniform" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Button>
+                                <Border Background="{DynamicResource BgBrush}" CornerRadius="10" Padding="10,4" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding PositionText}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </Border>
+                                <Button Classes="secondary square" Click="Next_Click" IsEnabled="{Binding CanGoNext}"
+                                        ToolTip.Tip="{x:Static loc:Strings.LiveryDetailsNextTooltip}"
+                                        AutomationProperties.Name="{x:Static loc:Strings.LiveryDetailsNextTooltip}">
+                                    <Path Data="{StaticResource IconChevronRight}" Width="5" Height="10" Stretch="Uniform" Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <WrapPanel Orientation="Horizontal">
+                        <Button x:Name="FindButton" Classes="primary" Margin="0,0,8,8" Click="Find_Click"
+                                IsVisible="{Binding Entry.ShowFindInGame}" IsEnabled="{Binding Entry.CanNavigateInGame}"
+                                ToolTip.Tip="{Binding Entry.NavigateInGameTooltip}" ToolTip.ShowOnDisabled="True" />
+                        <Button x:Name="View3DButton" Classes="secondary" Margin="0,0,8,8" Click="View3D_Click"
+                                IsEnabled="{Binding Entry.CanView3D}" ToolTip.Tip="{Binding Entry.View3DTooltip}" ToolTip.ShowOnDisabled="True" />
+                        <Button x:Name="ArchiveButton" Classes="secondary" Margin="0,0,8,8" Click="Archive_Click"
+                                Foreground="{DynamicResource DangerBrush}" />
+                    </WrapPanel>
+
+                    <!-- The user's screenshots of the livery: on this PC only; files dropped anywhere on the window or
+                         Ctrl+V (outside the note) add one too -->
+                    <Border Classes="panel" IsVisible="{Binding CanAddScreenshots}">
+                        <StackPanel Spacing="10">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <Path Data="{StaticResource IconCamera}" Width="17" Height="13" Stretch="Uniform"
+                                          Fill="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                                    <TextBlock x:Name="ScreenshotsLabel" Classes="section" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding ScreenshotsCountText}" FontSize="12" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                </StackPanel>
+                                <Button x:Name="AddScreenshotsButton" Grid.Column="2" Classes="linkText" FontSize="12"
+                                        Click="AddScreenshots_Click" />
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding Screenshots}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ScreenshotItem">
+                                        <Button Classes="thumb" Width="116" Height="66" Margin="0,0,8,8" Click="Screenshot_Click"
+                                                ToolTip.Tip="{Binding ToolTip}">
+                                            <Panel>
+                                                <Border CornerRadius="6" ClipToBounds="True" BorderThickness="2" IsVisible="{Binding IsShot}"
+                                                        BorderBrush="{DynamicResource AccentBrush}" Classes.plain="{Binding !IsCover}">
+                                                    <Panel Background="{DynamicResource ThumbnailPlaceholderBrush}">
+                                                        <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                                                    </Panel>
+                                                </Border>
+                                                <!-- On the cover: the game's preview back on the card -->
+                                                <Button Classes="coverReset" IsVisible="{Binding IsCover}" Margin="0,5,5,0"
+                                                        HorizontalAlignment="Right" VerticalAlignment="Top" Click="RestorePreview_Click"
+                                                        ToolTip.Tip="{x:Static loc:Strings.ScreenshotRestorePreview}">
+                                                    <Border>
+                                                        <Path Data="{StaticResource IconReset}" Width="10" Height="10" Stretch="Uniform"
+                                                              HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                              Stroke="White" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                                                    </Border>
+                                                </Button>
+                                                <!-- The last tile adds screenshots -->
+                                                <Border CornerRadius="6" BorderThickness="1.5" IsVisible="{Binding IsAddTile}"
+                                                        BorderBrush="{DynamicResource BorderBrush2}" Background="{DynamicResource SurfaceBrush}">
+                                                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="2">
+                                                        <!-- IconPlus is a line icon: drawn with a stroke (as a PathIcon it is filled, so
+                                                             it was invisible and only pushed the text below the middle) -->
+                                                        <Path Data="{StaticResource IconPlus}" Width="11" Height="11" Stretch="Uniform"
+                                                              HorizontalAlignment="Center" Stroke="{DynamicResource TextSecondaryBrush}"
+                                                              StrokeThickness="1.5" StrokeLineCap="Round" />
+                                                        <TextBlock Text="{x:Static loc:Strings.ScreenshotsDropHint}" FontSize="10"
+                                                                   HorizontalAlignment="Center" TextAlignment="Center"
+                                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </Panel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock Text="{Binding ScreenshotsError}" Classes="hint" Foreground="{DynamicResource DangerBrush}"
+                                       IsVisible="{Binding ScreenshotsError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                            <!-- The albums with screenshots of the livery; a click shows the album in the gallery's screenshots view -->
+                            <WrapPanel IsVisible="{Binding HasScreenshotAlbums}">
+                                <TextBlock x:Name="ScreenshotAlbumsLabel" FontSize="11.5" Margin="0,0,6,6" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <ItemsControl ItemsSource="{Binding ScreenshotAlbums}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="shots:ScreenshotAlbumCount">
+                                            <Button Classes="albumChip" Margin="0,0,6,6" Click="Album_Click">
+                                                <TextBlock FontSize="11" FontWeight="SemiBold">
+                                                    <Run Text="{Binding Album.Name}" /><Run Text=" · " /><Run Text="{Binding Count}" />
+                                                </TextBlock>
+                                            </Button>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </WrapPanel>
+                            <TextBlock x:Name="ScreenshotsHint" Classes="hint" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="panel">
+                        <StackPanel Spacing="10">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock x:Name="OtherByAuthorLabel" Classes="section" VerticalAlignment="Center" />
+                                <Button Grid.Column="1" Classes="linkText" FontSize="12" Content="{Binding AllByAuthorText}"
+                                        IsVisible="{Binding HasMoreByAuthor}" Click="AllByAuthor_Click" />
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding OtherByAuthor}" IsVisible="{Binding HasOtherByAuthor}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="4" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LiveryThumbItem">
+                                        <Button Classes="thumb" Margin="0,0,10,0" Click="Thumb_Click" ToolTip.Tip="{Binding Name}">
+                                            <StackPanel Spacing="6">
+                                                <Border Height="68" CornerRadius="6" ClipToBounds="True"
+                                                        Background="{DynamicResource HoverBrush}" BorderBrush="{DynamicResource BorderBrush2}" BorderThickness="1">
+                                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                                                </Border>
+                                                <TextBlock Text="{Binding Name}" FontSize="12" TextTrimming="CharacterEllipsis" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock x:Name="NoOtherByAuthorText" Classes="hint" IsVisible="{Binding !HasOtherByAuthor}" />
+                            <Border BorderBrush="{DynamicResource BorderBrush2}" BorderThickness="0,1,0,0" Padding="0,8,0,0"
+                                    IsVisible="{Binding HasSameCar}">
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <TextBlock Text="{Binding SameCarText}" Foreground="{DynamicResource TextSecondaryBrush}"
+                                               VerticalAlignment="Center" TextWrapping="Wrap" />
+                                    <Button x:Name="SameCarButton" Grid.Column="1" Classes="linkText" FontSize="12" Click="SameCar_Click" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="panel" IsVisible="{Binding HasSimilar}">
+                        <StackPanel Spacing="10">
+                            <TextBlock x:Name="SimilarLabel" Classes="section" />
+                            <ItemsControl ItemsSource="{Binding Similar}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="2" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LiveryThumbItem">
+                                        <Button Classes="thumb" Margin="0,0,10,8" Click="Thumb_Click">
+                                            <Border Background="{DynamicResource BgBrush}" BorderBrush="{DynamicResource BorderBrush2}" BorderThickness="1"
+                                                    CornerRadius="8" Padding="8">
+                                                <Grid ColumnDefinitions="64,10,*">
+                                                    <Border Height="36" CornerRadius="5" ClipToBounds="True" Background="{DynamicResource HoverBrush}">
+                                                        <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                                                    </Border>
+                                                    <StackPanel Grid.Column="2" VerticalAlignment="Center" Spacing="2">
+                                                        <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding Detail}" FontSize="12" Foreground="{DynamicResource DangerBrush}"
+                                                                   IsVisible="{Binding IsExact}" />
+                                                        <TextBlock Text="{Binding Detail}" FontSize="12" Foreground="{DynamicResource WarningTextBrush}"
+                                                                   IsVisible="{Binding !IsExact}" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Right: who and what, the user's own marks, notes, history -->
+            <ScrollViewer Grid.Column="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" AllowAutoHide="False">
+                <StackPanel Spacing="14" Margin="0,0,4,0">
+                    <StackPanel Spacing="6">
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <SelectableTextBlock Text="{Binding Entry.LiveryName}" FontSize="22" FontWeight="Bold" TextWrapping="Wrap" VerticalAlignment="Center" />
+                            <!-- In the card's order: the lock, then the star -->
+                            <Button Grid.Column="1" Classes="secondary iconSquare" Margin="10,0,0,0" Click="Lock_Click"
+                                    IsVisible="{Binding Entry.ShowLockButton}"
+                                    ToolTip.Tip="{Binding Entry.LockTooltip}">
+                                <Panel>
+                                    <Path Data="{StaticResource IconLockOpen}"
+                                          Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.5" IsVisible="{Binding !Entry.IsLocked}" />
+                                    <Path Data="{StaticResource IconLock}"
+                                          Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.5" IsVisible="{Binding Entry.IsLocked}" />
+                                </Panel>
+                            </Button>
+                            <Button Grid.Column="2" Classes="secondary iconSquare" Margin="8,0,0,0" Click="Favorite_Click"
+                                    ToolTip.Tip="{x:Static loc:Strings.FavoriteToggleTooltip}">
+                                <ui:FavoriteStar IsOn="{Binding Entry.IsFavorite}" Width="15" Height="15" />
+                            </Button>
+                        </Grid>
+                        <TextBlock Text="{Binding CarLine}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock x:Name="AuthorLabel" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                            <Button Classes="linkText" FontWeight="SemiBold" Click="Author_Click">
+                                <TextBlock Text="{Binding AuthorText}" Foreground="{DynamicResource AccentBrush}" />
+                            </Button>
+                        </StackPanel>
+                        <ItemsControl ItemsSource="{Binding Chips}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:LiveryChip">
+                                    <Panel>
+                                        <Border Classes="chip" Background="#1F16A34A" IsVisible="{Binding IsGood}">
+                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource SuccessBrush}" />
+                                        </Border>
+                                        <Border Classes="chip" IsVisible="{Binding IsAccent}">
+                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource AccentBrush}" />
+                                        </Border>
+                                        <Border Classes="chip" Background="#24F59E0B" IsVisible="{Binding IsWarning}">
+                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource WarningTextBrush}" />
+                                        </Border>
+                                        <Border Classes="chip" Background="{DynamicResource HoverBrush}" IsVisible="{Binding IsNeutral}">
+                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        </Border>
+                                    </Panel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+
+                    <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,8,Auto">
+                        <Border Classes="tile">
+                            <StackPanel Spacing="2">
+                                <TextBlock x:Name="IdLabel" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <!-- Selectable: the number can be copied as text -->
+                                <SelectableTextBlock Text="{Binding IdText}" FontWeight="SemiBold" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="2" Classes="tile">
+                            <StackPanel Spacing="2">
+                                <TextBlock x:Name="DatesLabel" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding DatesText}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="2" Classes="tile">
+                            <StackPanel Spacing="2">
+                                <TextBlock x:Name="LayersLabel" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding LayersText}" FontWeight="SemiBold" />
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Row="2" Grid.Column="2" Classes="tile">
+                            <StackPanel Spacing="2">
+                                <TextBlock x:Name="BackupsLabel" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                <TextBlock Text="{Binding BackupsText}" FontWeight="SemiBold" TextWrapping="Wrap" IsVisible="{Binding !BackupsMissing}" />
+                                <TextBlock Text="{Binding BackupsText}" FontWeight="SemiBold" TextWrapping="Wrap" IsVisible="{Binding BackupsMissing}"
+                                           Foreground="{DynamicResource WarningTextBrush}" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <WrapPanel Orientation="Horizontal">
+                        <TextBlock x:Name="TagsLabel" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="0,0,8,6" />
+                        <ItemsControl ItemsSource="{Binding Entry.Tags}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <Border Background="{DynamicResource AccentBrush}" CornerRadius="12" Padding="12,4" Margin="0,0,6,6">
+                                        <TextBlock Text="{Binding}" FontSize="12" FontWeight="SemiBold" Foreground="White" />
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <Button x:Name="AddTagButton" Classes="secondary" FontSize="12" Padding="11,3" CornerRadius="12" Margin="0,0,0,6"
+                                Click="EditTags_Click" />
+                    </WrapPanel>
+
+                    <Border Classes="panel" BorderBrush="{DynamicResource AccentBrush}">
+                        <StackPanel Spacing="8">
+                            <Grid ColumnDefinitions="Auto,*,Auto">
+                                <Path Data="{StaticResource IconNote}" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0"
+                                      Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.6" VerticalAlignment="Center" />
+                                <TextBlock x:Name="NoteLabel" Grid.Column="1" Classes="section" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                                <TextBlock Grid.Column="2" Text="{Binding NoteStatus}" FontSize="12" Foreground="{DynamicResource SuccessBrush}" />
+                            </Grid>
+                            <TextBox x:Name="NoteBox" Classes="search" Text="{Binding NoteText, Mode=TwoWay}" AcceptsReturn="True" TextWrapping="Wrap"
+                                     MinHeight="92" MaxHeight="180" MaxLength="{Binding NoteMaxLength}" FontSize="13" Padding="10,8"
+                                     VerticalContentAlignment="Top" ScrollViewer.AllowAutoHide="False" />
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock x:Name="NoteHint" Classes="hint" />
+                                <TextBlock Grid.Column="1" Text="{Binding NoteCount}" Classes="hint" Margin="12,0,0,0" />
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="panel" IsVisible="{Binding HasAuthorCard}">
+                        <StackPanel Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock x:Name="AuthorNoteLabel" Classes="section" VerticalAlignment="Center" />
+                                <Button x:Name="AuthorNoteEditButton" Grid.Column="1" Classes="linkText" FontSize="12" Click="EditAuthorNote_Click" />
+                            </Grid>
+                            <TextBlock Text="{Binding AuthorNoteText}" TextWrapping="Wrap" IsVisible="{Binding HasAuthorNote}" />
+                            <TextBlock Text="{Binding AuthorNoteText}" Classes="hint" IsVisible="{Binding !HasAuthorNote}" />
+                            <TextBlock Text="{Binding AuthorNoteSource}" Classes="hint" IsVisible="{Binding HasAuthorNote}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Classes="panel">
+                        <StackPanel Spacing="8">
+                            <TextBlock x:Name="HistoryLabel" Classes="section" />
+                            <ItemsControl ItemsSource="{Binding History}" IsVisible="{Binding HasHistory}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:LiveryHistoryItem">
+                                        <Grid ColumnDefinitions="96,*" Margin="0,0,0,6">
+                                            <TextBlock Text="{Binding DateText}" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Text}" TextWrapping="Wrap" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <TextBlock x:Name="HistoryEmptyText" Classes="hint" IsVisible="{Binding !HasHistory}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="24,12,24,20">
+            <TextBlock x:Name="FooterHint" Classes="hint" VerticalAlignment="Center" />
+            <Button x:Name="CloseDialogButton" Grid.Column="1" Classes="secondary" Width="110" Click="CloseButton_Click" />
+        </Grid>
+    </Grid>
+</Window>

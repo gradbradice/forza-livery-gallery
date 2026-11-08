@@ -10,24 +10,29 @@ namespace LiveryGallery.Views;
 internal partial class BackupsDialog : Window
 {
     private readonly LiveryBackups _backupService;
+    private readonly BackupPreviews _previews;
     private readonly SavePathService _savePathService;
     private readonly Func<IReadOnlyList<LiveryData>> _getCurrentEntries;
     private readonly Func<Task> _onRestored;
+    private readonly StorageBackupContext? _storage;
     private readonly BackupsViewModel _viewModel;
     private readonly DialogWorkScope _work;
 
     public BackupsDialog(
-        LiveryBackups backupService, SavePathService savePathService,
-        Func<IReadOnlyList<LiveryData>> getCurrentEntries, Func<Task> onRestored, AccountContext accounts)
+        LiveryBackups backupService, BackupPreviews previews, SavePathService savePathService,
+        Func<IReadOnlyList<LiveryData>> getCurrentEntries, Func<Task> onRestored, AccountContext accounts,
+        Func<int>? unassignedCount = null, Func<Task<int>>? takeUnassigned = null, StorageBackupContext? storage = null)
     {
         InitializeComponent();
+        _storage = storage;
         _backupService = backupService;
+        _previews = previews;
         _savePathService = savePathService;
         _getCurrentEntries = getCurrentEntries;
         _onRestored = onRestored;
-        _viewModel = new BackupsViewModel(backupService, savePathService, getCurrentEntries, accounts);
+        _viewModel = new BackupsViewModel(backupService, previews, savePathService, getCurrentEntries, accounts, unassignedCount, takeUnassigned, storage);
         DataContext = _viewModel;
-        _work = new DialogWorkScope(this, () => _viewModel.CreateBackupCommand.ExecutionTask);
+        _work = new DialogWorkScope(this, () => _viewModel.CreateBackupCommand.ExecutionTask ?? _viewModel.CreateStorageBackupCommand.ExecutionTask);
 
         _viewModel.ErrorMessageRequested += message => _work.Run(
             () => InfoDialog.ShowAsync(this, Strings.BackupsDialogTitle, message), "backups: error message");
@@ -38,6 +43,8 @@ internal partial class BackupsDialog : Window
         TitleBarText.Text = Strings.BackupsDialogTitle;
         TitleText.Text = Strings.BackupsDialogTitle;
         CreateBackupButton.Content = Strings.BackupCreateButton;
+        TakeUnassignedButton.Content = Strings.UnassignedTakeButton;
+        ToolTip.SetTip(TakeUnassignedButton, Strings.BackupsUnassignedTooltip);
     }
 
     private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
@@ -59,7 +66,7 @@ internal partial class BackupsDialog : Window
         }
 
         var dialog = new BackupDetailDialog(
-            _backupService, _savePathService, row, _getCurrentEntries, _onRestored);
+            _backupService, _previews, _savePathService, row, _getCurrentEntries, _onRestored, _storage);
         await dialog.ShowDialog(this);
     }
 

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "forzatoolkit.apprelease": {
+      "version": "0.39.0",
+      "commands": [
+        "forza-release"
+      ],
+      "rollForward": false
+    }
+  }
+}

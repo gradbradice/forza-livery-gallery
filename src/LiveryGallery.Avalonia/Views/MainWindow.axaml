@@ -1,12 +1,15 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:loc="clr-namespace:LiveryGallery.Localisation"
+        xmlns:coll="using:LiveryGallery.Views.Collections"
         xmlns:models="clr-namespace:LiveryGallery.Models"
         xmlns:enums="clr-namespace:LiveryGallery.Enums"
         xmlns:gallery="using:ForzaToolkit.Liveries.Gallery"
         xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
         xmlns:views="clr-namespace:LiveryGallery.Views"
         xmlns:services="clr-namespace:LiveryGallery.Services"
+        xmlns:ui="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
+        xmlns:updates="clr-namespace:ForzaToolkit.UI.Updates;assembly=ForzaToolkit.UI.Avalonia.Updates"
         x:Class="LiveryGallery.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="avares://LiveryGallery.Avalonia/Assets/app-icon.png"
@@ -30,120 +33,162 @@
     </Window.DataTemplates>
 
     <Window.Resources>
+        <!-- The context menu of the cards: one for all of them, given to the card it is asked on (Card_ContextRequested).
+             In each card it was 28 items with their icons and theme styles: most of a card's weight in memory, and
+             every livery a card showed while scrolling went through all of their bindings -->
+        <ContextMenu x:Key="LiveryCardMenu" x:DataType="vm:LiveryEntry">
+            <MenuItem Header="{DynamicResource Loc_ContextMenuOpenDetails}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.OpenDetailsCommand}"
+                      CommandParameter="{Binding}"
+                      views:ShortcutHint.Action="OpenDetails">
+                <MenuItem.Icon>
+                    <Path Data="{StaticResource IconPreview}" Width="13" Height="13" Stretch="Uniform"
+                          Fill="{DynamicResource TextPrimaryBrush}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <!-- The context menu selects its card first: these three work on every selected livery -->
+            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuHeader}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleFavoritesCommand}"
+                      CommandParameter="{Binding}"
+                      views:ShortcutHint.Action="Favorite">
+                <MenuItem.Icon>
+                    <ui:FavoriteStar Width="12" Height="12" StrokeThickness="1.4"
+                                     IsOn="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuRemoves}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuHeader}"
+                      IsVisible="{Binding ShowLockButton}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleLocksCommand}"
+                      CommandParameter="{Binding}"
+                      views:ShortcutHint.Action="Lock">
+                <MenuItem.Icon>
+                    <Panel>
+                        <Path Data="{StaticResource IconLock}" Width="12" Height="12" Stretch="Uniform"
+                              Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.4"
+                              IsVisible="{Binding !$parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
+                        <Path Data="{StaticResource IconLockOpen}" Width="12" Height="12" Stretch="Uniform"
+                              Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.4"
+                              IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
+                    </Panel>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsMenuHeader}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsCommand}"
+                      CommandParameter="{Binding}"
+                      views:ShortcutHint.Action="Tags">
+                <MenuItem.Icon>
+                    <Path Data="{StaticResource IconBookmark}" Width="12" Height="12" Stretch="Uniform"
+                          Fill="{DynamicResource TextPrimaryBrush}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCar}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCarCommand}"
+                      CommandParameter="{Binding}" />
+            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisManufacturer}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyManufacturerCommand}"
+                      CommandParameter="{Binding}" />
+            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisAuthor}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyAuthorCommand}"
+                      CommandParameter="{Binding}" />
+            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCountry}"
+                      IsVisible="{Binding HasCarCountry}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCountryCommand}"
+                      CommandParameter="{Binding}">
+                <MenuItem.Icon>
+                    <Path Data="{StaticResource IconFlag}" Width="12" Height="12" Stretch="Uniform"
+                          Fill="{DynamicResource TextPrimaryBrush}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCarType}"
+                      IsVisible="{Binding HasCarType}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCarTypeCommand}"
+                      CommandParameter="{Binding}">
+                <MenuItem.Icon>
+                    <Path Data="{StaticResource IconCarSide}" Width="13" Height="12" Stretch="Uniform"
+                          Fill="{DynamicResource TextPrimaryBrush}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Loc_ContextMenuClearQuickFilters}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ClearQuickFiltersCommand}"
+                      IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.HasQuickFilters}" />
+            <Separator IsVisible="{Binding ShowFindInGame}" />
+            <MenuItem Header="{DynamicResource Loc_ContextMenuNavigateInGame}"
+                      IsVisible="{Binding ShowFindInGame}"
+                      views:ShortcutHint.Action="FindInGame"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameCommand}"
+                      CommandParameter="{Binding}"
+                      ToolTip.ShowOnDisabled="True"
+                      ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameMenuBlockedTooltip}">
+                <MenuItem.Icon>
+                    <Path Data="{StaticResource IconLocate}" Width="13" Height="13" Stretch="Uniform"
+                          Fill="{DynamicResource TextPrimaryBrush}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <Separator IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuVisible}" />
+            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuHeader}"
+                      IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuVisible}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorCommand}"
+                      CommandParameter="{Binding}">
+                <MenuItem.Icon>
+                    <Path Data="{StaticResource IconUser}" Width="12" Height="12" Stretch="Uniform"
+                          Fill="{DynamicResource TextPrimaryBrush}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorMenuHeader}"
+                      IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorMenuVisible}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorCommand}"
+                      CommandParameter="{Binding}" />
+            <Separator />
+            <!-- In the storage: Ins back into the game, Del to the archive -->
+            <MenuItem Header="{DynamicResource Loc_ContextMenuReturnToGame}"
+                      IsVisible="{Binding IsStored}"
+                      views:ShortcutHint.Action="ReturnToGame"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).ReturnSelectedToGameCommand}">
+                <MenuItem.Icon>
+                    <Path Data="{StaticResource IconToGame}" Width="13" Height="13" Stretch="Uniform"
+                          Stroke="{DynamicResource StorageTextBrush}" StrokeThickness="1.6"
+                          StrokeLineCap="Round" StrokeJoin="Round" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <!-- Filled when the menu opens: no folder, the storage's folders, "New folder…" -->
+            <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToFolder}" Tag="moveToFolder"
+                      IsVisible="{Binding IsStored}">
+                <MenuItem.Icon>
+                    <Path Data="{StaticResource IconFolder}" Width="13" Height="12" Stretch="Uniform"
+                          Fill="{DynamicResource TextPrimaryBrush}" />
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToArchive}"
+                      IsVisible="{Binding IsStored}"
+                      views:ShortcutHint.Action="StoredToArchive"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).MoveSelectedToArchiveCommand}" />
+            <!-- In the game. Del: kept beyond the game's limit; Shift+Del: to the archive, to delete -->
+            <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToStorage}"
+                      IsVisible="{Binding !IsStored}"
+                      views:ShortcutHint.Action="MoveToStorage"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).MoveSelectedToStorageCommand}"
+                      ToolTip.ShowOnDisabled="True"
+                      ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).StorageBlockedTooltip}" />
+            <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToArchive}"
+                      IsVisible="{Binding !IsStored}"
+                      views:ShortcutHint.Action="MoveToArchive"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).MoveSelectedToArchiveCommand}"
+                      ToolTip.ShowOnDisabled="True"
+                      ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).ArchiveBlockedTooltip}" />
+        </ContextMenu>
+
         <DataTemplate x:Key="LiveryCardTemplate" x:DataType="vm:LiveryEntry">
             <Border Classes="liveryCard" Width="270" Margin="8"
                     Classes.selected="{Binding IsSelected}"
+                    Classes.current="{Binding IsCurrent}"
                     views:ThumbnailRows.Track="True"
                     PointerPressed="Card_SelectPointerPressed"
+                    PointerMoved="Card_PointerMoved"
+                    PointerReleased="Card_PointerReleased"
+                    DoubleTapped="Card_DoubleTapped"
                     ContextRequested="Card_ContextRequested">
-                <Border.ContextMenu>
-                    <ContextMenu>
-                        <!-- The context menu selects its card first: these three work on every selected livery -->
-                        <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuHeader}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleFavoritesCommand}"
-                                  CommandParameter="{Binding}"
-                                  views:ShortcutHint.Action="Favorite">
-                            <MenuItem.Icon>
-                                <Panel>
-                                    <Path Data="{StaticResource IconStar}" Width="12" Height="12" Stretch="Uniform"
-                                          Fill="Transparent" Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.4"
-                                          IsVisible="{Binding !$parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuRemoves}" />
-                                    <Path Data="{StaticResource IconStar}" Width="12" Height="12" Stretch="Uniform"
-                                          Fill="#FFD54F" Stroke="#FFD54F" StrokeThickness="1.4"
-                                          IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuRemoves}" />
-                                </Panel>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuHeader}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleLocksCommand}"
-                                  CommandParameter="{Binding}"
-                                  views:ShortcutHint.Action="Lock">
-                            <MenuItem.Icon>
-                                <Panel>
-                                    <Path Data="{StaticResource IconLock}" Width="12" Height="12" Stretch="Uniform"
-                                          Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.4"
-                                          IsVisible="{Binding !$parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
-                                    <Path Data="{StaticResource IconLockOpen}" Width="12" Height="12" Stretch="Uniform"
-                                          Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.4"
-                                          IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
-                                </Panel>
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsMenuHeader}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsCommand}"
-                                  CommandParameter="{Binding}"
-                                  views:ShortcutHint.Action="Tags">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource IconBookmark}" Width="12" Height="12" Stretch="Uniform"
-                                      Fill="{DynamicResource TextPrimaryBrush}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator />
-                        <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCar}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCarCommand}"
-                                  CommandParameter="{Binding}" />
-                        <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisManufacturer}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyManufacturerCommand}"
-                                  CommandParameter="{Binding}" />
-                        <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisAuthor}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyAuthorCommand}"
-                                  CommandParameter="{Binding}" />
-                        <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCountry}"
-                                  IsVisible="{Binding HasCarCountry}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCountryCommand}"
-                                  CommandParameter="{Binding}">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource IconFlag}" Width="12" Height="12" Stretch="Uniform"
-                                      Fill="{DynamicResource TextPrimaryBrush}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCarType}"
-                                  IsVisible="{Binding HasCarType}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCarTypeCommand}"
-                                  CommandParameter="{Binding}">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource IconCarSide}" Width="13" Height="12" Stretch="Uniform"
-                                      Fill="{DynamicResource TextPrimaryBrush}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{DynamicResource Loc_ContextMenuClearQuickFilters}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ClearQuickFiltersCommand}"
-                                  IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.HasQuickFilters}" />
-                        <Separator IsVisible="{Binding ShowFindInGame}" />
-                        <MenuItem Header="{DynamicResource Loc_ContextMenuNavigateInGame}"
-                                  IsVisible="{Binding ShowFindInGame}"
-                                  views:ShortcutHint.Action="FindInGame"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameCommand}"
-                                  CommandParameter="{Binding}"
-                                  ToolTip.ShowOnDisabled="True"
-                                  ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameMenuBlockedTooltip}">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource IconLocate}" Width="13" Height="13" Stretch="Uniform"
-                                      Fill="{DynamicResource TextPrimaryBrush}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <Separator IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuVisible}" />
-                        <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuHeader}"
-                                  IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuVisible}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorCommand}"
-                                  CommandParameter="{Binding}">
-                            <MenuItem.Icon>
-                                <Path Data="{StaticResource IconUser}" Width="12" Height="12" Stretch="Uniform"
-                                      Fill="{DynamicResource TextPrimaryBrush}" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorMenuHeader}"
-                                  IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorMenuVisible}"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorCommand}"
-                                  CommandParameter="{Binding}" />
-                        <Separator />
-                        <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToArchive}"
-                                  views:ShortcutHint.Action="MoveToArchive"
-                                  Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).MoveSelectedToArchiveCommand}"
-                                  ToolTip.ShowOnDisabled="True"
-                                  ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).ArchiveBlockedTooltip}" />
-                    </ContextMenu>
-                </Border.ContextMenu>
                 <StackPanel>
                     <Border Height="26" Padding="14,0">
                         <Grid ColumnDefinitions="*,Auto">
@@ -203,6 +248,28 @@
                         </Border>
                         <StackPanel Orientation="Horizontal" Spacing="4"
                                     HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,8,8">
+                            <!-- A screenshot is the cover: one click puts the game's preview back -->
+                            <Button Classes="coverReset" IsVisible="{Binding HasCover}"
+                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).RestorePreviewCommand}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip.Tip="{x:Static loc:Strings.ScreenshotRestorePreview}">
+                                <Border>
+                                    <Path Data="{StaticResource IconReset}" Width="11" Height="11" Stretch="Uniform"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          Stroke="White" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                                </Border>
+                            </Button>
+                            <!-- The user's screenshots of the livery: a camera with the count -->
+                            <Border IsVisible="{Binding HasScreenshots}" Background="#B0000000"
+                                    CornerRadius="6" Padding="7,3"
+                                    ToolTip.Tip="{Binding ScreenshotCountTooltip}">
+                                <StackPanel Orientation="Horizontal" Spacing="5">
+                                    <Path Data="{StaticResource IconCamera}" Width="15" Height="11" Stretch="Uniform"
+                                          Fill="White" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding ScreenshotCountText}" FontSize="10.5"
+                                               FontWeight="SemiBold" Foreground="White" />
+                                </StackPanel>
+                            </Border>
                             <Border IsVisible="{Binding IsInstalled}"
                                     Background="{DynamicResource SuccessBrush}"
                                     CornerRadius="6" Padding="7,3"
@@ -220,6 +287,20 @@
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" Spacing="4"
                                     HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="8,0,0,8">
+                            <!-- Put into the storage's folder by hand and found this launch, until the card is opened -->
+                            <Border IsVisible="{Binding IsAddedByHand}" Background="{DynamicResource StorageBrush}"
+                                    CornerRadius="6" Padding="7,3" ToolTip.Tip="{DynamicResource Loc_AddedByHandBadgeTooltip}">
+                                <TextBlock Text="{DynamicResource Loc_AddedByHandBadgeLabel}" FontSize="10.5" FontWeight="SemiBold" Foreground="White" />
+                            </Border>
+                            <!-- The other place has it too (docs/storage.md): the game for a stored livery, the storage for one of the game -->
+                            <Border IsVisible="{Binding ShowCopyInGame}" Background="{DynamicResource AccentBrush}"
+                                    CornerRadius="6" Padding="7,3" ToolTip.Tip="{Binding CopyTooltip}">
+                                <TextBlock Text="{Binding CopyText}" FontSize="10.5" FontWeight="SemiBold" Foreground="White" />
+                            </Border>
+                            <Border IsVisible="{Binding ShowCopyInStorage}" Background="{DynamicResource StorageBrush}"
+                                    CornerRadius="6" Padding="7,3" ToolTip.Tip="{Binding CopyTooltip}">
+                                <TextBlock Text="{Binding CopyText}" FontSize="10.5" FontWeight="SemiBold" Foreground="White" />
+                            </Border>
                             <Border IsVisible="{Binding IsPossiblyGenerated}"
                                     Background="{DynamicResource TextSecondaryBrush}"
                                     CornerRadius="6" Padding="7,3"
@@ -251,8 +332,7 @@
                         </StackPanel>
                         <Border CornerRadius="0" Background="#4D000000"
                                 IsVisible="{Binding IsSelected}" IsHitTestVisible="False" />
-                        <Border Width="40" Height="40" CornerRadius="20"
-                                Background="{DynamicResource AccentBrush}"
+                        <Border Classes="selectMark" Width="40" Height="40" CornerRadius="20"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 IsVisible="{Binding IsSelected}" IsHitTestVisible="False">
                             <Path Data="{StaticResource IconCheck}" Width="18" Height="18" Stretch="Uniform"
@@ -260,9 +340,10 @@
                                   Fill="White" />
                         </Border>
                     </Grid>
-                    <!-- The round buttons. The icons take their size and centring from the style of Button.cardIconButton -->
+                    <!-- The round buttons. The icons take their size and centring from the style of Button.cardIconButton.
+                         Seven fit in a row without touching (28 + 6 each: 232 of the card's 238), so one more can come -->
                     <Grid ColumnDefinitions="*,Auto" Margin="14,10,14,0">
-                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="8">
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
                             <Button Classes="cardIconButton"
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsCommand}"
                                     CommandParameter="{Binding}"
@@ -270,7 +351,8 @@
                                 <Path Data="{StaticResource IconBookmark}" Fill="{DynamicResource TextPrimaryBrush}" />
                             </Button>
 
-                            <Button Classes="cardIconButton"
+                            <!-- The big preview: hidden for now (the livery window shows the picture), kept for a while -->
+                            <Button Classes="cardIconButton" IsVisible="False"
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ViewPreviewCommand}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{DynamicResource Loc_ViewPreviewTooltip}">
@@ -288,6 +370,16 @@
                                            Foreground="{DynamicResource TextPrimaryBrush}" />
                             </Button>
 
+                            <!-- A stored livery: back into the game, in the storage's colour -->
+                            <Button Classes="cardIconButton toGame"
+                                    IsVisible="{Binding IsStored}"
+                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).ReturnToGameOneCommand}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip.Tip="{DynamicResource Loc_ReturnToGameTooltip}">
+                                <Path Data="{StaticResource IconToGame}" Stroke="White" StrokeThickness="1.7"
+                                      StrokeLineCap="Round" StrokeJoin="Round" />
+                            </Button>
+
                             <Button Classes="cardIconButton"
                                     IsVisible="{Binding HasFindInGameButton}"
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameCommand}"
@@ -299,11 +391,21 @@
                             </Button>
                         </StackPanel>
 
-                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8">
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" Margin="6,0,0,0">
+                            <!-- The note's mark: its text in the tooltip, a click opens the livery window -->
+                            <Button Classes="cardIconButton"
+                                    IsVisible="{Binding HasNote}"
+                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.OpenDetailsCommand}"
+                                    CommandParameter="{Binding}"
+                                    ToolTip.Tip="{Binding NoteTooltip}">
+                                <Path Data="{StaticResource IconNote}" Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.6" />
+                            </Button>
+
                             <!-- The lock: open and outlined while the livery may go to the archive, closed and in the
                                  accent colour (the button too) while it is locked -->
                             <Button Classes="cardIconButton"
                                     Classes.locked="{Binding IsLocked}"
+                                    IsVisible="{Binding ShowLockButton}"
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleLockCommand}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{Binding LockTooltip, Converter={x:Static views:ShortcutTipConverter.Instance}, ConverterParameter={x:Static services:GalleryShortcut.Lock}}">
@@ -317,21 +419,12 @@
                                 </Panel>
                             </Button>
 
-                            <!-- Both stars have the same stroke: the filled one is not smaller than the outline by its width -->
+                            <!-- The toolkit's star of a favourite: an outline, gold when on (the same in every app) -->
                             <Button Classes="cardIconButton"
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleFavoriteCommand}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{DynamicResource Loc_FavoriteToggleTooltip}">
-                                <Panel>
-                                    <Path Data="{StaticResource IconStar}"
-                                          Fill="Transparent"
-                                          Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.5"
-                                          IsVisible="{Binding !IsFavorite}" />
-                                    <Path Data="{StaticResource IconStar}"
-                                          Fill="#FFD54F"
-                                          Stroke="#FFD54F" StrokeThickness="1.5"
-                                          IsVisible="{Binding IsFavorite}" />
-                                </Panel>
+                                <ui:FavoriteStar IsOn="{Binding IsFavorite}" Width="14" Height="14" />
                             </Button>
                         </StackPanel>
                     </Grid>
@@ -402,7 +495,7 @@
                             </StackPanel>
                         </Button>
 
-                        <StackPanel Orientation="Horizontal" Background="Transparent" ToolTip.Tip="{DynamicResource Loc_DateLabel}">
+                        <StackPanel Orientation="Horizontal" Background="Transparent" ToolTip.Tip="{Binding DateTooltip}">
                             <Border Classes="cardMetaIcon"><Path Data="{StaticResource IconCalendarDay}" /></Border>
                             <TextBlock Text="{Binding DateDisplay}" FontSize="12" VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextSecondaryBrush}" />
@@ -444,8 +537,7 @@
             <ToggleButton Classes="groupHeader" Width="{Binding GroupWidth}" HorizontalAlignment="Center"
                           IsChecked="{Binding IsExpanded, Mode=TwoWay}" Click="GroupHeader_Click">
                 <StackPanel Orientation="Horizontal">
-						<Path Data="{StaticResource IconStar}" Width="13" Height="13" Stretch="Uniform"
-                          Fill="#FFD54F" Margin="0,0,7,0" VerticalAlignment="Center"
+						<ui:FavoriteStar IsOn="True" Width="13" Height="13" StrokeThickness="1.2" Margin="0,0,7,0" VerticalAlignment="Center"
                           IsVisible="{Binding IsFavoritesGroup}" />
                     <PathIcon Data="{StaticResource IconUser}" Width="13" Height="13"
                           Foreground="{DynamicResource AccentBrush}" Margin="0,0,7,0" VerticalAlignment="Center"
@@ -459,8 +551,7 @@
 
 						<StackPanel Orientation="Horizontal" Margin="8,0,0,0" IsVisible="{Binding HasFavorites}"
                                 VerticalAlignment="Center">
-							<Path Data="{StaticResource IconStar}" Width="11" Height="11" Stretch="Uniform"
-								  Fill="#FFD54F" Margin="0,0,4,0" />
+							<ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,4,0" />
 							<TextBlock Text="{Binding FavoriteCount}" FontSize="13"
 									   Foreground="{DynamicResource TextSecondaryBrush}" />
 						</StackPanel>
@@ -522,6 +613,8 @@
                 Height="36" PointerPressed="TitleBar_PointerPressed">
             <Grid>
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -532,7 +625,50 @@
                     <TextBlock x:Name="CustomTitleBarText" FontSize="12" VerticalAlignment="Center"
                                Foreground="{DynamicResource TextSecondaryBrush}" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <!-- The game shown, as a chip: its menu has every game the program supports -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" Margin="12,0,0,0">
+                <Button x:Name="GameButton" Padding="10,0" Height="26"
+                        VerticalAlignment="Center" CornerRadius="7" BorderThickness="1"
+                        Background="{DynamicResource InputBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush2}"
+                        Click="GameButton_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <TextBlock x:Name="GameButtonText" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <!-- As high as the triangle itself (the glyph is 10 x 5): in a square box it was drawn at the
+                             box's top and stood 2 px above the middle of the name -->
+                        <Path Data="{StaticResource IconChevronDown}" Width="9" Height="4.5" Stretch="Uniform"
+                              Fill="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <!-- "Game 238 / 1000 | Storage 1 450" (docs/storage.md): the half shown in its colour, Ctrl+1 and Ctrl+2 -->
+                <Border x:Name="ModeSwitch" Height="28" Padding="2" CornerRadius="8" BorderThickness="1" VerticalAlignment="Center"
+                        Background="{DynamicResource InputBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush2}">
+                    <StackPanel Orientation="Horizontal" Spacing="2">
+                        <Button x:Name="GameModeButton" Classes="modeHalf" Classes.on="{Binding IsGameMode}"
+                                Command="{Binding ShowGameCommand}">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock x:Name="GameModeText" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <TextBlock Classes="modeCount" Text="{Binding GameCountText}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                        <Button x:Name="StorageModeButton" Classes="modeHalf storage" Classes.on="{Binding IsStorageMode}"
+                                Command="{Binding ShowStorageCommand}" IsEnabled="{Binding HasStorage}"
+                                ToolTip.ShowOnDisabled="True">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <Path Data="{StaticResource IconStorage}" Width="13" Height="13" Stretch="Uniform"
+                                      Stroke="{Binding $parent[Button].Foreground}" StrokeThickness="1.6"
+                                      StrokeLineCap="Round" StrokeJoin="Round" VerticalAlignment="Center" />
+                                <TextBlock x:Name="StorageModeText" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <TextBlock Classes="modeCount" Text="{Binding StorageCountText}" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Border>
+                </StackPanel>
+                <!-- The storage is shown: a line of its colour along the title bar -->
+                <Border Grid.ColumnSpan="4" Height="2" VerticalAlignment="Bottom" Background="{DynamicResource StorageBrush}"
+                        IsVisible="{Binding IsStorageMode}" IsHitTestVisible="False" />
+                <StackPanel Grid.Column="3" Orientation="Horizontal">
                     <Button x:Name="MinimizeButtonEl" Classes="titlebar" Click="MinimizeButton_Click">
                         <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
                     </Button>
@@ -562,28 +698,38 @@
                              Margin="0,0,10,0" Text="{Binding SearchText, Mode=TwoWay}"
                              TextChanged="SearchBox_TextChanged" />
 					<StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <ComboBox x:Name="AccountSwitcher" Classes="modern" Margin="0,0,8,0" MinWidth="170" MaxWidth="260"
-                              VerticalAlignment="Center"
-                              IsVisible="{Binding HasMultipleAccounts}"
-                              IsEnabled="{Binding CanSwitchAccount}"
-                              ItemsSource="{Binding Accounts}"
-                              SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
-                              ToolTip.Tip="{x:Static loc:Strings.AccountSwitcherTooltip}">
-                        <ComboBox.ItemTemplate>
-                            <DataTemplate x:DataType="vm:AccountOption">
-                                <StackPanel Orientation="Horizontal" Spacing="6" Background="Transparent"
-                                            ToolTip.Tip="{Binding Tooltip}">
-                                    <PathIcon Data="{StaticResource IconUser}" Width="12" Height="12" VerticalAlignment="Center"
-                                              Foreground="{DynamicResource TextSecondaryBrush}" />
-                                    <TextBlock Text="{Binding Title}" VerticalAlignment="Center" MaxWidth="160"
-                                               TextTrimming="CharacterEllipsis" />
-                                    <TextBlock Text="{Binding Subtitle}" FontSize="11" VerticalAlignment="Center"
-                                               IsVisible="{Binding HasSubtitle}"
-                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <!-- Liveries or their screenshots: two halves of one switch -->
+                    <Border x:Name="ViewSwitch" Margin="0,0,8,0" Height="38" Padding="3" CornerRadius="10" BorderThickness="1"
+                            VerticalAlignment="Center"
+                            Background="{DynamicResource InputBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush2}">
+                        <StackPanel Orientation="Horizontal" Spacing="2">
+                            <Button x:Name="LiveriesViewButton" Classes="viewHalf on" Click="LiveriesView_Click" />
+                            <Button x:Name="ScreenshotsViewButton" Classes="viewHalf" Click="ScreenshotsView_Click">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <Path Data="{StaticResource IconCamera}" Width="17" Height="13" Stretch="Uniform"
+                                          Fill="{Binding $parent[Button].Foreground}" VerticalAlignment="Center" />
+                                    <TextBlock x:Name="ScreenshotsViewText" VerticalAlignment="Center" />
                                 </StackPanel>
-                            </DataTemplate>
-                        </ComboBox.ItemTemplate>
-                    </ComboBox>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                    <!-- The account shown: its name and the end of its XUID. The menu has the game's other accounts -->
+                    <Button x:Name="AccountSwitcherButton" Margin="0,0,8,0" MaxWidth="360" Height="38" Padding="12,0"
+                            VerticalAlignment="Center" CornerRadius="10" BorderThickness="1"
+                            Background="{DynamicResource InputBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush2}"
+                            IsVisible="{Binding HasMultipleAccounts}" IsEnabled="{Binding CanSwitchAccount}"
+                            ToolTip.Tip="{x:Static loc:Strings.AccountSwitcherTooltip}" Click="AccountSwitcherButton_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+                            <PathIcon Data="{StaticResource IconUser}" Width="15" Height="15" VerticalAlignment="Center"
+                                      Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding SelectedAccount.Name}" FontSize="14" FontWeight="SemiBold"
+                                       VerticalAlignment="Center" MaxWidth="220" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="{Binding SelectedAccount.Marker}" FontSize="12" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <Path Data="{StaticResource IconChevronDown}" Width="10" Height="5" Stretch="Uniform" Margin="2,0,0,0"
+                                  Fill="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
 					<Button x:Name="DisplayFilterButton" Classes="icon" Margin="0,0,8,0"
                             DataContext="{Binding FilterBar}"
                             ToolTip.Tip="{x:Static loc:Strings.DisplayFilterTooltip}">
@@ -620,7 +766,7 @@
                                               IsChecked="{Binding IsSortDownloadTime}"
                                               Command="{Binding SetSortModeCommand}" CommandParameter="{x:Static gallery:SortMode.DownloadTime}" />
                                     <MenuItem x:Name="SortGameOrderItem" ToggleType="Radio" GroupName="SortGroup"
-                                              IsVisible="{Binding IsGameOrderAvailable}"
+                                              IsVisible="{Binding ShowGameOrderSort}"
                                               IsChecked="{Binding IsSortGameOrder}"
                                               Command="{Binding SetSortModeCommand}" CommandParameter="{x:Static gallery:SortMode.GameOrder}" />
                                 </MenuItem>
@@ -656,8 +802,7 @@
                                               Command="{Binding SetFavoriteModeCommand}" CommandParameter="{x:Static gallery:FavoriteMode.FavoritesFirst}">
                                         <MenuItem.Header>
                                             <StackPanel Orientation="Horizontal">
-                                                <Path Classes="menuIcon star" Data="{StaticResource IconStar}" Width="11" Height="11"
-                                                      Stretch="Uniform" Margin="0,0,6,0"
+                                                <ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,6,0"
                                                       VerticalAlignment="Center" />
                                                 <TextBlock x:Name="FavFirstItemText" VerticalAlignment="Center" />
                                             </StackPanel>
@@ -668,8 +813,7 @@
                                               Command="{Binding SetFavoriteModeCommand}" CommandParameter="{x:Static gallery:FavoriteMode.OnlyFavorites}">
                                         <MenuItem.Header>
                                             <StackPanel Orientation="Horizontal">
-                                                <Path Classes="menuIcon star" Data="{StaticResource IconStar}" Width="11" Height="11"
-                                                      Stretch="Uniform" Margin="0,0,6,0"
+                                                <ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,6,0"
                                                       VerticalAlignment="Center" />
                                                 <TextBlock x:Name="FavOnlyItemText" VerticalAlignment="Center" />
                                             </StackPanel>
@@ -680,15 +824,14 @@
                                               Command="{Binding SetFavoriteModeCommand}" CommandParameter="{x:Static gallery:FavoriteMode.FavoritesSeparately}">
                                         <MenuItem.Header>
                                             <StackPanel Orientation="Horizontal">
-                                                <Path Classes="menuIcon star" Data="{StaticResource IconStar}" Width="11" Height="11"
-                                                      Stretch="Uniform" Margin="0,0,6,0"
+                                                <ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,6,0"
                                                       VerticalAlignment="Center" />
                                                 <TextBlock x:Name="FavSeparateItemText" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </MenuItem.Header>
                                     </MenuItem>
                                 </MenuItem>
-                                <MenuItem x:Name="InstalledMenuItem" IsEnabled="{Binding IsInstalledFilterAvailable}"
+                                <MenuItem x:Name="InstalledMenuItem" IsEnabled="{Binding IsInstalledFilterAvailable}" IsVisible="{Binding ShowInstalledFilter}"
                                           ToolTip.Tip="{Binding InstalledMenuTooltip}" ToolTip.ShowOnDisabled="True">
                                     <MenuItem.Header>
                                         <Grid ColumnDefinitions="*,Auto" MinWidth="240">
@@ -719,6 +862,29 @@
                                                 <Path Classes="menuIcon installed" Data="{StaticResource IconCircleFilled}" Width="9" Height="9" Stretch="Uniform"
                                                       Margin="1,0,7,0" VerticalAlignment="Center" />
                                                 <TextBlock x:Name="InstalledOnlyItemText" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <!-- The other way round: the liveries no car uses -->
+                                    <MenuItem x:Name="NotInstalledFirstItem" ToggleType="Radio" GroupName="InstalledGroup"
+                                              IsChecked="{Binding IsNotInstalledFirst}"
+                                              Command="{Binding SetInstalledModeCommand}" CommandParameter="{x:Static gallery:InstalledMode.NotInstalledFirst}">
+                                        <MenuItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Classes="menuIcon notInstalled" Data="{StaticResource IconCircleFilled}" Width="9" Height="9" Stretch="Uniform"
+                                                      Margin="1,0,7,0" VerticalAlignment="Center" />
+                                                <TextBlock x:Name="NotInstalledFirstItemText" VerticalAlignment="Center" />
+                                            </StackPanel>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem x:Name="NotInstalledOnlyItem" ToggleType="Radio" GroupName="InstalledGroup"
+                                              IsChecked="{Binding IsNotInstalledOnly}"
+                                              Command="{Binding SetInstalledModeCommand}" CommandParameter="{x:Static gallery:InstalledMode.OnlyNotInstalled}">
+                                        <MenuItem.Header>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Path Classes="menuIcon notInstalled" Data="{StaticResource IconCircleFilled}" Width="9" Height="9" Stretch="Uniform"
+                                                      Margin="1,0,7,0" VerticalAlignment="Center" />
+                                                <TextBlock x:Name="NotInstalledOnlyItemText" VerticalAlignment="Center" />
                                             </StackPanel>
                                         </MenuItem.Header>
                                     </MenuItem>
@@ -822,7 +988,7 @@
                                               IsChecked="{Binding IsPaintHidden}"
                                               Command="{Binding SetPaintFilterModeCommand}" CommandParameter="{x:Static gallery:PaintFilterMode.HidePaint}" />
                                 </MenuItem>
-                                <MenuItem x:Name="AuctionMenuItem" IsVisible="{Binding IsAuctionAvailable}">
+                                <MenuItem x:Name="AuctionMenuItem" IsVisible="{Binding ShowAuctionFilter}">
                                     <MenuItem.Header>
                                         <Grid ColumnDefinitions="*,Auto" MinWidth="240">
                                             <TextBlock x:Name="AuctionLabelText" VerticalAlignment="Center" />
@@ -990,7 +1156,7 @@
                 <!-- The room in the save, "238 / 1000": yellow from 90 %, red at the limit; a click opens "free up room" -->
                 <Button x:Name="SlotsCounter" Grid.Column="4" Classes="rowLink slots" Margin="14,0,0,0" VerticalAlignment="Center"
                         x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
-                        IsVisible="{Binding HasSlotsLimit}" ToolTip.Tip="{Binding SlotsTooltip}"
+                        IsVisible="{Binding ShowSlotsCounter}" ToolTip.Tip="{Binding SlotsTooltip}"
                         Classes.warning="{Binding IsSlotsWarning}" Classes.full="{Binding IsSlotsFull}"
                         Click="SlotsCounter_Click">
                     <StackPanel Orientation="Horizontal" Spacing="6">
@@ -999,6 +1165,19 @@
                         <TextBlock Classes="slotsText" Text="{Binding SlotsText}" FontSize="12" VerticalAlignment="Center" />
                     </StackPanel>
                 </Button>
+                <!-- The storage instead of the room: how many it holds, and its keys -->
+                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="6" Margin="14,0,0,0" VerticalAlignment="Center"
+                            x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
+                            IsVisible="{Binding IsStorageMode}">
+                    <TextBlock Text="·" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <Path Data="{StaticResource IconStorage}" Width="12" Height="12" Stretch="Uniform" VerticalAlignment="Center"
+                          Stroke="{DynamicResource StorageTextBrush}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                    <TextBlock Text="{Binding StorageStatusText}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"
+                               Foreground="{DynamicResource StorageTextBrush}" />
+                    <TextBlock Text="·" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <TextBlock Text="{Binding StorageKeysHint}" FontSize="12" VerticalAlignment="Center"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </StackPanel>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock x:Name="StatusText" Text="{Binding StatusText}" FontSize="12"
                                Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
@@ -1031,11 +1210,11 @@
                                    Foreground="{DynamicResource TextSecondaryBrush}" />
                     </StackPanel>
                 </Button>
-                <Button x:Name="UpdateBanner" Grid.Column="2" Classes="pill" x:DataType="vm:UpdateViewModel"
-                        DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext).Update}"
-                        Margin="0,0,12,0" Padding="10,4" FontSize="11.5" IsVisible="{Binding IsUpdateAvailable}"
+                <Button x:Name="UpdateBanner" Grid.Column="2" Classes="pill" x:DataType="updates:AppUpdateBanner"
+                        DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext).UpdateBanner}"
+                        Margin="0,0,12,0" Padding="10,4" FontSize="11.5" IsVisible="{Binding IsVisible}"
                         Click="UpdateBanner_Click">
-                    <TextBlock x:Name="UpdateBannerText" Text="{Binding BannerText}" />
+                    <TextBlock x:Name="UpdateBannerText" Text="{Binding Text}" />
                 </Button>
                 <StackPanel x:Name="CountPanel" Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock x:Name="CountBaseText" Text="{Binding CountText}" FontSize="12"
@@ -1045,8 +1224,7 @@
                                 IsVisible="{Binding HasFavorites}" VerticalAlignment="Center">
                         <TextBlock Text="·" FontSize="12" Margin="0,0,6,0"
                                    Foreground="{DynamicResource TextSecondaryBrush}" />
-                        <Path Data="{StaticResource IconStar}" Width="11" Height="11" Stretch="Uniform"
-                              Fill="#FFD54F" Margin="0,0,4,0" />
+                        <ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,4,0" />
                         <TextBlock x:Name="FavoritesCountText" Text="{Binding FavoritesCount}" FontSize="12"
                                    Foreground="{DynamicResource TextSecondaryBrush}" />
                     </StackPanel>
@@ -1074,21 +1252,143 @@
             </Grid>
         </Border>
         <Grid x:Name="GalleryHost" Grid.Row="3" Background="{DynamicResource BgBrush}" x:DataType="vm:GalleryStatusViewModel"
-              DataContext="{Binding Status}">
-            <ScrollViewer x:Name="GalleryScroll" Padding="12,0,12,20" Focusable="True" FocusAdorner="{x:Null}">
+              DataContext="{Binding Status}" ColumnDefinitions="Auto,*" RowDefinitions="Auto,*">
+            <!-- The storage's folders (docs/storage.md, stage 4): shown with the storage's liveries -->
+            <coll:CollectionSidebar x:Name="StorageSidebar" Grid.RowSpan="2" Classes="storage" IsVisible="False" />
+            <!-- Liveries put into the storage's folder by hand were found (docs/storage.md, "Own folder") -->
+            <Border x:Name="StorageFoundBanner" Grid.Column="1" Margin="12,10,12,4" Padding="12,8" CornerRadius="8" BorderThickness="1"
+                    x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
+                    IsVisible="{Binding ShowStorageFound}"
+                    Background="{DynamicResource StorageSoftBrush}" BorderBrush="{DynamicResource StorageBrush}">
+                <Grid ColumnDefinitions="Auto,*,Auto,Auto">
+                    <Path Data="{StaticResource IconStorage}" Width="16" Height="16" Stretch="Uniform" VerticalAlignment="Center"
+                          Stroke="{DynamicResource StorageTextBrush}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round"
+                          Margin="0,0,10,0" />
+                    <TextBlock Grid.Column="1" Text="{Binding StorageFoundText}" FontSize="12.5" TextWrapping="Wrap" VerticalAlignment="Center" />
+                    <Button x:Name="StorageFoundDetailsButton" Grid.Column="2" Classes="secondary" Padding="10,4" Margin="12,0,6,0"
+                            VerticalAlignment="Center" Click="StorageFoundDetails_Click" />
+                    <Button Grid.Column="3" Classes="rowLink" VerticalAlignment="Center" Padding="4"
+                            Command="{Binding CloseStorageFoundCommand}">
+                        <Path Data="{StaticResource IconCross}" Width="10" Height="10" Stretch="Uniform"
+                              Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.6" />
+                    </Button>
+                </Grid>
+            </Border>
+            <ScrollViewer x:Name="GalleryScroll" Grid.Column="1" Grid.Row="1" Padding="12,0,12,20" Focusable="True" FocusAdorner="{x:Null}">
                 <views:VirtualGalleryPanel x:Name="GalleryPanel"
                                            HeaderTemplate="{StaticResource GroupHeaderTemplate}"
                                            RowTemplate="{StaticResource GalleryRowTemplate}" />
             </ScrollViewer>
 
-            <StackPanel x:Name="EmptyState" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsEmptyStateVisible}">
+            <StackPanel x:Name="EmptyState" Grid.Column="1" Grid.Row="1" MaxWidth="520" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsEmptyStateVisible}">
                 <Path Data="{StaticResource IconPalette}" Width="42" Height="42" Stretch="Uniform"
                       HorizontalAlignment="Center" Fill="{DynamicResource TextSecondaryBrush}" />
-                <TextBlock x:Name="EmptyStateText" Text="{Binding EmptyStateText}" FontSize="14" Margin="0,10,0,0"
+                <TextBlock x:Name="EmptyStateText" Text="{Binding EmptyStateText}" FontSize="14" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"
                            Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                <!-- The game's save was not found: the user may choose its folder, or let the gallery look again -->
+                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,16,0,0" HorizontalAlignment="Center"
+                            IsVisible="{Binding IsSaveMissing}">
+                    <Button x:Name="ChooseSaveFolderButton" Classes="accent" Click="ChooseSaveFolderButton_Click" />
+                    <Button x:Name="SearchSaveAgainButton" Click="SearchSaveAgainButton_Click" />
+                </StackPanel>
             </StackPanel>
 
-            <Border x:Name="LoadingOverlay" Background="{DynamicResource BgBrush}" Opacity="0.85" IsVisible="{Binding IsLoading}">
+            <!-- "Screenshots": every screenshot of the liveries the filters and the search show, the newest first -->
+            <!-- The screenshots of the liveries shown: albums on the left, the grouping and the order on top, then the groups.
+                 A click selects (Ctrl, Shift as on the cards), a double click opens the viewer, a drag puts them in an album -->
+            <Grid x:Name="ScreenshotsView" Grid.ColumnSpan="2" Grid.RowSpan="2" IsVisible="False" Background="{DynamicResource BgBrush}" ColumnDefinitions="Auto,*">
+                <coll:CollectionSidebar x:Name="AlbumsSidebar" />
+                <Grid Grid.Column="1" RowDefinitions="Auto,*">
+                    <DockPanel Margin="20,12,20,6">
+                        <ComboBox x:Name="ScreenshotsOrderBox" DockPanel.Dock="Right" MinWidth="200" VerticalAlignment="Center"
+                                  SelectionChanged="ScreenshotsOrder_Changed" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <TextBlock x:Name="ScreenshotsGroupLabel" FontSize="12.5" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <Border Height="34" Padding="3" CornerRadius="9" BorderThickness="1" VerticalAlignment="Center"
+                                    Background="{DynamicResource InputBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush2}">
+                                <StackPanel Orientation="Horizontal" Spacing="2">
+                                    <Button x:Name="GroupByLiveryButton" Classes="viewHalf compact" Tag="ByLivery" Click="ScreenshotsGroup_Click" />
+                                    <Button x:Name="GroupLikeLiveriesButton" Classes="viewHalf compact" Tag="LikeLiveries" Click="ScreenshotsGroup_Click" />
+                                    <Button x:Name="GroupByDateButton" Classes="viewHalf compact" Tag="ByDate" Click="ScreenshotsGroup_Click" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </DockPanel>
+                    <ScrollViewer x:Name="ScreenshotsScroll" Grid.Row="1" Padding="20,4,20,20" HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl x:Name="ScreenshotGroups">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ScreenshotGroupViewModel">
+                                    <StackPanel Margin="0,0,0,12">
+                                        <coll:CollectionGroupHeader Folded="ScreenshotGroup_Folded" LinkClicked="ScreenshotGroup_LinkClicked" />
+                                        <ItemsControl ItemsSource="{Binding Tiles}" IsVisible="{Binding IsExpanded}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate x:DataType="vm:ScreenshotTile">
+                                                    <Border Classes="shotTile" Classes.selected="{Binding IsSelected}" Classes.current="{Binding IsCurrent}" Width="300" Margin="0,0,14,14"
+                                                            Background="Transparent" Cursor="Hand" ToolTip.Tip="{Binding Screenshot.FileName}"
+                                                            PointerPressed="ShotTile_PointerPressed" PointerMoved="ShotTile_PointerMoved"
+                                                            PointerReleased="ShotTile_PointerReleased" DoubleTapped="ShotTile_DoubleTapped"
+                                                            ContextRequested="ShotTile_ContextRequested">
+                                                        <StackPanel Spacing="5">
+                                                            <Panel>
+                                                                <Border x:Name="Picture" Height="169" CornerRadius="8" ClipToBounds="True"
+                                                                        Background="{DynamicResource ThumbnailPlaceholderBrush}">
+                                                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                                                                </Border>
+                                                                <Border Classes="shotFrame" CornerRadius="8" />
+                                                                <Border IsVisible="{Binding IsCover}" Background="#B0000000" CornerRadius="6" Padding="7,2"
+                                                                        Margin="8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                                    <TextBlock Text="{x:Static loc:Strings.ScreenshotCoverBadge}" FontSize="10.5"
+                                                                               FontWeight="SemiBold" Foreground="White" />
+                                                                </Border>
+                                                            </Panel>
+                                                            <TextBlock Text="{Binding Caption}" FontSize="12" TextTrimming="CharacterEllipsis"
+                                                                       Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <StackPanel x:Name="ScreenshotsEmpty" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                IsVisible="False" MaxWidth="460">
+                        <Path Data="{StaticResource IconCamera}" Width="50" Height="37" Stretch="Uniform"
+                              HorizontalAlignment="Center" Fill="{DynamicResource TextSecondaryBrush}" />
+                        <TextBlock x:Name="ScreenshotsEmptyText" FontSize="14" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                    </StackPanel>
+                </Grid>
+            </Grid>
+
+            <!-- The storage's folder of its own is not there (a disk not plugged in): nothing of it is shown, nothing taken for gone -->
+            <Border x:Name="StorageUnavailableView" Grid.ColumnSpan="2" Grid.RowSpan="2" Background="{DynamicResource BgBrush}"
+                    x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
+                    IsVisible="{Binding ShowStorageUnavailable}">
+                <StackPanel MaxWidth="560" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="6">
+                    <Path Data="{StaticResource IconStorage}" Width="40" Height="40" Stretch="Uniform" HorizontalAlignment="Center"
+                          Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.4" StrokeLineCap="Round" StrokeJoin="Round" />
+                    <TextBlock x:Name="StorageUnavailableTitle" FontSize="15" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,8,0,0" />
+                    <TextBlock Text="{Binding StorageUnavailablePath}" FontSize="12.5" HorizontalAlignment="Center" TextWrapping="Wrap"
+                               TextAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <TextBlock x:Name="StorageUnavailableText" FontSize="12.5" HorizontalAlignment="Center" TextWrapping="Wrap"
+                               TextAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Center" Margin="0,10,0,0">
+                        <Button x:Name="StorageCheckAgainButton" Classes="secondary" Command="{Binding CheckStorageAgainCommand}" />
+                        <Button x:Name="StorageChooseOtherButton" Classes="secondary" Click="StorageChooseOther_Click" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <Border x:Name="LoadingOverlay" Grid.ColumnSpan="2" Grid.RowSpan="2" Background="{DynamicResource BgBrush}" Opacity="0.85" IsVisible="{Binding IsLoading}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Path Data="{StaticResource IconRefresh}" Width="30" Height="30" Stretch="Uniform"
                           HorizontalAlignment="Center" Fill="{DynamicResource AccentBrush}" />

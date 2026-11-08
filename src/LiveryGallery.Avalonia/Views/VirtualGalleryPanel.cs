@@ -36,6 +36,8 @@ public sealed class VirtualGalleryPanel : Panel
     // measure pass is needed
     private const double RemeasureMargin = 120;
     private const int MaxAnchorCandidates = 8;
+    // Items past the estimated end of the realized area a kept row may still be for (heights not measured yet)
+    private const int ReuseLookahead = 8;
 
     private IReadOnlyList<object> _items = [];
     private bool[] _isHeader = [];
@@ -106,6 +108,52 @@ public sealed class VirtualGalleryPanel : Panel
         RecomputeTops();
         _coveredBottom = -1;
         InvalidateMeasure();
+    }
+
+    /// <summary>
+    /// Scrolls so <paramref name="item"/> is in view, with its group's header when it is the group's first row; the list
+    /// does not move when it already is. Unmeasured rows are of the average height, so it looks again once laid out
+    /// </summary>
+    public void BringItemIntoView(object item)
+    {
+        BringIntoViewOnce(item);
+        Avalonia.Threading.Dispatcher.UIThread.Post(() => BringIntoViewOnce(item), Avalonia.Threading.DispatcherPriority.Loaded);
+    }
+
+    private void BringIntoViewOnce(object item)
+    {
+        if (_scrollViewer is not { } scrollViewer || _viewport.Height <= 0) return;
+        int index = -1;
+        for (int i = 0; i < _items.Count; i++)
+            if (ReferenceEquals(_items[i], item)) { index = i; break; }
+        if (index < 0) return;
+        RecomputeTops();
+        double top = index > 0 && _isHeader[index - 1] ? _tops[index - 1] : _tops[index];
+        double bottom = _tops[index + 1];
+        double delta = top < _viewport.Y ? top - _viewport.Y
+            : bottom > _viewport.Bottom ? Math.Min(bottom - _viewport.Bottom, top - _viewport.Y)
+            : 0;
+        if (Math.Abs(delta) < 0.5) return;
+        double maxY = Math.Max(0, scrollViewer.Extent.Height - scrollViewer.Viewport.Height);
+        scrollViewer.Offset = new Vector(scrollViewer.Offset.X, Math.Clamp(scrollViewer.Offset.Y + delta, 0, maxY));
+    }
+
+    /// <summary>The first row (not a header) at the top of the view or below it; null when there is none</summary>
+    public object? FirstVisibleRow()
+    {
+        if (_items.Count == 0) return null;
+        RecomputeTops();
+        for (int i = FindIndexAt(Math.Max(0, _viewport.Y)); i < _items.Count; i++)
+            if (!_isHeader[i] && _tops[i + 1] > _viewport.Y + 1) return _items[i];
+        return null;
+    }
+
+    /// <summary>How many rows a page of the view holds (Page Up, Page Down), at least one</summary>
+    public int RowsPerPage()
+    {
+        double row = _rowHeightCount > 0 ? _rowHeightSum / _rowHeightCount : DefaultRowHeight;
+        double height = _viewport.Height > 0 ? _viewport.Height : _scrollViewer?.Viewport.Height ?? 0;
+        return Math.Max(1, (int)(height / Math.Max(1, row)));
     }
 
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
@@ -194,14 +242,31 @@ public sealed class VirtualGalleryPanel : Panel
         int visibleFirst = FindIndexAt(Math.Max(0, viewport.Y));
         double visibleFirstTopBefore = _tops[visibleFirst];
 
+        // The rows that stay in the realized area are kept for their items; those that left it go to the pool first,
+        // so the rows coming in take them instead of building new cards (and the pool stays small)
+        int first = FindIndexAt(from);
         foreach (var (index, control) in _realized)
         {
-            if (!_reusable.TryAdd(_items[index], control)) Recycle(control);
+            bool stays = index >= first && _tops[index] < to;
+            if (!stays || !_reusable.TryAdd(_items[index], control)) Recycle(control);
         }
         _realized.Clear();
+        // Kept for their items (SetItems) but not coming back: to the pool now as well. A new list of rows (another
+        // sort, a filter) would else build new rows and cards for all it shows while the old ones wait to be pooled
+        if (_reusable.Count > 0)
+        {
+            int last = Math.Min(n - 1, FindIndexAt(to) + ReuseLookahead);
+            var coming = new HashSet<object>(ReferenceEqualityComparer.Instance);
+            for (int i = first; i <= last; i++) coming.Add(_items[i]);
+            foreach (var (item, control) in _reusable.ToList())
+            {
+                if (coming.Contains(item)) continue;
+                _reusable.Remove(item);
+                Recycle(control);
+            }
+        }
 
         var measureSize = new Size(width, double.PositiveInfinity);
-        int first = FindIndexAt(from);
         double y = _tops[first];
         for (int i = first; i < n && y < to; i++)
         {
@@ -268,7 +333,10 @@ public sealed class VirtualGalleryPanel : Panel
         if (pool.Count > 0)
         {
             control = pool.Pop();
-            control.DataContext = item;
+            // A row's cards keep their liveries in the pool: the row's own again shows them as they were, another
+            // changes only the cards whose livery differs (GalleryRowPresenter)
+            if (ReferenceEquals(control.DataContext, item)) Unpark(control);
+            else control.DataContext = item;
             control.IsVisible = true;
         }
         else
@@ -284,22 +352,49 @@ public sealed class VirtualGalleryPanel : Panel
         return control;
     }
 
+    // Into the pool with its data kept: setting it to nothing and to the next item would run every binding of every
+    // card twice, the first time into errors (most of the cost of a scroll). Its cards' previews are let go
     private void Recycle(Control control)
     {
-        control.DataContext = null;
-
         bool isHeader = _controlIsHeader.TryGetValue(control, out bool header) && header;
         var pool = isHeader ? _headerPool : _rowPool;
         if (pool.Count < MaxPooledPerKind)
         {
             control.IsVisible = false;
+            if (!isHeader) RowOf(control)?.ParkAll();
             pool.Push(control);
         }
         else
         {
             Children.Remove(control);
             _controlIsHeader.Remove(control);
+            _rowOf.Remove(control);
         }
+    }
+
+    private void Unpark(Control control)
+    {
+        if (!(_controlIsHeader.TryGetValue(control, out bool header) && header)) RowOf(control)?.UnparkShown();
+    }
+
+    // The cards of a row control (its template's GalleryRowPresenter), found once: a walk of all its visuals on every
+    // recycle would go through every card's tree
+    private readonly Dictionary<Control, GalleryRowPresenter?> _rowOf = [];
+
+    private GalleryRowPresenter? RowOf(Control control)
+    {
+        if (_rowOf.TryGetValue(control, out var known) && known is not null) return known;
+        var found = FindRow(control);
+        _rowOf[control] = found;
+        return found;
+    }
+
+    private static GalleryRowPresenter? FindRow(Visual visual)
+    {
+        if (visual is GalleryRowPresenter row) return row;
+        foreach (var child in visual.GetVisualChildren())
+            if (FindRow(child) is { } found) return found;
+        return null;
     }
 
     private void RecordHeight(int index, double height)

@@ -1,0 +1,13 @@
+{
+  "packId": "ForzaLiveryGallery.App",
+  "dataFolder": "ForzaLiveryGallery",
+  "title": "Forza Livery Gallery",
+  "authors": "bradice",
+  "mainExe": "ForzaLiveryGallery.exe",
+  "icon": "src/LiveryGallery/Assets/app-icon.ico",
+  "project": "src/LiveryGallery",
+  "repository": "gradbradice/forza-livery-gallery",
+  "publicKeys": ["MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3yA/MBECZvv6OMVUN5z39McGV5Q7Hy8IvSEToWZTYvIlT7RCeLD7ezr1HQSwN/MYbCJ+iJv2HdiTg5uMy7Nl3g=="],
+  "publishProperties": { "UseToolkitSource": "false" },
+  "root": ".."
+}

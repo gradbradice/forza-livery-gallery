@@ -82,26 +82,8 @@ internal static class FreeSpacePlanner
     /// The groups of exact duplicates: copies joined by relations that score as exact (<see cref="ExactScore"/>). A
     /// possible duplicate in between does not join two groups
     /// </summary>
-    internal static IEnumerable<List<LiveryEntry>> DuplicateGroups(IReadOnlyCollection<LiveryEntry> entries)
-    {
-        var duplicates = entries.Where(e => e.IsDuplicate).ToList();
-        var index = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        for (int i = 0; i < duplicates.Count; i++) index[duplicates[i].FolderName] = i;
-        int[] parent = [.. Enumerable.Range(0, duplicates.Count)];
-        int Find(int x)
-        {
-            while (parent[x] != x) x = parent[x] = parent[parent[x]];
-            return x;
-        }
-        for (int i = 0; i < duplicates.Count; i++)
-            foreach (string other in ExactDuplicatesOf(duplicates[i]))
-                if (index.TryGetValue(other, out int j))
-                    parent[Find(i)] = Find(j);
-        return Enumerable.Range(0, duplicates.Count)
-            .GroupBy(Find)
-            .Where(g => g.Count() > 1)
-            .Select(g => g.Select(i => duplicates[i]).ToList());
-    }
+    internal static IEnumerable<IReadOnlyList<LiveryEntry>> DuplicateGroups(IReadOnlyCollection<LiveryEntry> entries) =>
+        ForzaToolkit.Liveries.Statistics.DuplicateGroups.Of([.. entries.Where(e => e.IsDuplicate)], ExactDuplicatesOf).Where(g => g.Count > 1);
 
     /// <summary>The keys of the liveries <paramref name="entry"/> is an exact copy of (the statistics group by them too)</summary>
     public static IEnumerable<string> ExactDuplicatesOf(LiveryEntry entry) =>

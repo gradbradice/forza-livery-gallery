@@ -42,6 +42,17 @@ internal static class ThumbnailCacheService
     private static bool _disposalScheduled;
     private const int MaxDecodeWidth = 400;
 
+    // The width of a card's picture (the card template in MainWindow.axaml)
+    private const double CardPictureWidth = 270;
+
+    /// <summary>
+    /// The scale of the main window's screen (its RenderScaling): previews wider than the card is on the screen are
+    /// decoded smaller, but not below <see cref="MaxDecodeWidth"/>, so a 4K cover stays sharp at 150 %
+    /// </summary>
+    public static double DisplayScaling { get; set; } = 1;
+
+    private static int DecodeWidth => Math.Max(MaxDecodeWidth, Screenshots.ScreenshotStore.PixelWidth(CardPictureWidth, DisplayScaling));
+
     private static readonly Dictionary<string, CacheEntry> _cache = [];
     private static readonly LinkedList<RecentBitmap> _recentlyReleased = new();
     private static readonly Dictionary<string, LinkedListNode<RecentBitmap>> _recentlyReleasedByPath = [];
@@ -331,14 +342,14 @@ internal static class ThumbnailCacheService
 
         try
         {
-            Bitmap bitmap;
-            using (var stream = File.OpenRead(path))
-                bitmap = new Bitmap(stream);
-            if (bitmap.PixelSize.Width <= MaxDecodeWidth) return bitmap;
-
-            bitmap.Dispose();
-            using var resizeStream = File.OpenRead(path);
-            return Bitmap.DecodeToWidth(resizeStream, MaxDecodeWidth, BitmapInterpolationMode.MediumQuality);
+            // The size from the file's header: a large picture is decoded straight to the card's width, never whole
+            if (Screenshots.ScreenshotStore.SizeOf(path) is { } size && size.Width > DecodeWidth)
+            {
+                using var resizeStream = File.OpenRead(path);
+                return Bitmap.DecodeToWidth(resizeStream, DecodeWidth, BitmapInterpolationMode.HighQuality);
+            }
+            using var stream = File.OpenRead(path);
+            return new Bitmap(stream);
         }
         catch (Exception ex)
         {

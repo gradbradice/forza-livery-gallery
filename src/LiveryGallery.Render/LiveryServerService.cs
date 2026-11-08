@@ -8,8 +8,11 @@ namespace LiveryGallery.Render;
 /// the client's status and errors become the toolkit's types. The profile save it sends is found by the open
 /// <see cref="ProfileDataLocator"/>.
 /// </summary>
-internal sealed class LiveryServerService : ILiveryServerClient
+/// <param name="gameId">The game whose saves are sent (ForzaToolkit.Games id): the server decrypts them with its keys</param>
+internal sealed class LiveryServerService(string gameId) : ILiveryServerClient
 {
+    // Short requests (status, challenge). The save is sent with the client's own upload timeout (5 minutes,
+    // ForzaLiveryClientOptions.UploadTimeout): with a ping of seconds a megabyte takes more than a minute
     private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(45);
 
     private readonly Lock _lock = new();
@@ -41,6 +44,7 @@ internal sealed class LiveryServerService : ILiveryServerClient
                 var options = new ForzaLiveryClientOptions
                 {
                     ProofOfWorkThreads = Math.Max(1, Environment.ProcessorCount / 2),
+                    GameId = gameId,
                 };
                 _client = ForzaLiveryClient.CreateForBuiltInServer(UserAgent, options, RequestTimeout);
             }
@@ -58,7 +62,7 @@ internal sealed class LiveryServerService : ILiveryServerClient
     public async Task<ServerCheckResult?> CheckConnectionAsync(CancellationToken ct)
     {
         if (GetClient() is not { } client) return null;
-        var status = await client.CheckConnectionAsync(cancellationToken: ct).ConfigureAwait(false);
+        var status = await client.CheckConnectionAsync(gameId, ct).ConfigureAwait(false);
         return ToCheckResult(status);
     }
 
@@ -76,9 +80,12 @@ internal sealed class LiveryServerService : ILiveryServerClient
         }
     }
 
+    // A refusal of the app check passes its code (app_header_invalid, app_not_allowed…) as the message: the status
+    // indicator says what it means in the interface language (ServerStatusViewModel.AppRejectedReason)
     internal static ServerCheckResult ToCheckResult(ServerConnectionStatus status) => new(
         ToState(status.State), status.Server?.Version, status.Server?.ApiVersion, status.Latency,
-        status.ServerMessage, status.RetryAfter, status.RecheckAfter);
+        status.State == ConnectionState.AppRejected && status.Error?.ServerCode is { } code ? code : status.ServerMessage,
+        status.RetryAfter, status.RecheckAfter);
 
     internal static LiveryServerException ToToolkitException(LiveryServiceException ex) =>
         new(ToFailure(ex.Error), ex.Message, ex.StatusCode, ex.RetryAfter, ex);

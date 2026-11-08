@@ -1,12 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <!--
-    FH6 Livery Gallery, the program: composes the open gallery (LiveryGallery.Avalonia) with the closed side
-    (LiveryGallery.Render) for FH6 and starts it. Builds LiveryGallery.exe.
-  -->
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <AssemblyName>LiveryGallery</AssemblyName>
+    <AssemblyName>ForzaLiveryGallery</AssemblyName>
+    <RootNamespace>LiveryGallery</RootNamespace>
     <ApplicationIcon>Assets\app-icon.ico</ApplicationIcon>
   </PropertyGroup>
 
@@ -19,13 +16,24 @@
     <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
-    <!-- The game: FH6's profile (GameProfiles.cs) is built here, the gallery itself does not know the game -->
-    <PackageReference Include="ForzaToolkit.Games.FH6" Version="0.28.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\LiveryGallery.Avalonia\LiveryGallery.Avalonia.csproj" />
     <ProjectReference Include="..\LiveryGallery.Render\LiveryGallery.Render.csproj" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(UseToolkitSource)' == 'true'">
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games.FH6/ForzaToolkit.Games.FH6.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games.FH3/ForzaToolkit.Games.FH3.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games.FH4/ForzaToolkit.Games.FH4.csproj" />
+    <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games.FH5/ForzaToolkit.Games.FH5.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseToolkitSource)' != 'true'">
+    <PackageReference Include="ForzaToolkit.Games.FH6" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FH3" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FH4" Version="$(ForzaToolkitVersion)" />
+    <PackageReference Include="ForzaToolkit.Games.FH5" Version="$(ForzaToolkitVersion)" />
   </ItemGroup>
 
 </Project>

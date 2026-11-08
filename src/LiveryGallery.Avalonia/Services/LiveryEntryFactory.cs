@@ -10,7 +10,9 @@ internal sealed class LiveryEntryFactory(
     TagService tagService,
     AuthorCardService authorCardService,
     LiveryIdService liveryIdService,
-    GameProfile profile)
+    GameProfile profile,
+    NoteService? noteService = null,
+    Screenshots.ScreenshotStore? screenshots = null)
 {
     private volatile AuthorNameInference _authorInference = AuthorNameInference.Empty;
 
@@ -101,7 +103,11 @@ internal sealed class LiveryEntryFactory(
     /// <param name="c">The cached livery</param>
     /// <param name="currentUserId">The shown save's account</param>
     /// <param name="authors">Who the save's liveries are by (<see cref="CreateAuthorContext"/>); names are shown as they are when null</param>
-    public LiveryEntry ToEntry(LiveryCacheEntry c, ulong? currentUserId, AuthorContext? authors = null)
+    /// <param name="known">
+    /// What the gallery knew of the livery before (a stored one): its car's names when the car list does not know the
+    /// car, and its number when the numbers have none
+    /// </param>
+    public LiveryEntry ToEntry(LiveryCacheEntry c, ulong? currentUserId, AuthorContext? authors = null, LiveryData? known = null)
     {
         authors ??= AuthorContext.Empty;
         var car = carDatabaseService.Get(c.CarId);
@@ -124,10 +130,10 @@ internal sealed class LiveryEntryFactory(
             HasParseError = c.HasParseError,
             ParseIssues = c.ParseIssues,
             CarId = c.CarId,
-            CarManufacturerRaw = car?.Manufacturer ?? string.Empty,
-            CarModelNameRaw = car?.Name ?? string.Empty,
-            CarYear = car?.Year,
-            CarKnown = car is not null,
+            CarManufacturerRaw = car?.Manufacturer ?? known?.CarManufacturerRaw ?? string.Empty,
+            CarModelNameRaw = car?.Name ?? known?.CarModelNameRaw ?? string.Empty,
+            CarYear = car?.Year ?? known?.CarYear,
+            CarKnown = car is not null || known?.CarKnown == true,
             CreatedYear = c.CreatedYear,
             CreatedMonth = c.CreatedMonth,
             DownloadDate = c.DownloadDate,
@@ -138,7 +144,7 @@ internal sealed class LiveryEntryFactory(
             ThumbnailDrawn = c.ThumbnailDrawn,
             ExternalPreviewPath = c.ExternalThumbSource,
             CLiveryHash = c.CLiveryHash,
-            LiveryId = liveryIdService.TryGet(c.FolderName) ?? 0,
+            LiveryId = liveryIdService.TryGet(c.FolderName) ?? known?.LiveryId ?? 0,
             RelatedLiveryIds = BuildRelatedLiveryIds(c.PossibleDuplicateOf),
         };
 
@@ -160,6 +166,9 @@ internal sealed class LiveryEntryFactory(
             Author = author,
             IsMine = (currentUserId is not null && c.CreatorUserId == currentUserId) || ownWithoutId,
             Tags = tagService.GetTags(c.FolderName),
+            Note = noteService?.GetNote(c.FolderName),
+            ScreenshotCount = screenshots?.Summary(c.FolderName).Count ?? 0,
+            CoverPath = screenshots?.Summary(c.FolderName).CoverPath,
             IsFavorite = favoriteService.IsFavorite(c.FolderName),
             IsLocked = lockService.IsLocked(c.FolderName),
             IsAuction = profile.IsAuction(c.FolderName),
@@ -195,4 +204,59 @@ internal sealed class LiveryEntryFactory(
         }
         return entries;
     }
+
+    /// <summary>
+    /// The liveries of the storage as the grid shows them: what the gallery knew when each went there, with today's
+    /// car names, tags, notes and author cards. Who they are by is worked out with the game's liveries beside them, as
+    /// one collection: the save's own account and its nicknames come from the game (a livery without an id is the
+    /// player's own only under a nickname the account published under), and an author's label is the same in both
+    /// places. The game's author inference stays as the last scan made it
+    /// </summary>
+    /// <param name="stored">The storage's entries</param>
+    /// <param name="currentUserId">The shown save's account</param>
+    /// <param name="gameCache">The game's scanned liveries (the account's cache)</param>
+    public List<LiveryEntry> BuildStoredEntries(IEnumerable<ArchivedLiveryEntry> stored, ulong? currentUserId,
+        IEnumerable<LiveryCacheEntry>? gameCache = null)
+    {
+        var list = stored as IReadOnlyCollection<ArchivedLiveryEntry> ?? [.. stored];
+        var caches = list.Select(s => ToCache(s.Data)).ToList();
+        var storedKeys = caches.Select(c => c.FolderName).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var authors = CreateAuthorContext([.. caches, .. (gameCache ?? []).Where(c => !storedKeys.Contains(c.FolderName))], currentUserId);
+        var entries = new List<LiveryEntry>(list.Count);
+        int i = 0;
+        foreach (var s in list)
+        {
+            var entry = ToEntry(caches[i++], currentUserId, authors, s.Data);
+            entry.StoredAtUtc = s.ArchivedAtUtc;
+            entry.StorageFolderId = s.FolderId;
+            entries.Add(entry);
+        }
+        return entries;
+    }
+
+    /// <summary>A stored livery's data as a scan would have cached it, so a stored card is built as any other</summary>
+    private static LiveryCacheEntry ToCache(LiveryData d) => new()
+    {
+        SchemaVersion = LiveryCacheEntry.CurrentSchemaVersion,
+        FolderName = d.FolderName,
+        LiveryName = d.LiveryName,
+        Author = d.AuthorRaw,
+        AuthorIdentityTagHex = d.AuthorIdentityTagHex,
+        TextVersion = d.TextVersion,
+        CreatorUserId = d.CreatorUserId,
+        IsPossiblyGenerated = d.IsPossiblyGenerated,
+        HasNoLayers = d.HasNoLayers,
+        ArtworkSketch = d.ArtworkSketch,
+        LayerCount = d.LayerCount,
+        HasParseError = d.HasParseError,
+        ParseIssues = d.ParseIssues,
+        CarId = d.CarId,
+        CreatedYear = d.CreatedYear ?? 0,
+        CreatedMonth = d.CreatedMonth ?? 0,
+        DownloadDate = d.DownloadDate,
+        ThumbnailFile = d.ThumbnailPath is { } path ? Path.GetFileName(path) : null,
+        ThumbnailDrawn = d.ThumbnailDrawn,
+        ExternalThumbSource = d.ExternalPreviewPath,
+        CLiveryHash = d.CLiveryHash,
+    };
 }

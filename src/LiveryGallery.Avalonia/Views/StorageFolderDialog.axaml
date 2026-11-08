@@ -1,0 +1,126 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
+        x:Class="LiveryGallery.Views.StorageFolderDialog"
+        x:DataType="vm:StorageFolderViewModel"
+        Width="680" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        CanResize="False" ShowInTaskbar="False"
+        Background="{DynamicResource BgBrush}"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1">
+
+    <!-- "Storage folder" (docs/storage.md, "Own folder"): the program's folder, a common folder of the user's laid out
+         by game and account (offered first), or exactly a folder; what the folder holds already, and the move -->
+    <Window.Styles>
+        <Style Selector="TextBlock.path">
+            <Setter Property="FontFamily" Value="Cascadia Mono, Consolas, monospace" />
+            <Setter Property="FontSize" Value="11.5" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+        </Style>
+    </Window.Styles>
+
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="{DynamicResource ToolbarBrush}" Height="36" PointerPressed="TitleBar_PointerPressed">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock x:Name="TitleBarText" FontSize="12" Margin="12,0,0,0" VerticalAlignment="Center"
+                           IsHitTestVisible="False" Foreground="{DynamicResource TextSecondaryBrush}" />
+                <Button Grid.Column="1" Classes="titlebar close" Click="CloseButton_Click">
+                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
+                </Button>
+            </Grid>
+        </Border>
+
+        <StackPanel Margin="24,18,24,20" Spacing="12">
+            <StackPanel Spacing="4">
+                <TextBlock Text="{Binding TitleText}" FontSize="18" FontWeight="Bold" TextWrapping="Wrap" />
+                <TextBlock Text="{Binding SubtitleText}" FontSize="12.5" TextWrapping="Wrap"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+            </StackPanel>
+
+            <StackPanel Spacing="10" IsEnabled="{Binding IsIdle}">
+                <!-- The program's folder -->
+                <Border Classes="roomOption" Classes.on="{Binding IsProgram}">
+                    <StackPanel Spacing="4">
+                        <RadioButton GroupName="StorageFolder" IsChecked="{Binding IsProgram, Mode=TwoWay}">
+                            <TextBlock x:Name="ProgramOptionText" FontSize="13.5" FontWeight="SemiBold" />
+                        </RadioButton>
+                        <TextBlock Classes="path" Text="{Binding ProgramFolderText}" Margin="28,0,0,0" />
+                    </StackPanel>
+                </Border>
+
+                <!-- A common folder, by game and account -->
+                <Border Classes="roomOption" Classes.on="{Binding IsCommon}">
+                    <StackPanel Spacing="6">
+                        <RadioButton GroupName="StorageFolder" IsChecked="{Binding IsCommon, Mode=TwoWay}">
+                            <StackPanel Orientation="Horizontal" Spacing="8">
+                                <TextBlock x:Name="CommonOptionText" FontSize="13.5" FontWeight="SemiBold" VerticalAlignment="Center"
+                                           TextWrapping="Wrap" />
+                                <Border Background="{DynamicResource StorageSoftBrush}" CornerRadius="4" Padding="6,1" VerticalAlignment="Center">
+                                    <TextBlock x:Name="RecommendedText" FontSize="11" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource StorageTextBrush}" />
+                                </Border>
+                            </StackPanel>
+                        </RadioButton>
+                        <Grid ColumnDefinitions="*,Auto" Margin="28,0,0,0" IsVisible="{Binding IsCommon}">
+                            <TextBox Grid.Column="0" Classes="search" FontSize="13" Margin="0,0,8,0"
+                                     Text="{Binding CommonFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button Grid.Column="1" Classes="secondary" Width="44" Content="..." Click="BrowseCommon_Click" />
+                        </Grid>
+                        <TextBlock Classes="path" Text="{Binding CommonResultText}" Margin="28,0,0,0"
+                                   IsVisible="{Binding CommonResultText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Exactly this folder -->
+                <Border Classes="roomOption" Classes.on="{Binding IsExact}">
+                    <StackPanel Spacing="6">
+                        <RadioButton GroupName="StorageFolder" IsChecked="{Binding IsExact, Mode=TwoWay}">
+                            <TextBlock x:Name="ExactOptionText" FontSize="13.5" FontWeight="SemiBold" />
+                        </RadioButton>
+                        <TextBlock x:Name="ExactHintText" Classes="roomNote" />
+                        <Grid ColumnDefinitions="*,Auto" Margin="28,0,0,0" IsVisible="{Binding IsExact}">
+                            <TextBox Grid.Column="0" Classes="search" FontSize="13" Margin="0,0,8,0"
+                                     Text="{Binding ExactFolder, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                            <Button Grid.Column="1" Classes="secondary" Width="44" Content="..." Click="BrowseExact_Click" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- The folder does not fit -->
+            <Border IsVisible="{Binding HasProblem}" CornerRadius="8" Padding="12,9" BorderThickness="1"
+                    BorderBrush="{DynamicResource DangerBrush}" Background="#1AE5484D">
+                <TextBlock FontSize="12.5" TextWrapping="Wrap">
+                    <Run x:Name="NotSuitableRun" FontWeight="Bold" Foreground="{DynamicResource DangerBrush}" />
+                    <Run Text=" " />
+                    <Run Text="{Binding ProblemText}" />
+                </TextBlock>
+            </Border>
+
+            <!-- What lies there already -->
+            <Border IsVisible="{Binding HasExisting}" CornerRadius="8" Padding="12,9" BorderThickness="1"
+                    BorderBrush="{DynamicResource StorageBrush}" Background="{DynamicResource StorageSoftBrush}">
+                <TextBlock Text="{Binding ExistingText}" FontSize="12.5" TextWrapping="Wrap" />
+            </Border>
+
+            <!-- What the move does -->
+            <Border CornerRadius="8" Padding="12,9" Background="{DynamicResource SurfaceBrush}"
+                    IsVisible="{Binding SummaryText, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding SummaryText}" FontSize="12.5" TextWrapping="Wrap" />
+            </Border>
+
+            <StackPanel Spacing="6" IsVisible="{Binding IsMoving}">
+                <ProgressBar Minimum="0" Maximum="1" Value="{Binding Progress}" Height="6" />
+                <TextBlock Text="{Binding ProgressText}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right" Margin="0,6,0,0">
+                <Button x:Name="CancelButton" Classes="secondary" MinWidth="110" Click="CancelButton_Click" />
+                <Button Classes="primary storage" MinWidth="150" Content="{Binding ApplyText}"
+                        IsEnabled="{Binding CanApply}" Click="ApplyButton_Click" />
+            </StackPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

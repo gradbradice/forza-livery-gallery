@@ -12,11 +12,11 @@ internal partial class BackupDetailDialog : Window
     private readonly DialogWorkScope _work;
 
     public BackupDetailDialog(
-        LiveryBackups backupService, SavePathService savePathService, BackupRowViewModel backup,
-        Func<IReadOnlyList<LiveryData>> getCurrentEntries, Func<Task> onRestored)
+        LiveryBackups backupService, BackupPreviews previews, SavePathService savePathService, BackupRowViewModel backup,
+        Func<IReadOnlyList<LiveryData>> getCurrentEntries, Func<Task> onRestored, StorageBackupContext? storage = null)
     {
         InitializeComponent();
-        _viewModel = new BackupDetailViewModel(backupService, savePathService, backup, getCurrentEntries, onRestored);
+        _viewModel = new BackupDetailViewModel(backupService, previews, savePathService, backup, getCurrentEntries, onRestored, storage);
         DataContext = _viewModel;
         _work = new DialogWorkScope(this, () => _viewModel.RestoreSelectedCommand.ExecutionTask);
 

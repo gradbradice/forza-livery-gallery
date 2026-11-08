@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using LiveryGallery.Localisation;
 using LiveryGallery.Services;
 using LiveryGallery.Services.Accounts;
+using ForzaToolkit.Core.Text;
 
 namespace LiveryGallery.ViewModels;
 
@@ -39,16 +40,7 @@ internal sealed partial class ArchivedLiveryRowViewModel(ArchivedLiveryEntry ent
         $"{CarManufacturer} {CarModelName} {Entry.Data.CarYear} {LiveryName} {AuthorRaw} {LiveryIdText}";
 
     /// <summary>Every token is in the row's texts (or, with folder names shown, in the folder name), ignoring case</summary>
-    public bool MatchesSearch(string[] tokens)
-    {
-        foreach (string token in tokens)
-        {
-            bool matches = SearchHaystack.Contains(token, StringComparison.OrdinalIgnoreCase)
-                || (ShowFolderName && FolderName.Contains(token, StringComparison.OrdinalIgnoreCase));
-            if (!matches) return false;
-        }
-        return true;
-    }
+    public bool MatchesSearch(string[] tokens) => SearchWords.AllIn(tokens, SearchHaystack, ShowFolderName ? FolderName : null);
 
     public string ArchivedText => string.Format(Strings.ArchivedOnFormat, Entry.ArchivedAtUtc.ToLocalTime().ToString("d"));
 

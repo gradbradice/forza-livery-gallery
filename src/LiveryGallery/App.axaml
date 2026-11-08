@@ -20,7 +20,12 @@
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
                     <SolidColorBrush x:Key="GroupBackgroundBrush" Color="#E9E9EC" />
-                    <SolidColorBrush x:Key="AuctionBrush" Color="#0E7490" />
+                    <!-- Fuchsia: apart from the danger red, the warning amber, the accent and the storage's cyan; white text 6.3 -->
+                    <SolidColorBrush x:Key="AuctionBrush" Color="#A21CAF" />
+                    <!-- The storage (docs/storage.md): the fill with white text, text and icons on the page, a soft background -->
+                    <SolidColorBrush x:Key="StorageBrush" Color="#0E7490" />
+                    <SolidColorBrush x:Key="StorageTextBrush" Color="#0E7490" />
+                    <SolidColorBrush x:Key="StorageSoftBrush" Color="#E5F6FA" />
                     <SolidColorBrush x:Key="ThumbnailPlaceholderBrush" Color="#EEEFF3" />
                     <SolidColorBrush x:Key="ThumbnailPlaceholderTextBrush" Color="#9AA0AC" />
                     <SolidColorBrush x:Key="ChipBackgroundBrush" Color="#EEEDFC" />
@@ -28,7 +33,10 @@
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
                     <SolidColorBrush x:Key="GroupBackgroundBrush" Color="#2A2A2E" />
-                    <SolidColorBrush x:Key="AuctionBrush" Color="#0891B2" />
+                    <SolidColorBrush x:Key="AuctionBrush" Color="#C026D3" />
+                    <SolidColorBrush x:Key="StorageBrush" Color="#0E7490" />
+                    <SolidColorBrush x:Key="StorageTextBrush" Color="#22D3EE" />
+                    <SolidColorBrush x:Key="StorageSoftBrush" Color="#142C35" />
                     <SolidColorBrush x:Key="ThumbnailPlaceholderBrush" Color="#2A2C34" />
                     <SolidColorBrush x:Key="ThumbnailPlaceholderTextBrush" Color="#6E7280" />
                     <SolidColorBrush x:Key="ChipBackgroundBrush" Color="#262445" />

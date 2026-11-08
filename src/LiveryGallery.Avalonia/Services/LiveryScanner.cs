@@ -28,6 +28,8 @@ internal sealed class LiveryScanner
     private readonly AuthorCardService _authorCardService;
     private readonly LiveryEntryFactory _entryFactory;
     private readonly LiveryLibraryScanner _scanner;
+    private readonly ILiveryDuplicateDetector? _duplicates;
+    private readonly ILiveryStore _store;
     // The account each scan is for: the duplicate check needs it to know the save's own liveries without an id
     private readonly ConcurrentDictionary<string, ulong?> _userIds = new(StringComparer.OrdinalIgnoreCase);
     private volatile AuthorContext _authors = AuthorContext.Empty;
@@ -39,19 +41,25 @@ internal sealed class LiveryScanner
         LockService lockService,
         TagService tagService,
         AuthorCardService authorCardService,
-        LiveryArchive archiveService,
+        AccountStorage storage,
         SaveFolderLock saveFolderLock,
         LiveryIdService liveryIdService,
         GameProfile profile,
         LiveryScanParts parts,
-        LiveryHistoryStore? history = null)
+        LiveryHistoryStore? history = null,
+        NoteService? notes = null,
+        Screenshots.ScreenshotStore? screenshots = null)
     {
         _appCacheService = appCacheService;
         _authorCardService = authorCardService;
+        _duplicates = parts.Duplicates;
+        _store = profile.Liveries;
         History = history;
+        Notes = notes;
+        Screenshots = screenshots;
         _entryFactory = new LiveryEntryFactory(
             appCacheService, carDatabaseService, favoriteService, lockService, tagService, authorCardService, liveryIdService,
-            profile);
+            profile, notes, screenshots);
         _scanner = new LiveryLibraryScanner(new LiveryScannerOptions
         {
             Cache = appCacheService,
@@ -61,7 +69,7 @@ internal sealed class LiveryScanner
             Duplicates = parts.Duplicates,
             SaveFolderLock = saveFolderLock,
             History = history,
-            RemovedPreviewDirectory = AppSettings.ChangesPreviewsPath,
+            RemovedPreviewDirectory = appCacheService.Paths.ChangesPreviews,
             Parallelism = ScanParallelism,
             Logger = AppLog.LoggerFactory.CreateLogger<LiveryLibraryScanner>(),
             Hooks = new LiveryScanHooks
@@ -79,7 +87,8 @@ internal sealed class LiveryScanner
                 DuplicateSignature = entries =>
                     $"{_authorCardService.GetIdentityMappingFingerprint()}|{_entryFactory.AuthorInference.Fingerprint(entries)}",
                 DuplicatesUpdated = _entryFactory.EnsureLiveryIds,
-                ReferencedPreviews = archiveService.GetReferencedThumbnailFiles,
+                // The previews are the game's, one folder for every account: every account's archive keeps its own
+                ReferencedPreviews = storage.GetReferencedThumbnailFiles,
             },
         });
     }
@@ -89,6 +98,12 @@ internal sealed class LiveryScanner
 
     /// <summary>The journal every scan is recorded in; null without one</summary>
     public LiveryHistoryStore? History { get; }
+
+    /// <summary>The user's notes per livery; null when the app keeps none</summary>
+    public NoteService? Notes { get; }
+
+    /// <summary>The user's screenshots of each livery; none when null</summary>
+    public Screenshots.ScreenshotStore? Screenshots { get; }
 
     /// <summary>Who the liveries of the save last shown are by: its own account, labels for shared names</summary>
     public AuthorContext Authors => _authors;
@@ -104,6 +119,9 @@ internal sealed class LiveryScanner
     {
         var words = progress is null ? null : new Progress(progress);
         _userIds[accountKey] = currentUserId;
+        // A scan reads the screenshots' folders again too (pictures put there by hand); between scans only the folder
+        // of a livery changed is read
+        Screenshots?.Reload();
         var result = await _scanner.ScanAsync(accountKey, savePath, collectChanges, words, ct);
         return await Task.Run(() => ToScanEntry(result, currentUserId, needEntries, ct), ct);
     }
@@ -117,8 +135,45 @@ internal sealed class LiveryScanner
             return entries;
         }, ct);
 
+    /// <summary>
+    /// The cards of the storage's liveries (<see cref="LiveryEntryFactory.BuildStoredEntries"/>), their authors worked out
+    /// with the account's game liveries
+    /// </summary>
+    /// <param name="accountKey">The account whose game cache stands beside them; none when null</param>
+    public Task<List<LiveryEntry>> StoredEntriesAsync(IReadOnlyList<ArchivedLiveryEntry> stored, ulong? currentUserId, string? accountKey) =>
+        Task.Run(() => _entryFactory.BuildStoredEntries(stored, currentUserId,
+            accountKey is null ? null : _appCacheService.Load(accountKey).Cache.Values));
+
+    /// <summary>
+    /// The storage's duplicates, among its own liveries and with the game's (<see cref="StorageCopies"/>), by the game's
+    /// duplicate check. A stored livery's file is read from the storage, laid out as the save keeps a livery folder
+    /// </summary>
+    /// <param name="storageRoot">The storage's folder</param>
+    /// <param name="savePath">The save's data folder; null: the game's liveries are compared by their files only</param>
+    public Task<StorageCopiesResult> FindStorageCopiesAsync(IReadOnlyList<LiveryEntry> stored, IReadOnlyList<LiveryEntry> game,
+        string storageRoot, string? savePath, int thresholdPercent) => Task.Run(() => StorageCopies.Find(stored, game, _duplicates,
+            e => e.IsStored
+                ? _store.GetLiveryFolder(storageRoot, e.FolderName) is not null ? _store.GetFiles(storageRoot, e.FolderName).LiveryPath : null
+                : savePath is null ? null : _store.GetFiles(savePath, e.FolderName).LiveryPath,
+            thresholdPercent));
+
     /// <summary>The next scan cleans up orphaned previews even if its cache did not change (after an account was forgotten)</summary>
     public void RequestOrphanCleanup() => _scanner.RequestOrphanCleanup();
+
+    /// <summary>
+    /// A folder found in the storage, put there by hand (LiveryArchiveIntake.Read): what it holds, and for a livery what
+    /// its card shows, read as a scan reads one (its preview made into the game's preview folder)
+    /// </summary>
+    /// <param name="folder">The folder</param>
+    /// <param name="name">Its name: the livery's key, or any name the user gave it</param>
+    /// <param name="currentUserId">The shown save's account (its own liveries)</param>
+    public LiveryFolderReading ReadPlacedFolder(string folder, string name, ulong? currentUserId)
+    {
+        var read = _scanner.ReadFolder(folder, name);
+        return read.Kind == LiveryFolderKind.Livery && read.Entry is { } entry
+            ? new LiveryFolderReading(LiveryFolderKind.Livery, _entryFactory.ToEntry(entry, currentUserId, _authors).Data)
+            : new LiveryFolderReading(read.Kind, null);
+    }
 
     private LiveryScanEntry ToScanEntry(LiveryScanResult result, ulong? currentUserId, bool needEntries, CancellationToken ct)
     {

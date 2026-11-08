@@ -1,0 +1,123 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:LiveryGallery.Views"
+        xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
+        x:Class="LiveryGallery.Views.ReturnRoomDialog"
+        x:DataType="vm:ReturnRoomViewModel"
+        Width="760" SizeToContent="Height" WindowStartupLocation="CenterOwner"
+        CanResize="False" ShowInTaskbar="False"
+        Background="{DynamicResource BgBrush}"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1">
+
+    <!-- "Return to the game" with too little room (docs/storage.md, stage 3): three ways, the swap with the game's
+         liveries ticked that go to the storage in their place -->
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Background="{DynamicResource ToolbarBrush}" Height="36" PointerPressed="TitleBar_PointerPressed">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock x:Name="TitleBarText" FontSize="12" Margin="12,0,0,0" VerticalAlignment="Center"
+                           IsHitTestVisible="False" Foreground="{DynamicResource TextSecondaryBrush}" />
+                <Button Grid.Column="1" Classes="titlebar close" Click="CloseButton_Click">
+                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
+                </Button>
+            </Grid>
+        </Border>
+
+        <StackPanel Margin="24,18,24,20" Spacing="12">
+            <TextBlock Text="{Binding TitleText}" FontSize="18" FontWeight="Bold" />
+            <Border Classes="roomInfo">
+                <DockPanel>
+                    <Path DockPanel.Dock="Left" Data="{StaticResource IconInfo}" Width="15" Height="15" Stretch="Uniform"
+                          Fill="{DynamicResource WarningTextBrush}" Margin="0,0,10,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding InfoText}" FontSize="13" TextWrapping="Wrap" VerticalAlignment="Center" />
+                </DockPanel>
+            </Border>
+
+            <!-- The swap -->
+            <Border Classes="roomOption" Classes.on="{Binding IsExchange}" IsEnabled="{Binding CanExchange}">
+                <StackPanel Spacing="6">
+                    <RadioButton GroupName="ReturnRoom" IsChecked="{Binding IsExchange, Mode=TwoWay}">
+                        <TextBlock Text="{Binding ExchangeText}" FontSize="13.5" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    </RadioButton>
+                    <TextBlock Classes="roomNote" Text="{Binding ExchangeNoteText}" />
+                    <Border Classes="swapList" IsVisible="{Binding CanExchange}">
+                        <StackPanel Spacing="6">
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+                                    <TextBlock x:Name="FolderLabel" FontSize="12" VerticalAlignment="Center"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <ComboBox x:Name="FolderBox" ItemsSource="{Binding Folders}" SelectedItem="{Binding Folder, Mode=TwoWay}"
+                                              MinWidth="190" MaxWidth="260" />
+                                </StackPanel>
+                                <TextBlock Text="{Binding CheckedText}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis" />
+                            </DockPanel>
+                            <ScrollViewer x:Name="SwapScroll" Height="232" Classes="edge" HorizontalScrollBarVisibility="Disabled">
+                                <ItemsControl x:Name="SwapList" ItemsSource="{Binding Rows}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:ReturnSwapRowViewModel">
+                                            <Border Classes="swapRow" views:ThumbnailRows.Track="True">
+                                                <Grid ColumnDefinitions="Auto,Auto,*,Auto">
+                                                    <CheckBox IsChecked="{Binding Goes, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,4,0" />
+                                                    <Border Grid.Column="1" Width="64" Height="36" CornerRadius="4" ClipToBounds="True"
+                                                            Background="{DynamicResource ThumbnailPlaceholderBrush}" Margin="0,0,10,0">
+                                                        <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                                                    </Border>
+                                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                        <TextBlock Text="{Binding LiveryName}" FontSize="12.5" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                                        <TextBlock Text="{Binding CarText}" FontSize="11.5" TextTrimming="CharacterEllipsis"
+                                                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                    </StackPanel>
+                                                    <TextBlock Grid.Column="3" Text="{Binding SinceText}" FontSize="11.5" Margin="10,0,4,0"
+                                                               VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <TextBlock Text="{Binding CandidatesNote}" FontSize="11.5" TextWrapping="Wrap"
+                                       Foreground="{DynamicResource TextTertiaryBrush}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <!-- Beyond the limit -->
+            <Border Classes="roomOption" Classes.on="{Binding IsAll}">
+                <StackPanel Spacing="6">
+                    <RadioButton GroupName="ReturnRoom" IsChecked="{Binding IsAll, Mode=TwoWay}">
+                        <TextBlock Text="{Binding AllText}" FontSize="13.5" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    </RadioButton>
+                    <TextBlock Classes="roomNote" Text="{Binding AllNoteText}" />
+                </StackPanel>
+            </Border>
+
+            <!-- As many as fit -->
+            <Border Classes="roomOption" Classes.on="{Binding IsFit}" IsVisible="{Binding CanFit}">
+                <StackPanel Spacing="6">
+                    <RadioButton GroupName="ReturnRoom" IsChecked="{Binding IsFit, Mode=TwoWay}">
+                        <TextBlock Text="{Binding FitText}" FontSize="13.5" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    </RadioButton>
+                    <TextBlock Classes="roomNote" Text="{Binding FitNoteText}" />
+                </StackPanel>
+            </Border>
+
+            <DockPanel Margin="0,6,0,0">
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="10">
+                    <Button x:Name="CancelButton" Classes="secondary" MinWidth="110" Click="CloseButton_Click" />
+                    <Button Classes="primary storage" MinWidth="180" Content="{Binding ApplyText}"
+                            IsEnabled="{Binding CanApply}" Click="ApplyButton_Click" />
+                </StackPanel>
+                <TextBlock Text="{Binding NeedMoreText}" FontSize="12" VerticalAlignment="Center"
+                           Foreground="{DynamicResource WarningTextBrush}" />
+            </DockPanel>
+        </StackPanel>
+    </DockPanel>
+</Window>

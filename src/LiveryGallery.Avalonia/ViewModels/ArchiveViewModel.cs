@@ -5,6 +5,7 @@ using LiveryGallery.Services;
 using LiveryGallery.Services.Accounts;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using ForzaToolkit.Core.Text;
 
 namespace LiveryGallery.ViewModels;
 
@@ -15,6 +16,12 @@ internal sealed partial class ArchiveViewModel : ObservableObject
     private readonly Func<Task> _onRestored;
     private readonly Func<IReadOnlyList<LiveryData>> _getCurrentEntries;
     private readonly AccountContext _accounts;
+    private readonly LiveryArchive? _unassigned;
+    // The account's storage: an archived livery can go there to be kept for good (docs/storage.md)
+    private readonly LiveryArchive? _storage;
+
+    /// <summary>"Into the storage" is offered: the account has one</summary>
+    public bool HasStorage => _storage is not null;
 
     // Every row of the archive (after the account filter); Rows are the ones the search leaves
     private readonly List<ArchivedLiveryRowViewModel> _allRows = [];
@@ -63,9 +70,11 @@ internal sealed partial class ArchiveViewModel : ObservableObject
     public ArchiveViewModel(
         LiveryArchive archiveService, SavePathService savePathService,
         Func<IReadOnlyList<LiveryData>> getCurrentEntries, Func<Task> onRestored, AccountContext accounts,
-        bool searchByFolderName = false)
+        bool searchByFolderName = false, LiveryArchive? unassigned = null, LiveryArchive? storage = null)
     {
         SearchByFolderName = searchByFolderName;
+        _storage = storage;
+        _unassigned = unassigned;
         _accounts = accounts;
         _archiveService = archiveService;
         _savePathService = savePathService;
@@ -74,10 +83,39 @@ internal sealed partial class ArchiveViewModel : ObservableObject
         Reload();
     }
 
+    /// <summary>
+    /// Liveries an earlier version archived without recording the account, while it knew more than one: they are in
+    /// an archive of their own (<see cref="Configuration.GamePaths.Unassigned"/>) until put with an account
+    /// </summary>
+    public int UnassignedCount { get; private set; }
+    public bool HasUnassigned => UnassignedCount > 0;
+    public string UnassignedText => string.Format(Strings.UnassignedCountFormat, UnassignedCount);
+
+    /// <summary>Puts the liveries without an account into this account's archive; the user says they are its own</summary>
+    [RelayCommand]
+    private async Task TakeUnassignedAsync()
+    {
+        if (_unassigned is null) return;
+        try
+        {
+            await _archiveService.TakeFromAsync(_unassigned, [.. _unassigned.GetAll().Select(e => e.Data.FolderName)], _accounts.Current);
+        }
+        catch (Exception ex)
+        {
+            AppLog.LogError("Failed to move archived liveries without an account", ex);
+            ErrorMessageRequested?.Invoke(Strings.FileOperationFailedMessage);
+        }
+        Reload();
+    }
+
     private void Reload()
     {
         foreach (var row in _allRows) row.PropertyChanged -= OnRowPropertyChanged;
         _allRows.Clear();
+        UnassignedCount = _unassigned?.GetAll().Count ?? 0;
+        OnPropertyChanged(nameof(UnassignedCount));
+        OnPropertyChanged(nameof(HasUnassigned));
+        OnPropertyChanged(nameof(UnassignedText));
 
         // Liveries of unknown origin (archived before accounts were recorded) and of accounts that are gone are always shown
         var all = _archiveService.GetAll();
@@ -103,7 +141,7 @@ internal sealed partial class ArchiveViewModel : ObservableObject
     // Shows the rows the search leaves. A row the search hides is unselected: restore and delete act on what is seen
     private void ApplySearch()
     {
-        string[] tokens = SearchText.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+        string[] tokens = SearchWords.Split(SearchText);
         Rows.Clear();
         foreach (var row in _allRows)
         {
@@ -129,6 +167,29 @@ internal sealed partial class ArchiveViewModel : ObservableObject
         OnPropertyChanged(nameof(SelectedCountText));
     }
 
+    /// <summary>
+    /// The selected liveries into the account's storage, kept for good: a move between two folders on the same disk,
+    /// the save is not touched. The screenshots, notes and tags stay with the key
+    /// </summary>
+    [RelayCommand]
+    private async Task MoveSelectedToStorageAsync()
+    {
+        var selected = Rows.Where(r => r.IsSelected).ToList();
+        if (_storage is null || selected.Count == 0) return;
+        try
+        {
+            var moved = await _storage.TakeFromAsync(_archiveService, [.. selected.Select(r => r.Entry.Data.FolderName)], _accounts.Current);
+            Reload();
+            if (moved.Count < selected.Count)
+                ErrorMessageRequested?.Invoke(string.Format(Strings.ArchiveToStorageSkippedFormat, selected.Count - moved.Count));
+        }
+        catch (Exception ex)
+        {
+            AppLog.LogError("Failed to move archived liveries into the storage", ex);
+            ErrorMessageRequested?.Invoke(Strings.FileOperationFailedMessage);
+        }
+    }
+
     [RelayCommand]
     private void SelectAll()
     {
@@ -147,20 +208,9 @@ internal sealed partial class ArchiveViewModel : ObservableObject
         var selected = Rows.Where(r => r.IsSelected).ToList();
         if (selected.Count == 0) return;
 
-        string? savePath = _savePathService.ResolveSaveDataPath();
-        if (savePath is null)
-        {
-            ErrorMessageRequested?.Invoke(Strings.ArchiveNoSavePathMessage);
+        if (await LiveryRestoreConflicts.PrepareAsync(_savePathService, _accounts, selected.Select(r => r.Entry.SourceAccount),
+                ConfirmRestoreIntoCurrentAccountAsync, ConfirmWhileGameRunningAsync, ErrorMessageRequested) is not { } savePath)
             return;
-        }
-
-        // Restoring another account's liveries here is allowed (it moves them between accounts), but not by accident
-        if (_accounts.BuildRestoreIntoCurrentPrompt(selected.Select(r => r.Entry.SourceAccount)) is { } accountPrompt
-            && ConfirmRestoreIntoCurrentAccountAsync is { } confirmAccount
-            && !await confirmAccount(accountPrompt))
-            return;
-
-        if (!await _savePathService.Profile.RunningGuard.ConfirmAsync(ConfirmWhileGameRunningAsync)) return;
 
         try
         {

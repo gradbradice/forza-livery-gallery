@@ -18,7 +18,8 @@ internal static class GalleryFilterService
         bool searchByFolderName,
         IReadOnlyList<QuickFilter>? quickFilters = null,
         AuctionFilterMode auctionFilterMode = AuctionFilterMode.All,
-        bool onlyInstalled = false) =>
+        bool onlyInstalled = false,
+        bool onlyNotInstalled = false) =>
         GalleryFiltering.Apply(allEntries, new GalleryFilter
         {
             Search = search,
@@ -29,6 +30,7 @@ internal static class GalleryFilterService
             OnlyFavorites = onlyFavorites,
             OnlyMine = onlyMine,
             OnlyInstalled = onlyInstalled,
+            OnlyNotInstalled = onlyNotInstalled,
             Duplicates = duplicatesFilterMode,
             Generated = generatedFilterMode,
             Paint = paintFilterMode,

@@ -1,11 +1,34 @@
 using ForzaToolkit.Liveries.Scanning;
 using LiveryGallery.Localisation;
+using LiveryGallery.Services.Accounts;
 
 namespace LiveryGallery.Services;
 
 internal static class LiveryRestoreConflicts
 {
     private const int MaxListedNames = 10;
+
+    /// <summary>
+    /// The checks before liveries go back into the open save, the archive's and a backup's alike: there is a save;
+    /// liveries of another account come here only when the user agrees (it moves them between accounts, but not by
+    /// accident); the game running is told. The save's data folder, or null when not to go on (a missing save is told
+    /// through <paramref name="tell"/>)
+    /// </summary>
+    /// <param name="sources">The account each livery comes from</param>
+    public static async Task<string?> PrepareAsync(SavePathService saves, AccountContext accounts, IEnumerable<AccountRef?> sources,
+        Func<string, Task<bool>>? confirmAccount, Func<Task<bool>>? confirmWhileRunning, Action<string>? tell)
+    {
+        string? savePath = saves.ResolveSaveDataPath();
+        if (savePath is null)
+        {
+            tell?.Invoke(Strings.ArchiveNoSavePathMessage);
+            return null;
+        }
+        if (accounts.BuildRestoreIntoCurrentPrompt(sources) is { } accountPrompt && confirmAccount is not null
+            && !await confirmAccount(accountPrompt))
+            return null;
+        return await saves.Profile.RunningGuard.ConfirmAsync(confirmWhileRunning) ? savePath : null;
+    }
 
     public static string FormatLiveryId(ulong liveryId) => liveryId > 0 ? $"#{liveryId}" : "";
 

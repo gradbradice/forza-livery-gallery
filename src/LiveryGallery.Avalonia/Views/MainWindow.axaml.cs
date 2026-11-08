@@ -3,8 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using Avalonia.VisualTree;
+using LiveryGallery.Configuration;
 using LiveryGallery.Controller;
 using LiveryGallery.Localisation;
+using ForzaToolkit.AppHost.Updates;
+using ForzaToolkit.UI.Updates;
 using LiveryGallery.Services;
 using LiveryGallery.Services.Accounts;
 using LiveryGallery.Services.Diagnostics;
@@ -17,8 +21,7 @@ internal partial class MainWindow : Window
 {
     private readonly GameProfile _profile;
     private readonly AuthorCardService _authorCardService;
-    private readonly LiveryArchive _archiveService;
-    private readonly LiveryBackups _backupService;
+    private readonly AccountStorage _storage;
     private readonly ILivery3DViewer _viewer3D;
     private readonly IGameFolderCheck _gameFolderCheck;
     private readonly AboutComponents _aboutComponents;
@@ -46,16 +49,16 @@ internal partial class MainWindow : Window
         FavoriteService favoriteService,
         LockService lockService,
         AuthorCardService authorCardService,
-        LiveryArchive archiveService,
-        LiveryBackups backupService,
+        AccountStorage storage,
         LiveryScanner scanService,
-        AppUpdateCheckService updateService,
+        IAppUpdates updateService,
         ILivery3DViewer viewer3D,
         IGameFolderCheck gameFolderCheck,
         AboutComponents aboutComponents,
         SaveFolderLock saveFolderLock,
         DiagnosticsExportService diagnosticsService,
-        AccountRegistry accountRegistry)
+        AccountRegistry accountRegistry,
+        ISavePathPrompter? savePathPrompter = null)
     {
         InitializeComponent();
         InitializeShortcuts();
@@ -65,19 +68,18 @@ internal partial class MainWindow : Window
         _settings = settings;
         _profile = profile;
         _authorCardService = authorCardService;
-        _archiveService = archiveService;
-        _backupService = backupService;
+        _storage = storage;
         _viewer3D = viewer3D;
         _gameFolderCheck = gameFolderCheck;
         _aboutComponents = aboutComponents;
         _diagnosticsService = diagnosticsService;
         _savePathService = new SavePathService(settings, profile);
-        var savePathPrompter = new SavePathPrompter(this, profile);
+        savePathPrompter ??= new SavePathPrompter(this, profile);
         // A livery without a preview in the save gets one drawn from the 3D model, kept with the game's previews (never
         // in the save); a scan then makes it the livery's preview, which the archive and backups take along
         var rendered = new RenderedThumbnails(viewer3D.Thumbnails,
             folderName => _savePathService.ResolveSaveDataPath() is { } saveData ? _profile.Liveries.GetFiles(saveData, folderName).LiveryPath : null,
-            Configuration.AppSettings.ThumbsPath, saveFolderLock);
+            storage.Paths.Thumbs, saveFolderLock);
         rendered.Drawn += () => { _drawnPreviewsScanTimer.Stop(); _drawnPreviewsScanTimer.Start(); };
         _drawnPreviewsScanTimer.Tick += (_, _) =>
         {
@@ -85,10 +87,19 @@ internal partial class MainWindow : Window
             RunUiTask(ScanForDrawnPreviewsAsync, "scan for drawn previews");
         };
         ThumbnailLifecycleController.Rendered = rendered;
+        // Previews drawn before the renderer placed liveries on cars with narrower section masks at their width: drawn
+        // again (before the first scan, which then finds them gone)
+        if (settings.DrawnPreviewsRevision < RenderedThumbnails.DrawingRevision)
+        {
+            int deleted = RenderedThumbnails.DeleteOutdated(storage.Paths.Thumbs, settings.DrawnPreviewsRevision);
+            if (deleted > 0) AppLog.LogWarning($"{deleted} drawn previews of an older renderer deleted: they are drawn again (not an error)");
+            settings.DrawnPreviewsRevision = RenderedThumbnails.DrawingRevision;
+            AppSettingsService.Save(settings);
+        }
 
         _mainViewModel = new MainViewModel(
             settings, savePathPrompter, _savePathService, carDatabase, carTexts, tagService, authorCardService,
-            favoriteService, lockService, archiveService, scanService, updateService, accountRegistry)
+            favoriteService, lockService, storage, scanService, updateService, accountRegistry)
         {
             ShutdownToken = _shutdownCts.Token
         };
@@ -100,13 +111,17 @@ internal partial class MainWindow : Window
         _serverConnection = new ServerConnectionController(
             serverClient,
             new ProfileDataLocator(profile.Saves),
-            new InstalledLiveriesCache(Path.Combine(Configuration.AppSettings.BaseCachePath, InstalledLiveriesCache.DefaultFileName)),
+            new InstalledLiveriesCache(Path.Combine(storage.Paths.Root, InstalledLiveriesCache.DefaultFileName)),
             _mainViewModel.ServerStatus,
             () => _savePathService.ResolveSaveDataPath(),
             counts =>
             {
                 _mainViewModel.Gallery.SetInstalledLiveries(counts);
-                if (_mainViewModel.FilterBar.EffectiveInstalledMode != InstalledMode.None) _mainViewModel.RefreshGallery();
+                // The menu works once the list is there; a change of that shows the gallery again by itself
+                bool wasAvailable = _mainViewModel.FilterBar.IsInstalledFilterAvailable;
+                _mainViewModel.FilterBar.SetInstalledDataKnown(counts is not null);
+                if (wasAvailable == _mainViewModel.FilterBar.IsInstalledFilterAvailable
+                    && _mainViewModel.FilterBar.EffectiveInstalledMode != InstalledMode.None) _mainViewModel.RefreshGallery();
             });
         _mainViewModel.ScanCompleted += _serverConnection.RequestSync;
         _mainViewModel.SavePathChanged += _serverConnection.OnSavePathChanged;
@@ -128,22 +143,29 @@ internal partial class MainWindow : Window
             entries.All(e => e.IsSelected) ? _mainViewModel.Gallery.SelectedCount - entries.Count : 0), "assign author");
         _mainViewModel.Gallery.UnassignAuthorRequested += entries => RunUiTask(() => _mainViewModel.UnassignAuthorAsync(entries), "unassign author");
         _mainViewModel.Gallery.ViewPreviewRequested += entry => RunUiTask(() => ShowPreviewAsync(entry), "preview");
+        _mainViewModel.Gallery.OpenDetailsRequested += entry => RunUiTask(() => ShowDetailsAsync(entry), "livery window");
+        InitializeScreenshotsView();
         _mainViewModel.Gallery.View3DRequested += entry =>
             RunUiTask(() => ShowLivery3DAsync(entry), $"3D viewer for '{entry.FolderName}'");
         _viewer3D.StateChanged += OnViewer3DStateChanged;
+        _viewer3D.NavigateRequested += navigation => RunUiTask(() => NavigateLivery3DAsync(navigation), "3D viewer: next livery");
         _mainViewModel.ChangesSinceLastLaunchFound += changes =>
             RunUiTask(() => ShowChangesSinceLastLaunchAsync(changes), "changes since last launch");
         _mainViewModel.ErrorMessageRequested += message =>
             RunUiTask(() => InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, message), "error message");
-        _mainViewModel.ConfirmArchiveWithoutInstalledDataAsync = count => AskArchiveWarningAsync(
-            count == 1 ? Strings.ArchiveInstalledUnknownMessage : Strings.ArchiveInstalledUnknownMessageMany);
-        _mainViewModel.ConfirmArchiveWithOutdatedInstalledDataAsync = count => AskArchiveWarningAsync(
-            count == 1 ? Strings.ArchiveInstalledOutdatedMessage : Strings.ArchiveInstalledOutdatedMessageMany);
+        _mainViewModel.ConfirmArchiveWithoutInstalledDataAsync = (count, toStorage) => AskArchiveWarningAsync(toStorage
+            ? count == 1 ? Strings.StorageInstalledUnknownMessage : Strings.StorageInstalledUnknownMessageMany
+            : count == 1 ? Strings.ArchiveInstalledUnknownMessage : Strings.ArchiveInstalledUnknownMessageMany, toStorage);
+        _mainViewModel.ConfirmArchiveWithOutdatedInstalledDataAsync = (count, toStorage) => AskArchiveWarningAsync(toStorage
+            ? count == 1 ? Strings.StorageInstalledOutdatedMessage : Strings.StorageInstalledOutdatedMessageMany
+            : count == 1 ? Strings.ArchiveInstalledOutdatedMessage : Strings.ArchiveInstalledOutdatedMessageMany, toStorage);
         _mainViewModel.IsInstalledDataOutdatedAsync = () => _serverConnection.IsInstalledResultOutdatedAsync(_shutdownCts.Token);
         _mainViewModel.ConfirmWhileGameRunningAsync = () => ConfirmDialog.AskAsync(
             this, string.Format(Strings.GameRunningTitleFormat, _profile.Game.Name), Strings.GameRunningFileChangeMessage, Strings.GameRunningContinueButton, Strings.ButtonCancel);
         _mainViewModel.GameFolderStateProvider = () => new GameFolderState(_viewer3D.IsChecking, _viewer3D.GameDirectory);
         InitializeRoom();
+        InitializeStorageMode();
+        InitializeStorageFolders();
 
         GalleryPanel.AnchorKeySelector = GetGalleryAnchorKeys;
         _mainViewModel.Gallery.GroupsReplaced += () => RebuildGalleryItems(preservePosition: true);
@@ -170,6 +192,7 @@ internal partial class MainWindow : Window
 
         Loaded += MainWindow_Loaded;
         Closing += MainWindow_Closing;
+        GalleryHost.AddHandler(PointerPressedEvent, GalleryHost_PointerPressed, RoutingStrategies.Bubble);
         AppLocalisationService.LanguageChanged += OnLanguageChanged;
     }
 
@@ -179,6 +202,7 @@ internal partial class MainWindow : Window
     // Drawn previews become the liveries' previews with a scan, one for a run of them
     private readonly DispatcherTimer _drawnPreviewsScanTimer = new() { Interval = TimeSpan.FromSeconds(2) };
     private bool _shutdownCompleted;
+    private bool _restartAfterUpdate;
     private Task? _initializeTask;
     private Task? _shutdownTask;
 
@@ -196,6 +220,8 @@ internal partial class MainWindow : Window
         try
         {
             await ShutdownAsync();
+            // Last: every file is written and the save folder closed, so the downloaded update may replace the gallery
+            _mainViewModel.Update.ApplyOnExit(_restartAfterUpdate);
         }
         catch (Exception ex)
         {
@@ -354,7 +380,13 @@ internal partial class MainWindow : Window
     private async Task OnLoadedAsync()
     {
         _isLoaded = true;
+        // Card previews are decoded for this screen's scale; a move to another screen changes it
+        ThumbnailCacheService.DisplayScaling = RenderScaling;
+        ScalingChanged += (_, _) => ThumbnailCacheService.DisplayScaling = RenderScaling;
         UpdateGroupWidthsOnly();
+        // The data of 1.6.0 could not be copied at start: said once, the gallery runs on and tries again next time
+        if (DataMigration.FailedFrom is { } oldFolder)
+            await InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, string.Format(Strings.MigrationFailedMessageFormat, oldFolder));
         if (_mainViewModel.WasSavedPathMissing)
             await InfoDialog.ShowAsync(this, Strings.FolderNotFoundTitle, Strings.SavedPathNotFoundNotice);
         if (_isClosing) return;
@@ -377,7 +409,7 @@ internal partial class MainWindow : Window
     {
         try
         {
-            if (await SharedAuthorCards.CompleteMoveAsync(_authorCardService, Configuration.AppSettings.BaseCachePath) is { Skipped: > 0 } result)
+            if (await SharedAuthorCards.CompleteMoveAsync(_authorCardService, _storage.Paths.Root) is { Skipped: > 0 } result)
                 AppLog.LogWarning($"Author cards: {result.Skipped} cards of this app clash with cards of another app and stay only in the old file");
         }
         catch (Exception ex)
@@ -455,7 +487,28 @@ internal partial class MainWindow : Window
         }
     }
 
-    private async Task ShowLivery3DAsync(LiveryEntry entry)
+    // ← or → in a 3D window: the livery before or after in the gallery (as on screen, one 3D can show), in that window;
+    // the gallery selects it and scrolls to it, so the two go together. At the first or the last nothing happens
+    private async Task NavigateLivery3DAsync(Livery3DNavigation navigation)
+    {
+        var shown = _mainViewModel.Gallery.ShownEntries();
+        int at = shown.FindIndex(e => string.Equals(e.FolderName, navigation.Key, StringComparison.Ordinal));
+        if (at < 0) return;
+        for (int i = at + navigation.Step; i >= 0 && i < shown.Count; i += navigation.Step)
+        {
+            var target = shown[i];
+            if (!target.CanView3D) continue;
+            _mainViewModel.Gallery.ClickSelect(target, ctrl: false, shift: false);
+            if (_mainViewModel.Gallery.RowOf(target) is { } row) GalleryPanel.BringItemIntoView(row);
+            await ShowLivery3DAsync(target, navigation.Window);
+            return;
+        }
+    }
+
+    private Task ShowLivery3DAsync(LiveryEntry entry) => ShowLivery3DAsync(entry, Livery3DWindows.Active);
+
+    /// <param name="window">The window to show it in (<see cref="Livery3DRequest.Window"/>)</param>
+    private async Task ShowLivery3DAsync(LiveryEntry entry, int window)
     {
         if (!_viewer3D.IsAvailable)
         {
@@ -470,8 +523,16 @@ internal partial class MainWindow : Window
             return;
         }
 
-        string liveryPath = _profile.Liveries.GetFiles(savePath, entry.FolderName).LiveryPath;
-        var result = await _viewer3D.ShowAsync(this, new Livery3DRequest(entry.LiveryName, entry.CarId, liveryPath));
+        // A stored livery's files are in the storage, laid out as the save keeps a livery folder
+        string liveryPath = entry.IsStored && CurrentAccountKey is { } accountKey
+            && _profile.Liveries.GetLiveryFolder(_storage.Paths.StorageOf(accountKey), entry.FolderName) is not null
+            ? _profile.Liveries.GetFiles(_storage.Paths.StorageOf(accountKey), entry.FolderName).LiveryPath
+            : _profile.Liveries.GetFiles(savePath, entry.FolderName).LiveryPath;
+        var result = await _viewer3D.ShowAsync(this, new Livery3DRequest(entry.LiveryName, entry.CarId, liveryPath, _profile.Game.Name, entry.CarTitleWithId)
+        {
+            Key = entry.FolderName,
+            Window = window,
+        });
         if (_isClosing) return;
         string? problem = result.Problem switch
         {
@@ -483,9 +544,9 @@ internal partial class MainWindow : Window
         if (problem is not null) await InfoDialog.ShowAsync(this, Strings.View3DDialogTitle, problem);
     }
 
-    private Task<(bool Confirmed, bool DontShowAgain)> AskArchiveWarningAsync(string message) =>
+    private Task<(bool Confirmed, bool DontShowAgain)> AskArchiveWarningAsync(string message, bool toStorage = false) =>
         ConfirmDialog.AskWithOptionAsync(
-            this, Strings.ContextMenuMoveToArchive, message,
+            this, toStorage ? Strings.ContextMenuMoveToStorage : Strings.ContextMenuMoveToArchive, message,
             Strings.DontShowAgainCheckBox, Strings.ButtonYes, Strings.ButtonCancel);
 
     private async Task ShowChangesSinceLastLaunchAsync(LiveryChanges changes)
@@ -499,9 +560,16 @@ internal partial class MainWindow : Window
     private void UpdateBanner_Click(object? sender, RoutedEventArgs e)
     {
         if (_mainViewModel.Update.LatestVersion is null) return;
-        var dialog = new WhatsNewDialog(
-            _mainViewModel.Update.LatestVersion, _mainViewModel.Update.ReleaseBody, _mainViewModel.Update.ReleaseUrl);
-        RunUiTask(() => dialog.ShowDialog(this), "what's new dialog");
+        var dialog = new WhatsNewDialog(_mainViewModel.Update, TrustedUrlLauncher.TryOpen);
+        RunUiTask(async () =>
+        {
+            await dialog.ShowDialog(this);
+            // "Restart and update": the usual close (it waits for every write), then the update installs and the
+            // gallery starts again
+            if (!dialog.RestartRequested || _isClosing) return;
+            _restartAfterUpdate = true;
+            Close();
+        }, "what's new dialog");
     }
 
     private void SearchBox_TextChanged(object? sender, TextChangedEventArgs e)
@@ -601,20 +669,16 @@ internal partial class MainWindow : Window
             await InfoDialog.ShowAsync(owner, Strings.AssignAuthorDialogTitle, Strings.AssignAuthorFailedMessage);
     }
 
-    /// <summary>One livery: its tags as text. Several: every tag of the gallery, ticked on all, some or none of them</summary>
-    private async Task ShowEditTagsAsync(IReadOnlyList<LiveryEntry> entries)
+    /// <summary>
+    /// Every tag of the gallery as a box, ticked when the livery has it (with several: on all, some or none of them),
+    /// and new tags typed as a list
+    /// </summary>
+    private async Task ShowEditTagsAsync(IReadOnlyList<LiveryEntry> entries, Window? owner = null)
     {
-        if (entries.Count == 1)
-        {
-            var entry = entries[0];
-            var single = new TagEditDialog(entry.Tags);
-            if (await single.ShowDialog<bool>(this)) _mainViewModel.ApplyTagsEdit(entry, single.ResultTags);
-            return;
-        }
-
+        owner ??= this;
         var knownTags = _mainViewModel.TagsBar.AllTags.Select(t => t.Tag).ToList();
         var dialog = new TagEditDialog(entries.Select(e => e.Tags).ToList(), knownTags);
-        if (await dialog.ShowDialog<bool>(this))
+        if (await dialog.ShowDialog<bool>(owner))
             _mainViewModel.ApplyTagsChange(entries, dialog.TagsToAdd, dialog.TagsToRemove);
     }
 
@@ -627,17 +691,103 @@ internal partial class MainWindow : Window
         e.Handled = true;
     }
 
-    private async Task ShowPreviewAsync(LiveryEntry entry)
+    /// <summary>The livery's full preview: the game's, else an external one, else the one the gallery drew; null when none</summary>
+    private string? PreviewPathOf(LiveryEntry entry)
     {
-        string? savePath = _savePathService.ResolveSaveDataPath();
-        string? webpPath = savePath is not null ? _profile.FindPreview(savePath, entry.FolderName) : null;
+        string? webpPath;
+        if (entry.IsStored)
+        {
+            // A stored livery's files lie in its folder of the storage, under the names the save gave them
+            string? folder = CurrentAccountKey is { } key ? Path.Combine(_storage.Paths.StorageOf(key), entry.FolderName) : null;
+            webpPath = folder is not null && Directory.Exists(folder)
+                ? _profile.FindPreviewAmong(ForzaToolkit.Liveries.Storage.LiveryFileNames.ListFolder(folder), entry.FolderName)
+                : null;
+        }
+        else
+        {
+            string? savePath = _savePathService.ResolveSaveDataPath();
+            webpPath = savePath is not null ? _profile.FindPreview(savePath, entry.FolderName) : null;
+        }
         if (webpPath is null && entry.Data.ExternalPreviewPath is { } externalPreview && File.Exists(externalPreview))
             webpPath = externalPreview;
         // No preview in the save: the one the gallery drew from the 3D model
         string? drawn = entry.Data.ThumbnailDrawn ? entry.ThumbnailPath : entry.ThumbnailPath is null ? entry.RenderedThumbnailPath : null;
         if (webpPath is null && drawn is not null && File.Exists(drawn))
             webpPath = drawn;
+        // Last, the card's own preview: smaller, but a picture
+        if (webpPath is null && entry.IsStored && entry.ThumbnailPath is { } card && File.Exists(card))
+            webpPath = card;
+        return webpPath;
+    }
 
+    /// <summary>
+    /// The livery window: the livery, its neighbours on screen a key away. What it hands back (find in the game, 3D,
+    /// archive, a filter) is done here once it has closed
+    /// </summary>
+    private async Task ShowDetailsAsync(LiveryEntry entry)
+    {
+        if (_isClosing) return;
+        _mainViewModel.SeenAddedByHand(entry); // "Added by hand" has been seen
+        var source = new LiveryDetailsSource(
+            AllEntries: () => _mainViewModel.Gallery.AllEntries,
+            PreviewPath: PreviewPathOf,
+            History: _mainViewModel.ReadHistory,
+            BackupManifests: () => Task.Run(() => (IReadOnlyList<LiveryBackupManifest?>)[.. CurrentBackupManifests()]),
+            AuthorCard: _mainViewModel.FindAuthorCard,
+            SetNote: _mainViewModel.SetNote,
+            ToggleFavorite: e => _mainViewModel.Gallery.ToggleFavoriteCommand.Execute(e),
+            ToggleLock: e => _mainViewModel.Gallery.ToggleLockCommand.Execute(e),
+            Screenshots: _mainViewModel.Screenshots,
+            ScreenshotFormat: () => (_settings.ScreenshotsWebP ? Services.Screenshots.ScreenshotFormat.WebP : Services.Screenshots.ScreenshotFormat.Original,
+                _settings.ScreenshotsWebPQuality));
+        var vm = new LiveryDetailsViewModel(source, _mainViewModel.Gallery.ShownEntries(), entry);
+        var dialog = new LiveryDetailsDialog(vm, new LiveryDetailsDialogActions(
+            EditTags: (owner, e) => ShowEditTagsAsync([e], owner),
+            OpenAuthor: (owner, e) => ShowAuthorRowAsync(e, owner),
+            EditAuthorCard: EditAuthorCardAsync));
+        await dialog.ShowDialog(this);
+
+        var outcome = dialog.Outcome;
+        // The double click selected the card it opened: one livery selected goes back to none (the archive keeps it, it
+        // archives what is selected)
+        if (!_isClosing && outcome.Next != LiveryDetailsNext.Archive && _mainViewModel.Gallery.SelectedCount == 1)
+            _mainViewModel.Gallery.ClearSelectionCommand.Execute(null);
+        if (_isClosing || outcome.Entry is not { } target) return;
+        switch (outcome.Next)
+        {
+            case LiveryDetailsNext.FindInGame:
+                if (target.ShowFindInGame && _mainViewModel.NavigateInGameCommand.CanExecute(target))
+                    _mainViewModel.NavigateInGameCommand.Execute(target);
+                break;
+            case LiveryDetailsNext.View3D:
+                if (target.CanView3D) await ShowLivery3DAsync(target);
+                break;
+            case LiveryDetailsNext.Archive:
+                _mainViewModel.Gallery.SelectOnlyCommand.Execute(target);
+                if (_mainViewModel.MoveSelectedToArchiveCommand.CanExecute(null))
+                    await _mainViewModel.MoveSelectedToArchiveCommand.ExecuteAsync(null);
+                break;
+            case LiveryDetailsNext.Filter when outcome.Filter is { } filter:
+                _mainViewModel.ApplyQuickFilter(filter);
+                break;
+            case LiveryDetailsNext.Album when outcome.AlbumId is { } album:
+                ShowAlbum(album);
+                break;
+        }
+    }
+
+    // A double click on a card (not on one of its buttons) opens the livery window
+    private void Card_DoubleTapped(object? sender, TappedEventArgs e)
+    {
+        if (sender is not StyledElement { DataContext: LiveryEntry entry }) return;
+        if (e.Source is Visual source && source.GetSelfAndVisualAncestors().Any(v => v is Button)) return;
+        e.Handled = true;
+        _mainViewModel.Gallery.OpenDetailsCommand.Execute(entry);
+    }
+
+    private async Task ShowPreviewAsync(LiveryEntry entry)
+    {
+        string? webpPath = PreviewPathOf(entry);
         if (webpPath is null)
         {
             await InfoDialog.ShowAsync(this, Strings.PreviewDialogTitle, Strings.PreviewNotFoundMessage);
@@ -653,14 +803,51 @@ internal partial class MainWindow : Window
         if (e.Handled) return;
         if (!e.GetCurrentPoint(sender as Visual).Properties.IsLeftButtonPressed) return;
         if (sender is not StyledElement element || element.DataContext is not LiveryEntry entry) return;
+        if (!GalleryClicks.SelectsOnPress(e.ClickCount)) return;
 
-        _mainViewModel.Gallery.ToggleSelectionCommand.Execute(entry);
+        // As in Explorer: a click selects this card alone, Ctrl adds or removes it, Shift selects the run of cards from
+        // the last one clicked. A stored card may be dragged onto a folder: pressed while selected, it keeps the
+        // selection until released without a drag
+        bool ctrl = e.KeyModifiers.HasFlag(KeyModifiers.Control), shift = e.KeyModifiers.HasFlag(KeyModifiers.Shift);
+        bool later = entry.IsStored && entry.IsSelected && !ctrl && !shift;
+        if (!later) _mainViewModel.Gallery.ClickSelect(entry, ctrl, shift);
+        _cardPress = entry.IsStored ? (e, entry, e.GetPosition(this), later) : null;
     }
 
+    // A left click on the empty space of the gallery (between, around and below the cards) clears the selection. A card,
+    // a group header and a button handle their own clicks; Ctrl or Shift keep the selection, as in Explorer
+    private void GalleryHost_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (e.Handled || !_mainViewModel.Gallery.HasSelection) return;
+        if (!e.GetCurrentPoint(GalleryHost).Properties.IsLeftButtonPressed) return;
+        if ((e.KeyModifiers & (KeyModifiers.Control | KeyModifiers.Shift)) != 0) return;
+        if (!GalleryClicks.IsEmptySpace(e.Source as Visual)) return;
+        _mainViewModel.Gallery.ClearSelectionCommand.Execute(null);
+    }
+
+    // The cards' one context menu (LiveryCardMenu in MainWindow.axaml) and the card it was last given to
+    private ContextMenu? _cardMenu;
+    private Control? _cardMenuOwner;
+
+    /// <summary>
+    /// A card's context menu: the cards' one menu, given to this card (its items work on its livery and reach the window
+    /// through it) and opened at the pointer. The card is selected first
+    /// </summary>
     private void Card_ContextRequested(object? sender, ContextRequestedEventArgs e)
     {
-        if (sender is not StyledElement element || element.DataContext is not LiveryEntry entry) return;
+        if (sender is not Control card || card.DataContext is not LiveryEntry entry) return;
         if (!entry.IsSelected) _mainViewModel.Gallery.SelectOnlyCommand.Execute(entry);
+        var menu = _cardMenu ??= (ContextMenu)Resources["LiveryCardMenu"]!;
+        if (menu.IsOpen) menu.Close();
+        if (!ReferenceEquals(card.ContextMenu, menu))
+        {
+            if (_cardMenuOwner is { } previous && ReferenceEquals(previous.ContextMenu, menu)) previous.ContextMenu = null;
+            card.ContextMenu = menu;
+            _cardMenuOwner = card;
+        }
+        if (entry.IsStored) FillMoveToFolderMenu(card);
+        e.Handled = true;
+        menu.Open(card);
     }
 
     private void ContactsMenuItem_Click(object? sender, RoutedEventArgs e)
@@ -672,7 +859,7 @@ internal partial class MainWindow : Window
     private void AboutMenuItem_Click(object? sender, RoutedEventArgs e)
     {
         SettingsButton.Flyout?.Hide();
-        RunUiTask(() => new AboutDialog(_aboutComponents, _profile).ShowDialog(this), "about dialog");
+        RunUiTask(() => new ForzaToolkit.UI.Dialogs.AboutDialog(AppAbout.Info(_aboutComponents, _profile), "IconFlag").ShowDialog(this), "about dialog");
     }
 
     private void OpenSettingsMenuItem_Click(object? sender, RoutedEventArgs e)
@@ -684,8 +871,10 @@ internal partial class MainWindow : Window
     private async Task ShowSettingsAsync()
     {
         var dlg = new SettingsDialog(_settings, _savePathService.SavePath, _gameFolderCheck, _profile, ExportDiagnosticsAsync,
-            new AccountDataActions(_mainViewModel.ListStoredAccountsAsync, _mainViewModel.ForgetAccountAsync),
-            _mainViewModel.CarTextLanguages);
+            new AccountDataActions(_mainViewModel.ListStoredAccountsAsync, _mainViewModel.ForgetAccountAsync,
+                _mainViewModel.ListAccountsAsync, _mainViewModel.AddAccountAsync),
+            _mainViewModel.CarTextLanguages, _mainViewModel.Screenshots,
+            new StorageActions(_mainViewModel.ListStoragesAsync, ChangeStorageFolderAsync));
         await dlg.ShowDialog(this);
         if (_isClosing) return;
         if (dlg.SavePathChanged) await _mainViewModel.HandleSavePathChangedFromSettingsAsync();
@@ -715,24 +904,54 @@ internal partial class MainWindow : Window
         RunUiTask(() => dialog.ShowDialog(this), "authors dialog");
     }
 
+    /// <summary>The account of the save folder the gallery shows; null before one is chosen</summary>
+    private string? CurrentAccountKey =>
+        _savePathService.SavePath is { } savePath && AccountKey.For(savePath) is { } key && GamePaths.IsFolderName(key) ? key : null;
+
+    /// <summary>The manifests of the current account's backups; none without an account</summary>
+    private IEnumerable<LiveryBackupManifest?> CurrentBackupManifests() =>
+        CurrentAccountKey is { } key ? _storage.BackupsOf(key).GetAll().Select(b => b.Manifest) : [];
+
     private void OpenArchiveMenuItem_Click(object? sender, RoutedEventArgs e)
     {
         SettingsButton.Flyout?.Hide();
-        var dialog = new ArchiveDialog(_archiveService, _savePathService,
-            () => [.. _mainViewModel.Gallery.AllEntries.Select(entry => entry.Data)],
+        // Each account has its own archive: there is none to show before a save folder is chosen
+        if (CurrentAccountKey is not { } accountKey)
+        {
+            RunUiTask(() => InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, Strings.ArchiveNoSavePathMessage), "archive without a save");
+            return;
+        }
+        var dialog = new ArchiveDialog(_storage.ArchiveOf(accountKey), _savePathService,
+            () => [.. _mainViewModel.GameEntries.Select(entry => entry.Data)],
             () => _mainViewModel.RunScanAsyncTracked(isUserInitiated: true),
-            _mainViewModel.GetAccountContext(), _mainViewModel.ShowFolderNames);
-        RunUiTask(() => dialog.ShowDialog(this), "archive dialog");
+            _mainViewModel.GetAccountContext(), _mainViewModel.ShowFolderNames, _storage.Unassigned(), _mainViewModel.Screenshots,
+            accountKey == Configuration.GamePaths.Unassigned ? null : _storage.StorageOf(accountKey));
+        RunUiTask(async () =>
+        {
+            await dialog.ShowDialog(this);
+            await _mainViewModel.RefreshStorageAsync(); // the archive may have sent liveries into the storage
+        }, "archive dialog");
     }
 
     private void OpenBackupsMenuItem_Click(object? sender, RoutedEventArgs e)
     {
         SettingsButton.Flyout?.Hide();
+        if (CurrentAccountKey is not { } accountKey)
+        {
+            RunUiTask(() => InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, Strings.ArchiveNoSavePathMessage), "backups without a save");
+            return;
+        }
         var dialog = new BackupsDialog(
-            _backupService, _savePathService,
-            () => [.. _mainViewModel.Gallery.AllEntries.Select(entry => entry.Data)],
+            _storage.BackupsOf(accountKey), new BackupPreviews(_storage.Paths.Thumbs, _storage.BackupThumbsOf(accountKey)), _savePathService,
+            () => [.. _mainViewModel.GameEntries.Select(entry => entry.Data)],
             () => _mainViewModel.RunScanAsyncTracked(isUserInitiated: true),
-            _mainViewModel.GetAccountContext());
+            _mainViewModel.GetAccountContext(),
+            () => _storage.UnassignedBackups()?.GetAll().Count ?? 0,
+            () => _storage.TakeUnassignedBackupsAsync(accountKey),
+            // The storage's backups beside the save's (docs/storage.md, stage 6); none while its own folder is not there
+            accountKey == Configuration.GamePaths.Unassigned || _storage.StorageOf(accountKey) is not { } stored ? null
+                : new StorageBackupContext(stored,
+                    () => [.. (_storage.StorageOf(accountKey)?.GetAll() ?? []).Select(e => e.Data)], _mainViewModel.RefreshStorageAsync));
         RunUiTask(() => dialog.ShowDialog(this), "backups dialog");
     }
 
@@ -749,7 +968,7 @@ internal partial class MainWindow : Window
         StatisticsWindow? window = null;
         var viewModel = new StatisticsViewModel(_mainViewModel.StatisticsHost(
             entry => RunUiTask(() => ShowAuthorRowAsync(entry, window), "author card from statistics"),
-            () => [.. _backupService.GetAll().Select(b => b.Manifest)]));
+            () => [.. CurrentBackupManifests()]));
         window = new StatisticsWindow(viewModel);
         void Refresh(GalleryCountsSnapshot _) => window.RequestRefresh();
         void RefreshOnTags() => window.RequestRefresh();

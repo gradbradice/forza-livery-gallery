@@ -5,25 +5,28 @@ namespace LiveryGallery.Services;
 
 /// <summary>
 /// The gallery's PNG previews of liveries in backups: the backups themselves (ForzaToolkit.Liveries'
-/// <see cref="LiveryBackups"/>) hold the game's WebP previews, which are turned into PNGs here when a backup is opened
+/// <see cref="LiveryBackups"/>) hold the game's WebP previews, which are turned into PNGs here when a backup is opened.
+/// Each account keeps the PNGs of its own backups (<see cref="GamePaths.BackupThumbsOf"/>)
 /// </summary>
-internal static class BackupPreviews
+/// <param name="gameThumbs">The game's preview folder, where the scan keeps the previews of the liveries in the save</param>
+/// <param name="backupThumbs">The PNGs made from the account's backups</param>
+internal sealed class BackupPreviews(string gameThumbs, string backupThumbs)
 {
     /// <summary>The PNG of a livery in a backup: from the scan's preview cache, else made from the backup earlier</summary>
-    public static string? FindExisting(string? thumbnailFileName)
+    public string? FindExisting(string? thumbnailFileName)
     {
         if (!IsSafePreviewFileName(thumbnailFileName)) return null;
 
-        string cached = Path.Combine(AppSettings.ThumbsPath, thumbnailFileName!);
+        string cached = Path.Combine(gameThumbs, thumbnailFileName!);
         if (File.Exists(cached)) return cached;
 
-        string backupPreview = Path.Combine(AppSettings.BackupThumbsPath, thumbnailFileName!);
+        string backupPreview = Path.Combine(backupThumbs, thumbnailFileName!);
         return File.Exists(backupPreview) ? backupPreview : null;
     }
 
     /// <summary>Makes the PNGs of <paramref name="entries"/> from the previews in the backup; reports each one made</summary>
     /// <param name="previewFileNames">The names of the game's previews of a livery, the better one first</param>
-    public static Task GenerateMissingAsync(
+    public Task GenerateMissingAsync(
         string backupPath, IReadOnlyList<LiveryData> entries, IReadOnlyList<string> previewFileNames,
         IProgress<(string FolderName, string PreviewPath)> progress, CancellationToken ct)
     {
@@ -41,7 +44,8 @@ internal static class BackupPreviews
                 using (var entryStream = source.Open()) entryStream.CopyTo(buffer);
                 buffer.Position = 0;
 
-                string destination = Path.Combine(AppSettings.BackupThumbsPath, data.ThumbnailPath!);
+                Directory.CreateDirectory(backupThumbs);
+                string destination = Path.Combine(backupThumbs, data.ThumbnailPath!);
                 if (ThumbnailService.GenerateAndSave(buffer, $"{backupPath}:{source.FullName}", destination))
                     progress.Report((data.FolderName, destination));
             }
@@ -49,7 +53,7 @@ internal static class BackupPreviews
     }
 
     /// <summary>Removes PNGs no backup refers to any more; does nothing while a backup's manifest cannot be read</summary>
-    public static void Prune(IReadOnlyList<LiveryBackupSummary> backups)
+    public void Prune(IReadOnlyList<LiveryBackupSummary> backups)
     {
         if (backups.Any(b => b.Manifest is null)) return;
 
@@ -61,7 +65,8 @@ internal static class BackupPreviews
 
         try
         {
-            foreach (string file in Directory.EnumerateFiles(AppSettings.BackupThumbsPath, "*.png"))
+            if (!Directory.Exists(backupThumbs)) return;
+            foreach (string file in Directory.EnumerateFiles(backupThumbs, "*.png"))
             {
                 if (referenced.Contains(Path.GetFileName(file))) continue;
                 try { File.Delete(file); }

@@ -14,10 +14,34 @@ internal sealed record AccountOption(AccountInfo Info, string Title, string? Sub
     /// <summary>The folder tells two unnamed accounts apart</summary>
     public string Tooltip => Info.SavePath;
 
+    /// <summary>The player's name, or "Account" while it is not known</summary>
+    public string Name => AccountLabels.Name(Info.DisplayName);
+
+    /// <summary>The end of the XUID beside the name: "***E1FB"</summary>
+    public string Marker => AccountLabels.Marker(Info.Key);
+
     public static AccountOption From(AccountInfo info) => new(
         info,
         AccountLabels.Title(info.Key, info.DisplayName),
         info.ItemCount is { } count ? string.Format(Strings.AccountLiveriesFormat, count) : null);
+}
+
+/// <summary>An account in the settings' list</summary>
+/// <param name="Info">What is known about it</param>
+/// <param name="IsCurrent">The account open now</param>
+/// <param name="IsFound">The gallery finds its save folder itself; otherwise it was added by hand</param>
+internal sealed record AccountListItem(AccountInfo Info, bool IsCurrent, bool IsFound);
+
+/// <summary>What adding an account by hand did</summary>
+internal enum AccountAddResult
+{
+    Added,
+
+    /// <summary>The folder holds no save of the game</summary>
+    NoSave,
+
+    /// <summary>The account is in the list already (found on this PC or added before)</summary>
+    AlreadyListed,
 }
 
 /// <summary>
@@ -68,6 +92,47 @@ internal sealed partial class MainViewModel
     {
         string? currentKey = CurrentAccountKey;
         return Task.Run(() => _accountRegistry.ListStored(currentKey));
+    }
+
+    /// <summary>
+    /// For the settings: every account the switcher offers, with where it came from (found on this PC or added by
+    /// hand) and whether it is the open one
+    /// </summary>
+    public Task<List<AccountListItem>> ListAccountsAsync()
+    {
+        string? currentSavePath = savePathService.SavePath;
+        return Task.Run(() =>
+        {
+            var found = savePathService.Profile.Saves.FindAllSaveFolders();
+            return _accountRegistry.Discover(currentSavePath)
+                .Select(info => new AccountListItem(info,
+                    IsCurrent: AccountKey.SamePath(info.SavePath, currentSavePath),
+                    IsFound: found.Any(path => AccountKey.SamePath(path, info.SavePath))))
+                .ToList();
+        });
+    }
+
+    /// <summary>
+    /// Adds the account of a save folder the gallery does not find itself: from now on the switcher offers it. Not
+    /// opened: the switcher does that
+    /// </summary>
+    public async Task<AccountAddResult> AddAccountAsync(string savePath)
+    {
+        if (string.IsNullOrWhiteSpace(savePath)) return AccountAddResult.NoSave;
+        savePath = savePath.Trim();
+        string? currentSavePath = savePathService.SavePath;
+        var result = await Task.Run(() =>
+        {
+            if (_accountRegistry.Discover(currentSavePath).Any(a => AccountKey.SamePath(a.SavePath, savePath)))
+                return AccountAddResult.AlreadyListed;
+            return _accountRegistry.Add(savePath) ? AccountAddResult.Added : AccountAddResult.NoSave;
+        });
+        if (result == AccountAddResult.Added)
+        {
+            AppLog.LogWarning("An account was added by hand (not an error)");
+            await RefreshAccountsAsync();
+        }
+        return result;
     }
 
     /// <summary>Deletes an account's data; the scan right after removes the previews only it used</summary>
@@ -139,6 +204,7 @@ internal sealed partial class MainViewModel
     /// <summary>After any change of the save folder: the switcher, the settings, or the first-run prompt</summary>
     private async Task OnSavePathSwitchedAsync()
     {
+        LeaveStorageMode(); // the other account has a storage of its own
         Gallery.ClearSelectionCommand.Execute(null);
         SavePathChanged?.Invoke();
 
@@ -149,6 +215,7 @@ internal sealed partial class MainViewModel
                 if (await RunScanCoreAsync(isUserInitiated: true)) break;
         }
         await RefreshAccountsAsync();
+        await FindPlacedByHandAsync(); // the other account's storage, as it lies now
     }
 
     public async Task RefreshAccountsAsync()
@@ -189,14 +256,14 @@ internal sealed partial class MainViewModel
     {
         if (savePathService.SavePath is not { } savePath) return;
 
-        string? displayName = Gallery.AllEntries
+        string? displayName = GameEntries
             .Where(e => e.IsMine && !e.Data.IsAuthorUnknown && !string.IsNullOrWhiteSpace(e.Data.AuthorRaw))
             .GroupBy(e => e.Data.AuthorRaw.Trim(), StringComparer.OrdinalIgnoreCase)
             .OrderByDescending(g => g.Count())
             .Select(g => g.Key)
             .FirstOrDefault();
         ulong? userId = savePathService.CurrentUserId;
-        int liveryCount = Gallery.AllEntries.Count;
+        int liveryCount = GameEntries.Count;
 
         _ = RunSafelyAsync(async () =>
         {

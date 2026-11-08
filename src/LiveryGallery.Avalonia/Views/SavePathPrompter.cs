@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Platform.Storage;
 using LiveryGallery.Localisation;
 using LiveryGallery.Services;
 
@@ -27,45 +26,15 @@ internal sealed class SavePathPrompter(Window owner, GameProfile profile) : ISav
     /// </summary>
     internal static string FolderNotFoundMessage(string format, ForzaGame game)
     {
-        if (game.Saves.PcGameSaveGameId is { } id) return string.Format(format, game.Name, id);
+        if (game.GetSaveLocation<PcGameSaveLocation>()?.GameId is { } id) return string.Format(format, game.Name, id);
         string text = format.TrimEnd();
         int lastLine = text.LastIndexOf('\n');
         if (lastLine >= 0 && text.AsSpan(lastLine).Contains("{1}", StringComparison.Ordinal)) text = text[..lastLine].TrimEnd();
         return string.Format(text, game.Name);
     }
 
-    private async Task<string?> BrowseAsync(CancellationToken ct)
-    {
-        var provider = owner.StorageProvider;
-        if (provider is null) return null;
-
-        while (true)
-        {
-            if (ct.IsCancellationRequested) return null;
-            var result = await provider.OpenFolderPickerAsync(new FolderPickerOpenOptions
-            {
-                Title = Strings.SelectFolderDialogTitle,
-                AllowMultiple = false
-            });
-
-            var folder = result.Count > 0 ? result[0] : null;
-            string? path = folder?.TryGetLocalPath();
-            if (string.IsNullOrEmpty(path)) return null;
-
-            if (!profile.Saves.IsValidSaveFolder(path))
-            {
-                bool retry = await ConfirmDialog.AskAsync(
-                    owner,
-                    Strings.SaveFolderValidationFailedTitle,
-                    Strings.SaveFolderValidationFailed,
-                    yesText: Strings.ButtonRetry,
-                    noText: Strings.ButtonCancel);
-
-                if (!retry || ct.IsCancellationRequested) return null;
-                continue;
-            }
-
-            return ct.IsCancellationRequested ? null : path;
-        }
-    }
+    private Task<string?> BrowseAsync(CancellationToken ct) =>
+        FolderPicker.PickValidAsync(owner, Strings.SelectFolderDialogTitle, profile.Saves.IsValidSaveFolder,
+            () => ConfirmDialog.AskAsync(owner, Strings.SaveFolderValidationFailedTitle, Strings.SaveFolderValidationFailed,
+                yesText: Strings.ButtonRetry, noText: Strings.ButtonCancel), ct);
 }

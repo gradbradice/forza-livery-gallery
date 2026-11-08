@@ -75,7 +75,7 @@ internal sealed partial class StatisticsViewModel
     public IReadOnlyList<string> FlowDownSeries { get; } = ["orange", "blue"];
     public IReadOnlyList<string> SingleSeries { get; } = ["accent"];
 
-    public IReadOnlyList<ChartLegendItem> FlowLegend { get; } =
+    private static readonly IReadOnlyList<ChartLegendItem> GameFlowLegend =
     [
         new("accent", Strings.StatsLegendNew),
         new("faint", Strings.StatsLegendEstimated),
@@ -84,11 +84,52 @@ internal sealed partial class StatisticsViewModel
         new("blue", Strings.StatsLegendArchived),
     ];
 
+    private static readonly IReadOnlyList<ChartLegendItem> StorageFlowLegend = [new("accent", Strings.StatsLegendStored)];
+
+    /// <summary>The storage's flow is the liveries that went there, month by month</summary>
+    public IReadOnlyList<ChartLegendItem> FlowLegend => IsStorage ? StorageFlowLegend : GameFlowLegend;
+
+    /// <summary>The storage's time page: its liveries by the day each went there (<see cref="LiveryEntry.StoredAtUtc"/>)</summary>
+    private void BuildStorageTime()
+    {
+        var dates = _items.Select(e => e.StoredAtUtc?.ToLocalTime()).OfType<DateTime>().ToList();
+        var byMonth = dates.GroupBy(d => new DateOnly(d.Year, d.Month, 1)).ToDictionary(g => g.Key, g => g.Count());
+        var months = new List<HistoryMonth>();
+        if (byMonth.Count > 0)
+            for (var m = byMonth.Keys.Min(); m <= byMonth.Keys.Max(); m = m.AddMonths(1))
+                months.Add(new HistoryMonth(m, byMonth.GetValueOrDefault(m), 0, 0, 0, null, 0, 0));
+        _months = months;
+        RecentTiles = [];
+        JournalNote = Strings.StatsStorageTimeNote;
+
+        var today = DateOnly.FromDateTime(DateTime.Now);
+        var first = today.AddDays(-(CalendarLength - 1));
+        var byDay = dates.GroupBy(DateOnly.FromDateTime).ToDictionary(g => g.Key, g => g.Count());
+        var days = new List<DayCount>();
+        for (var day = first; day <= today; day = day.AddDays(1)) days.Add(new DayCount(day, byDay.GetValueOrDefault(day)));
+        CalendarDays = days;
+        CalendarNote = string.Format(Strings.StatsCalendarNoteFormat, N(days.Sum(d => d.Count)), N(days.Count(d => d.Count > 0)));
+
+        var weekdays = new int[7];
+        foreach (var d in dates) weekdays[((int)d.DayOfWeek + 6) % 7]++;
+        var culture = AppLocalisationService.Culture;
+        var monday = new DateOnly(2024, 1, 1);
+        WeekdayValues = weekdays;
+        WeekdayTooltips = [.. Enumerable.Range(0, 7).Select(d => $"{monday.AddDays(d).ToString("dddd", culture)}: {N(weekdays[d])}")];
+    }
+
     public string CalendarTooltipFormat => Strings.StatsCalendarTooltipFormat;
 
     private void BuildTime()
     {
         var now = DateTime.UtcNow;
+        if (IsStorage)
+        {
+            BuildStorageTime();
+            BuildCreated();
+            ApplyRange();
+            return;
+        }
         if (_events.Count == 0)
         {
             _months = [.. LiveryStatistics.ByDownloadMonth(_items).Select(m => new HistoryMonth(m.Month, m.Count, 0, 0, 0, null, 0, m.Count))];
@@ -113,13 +154,7 @@ internal sealed partial class StatisticsViewModel
             JournalNote = string.Format(Strings.StatsJournalSinceFormat, since) + (IsShownScope ? " " + Strings.StatsShownHistoryNote : "");
         }
 
-        _createdMonths = LiveryStatistics.ByCreatedMonth(_items);
-        HasCreated = _createdMonths.Count > 0;
-        var age = LiveryStatistics.AgeAtDownload(_items);
-        AgeText = age.MedianMonths is { } median
-            ? string.Format(Strings.StatsAgeFormat, median.ToString("0.#", AppLocalisationService.Culture),
-                Percent((double)age.SameMonth / age.Liveries), Percent((double)age.OlderThanYear / age.Liveries))
-            : "";
+        BuildCreated();
 
         var today = DateOnly.FromDateTime(DateTime.Now);
         CalendarDays = LiveryStatistics.ByDay(_items, today.AddDays(-(CalendarLength - 1)), today);
@@ -134,6 +169,18 @@ internal sealed partial class StatisticsViewModel
         WeekdayTooltips = [.. Enumerable.Range(0, 7).Select(d => $"{monday.AddDays(d).ToString("dddd", culture)}: {N(weekdays[d])}")];
 
         ApplyRange();
+    }
+
+    // When the liveries were made, and their age when downloaded: the same in the game and the storage
+    private void BuildCreated()
+    {
+        _createdMonths = LiveryStatistics.ByCreatedMonth(_items);
+        HasCreated = _createdMonths.Count > 0;
+        var age = LiveryStatistics.AgeAtDownload(_items);
+        AgeText = age.MedianMonths is { } median
+            ? string.Format(Strings.StatsAgeFormat, median.ToString("0.#", AppLocalisationService.Culture),
+                Percent((double)age.SameMonth / age.Liveries), Percent((double)age.OlderThanYear / age.Liveries))
+            : "";
     }
 
     private static StatTileViewModel Recent(int value, int before, string label)

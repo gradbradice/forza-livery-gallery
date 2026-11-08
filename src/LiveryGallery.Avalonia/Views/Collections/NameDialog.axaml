@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
+        x:Class="LiveryGallery.Views.Collections.NameDialog"
+        Width="440"
+        SizeToContent="Height"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False"
+        ShowInTaskbar="False"
+        Background="{DynamicResource BgBrush}"
+        WindowDecorations="BorderOnly"
+        ExtendClientAreaToDecorationsHint="True"
+        ExtendClientAreaTitleBarHeightHint="-1">
+    <!-- A name for an album of screenshots or a folder of the storage: new or renamed -->
+    <Grid RowDefinitions="36,Auto">
+        <controls:TitleBar x:Name="Bar" Grid.Row="0" CloseRequested="Cancel_Click" />
+        <StackPanel Grid.Row="1" Margin="24,16,24,24" Spacing="8">
+            <TextBlock x:Name="LabelText" FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" />
+            <TextBox x:Name="NameBox" MaxLength="64" KeyDown="NameBox_KeyDown" TextChanged="NameBox_TextChanged" />
+            <TextBlock x:Name="ErrorText" FontSize="12" IsVisible="False" TextWrapping="Wrap"
+                       Foreground="{DynamicResource DangerBrush}" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,12,0,0">
+                <Button x:Name="CancelButton" Classes="secondary" MinWidth="100" Click="Cancel_Click" />
+                <Button x:Name="OkButton" Classes="primary" MinWidth="100" Click="Ok_Click" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

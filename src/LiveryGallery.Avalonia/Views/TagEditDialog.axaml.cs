@@ -21,33 +21,33 @@ internal sealed partial class TagCheckRow : ObservableObject
 }
 
 /// <summary>
-/// The tags of one livery, typed as a list; or of several liveries: every tag of the gallery ticked on all, some or
-/// none of them, and new tags for all of them
+/// The tags of one or several liveries: every tag of the gallery as a box, ticked when the livery has it (with several
+/// liveries: on all, some or none of them), and new tags typed as a list
 /// </summary>
 internal partial class TagEditDialog : Window
 {
-    private readonly List<TagCheckRow>? _rows;
+    private readonly List<TagCheckRow> _rows;
 
-    /// <summary>One livery: its tags after editing</summary>
-    public List<string> ResultTags { get; private set; } = new();
-
-    /// <summary>Several liveries: the tags to put on every one of them</summary>
+    /// <summary>The tags to put on every livery: the ticked ones and the typed ones</summary>
     public List<string> TagsToAdd { get; private set; } = new();
 
-    /// <summary>Several liveries: the tags to take off every one of them</summary>
+    /// <summary>The tags to take off every livery: the cleared ones (a typed tag is never taken off)</summary>
     public List<string> TagsToRemove { get; private set; } = new();
 
-    /// <summary>Several liveries: a tag on some of them stays as it is unless the user ticks or clears it</summary>
-    /// <param name="tagsOfEach">The tags of each livery</param>
+    /// <summary>A tag on some of several liveries stays as it is unless the user ticks or clears it</summary>
+    /// <param name="tagsOfEach">The tags of each livery (one list for one livery)</param>
     /// <param name="knownTags">Every tag of the gallery</param>
     public TagEditDialog(IReadOnlyList<IReadOnlyList<string>> tagsOfEach, IEnumerable<string> knownTags)
-        : this([])
     {
+        InitializeComponent();
         int count = tagsOfEach.Count;
-        TitleText.Text = string.Format(Strings.TagsDialogManyTitleFormat, count);
-        HintText.Text = Strings.TagsDialogManyHint;
-        NewTagsLabel.Text = Strings.TagsDialogNewTagsLabel;
-        NewTagsLabel.IsVisible = true;
+        bool one = count == 1;
+
+        Title = Strings.TagsDialogTitle;
+        TitleBarText.Text = Strings.TagsDialogTitle;
+        TitleText.Text = one ? Strings.TagsDialogTitle : string.Format(Strings.TagsDialogManyTitleFormat, count);
+        SaveButton.Content = Strings.ButtonSave;
+        CancelButton.Content = Strings.ButtonCancel;
         TagsBox.PlaceholderText = Strings.TagsDialogHint;
 
         var having = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
@@ -72,44 +72,38 @@ internal partial class TagEditDialog : Window
             })];
         ManyTagsList.ItemsSource = _rows;
         ManyTagsScroll.IsVisible = _rows.Count > 0;
+
+        // No tag in the whole gallery yet: only the field, with its hint
+        HintText.Text = _rows.Count == 0 ? Strings.TagsDialogHint : one ? Strings.TagsDialogOneHint : Strings.TagsDialogManyHint;
+        NewTagsLabel.Text = one ? Strings.TagsDialogOneNewTagsLabel : Strings.TagsDialogNewTagsLabel;
+        NewTagsLabel.IsVisible = _rows.Count > 0;
+
+        Loaded += (_, _) => TagsBox.Focus();
     }
 
-    public TagEditDialog(IEnumerable<string> existingTags)
+    /// <summary>The tags typed in the field: split by commas, trimmed, each once</summary>
+    internal static List<string> ParseTyped(string? text) => [.. (text ?? "")
+        .Split(',')
+        .Select(t => t.Trim())
+        .Where(t => t.Length > 0)
+        .GroupBy(t => t, StringComparer.OrdinalIgnoreCase)
+        .Select(g => g.First())];
+
+    /// <summary>What the boxes and the field ask for: the ticked and typed tags go on, the cleared ones off</summary>
+    internal static (List<string> Add, List<string> Remove) Changes(IEnumerable<TagCheckRow> rows, IReadOnlyCollection<string> typed)
     {
-        InitializeComponent();
-
-        Title = Strings.TagsDialogTitle;
-        TitleBarText.Text = Strings.TagsDialogTitle;
-        TitleText.Text = Strings.TagsDialogTitle;
-        HintText.Text = Strings.TagsDialogHint;
-        SaveButton.Content = Strings.ButtonSave;
-        CancelButton.Content = Strings.ButtonCancel;
-        TagsBox.Text = string.Join(", ", existingTags);
-
-        Loaded += (_, _) =>
-        {
-            TagsBox.Focus();
-            TagsBox.CaretIndex = TagsBox.Text?.Length ?? 0;
-        };
+        var typedSet = new HashSet<string>(typed, StringComparer.OrdinalIgnoreCase);
+        var add = rows.Where(r => r.IsChecked == true).Select(r => r.Tag).Concat(typed)
+            .Distinct(StringComparer.OrdinalIgnoreCase).ToList();
+        var remove = rows.Where(r => r.IsChecked == false && !typedSet.Contains(r.Tag)).Select(r => r.Tag).ToList();
+        return (add, remove);
     }
 
     private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
 
     private void SaveButton_Click(object? sender, RoutedEventArgs e)
     {
-        ResultTags = [.. (TagsBox.Text ?? "")
-            .Split(',')
-            .Select(t => t.Trim())
-            .Where(t => t.Length > 0)
-            .GroupBy(t => t, StringComparer.OrdinalIgnoreCase)
-            .Select(g => g.First())];
-
-        if (_rows is not null)
-        {
-            TagsToAdd = [.. _rows.Where(r => r.IsChecked == true).Select(r => r.Tag).Concat(ResultTags)];
-            TagsToRemove = [.. _rows.Where(r => r.IsChecked == false).Select(r => r.Tag)];
-        }
-
+        (TagsToAdd, TagsToRemove) = Changes(_rows, ParseTyped(TagsBox.Text));
         Close(true);
     }
 

@@ -7,12 +7,28 @@ using System.Collections.ObjectModel;
 
 namespace LiveryGallery.ViewModels;
 
+/// <summary>
+/// The account's storage (docs/storage.md, stage 6), for its backups: they are kept with the save's, compared with the
+/// storage and restored into it
+/// </summary>
+/// <param name="Store">The storage</param>
+/// <param name="Entries">Its liveries now</param>
+/// <param name="OnRestored">After liveries came back into it</param>
+internal sealed record StorageBackupContext(LiveryArchive Store, Func<IReadOnlyList<LiveryData>> Entries, Func<Task> OnRestored);
+
 internal sealed partial class BackupsViewModel : ObservableObject
 {
     private readonly LiveryBackups _backupService;
+    private readonly BackupPreviews _previews;
     private readonly SavePathService _savePathService;
     private readonly Func<IReadOnlyList<LiveryData>> _getCurrentEntries;
     private readonly AccountContext _accounts;
+    private readonly Func<int>? _unassignedCount;
+    private readonly Func<Task<int>>? _takeUnassigned;
+    private readonly StorageBackupContext? _storage;
+
+    /// <summary>The account has a storage: it can be backed up too</summary>
+    public bool HasStorage => _storage is not null;
 
     public ObservableCollection<BackupRowViewModel> Backups { get; } = [];
     public bool ShowEmptyState => !_isLoading && Backups.Count == 0;
@@ -57,10 +73,15 @@ internal sealed partial class BackupsViewModel : ObservableObject
     public event Action<BackupRowViewModel>? DeleteRequested;
 
     public BackupsViewModel(
-        LiveryBackups backupService, SavePathService savePathService,
-        Func<IReadOnlyList<LiveryData>> getCurrentEntries, AccountContext accounts)
+        LiveryBackups backupService, BackupPreviews previews, SavePathService savePathService,
+        Func<IReadOnlyList<LiveryData>> getCurrentEntries, AccountContext accounts,
+        Func<int>? unassignedCount = null, Func<Task<int>>? takeUnassigned = null, StorageBackupContext? storage = null)
     {
+        _storage = storage;
         _accounts = accounts;
+        _unassignedCount = unassignedCount;
+        _takeUnassigned = takeUnassigned;
+        _previews = previews;
         _backupService = backupService;
         _savePathService = savePathService;
         _getCurrentEntries = getCurrentEntries;
@@ -79,6 +100,7 @@ internal sealed partial class BackupsViewModel : ObservableObject
         OnPropertyChanged(nameof(ShowEmptyState));
 
         var currentEntries = _getCurrentEntries();
+        var storedEntries = _storage?.Entries() ?? [];
         List<BackupRowViewModel> rows;
         try
         {
@@ -86,8 +108,10 @@ internal sealed partial class BackupsViewModel : ObservableObject
             {
                 var backups = _backupService.GetAll();
                 ct.ThrowIfCancellationRequested();
-                BackupPreviews.Prune(backups);
-                return backups.Select(summary => new BackupRowViewModel(summary, currentEntries, _accounts)).ToList();
+                _previews.Prune(backups);
+                // A backup of the storage is compared with the storage, one of the save with the save
+                return backups.Select(summary => new BackupRowViewModel(summary,
+                    summary.Manifest?.IsOfArchive == true ? storedEntries : currentEntries, _accounts)).ToList();
             }, ct);
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
@@ -104,7 +128,36 @@ internal sealed partial class BackupsViewModel : ObservableObject
 
         _allRows = rows;
         _isLoading = false;
+        UnassignedCount = _unassignedCount?.Invoke() ?? 0;
+        OnPropertyChanged(nameof(UnassignedCount));
+        OnPropertyChanged(nameof(HasUnassigned));
+        OnPropertyChanged(nameof(UnassignedText));
         ApplyAccountFilter();
+    }
+
+    /// <summary>
+    /// Backups an earlier version made without recording the account, while it knew more than one: kept apart
+    /// (<see cref="Configuration.GamePaths.Unassigned"/>) until put with an account
+    /// </summary>
+    public int UnassignedCount { get; private set; }
+    public bool HasUnassigned => UnassignedCount > 0;
+    public string UnassignedText => string.Format(Strings.UnassignedCountFormat, UnassignedCount);
+
+    /// <summary>Puts the backups without an account with this account; the user says they are its own</summary>
+    [RelayCommand]
+    private async Task TakeUnassignedAsync()
+    {
+        if (_takeUnassigned is null) return;
+        try
+        {
+            await _takeUnassigned();
+        }
+        catch (Exception ex)
+        {
+            AppLog.LogError("Failed to move backups without an account", ex);
+            ErrorMessageRequested?.Invoke(Strings.FileOperationFailedMessage);
+        }
+        await ReloadAsync();
     }
 
     [RelayCommand]
@@ -137,6 +190,37 @@ internal sealed partial class BackupsViewModel : ObservableObject
         catch (Exception ex)
         {
             AppLog.LogError("Failed to create backup", ex);
+            ErrorMessageRequested?.Invoke(Strings.FileOperationFailedMessage);
+        }
+        finally
+        {
+            IsCreatingBackup = false;
+        }
+    }
+
+    /// <summary>A backup of the whole storage, with its folders</summary>
+    [RelayCommand]
+    private async Task CreateStorageBackupAsync()
+    {
+        if (_storage is null) return;
+        if (_storage.Store.GetAll().Count == 0)
+        {
+            ErrorMessageRequested?.Invoke(Strings.BackupNoStorageMessage);
+            return;
+        }
+        IsCreatingBackup = true;
+        try
+        {
+            await _backupService.CreateFromArchiveAsync(_storage.Store, null, _accounts.Current, LiveryBackupKind.Manual);
+            await ReloadAsync();
+        }
+        catch (OperationCanceledException) when (_backupService.IsClosing)
+        {
+            // The app is closing: the unfinished file was removed
+        }
+        catch (Exception ex)
+        {
+            AppLog.LogError("Failed to back up the storage", ex);
             ErrorMessageRequested?.Invoke(Strings.FileOperationFailedMessage);
         }
         finally

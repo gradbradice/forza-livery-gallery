@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Text;
 using System.Runtime.CompilerServices;
+using ForzaToolkit.Core.Text;
 
 namespace LiveryGallery.ViewModels;
 
@@ -21,10 +22,63 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
     public static bool IsFindInGameAvailable { get; set; } = true;
 
     /// <summary>The card's "Find in game" button is shown (disabled with a reason for an auction livery)</summary>
-    public bool HasFindInGameButton => IsFindInGameAvailable;
+    public bool HasFindInGameButton => IsFindInGameAvailable && !IsStored;
 
-    /// <summary>The menu item is offered: the game has a grid and the livery is not an auction one</summary>
-    public bool ShowFindInGame => IsFindInGameAvailable && !IsAuction;
+    /// <summary>The menu item is offered: the game has a grid and the livery is in it, not an auction one</summary>
+    public bool ShowFindInGame => IsFindInGameAvailable && !IsAuction && !IsStored;
+
+    /// <summary>
+    /// When the livery went to the storage; null for a livery of the game. A stored card has "To the game" instead of
+    /// "Find in game", no lock and no marks of the game's cars, and its date line tells since when it is kept
+    /// </summary>
+    public DateTime? StoredAtUtc
+    {
+        get => _storedAtUtc;
+        set
+        {
+            if (_storedAtUtc == value) return;
+            _storedAtUtc = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(DateDisplay));
+            OnPropertyChanged(nameof(DateTooltip));
+        }
+    }
+
+    private DateTime? _storedAtUtc;
+
+    /// <summary>
+    /// The date line's tooltip, as the date it shows: when the livery went to the storage, when it was downloaded, or (no
+    /// download date known) the month it was created
+    /// </summary>
+    public string DateTooltip => IsStored ? Strings.StoredDateTooltip
+        : Data.DownloadDate is not null ? Strings.DownloadDateLabel
+        : Strings.DateLabel;
+
+    /// <summary>The livery is in the storage, not in the game</summary>
+    public bool IsStored => StoredAtUtc is not null;
+
+    /// <summary>The storage folder it is in (<see cref="LiveryArchive.GetFolders"/>); null: in none</summary>
+    public string? StorageFolderId { get; set; }
+
+    /// <summary>
+    /// The user put it into the storage's folder by hand and the gallery took it in this launch: its card says so until
+    /// it is opened
+    /// </summary>
+    public bool IsAddedByHand
+    {
+        get => _isAddedByHand;
+        set
+        {
+            if (_isAddedByHand == value) return;
+            _isAddedByHand = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _isAddedByHand;
+
+    /// <summary>The lock keeps a livery in the game: a stored card has none</summary>
+    public bool ShowLockButton => !IsStored;
     public void RefreshDuplicateTooltip()
     {
         InvalidateDuplicateTexts();
@@ -243,13 +297,58 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
         }
     }
 
-    /// <summary>The livery's preview; the one just drawn until a scan attaches it</summary>
-    string? IThumbnailHost.ThumbnailPath => Data.ThumbnailPath ?? (CanRenderThumbnail ? RenderedThumbnailPath : null);
+    /// <summary>
+    /// The card's picture: the screenshot the user chose as the cover, else the livery's preview (the one just drawn
+    /// until a scan attaches it)
+    /// </summary>
+    string? IThumbnailHost.ThumbnailPath => CoverPath ?? Data.ThumbnailPath ?? (CanRenderThumbnail ? RenderedThumbnailPath : null);
 
-    /// <summary>On the card's picture: it was drawn by the gallery, not taken from the save</summary>
-    public string? ThumbnailTooltip => Data.ThumbnailDrawn || (Data.ThumbnailPath is null && RenderedThumbnailPath is not null)
-        ? Strings.RenderedThumbnailTooltip
-        : null;
+    /// <summary>On the card's picture: a screenshot chosen as the cover, or one drawn by the gallery, not taken from the save</summary>
+    public string? ThumbnailTooltip => CoverPath is not null ? Strings.ScreenshotCoverTooltip
+        : Data.ThumbnailDrawn || (Data.ThumbnailPath is null && RenderedThumbnailPath is not null)
+            ? Strings.RenderedThumbnailTooltip
+            : null;
+
+    private int _screenshotCount;
+    /// <summary>How many screenshots the user added to the livery (<see cref="Services.Screenshots.ScreenshotStore"/>)</summary>
+    public int ScreenshotCount
+    {
+        get => _screenshotCount;
+        set
+        {
+            if (_screenshotCount == value) return;
+            _screenshotCount = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasScreenshots));
+            OnPropertyChanged(nameof(ScreenshotCountText));
+            OnPropertyChanged(nameof(ScreenshotCountTooltip));
+        }
+    }
+
+    /// <summary>The card shows the camera mark with the count</summary>
+    public bool HasScreenshots => _screenshotCount > 0;
+
+    public string ScreenshotCountText => _screenshotCount.ToString(CultureInfo.InvariantCulture);
+
+    public string ScreenshotCountTooltip => string.Format(Strings.ScreenshotCountTooltipFormat, _screenshotCount);
+
+    private string? _coverPath;
+    /// <summary>The screenshot on the card instead of the game's preview; null for the preview</summary>
+    public string? CoverPath
+    {
+        get => _coverPath;
+        set
+        {
+            if (_coverPath == value) return;
+            _coverPath = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasCover));
+            OnPropertyChanged(nameof(ThumbnailTooltip));
+        }
+    }
+
+    /// <summary>A screenshot is on the card: the card offers the game's preview back</summary>
+    public bool HasCover => _coverPath is not null;
     /// <summary>A livery the game only lists (the auction house); the game profile tells</summary>
     public bool IsAuction { get; init; }
 
@@ -360,6 +459,13 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
             return _carTexts;
         }
     }
+
+    /// <summary>
+    /// The car with its year and number, «Honda S2000 2004 (4231)» (the 3D window's title); an unknown car: its number
+    /// </summary>
+    public string CarTitleWithId => CarKnown
+        ? string.Create(CultureInfo.CurrentCulture, $"{CarManufacturer} {CarModelName}{(CarYear is { } year ? $" {year}" : "")} ({CarId})")
+        : CarModelName;
 
     public string CarManufacturer => CarKnown
         ? LocalizedCar?.Texts.Manufacturer ?? CarManufacturerRaw
@@ -475,6 +581,19 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
         }
     }
 
+    private bool _isCurrent;
+    /// <summary>The cursor of the keys is on this card (shown once the arrows moved it, as Windows shows its focus)</summary>
+    public bool IsCurrent
+    {
+        get => _isCurrent;
+        set
+        {
+            if (_isCurrent == value) return;
+            _isCurrent = value;
+            OnPropertyChanged();
+        }
+    }
+
     private List<string> _tags = [];
     private System.Collections.ObjectModel.ReadOnlyCollection<string> _tagsReadOnly = new([]);
     private HashSet<string> _tagsSet = new(StringComparer.OrdinalIgnoreCase);
@@ -493,6 +612,28 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
 
     /// <summary>The card shows the row of tags only when there are any: an empty row would add its gap under the date</summary>
     public bool HasTags => _tags.Count > 0;
+
+    private string? _note;
+    /// <summary>The user's note (<see cref="NoteService"/>); null when there is none. The search finds it too</summary>
+    public string? Note
+    {
+        get => _note;
+        set
+        {
+            string? kept = NoteService.Normalize(value);
+            if (_note == kept) return;
+            _note = kept;
+            _searchHaystack = null;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(HasNote));
+            OnPropertyChanged(nameof(NoteTooltip));
+        }
+    }
+
+    /// <summary>The card shows the note's mark, its text in the tooltip</summary>
+    public bool HasNote => _note is not null;
+
+    public string? NoteTooltip => _note is null ? null : string.Format(Strings.NoteTooltipFormat, _note);
 
     public IReadOnlySet<string> TagsSet => _tagsSet;
 
@@ -534,6 +675,61 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
         var kept = relations.Where(r => PossibleDuplicateThreshold.Reaches(r.Score, thresholdPercent)).ToList();
         return kept.Count > 0 ? kept : null;
     }
+
+    /// <summary>The duplicate check's verdict found after the card was built (the storage's, docs/storage.md stage 5)</summary>
+    public void SetDuplicates(DuplicateStatus status, IReadOnlyList<DuplicateRelation>? related)
+    {
+        if (DuplicateStatus == status && ReferenceEquals(PossibleDuplicateOf, related)) return;
+        DuplicateStatus = status;
+        PossibleDuplicateOf = related;
+        OnPropertyChanged(nameof(IsDuplicate));
+        RefreshPossibleDuplicateThreshold();
+    }
+
+    private CopyKind _copyKind;
+    private LiveryEntry? _copyOf;
+
+    /// <summary>
+    /// The other place (the storage for a livery of the game, the game for a stored one) has the same livery or a similar
+    /// one: a mark on the card says so, its tooltip names the other
+    /// </summary>
+    public void SetCopy(CopyKind kind, LiveryEntry? other)
+    {
+        if (kind == CopyKind.None) other = null;
+        if (_copyKind == kind && ReferenceEquals(_copyOf, other)) return;
+        _copyKind = kind;
+        _copyOf = other;
+        OnPropertyChanged(nameof(HasCopy));
+        OnPropertyChanged(nameof(ShowCopyInGame));
+        OnPropertyChanged(nameof(ShowCopyInStorage));
+        OnPropertyChanged(nameof(CopyKind));
+        OnPropertyChanged(nameof(CopyText));
+        OnPropertyChanged(nameof(CopyTooltip));
+    }
+
+    public CopyKind CopyKind => _copyKind;
+    public LiveryEntry? CopyOf => _copyOf;
+    public bool HasCopy => _copyKind != CopyKind.None;
+
+    /// <summary>A stored card's mark: in the game's colour</summary>
+    public bool ShowCopyInGame => HasCopy && IsStored;
+
+    /// <summary>A card of the game's mark: in the storage's cyan</summary>
+    public bool ShowCopyInStorage => HasCopy && !IsStored;
+
+    /// <summary>"In the game", "Similar in the game", "In the storage", "Similar in the storage"</summary>
+    public string? CopyText => _copyKind switch
+    {
+        CopyKind.Same => IsStored ? Strings.CopyInGameLabel : Strings.CopyInStorageLabel,
+        CopyKind.Similar => IsStored ? Strings.SimilarInGameLabel : Strings.SimilarInStorageLabel,
+        _ => null,
+    };
+
+    public string? CopyTooltip => _copyOf is not { } other ? null : string.Format(_copyKind switch
+    {
+        CopyKind.Same => IsStored ? Strings.CopyInGameTooltipFormat : Strings.CopyInStorageTooltipFormat,
+        _ => IsStored ? Strings.SimilarInGameTooltipFormat : Strings.SimilarInStorageTooltipFormat,
+    }, other.LiveryIdText.Length > 0 ? $"{other.LiveryName} ({other.LiveryIdText})" : other.LiveryName);
 
     public void RefreshPossibleDuplicateThreshold()
     {
@@ -637,6 +833,8 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
     {
         get
         {
+            if (StoredAtUtc is { } stored)
+                return string.Format(Strings.StoredSinceFormat, stored.ToLocalTime().ToString("d", AppLocalisationService.Culture));
             if (Data.DownloadDate is { } d) return d.ToString("d", AppLocalisationService.Culture);
             if (CreatedYear is > 0 && CreatedMonth is >= 1 and <= 12)
                 return new DateTime(CreatedYear.Value, CreatedMonth.Value, 1)
@@ -652,24 +850,14 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
         {
             if (_searchHaystack is not null) return _searchHaystack;
             _searchHaystack = IsAuction
-                ? $"{CarManufacturer} {CarModelName} {CarYear} {CarCountry} {CarType} {LiveryName} {Author} {Strings.AuctionBadgeLabel}"
-                : $"{CarManufacturer} {CarModelName} {CarYear} {CarCountry} {CarType} {LiveryName} {Author}";
+                ? $"{CarManufacturer} {CarModelName} {CarYear} {CarCountry} {CarType} {LiveryName} {Author} {Strings.AuctionBadgeLabel} {_note}"
+                : $"{CarManufacturer} {CarModelName} {CarYear} {CarCountry} {CarType} {LiveryName} {Author} {_note}";
             return _searchHaystack;
         }
     }
 
-    public bool MatchesSearch(string[] tokens, bool includeFolderName)
-    {
-        if (tokens.Length == 0) return true;
-
-        foreach (var token in tokens)
-        {
-            bool matches = SearchHaystack.Contains(token, StringComparison.OrdinalIgnoreCase)
-                || (includeFolderName && FolderName.Contains(token, StringComparison.OrdinalIgnoreCase));
-            if (!matches) return false;
-        }
-        return true;
-    }
+    public bool MatchesSearch(string[] tokens, bool includeFolderName) =>
+        SearchWords.AllIn(tokens, SearchHaystack, includeFolderName ? FolderName : null);
 
     /// <summary>
     /// The author's label in the interface language ("Ann (formerly Old)", "Ann (you)"): it is made when the livery is
@@ -689,6 +877,9 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
         RefreshAuthorLabel();
         RefreshCarTexts(); // "as in the interface" follows the interface language
         OnPropertyChanged(nameof(DateDisplay));
+        OnPropertyChanged(nameof(DateTooltip));
+        OnPropertyChanged(nameof(CopyText));
+        OnPropertyChanged(nameof(CopyTooltip));
         _parseIssueTooltip = null;
         OnPropertyChanged(nameof(ParseIssueTooltip));
         InvalidateDuplicateTexts();

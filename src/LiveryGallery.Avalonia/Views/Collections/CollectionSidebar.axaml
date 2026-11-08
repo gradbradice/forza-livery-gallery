@@ -1,0 +1,62 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vmc="using:LiveryGallery.ViewModels.Collections"
+             xmlns:coll="using:LiveryGallery.Views.Collections"
+             x:Class="LiveryGallery.Views.Collections.CollectionSidebar"
+             Width="232">
+    <!-- The side panel of a collection: the app's rows ("All", "Without"), a line, the user's own rows (albums of the
+         screenshots, folders of the storage) with their menu, "+ New" and a hint. The owner fills Items and hears the rest -->
+    <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush2}" BorderThickness="0,0,1,0"
+            Padding="10,14">
+        <DockPanel>
+            <TextBlock x:Name="HintText" DockPanel.Dock="Bottom" FontSize="11" TextWrapping="Wrap" Margin="10,16,6,0"
+                       Foreground="{DynamicResource TextTertiaryBrush}" />
+            <!-- A line of the owner's under the rows (the storage: the room in the game) -->
+            <TextBlock x:Name="FooterText" DockPanel.Dock="Bottom" FontSize="12" FontWeight="SemiBold" TextWrapping="Wrap"
+                       Margin="10,14,6,0" IsVisible="False" Foreground="{DynamicResource TextSecondaryBrush}" />
+            <TextBlock x:Name="HeadingText" DockPanel.Dock="Top" FontSize="11" FontWeight="Bold" Margin="10,0,0,6"
+                       Foreground="{DynamicResource TextTertiaryBrush}" />
+            <Button x:Name="NewButton" DockPanel.Dock="Bottom" Classes="linkText" FontSize="13" Margin="10,10,0,0"
+                    HorizontalAlignment="Left" Click="New_Click" />
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" Classes="gutter">
+                <ItemsControl x:Name="ItemsList">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vmc:CollectionSidebarItem">
+                            <StackPanel>
+                                <Border Height="1" Margin="6,6" Background="{DynamicResource BorderBrush2}" IsVisible="{Binding IsFirstOfUsers}" />
+                                <!-- Where a row dragged to a new place goes: a line before or after this one -->
+                                <Border Classes="insertLine" IsVisible="{Binding IsInsertBefore}" />
+                                <Button Classes="sidebarRow" Classes.selected="{Binding IsSelected}" Classes.drop="{Binding IsDropTarget}"
+                                        Click="Row_Click" DragDrop.AllowDrop="{Binding AcceptsDrops}">
+                                    <Button.ContextMenu>
+                                        <ContextMenu IsVisible="{Binding IsUsers}">
+                                            <!-- The owner's own action first (the storage: "Return the folder to the game") -->
+                                            <MenuItem Header="{Binding $parent[coll:CollectionSidebar].ActionText}" Click="Action_Click"
+                                                      IsVisible="{Binding $parent[coll:CollectionSidebar].ActionText, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            <MenuItem Header="{Binding $parent[coll:CollectionSidebar].SecondActionText}" Click="SecondAction_Click"
+                                                      IsVisible="{Binding $parent[coll:CollectionSidebar].SecondActionText, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            <Separator IsVisible="{Binding $parent[coll:CollectionSidebar].ActionText, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                                            <MenuItem Header="{DynamicResource Loc_CollectionRename}" Click="Rename_Click" />
+                                            <MenuItem Header="{DynamicResource Loc_CollectionMoveUp}" Click="MoveUp_Click" />
+                                            <MenuItem Header="{DynamicResource Loc_CollectionMoveDown}" Click="MoveDown_Click" />
+                                            <Separator />
+                                            <MenuItem Header="{DynamicResource Loc_CollectionDelete}" Click="Delete_Click" />
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                    <Grid ColumnDefinitions="Auto,*,Auto">
+                                        <PathIcon Data="{Binding Icon}" Width="15" Height="13" Margin="0,0,9,0" VerticalAlignment="Center"
+                                                  Foreground="{Binding $parent[Button].Foreground}" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Count}" FontSize="12" Margin="8,0,0,0" VerticalAlignment="Center"
+                                                   Classes="count" />
+                                    </Grid>
+                                </Button>
+                                <Border Classes="insertLine" IsVisible="{Binding IsInsertAfter}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </DockPanel>
+    </Border>
+</UserControl>

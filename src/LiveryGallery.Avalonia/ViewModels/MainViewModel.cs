@@ -1,5 +1,8 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ForzaToolkit.AppHost.Updates;
+using ForzaToolkit.UI.Updates;
+using LiveryGallery.Configuration;
 using LiveryGallery.Controller;
 using LiveryGallery.Localisation;
 using LiveryGallery.Services;
@@ -16,7 +19,7 @@ internal sealed partial class MainViewModel : ObservableObject
     private string _appliedCarTextLanguage = "";
     private readonly TagService tagService;
     private readonly AuthorCardService authorCardService;
-    private readonly LiveryArchive archiveService;
+    private readonly AccountStorage storage;
     private readonly ScanController scanController;
     private readonly AppSettingsData settings;
     private readonly AccountRegistry _accountRegistry;
@@ -45,7 +48,11 @@ internal sealed partial class MainViewModel : ObservableObject
     }
     public GalleryViewModel Gallery { get; }
     public TagsBarViewModel TagsBar { get; }
-    public UpdateViewModel Update { get; }
+    /// <summary>The newer version: found at start and with Refresh, downloaded, installed when the gallery closes</summary>
+    public AppUpdateFlow Update { get; }
+
+    /// <summary>The newer version in the status bar</summary>
+    public AppUpdateBanner UpdateBanner { get; }
     public IAsyncRelayCommand RefreshCommand { get; }
     public CancellationToken ShutdownToken { get; set; }
     [ObservableProperty]
@@ -89,6 +96,7 @@ internal sealed partial class MainViewModel : ObservableObject
     {
         _appliedCarTextLanguage = carTexts.LanguageCode;
         foreach (var entry in Gallery.AllEntries) entry.RefreshCarTexts();
+        foreach (var entry in _gameEntriesAside ?? []) entry.RefreshCarTexts();
         RefreshGallery();
     }
 
@@ -115,9 +123,9 @@ internal sealed partial class MainViewModel : ObservableObject
         AuthorCardService authorCardService,
         FavoriteService favoriteService,
         LockService lockService,
-        LiveryArchive archiveService,
+        AccountStorage storage,
         LiveryScanner scanService,
-        AppUpdateCheckService updateService,
+        IAppUpdates updateService,
         AccountRegistry accountRegistry)
     {
         this.settings = settings;
@@ -132,7 +140,7 @@ internal sealed partial class MainViewModel : ObservableObject
         LiveryEntry.CarTextSource = carTexts.For;
         this.tagService = tagService;
         this.authorCardService = authorCardService;
-        this.archiveService = archiveService;
+        this.storage = storage;
 
         scanController = new ScanController(scanService);
         _scanService = scanService;
@@ -143,10 +151,12 @@ internal sealed partial class MainViewModel : ObservableObject
         Gallery = new GalleryViewModel(favoriteService, lockService);
         TagsBar = new TagsBarViewModel(Gallery.TagState, Gallery.SetTagState);
         Gallery.SelectedTagsChanged += TagsBar.SyncSelection;
-        Update = new UpdateViewModel(updateService);
+        Update = new AppUpdateFlow(updateService);
+        UpdateBanner = new AppUpdateBanner(Update);
         Gallery.CountsUpdated += snapshot =>
         {
-            Status.UpdateCountsAndEmptyState(snapshot.FilteredEntries, snapshot.TotalCount, snapshot.SearchText);
+            Status.UpdateCountsAndEmptyState(snapshot.FilteredEntries, snapshot.TotalCount, snapshot.SearchText, IsStorageMode,
+                IsStorageMode && StorageFolderView != AllStoredView ? Strings.StorageFolderEmptyHint : null);
             UpdateSlots();
         };
         Gallery.SelectedEntries.CollectionChanged += (_, __) => RefreshArchiveAvailability();
@@ -155,6 +165,7 @@ internal sealed partial class MainViewModel : ObservableObject
         FilterBar.FiltersChanged += RefreshGallery;
         RefreshCommand = new AsyncRelayCommand(RefreshButtonClickedAsync);
         InitializeNavigation();
+        InitializeScreenshots();
     }
 
     private GalleryFilterState CurrentFilterState() => new(
@@ -171,15 +182,14 @@ internal sealed partial class MainViewModel : ObservableObject
         return Gallery.SyncKnownTags([.. TagsBar.AllTags.Select(t => t.Tag)]);
     }
 
-    public void ApplyTagsEdit(LiveryEntry entry, List<string> newTags)
+    /// <summary>The user's note on a livery (the livery window); empty removes it. The search finds it from now on</summary>
+    public void SetNote(LiveryEntry entry, string? note)
     {
-        entry.Tags = newTags;
-        tagService.SetTags(entry.FolderName, newTags);
-        // The livery may leave (or join) what the tags filter; a tag nobody has any more stops filtering
-        if (!RebuildTagsBar() && Gallery.HasTagFilter) RefreshGallery();
+        ArgumentNullException.ThrowIfNull(entry);
+        entry.Note = _scanService.Notes?.SetNote(entry.FolderName, note) ?? NoteService.Normalize(note);
     }
 
-    /// <summary>Several liveries at once: <paramref name="add"/> goes onto each, <paramref name="remove"/> off each</summary>
+    /// <summary>One or several liveries: <paramref name="add"/> goes onto each, <paramref name="remove"/> off each</summary>
     public void ApplyTagsChange(IReadOnlyList<LiveryEntry> entries, IReadOnlyCollection<string> add, IReadOnlyCollection<string> remove)
     {
         bool changed = false;
@@ -328,11 +338,14 @@ internal sealed partial class MainViewModel : ObservableObject
     {
         MaxLiveries = savePathService.Profile.MaxLiveries,
         Backups = backups,
-        Archive = () => [.. archiveService.GetAll().Where(a =>
-            a.SourceAccount is null || string.Equals(a.SourceAccount.Key, _appliedAccountKey, StringComparison.OrdinalIgnoreCase))],
+        // The archive of the account shown: each account has its own
+        Archive = () => _appliedAccountKey is { } key && GamePaths.IsFolderName(key) ? [.. storage.ArchiveOf(key).GetAll()] : [],
         GameCars = () => [.. carDatabase.GetAll().Select(c => (c.Id, c.Manufacturer))],
         ManufacturerLabel = ManufacturerLabel,
         Accounts = AccountSummariesAsync,
+        IsStorage = () => IsStorageMode,
+        GameCounted = () => SaveRoom.Counted(GameEntries),
+        Storage = StorageStatisticsNow,
     };
 
     private Dictionary<string, string>? _manufacturerLabels;
@@ -355,7 +368,7 @@ internal sealed partial class MainViewModel : ObservableObject
     {
         var stored = await ListStoredAccountsAsync();
         var profile = savePathService.Profile;
-        var current = Gallery.AllEntries;
+        var current = GameEntries;
         return await Task.Run(() => (IReadOnlyList<AccountSummary>)[.. stored.Select(account =>
         {
             if (account.IsCurrent)
@@ -432,7 +445,16 @@ internal sealed partial class MainViewModel : ObservableObject
         if (!RebuildTagsBar()) RefreshGallery();
     }
 
-    public async Task RunScanAsyncTracked(bool isUserInitiated) => await RunScanCoreAsync(isUserInitiated);
+    /// <summary>
+    /// A scan now: after the user's own change of the liveries (moved to the storage or the archive, put back) or a click
+    /// on Refresh. A scan already running may have read the folders before the change, so this one waits for it and runs
+    /// after it: else the gallery would go on showing the liveries as they were
+    /// </summary>
+    public async Task RunScanAsyncTracked(bool isUserInitiated)
+    {
+        for (int attempt = 0; attempt < 2; attempt++)
+            if (await RunScanCoreAsync(isUserInitiated)) return;
+    }
 
     public Task<bool> RunAutoRefreshAsync(CancellationToken ct = default) => RunScanCoreAsync(isUserInitiated: false, ct);
 
@@ -559,12 +581,25 @@ internal sealed partial class MainViewModel : ObservableObject
         _appliedAccountKey = accountKey;
     }
 
-    private void ApplyFreshEntries(List<LiveryEntry> entries)
+    /// <summary>The liveries of a scan shown (internal for the tests of the grid)</summary>
+    internal void ApplyFreshEntries(List<LiveryEntry> entries)
     {
+        RefreshStorageCount();
+        if (IsStorageMode)
+        {
+            // The storage is shown: the game's cards are updated aside, the grid stays as it is
+            _gameEntriesAside = Gallery.MergeWithLocalState(entries, _gameEntriesAside);
+            AuthorInsights.Apply(_gameEntriesAside, authorCardService);
+            RefreshGamePositions(refreshGallery: false);
+            UpdateSlots();
+            RefreshCopiesLater();
+            return;
+        }
         Gallery.ReplaceEntries(Gallery.MergeWithLocalState(entries));
         AuthorInsights.Apply(Gallery.AllEntries, authorCardService);
         RefreshGamePositions(refreshGallery: false); // OnEntriesChanged rebuilds the gallery
         OnEntriesChanged();
+        RefreshCopiesLater();
     }
 
     public async Task RefreshCarDatabaseAsync(bool showLoadingOverlay, CancellationToken shutdownToken)
@@ -607,11 +642,24 @@ internal sealed partial class MainViewModel : ObservableObject
         if (path is null)
         {
             Status.SetStatusText(Strings.SavePathNotChosen);
-            Status.ShowEmptyState(Strings.SavePathNotChosen);
+            Status.ShowSaveMissing(string.Format(Strings.SaveNotFoundFormat, savePathService.Profile.Game.Name));
             return;
         }
 
         savePathService.SetSavePath(path);
+        await OnSavePathSwitchedAsync();
+    }
+
+    /// <summary>"Search again" where the save was not found: the gallery looks for the game's saves as at start</summary>
+    public async Task SearchSaveAgainAsync()
+    {
+        savePathService.InitializeFromSettings();
+        if (savePathService.SavePath is null)
+        {
+            Status.ShowSaveMissing(string.Format(Strings.SaveNotFoundFormat, savePathService.Profile.Game.Name));
+            return;
+        }
+        savePathService.ResetLostNotification();
         await OnSavePathSwitchedAsync();
     }
 
@@ -623,9 +671,11 @@ internal sealed partial class MainViewModel : ObservableObject
 
     public event Action<string>? ErrorMessageRequested;
 
-    public Func<int, Task<(bool Confirmed, bool DontShowAgain)>>? ConfirmArchiveWithoutInstalledDataAsync { get; set; }
+    /// <summary>Asked when the list of the cars' liveries is not known: how many go, and whether into the storage (else the archive)</summary>
+    public Func<int, bool, Task<(bool Confirmed, bool DontShowAgain)>>? ConfirmArchiveWithoutInstalledDataAsync { get; set; }
 
-    public Func<int, Task<(bool Confirmed, bool DontShowAgain)>>? ConfirmArchiveWithOutdatedInstalledDataAsync { get; set; }
+    /// <summary>Asked when the list of the cars' liveries may be old: how many go, and whether into the storage (else the archive)</summary>
+    public Func<int, bool, Task<(bool Confirmed, bool DontShowAgain)>>? ConfirmArchiveWithOutdatedInstalledDataAsync { get; set; }
 
     public Func<Task<bool>>? IsInstalledDataOutdatedAsync { get; set; }
     /// <summary>Asked before archiving when the game is running; true to archive anyway</summary>
@@ -636,16 +686,20 @@ internal sealed partial class MainViewModel : ObservableObject
 
     private bool CanArchive(LiveryEntry entry) => ArchiveBlockOf(entry) == ArchiveBlock.None;
 
-    private bool CanMoveSelectedToArchive() => Gallery.SelectedEntries.Any(CanArchive);
+    // In the storage every livery may go to the archive: none is in the save
+    private bool CanMoveSelectedToArchive() => IsStorageMode ? Gallery.HasSelection : Gallery.SelectedEntries.Any(CanArchive);
 
     private void RefreshArchiveAvailability()
     {
+        ReturnSelectedToGameCommand.NotifyCanExecuteChanged();
         MoveSelectedToArchiveCommand.NotifyCanExecuteChanged();
         OnPropertyChanged(nameof(ArchiveBlockedTooltip));
+        MoveSelectedToStorageCommand.NotifyCanExecuteChanged();
+        OnPropertyChanged(nameof(StorageBlockedTooltip));
     }
 
     public string? ArchiveBlockedTooltip =>
-        Gallery.HasSelection && !CanMoveSelectedToArchive() ? ArchiveBlockedReason(Gallery.SelectedEntries) : null;
+        Gallery.HasSelection && !CanMoveSelectedToArchive() && !IsStorageMode ? ArchiveBlockedReason(Gallery.SelectedEntries) : null;
 
     /// <summary>Why none of <paramref name="blocked"/> can go: one line per kind of block among them</summary>
     private string ArchiveBlockedReason(IEnumerable<LiveryEntry> blocked)
@@ -675,15 +729,16 @@ internal sealed partial class MainViewModel : ObservableObject
         };
     }
 
-    private async Task<bool> ConfirmArchiveRiskAsync(IReadOnlyList<LiveryEntry> entries)
+    /// <param name="toStorage">The liveries go into the storage (its rules and words), else the archive</param>
+    private async Task<bool> ConfirmArchiveRiskAsync(IReadOnlyList<LiveryEntry> entries, bool toStorage = false)
     {
-        int CountToArchive() => entries.Count(CanArchive);
+        int CountToArchive() => entries.Count(toStorage ? CanStore : CanArchive);
 
         if (!Gallery.IsInstalledDataKnown)
         {
             if (!settings.WarnArchiveWithoutInstalledData || ConfirmArchiveWithoutInstalledDataAsync is not { } askUnknown)
                 return true;
-            return await AskAndRememberAsync(askUnknown(CountToArchive()), s => s.WarnArchiveWithoutInstalledData = false);
+            return await AskAndRememberAsync(askUnknown(CountToArchive(), toStorage), s => s.WarnArchiveWithoutInstalledData = false);
         }
 
         if (!settings.WarnArchiveWithOutdatedInstalledData
@@ -711,7 +766,7 @@ internal sealed partial class MainViewModel : ObservableObject
         // Counted after the check. New data may have arrived meanwhile and blocked some of the selection
         int count = CountToArchive();
         if (count == 0) return true; // the caller explains why nothing can be archived
-        return await AskAndRememberAsync(askOutdated(count), s => s.WarnArchiveWithOutdatedInstalledData = false);
+        return await AskAndRememberAsync(askOutdated(count, toStorage), s => s.WarnArchiveWithOutdatedInstalledData = false);
     }
 
     /// <summary>True when the list of applied liveries is known and comes from the save as it is now</summary>
@@ -749,7 +804,8 @@ internal sealed partial class MainViewModel : ObservableObject
     private async Task MoveSelectedToArchiveAsync()
     {
         if (!Gallery.HasSelection) return;
-        await MoveToArchiveAsync(Gallery.SelectedEntries.ToList());
+        if (IsStorageMode) await MoveStoredToArchiveAsync(Gallery.SelectedEntries.ToList());
+        else await MoveToArchiveAsync(Gallery.SelectedEntries.ToList());
     }
 
     /// <summary>
@@ -770,7 +826,7 @@ internal sealed partial class MainViewModel : ObservableObject
     {
         if (entries.Count == 0) return false;
         string? savePath = savePathService.ResolveSaveDataPath();
-        if (savePath is null)
+        if (savePath is null || CurrentAccountKey is not { } accountKey || !GamePaths.IsFolderName(accountKey))
         {
             ErrorMessageRequested?.Invoke(Strings.ArchiveNoSavePathMessage);
             return false;
@@ -812,7 +868,7 @@ internal sealed partial class MainViewModel : ObservableObject
         ArchiveOperationResult result;
         try
         {
-            result = await archiveService.MoveToArchiveAsync(toArchive, savePath, GetAccountContext().Current);
+            result = await storage.ArchiveOf(accountKey).MoveToArchiveAsync(toArchive, savePath, GetAccountContext().Current);
             Gallery.ClearSelectionCommand.Execute(null);
             await RunScanAsyncTracked(isUserInitiated: true);
         }
@@ -848,7 +904,7 @@ internal sealed partial class MainViewModel : ObservableObject
         AutoBackupOutcome outcome;
         try
         {
-            outcome = await auto.RunAsync(AutoBackupMoment.BeforeArchive, [.. Gallery.AllEntries.Select(e => e.Data)], savePath,
+            outcome = await auto.RunAsync(AutoBackupMoment.BeforeArchive, [.. GameEntries.Select(e => e.Data)], savePath,
                 GetAccountContext().Current);
         }
         finally
@@ -863,11 +919,14 @@ internal sealed partial class MainViewModel : ObservableObject
     private async Task BackUpAfterScanAsync()
     {
         if (AutoBackups is not { } auto || savePathService.ResolveSaveDataPath() is not { } savePath) return;
-        var entries = Gallery.AllEntries.Select(e => e.Data).ToList();
+        var entries = GameEntries.Select(e => e.Data).ToList();
         try
         {
             if (await auto.RunAsync(AutoBackupMoment.AfterScan, entries, savePath, GetAccountContext().Current) == AutoBackupOutcome.Made)
                 Status.SetStatusText(Strings.StatusAutoBackupMade);
+            // The storage's own, by the same settings
+            if (CurrentStorage is { } store && await auto.RunStorageAsync(store, GetAccountContext().Current) == AutoBackupOutcome.Made)
+                Status.SetStatusText(Strings.StatusAutoStorageBackupMade);
         }
         catch (Exception ex)
         {
@@ -877,9 +936,12 @@ internal sealed partial class MainViewModel : ObservableObject
 
     private async Task RefreshButtonClickedAsync()
     {
+        // The storage shown: its folder is looked into (liveries put there by hand), whatever the setting of the scan
+        var storageLook = IsStorageMode ? FindPlacedByHandAsync() : Task.CompletedTask;
         await Task.WhenAll(
             RefreshCarDatabaseAsync(showLoadingOverlay: false, ShutdownToken),
-            Update.CheckAsync(ShutdownToken));
+            Update.CheckAsync(ShutdownToken),
+            storageLook);
 
         if (!settings.RefreshLiveriesOnButtonClick) return;
 
@@ -908,6 +970,8 @@ internal sealed partial class MainViewModel : ObservableObject
             if (shutdownToken.IsCancellationRequested) return;
             await RefreshAccountsAsync();
             await PointOutGoneAccountsAsync();
+            // Liveries put into the storage's folder by hand while the gallery was closed
+            _ = RunSafelyAsync(FindPlacedByHandAsync, nameof(FindPlacedByHandAsync));
             _carDatabaseRefreshTask = RunSafelyAsync(
                 () => RefreshCarDatabaseAsync(showLoadingOverlay: false, shutdownToken),
                 nameof(RefreshCarDatabaseAsync));
@@ -938,6 +1002,7 @@ internal sealed partial class MainViewModel : ObservableObject
         await AwaitForShutdownAsync(_carDatabaseRefreshTask, "car database refresh");
         await AwaitForShutdownAsync(_carTextsUpdateTask, "car texts update");
         await AwaitForShutdownAsync(_updateCheckTask, "update check");
+        await AwaitForShutdownAsync(Update.Download, "update download");
         await AwaitForShutdownAsync(scanController.WaitAsync(), "entry regeneration");
 
         // Last, so that whatever the steps above saved is written too.

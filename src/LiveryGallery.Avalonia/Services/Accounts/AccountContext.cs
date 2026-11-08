@@ -7,6 +7,14 @@ internal static class AccountLabels
     /// <summary>The last four characters of the key: the end of the XUID for an Xbox account</summary>
     public static string ShortId(string key) => AccountKey.ShortId(key);
 
+    /// <summary>The end of the XUID as the gallery shows it beside a name: "***E1FB", never the whole XUID</summary>
+    public static string Marker(string key) => "***" + ShortId(key);
+
+    /// <summary>The player's name, or "Account" while it is not known (the marker tells such accounts apart)</summary>
+    public static string Name(string? displayName) =>
+        !string.IsNullOrWhiteSpace(displayName) ? displayName.Trim() : Strings.AccountUnnamedLabel;
+
+    /// <summary>One line for dialogs: the name, or "Account ***E1FB" when unnamed</summary>
     public static string Title(string key, string? displayName) =>
         !string.IsNullOrWhiteSpace(displayName) ? displayName.Trim() : string.Format(Strings.AccountUnnamedFormat, ShortId(key));
 }

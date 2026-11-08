@@ -11,6 +11,7 @@ namespace LiveryGallery.ViewModels;
 internal sealed partial class BackupDetailViewModel : ObservableObject
 {
     private readonly LiveryBackups _backupService;
+    private readonly BackupPreviews _previews;
     private readonly SavePathService _savePathService;
     private readonly string _backupPath;
     private readonly Func<Task> _onRestored;
@@ -18,6 +19,11 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
     private readonly AccountContext _accounts;
     private readonly AccountRef? _sourceAccount;
     private readonly CancellationTokenSource _previewCts = new();
+    // A backup of the storage: restored into it, not into the save
+    private readonly StorageBackupContext? _storage;
+
+    /// <summary>A backup of the storage: its liveries go back into the storage, each into its folder</summary>
+    public bool IsStorageBackup => _storage is not null;
     private Task _previewGeneration = Task.CompletedTask;
 
     public string DateText { get; }
@@ -42,10 +48,17 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
     public Func<Task<bool>>? ConfirmWhileGameRunningAsync { get; set; }
 
     public BackupDetailViewModel(
-        LiveryBackups backupService, SavePathService savePathService, BackupRowViewModel backup,
-        Func<IReadOnlyList<LiveryData>> getCurrentEntries, Func<Task> onRestored)
+        LiveryBackups backupService, BackupPreviews previews, SavePathService savePathService, BackupRowViewModel backup,
+        Func<IReadOnlyList<LiveryData>> getCurrentEntries, Func<Task> onRestored, StorageBackupContext? storage = null)
     {
+        if (backup.IsStorage && storage is not null)
+        {
+            _storage = storage;
+            getCurrentEntries = storage.Entries;
+            onRestored = storage.OnRestored;
+        }
         _backupService = backupService;
+        _previews = previews;
         _savePathService = savePathService;
         _backupPath = backup.Path;
         _onRestored = onRestored;
@@ -65,7 +78,7 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
 
         foreach (var data in removed.OrderBy(d => d.DisplayLiveryName, StringComparer.OrdinalIgnoreCase))
         {
-            var row = BackupLiveryRowViewModel.FromBackup(data);
+            var row = BackupLiveryRowViewModel.FromBackup(data, _previews);
             row.PropertyChanged += OnRowPropertyChanged;
             RemovedRows.Add(row);
         }
@@ -97,7 +110,7 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
     {
         try
         {
-            await BackupPreviews.GenerateMissingAsync(
+            await _previews.GenerateMissingAsync(
                 _backupPath, missing, _savePathService.Profile.PreviewFileNames, progress, _previewCts.Token);
         }
         catch (OperationCanceledException) when (_previewCts.IsCancellationRequested)
@@ -118,7 +131,7 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
             var old = RemovedRows[i];
             if (!string.Equals(old.FolderName, folderName, StringComparison.OrdinalIgnoreCase)) continue;
 
-            var replacement = BackupLiveryRowViewModel.FromBackup(old.Data, previewPath);
+            var replacement = BackupLiveryRowViewModel.FromBackup(old.Data, _previews, previewPath);
             replacement.IsSelected = old.IsSelected;
             old.PropertyChanged -= OnRowPropertyChanged;
             replacement.PropertyChanged += OnRowPropertyChanged;
@@ -138,6 +151,37 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
         OnPropertyChanged(nameof(SelectedCountText));
     }
 
+    /// <summary>Into the storage: no save, no game to ask about; only another account's liveries are asked about</summary>
+    private async Task RestoreIntoStorageAsync(StorageBackupContext storage, List<BackupLiveryRowViewModel> selected)
+    {
+        if (_accounts.BuildRestoreIntoCurrentPrompt(selected.Select(_ => _sourceAccount)) is { } prompt
+            && ConfirmRestoreIntoCurrentAccountAsync is { } ask && !await ask(prompt))
+            return;
+        try
+        {
+            var restored = (await _backupService.RestoreIntoArchiveAsync(_backupPath, selected.Select(r => r.FolderName), storage.Store))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            if (restored.Count > 0)
+            {
+                foreach (var row in RemovedRows.Where(r => restored.Contains(r.FolderName)).ToList())
+                {
+                    row.PropertyChanged -= OnRowPropertyChanged;
+                    RemovedRows.Remove(row);
+                }
+                OnPropertyChanged(nameof(ShowNoRemovedHint));
+                RaiseSelectionChanged();
+                await storage.OnRestored();
+            }
+            var failed = selected.Where(r => !restored.Contains(r.FolderName)).Select(r => r.Data).ToList();
+            if (LiveryRestoreConflicts.BuildReport([], failed) is { } report) ErrorMessageRequested?.Invoke(report);
+        }
+        catch (Exception ex)
+        {
+            AppLog.LogError("Failed to restore from a backup of the storage", ex);
+            ErrorMessageRequested?.Invoke(Strings.FileOperationFailedMessage);
+        }
+    }
+
     [RelayCommand]
     private void SelectAll()
     {
@@ -155,21 +199,15 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
     {
         var selected = RemovedRows.Where(r => r.IsSelected).ToList();
         if (selected.Count == 0) return;
-
-        string? savePath = _savePathService.ResolveSaveDataPath();
-        if (savePath is null)
+        if (_storage is not null)
         {
-            ErrorMessageRequested?.Invoke(Strings.ArchiveNoSavePathMessage);
+            await RestoreIntoStorageAsync(_storage, selected);
             return;
         }
 
-        // Restoring another account's backup here is allowed (it moves liveries between accounts), but not by accident
-        if (_accounts.BuildRestoreIntoCurrentPrompt(selected.Select(_ => _sourceAccount)) is { } accountPrompt
-            && ConfirmRestoreIntoCurrentAccountAsync is { } confirmAccount
-            && !await confirmAccount(accountPrompt))
+        if (await LiveryRestoreConflicts.PrepareAsync(_savePathService, _accounts, selected.Select(_ => _sourceAccount),
+                ConfirmRestoreIntoCurrentAccountAsync, ConfirmWhileGameRunningAsync, ErrorMessageRequested) is not { } savePath)
             return;
-
-        if (!await _savePathService.Profile.RunningGuard.ConfirmAsync(ConfirmWhileGameRunningAsync)) return;
 
         try
         {

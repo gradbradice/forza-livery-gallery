@@ -17,7 +17,14 @@ internal partial class LiveryPreviewDialog : Window
         try
         {
             using var stream = File.OpenRead(webpPath);
-            PreviewImage.Source = new Bitmap(stream);
+            var bitmap = new Bitmap(stream);
+            PreviewImage.Source = bitmap;
+            // The full-size picture goes with the window, not with the next collection
+            Closed += (_, _) =>
+            {
+                PreviewImage.Source = null;
+                bitmap.Dispose();
+            };
         }
         catch (Exception ex)
         {

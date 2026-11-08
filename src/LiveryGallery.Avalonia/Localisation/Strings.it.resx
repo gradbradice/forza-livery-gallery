@@ -198,9 +198,6 @@
   <data name="DateLabel" xml:space="preserve">
     <value>Data di creazione</value>
   </data>
-  <data name="AboutVersionLabel" xml:space="preserve">
-    <value>Versione</value>
-  </data>
   <data name="ButtonClose" xml:space="preserve">
     <value>Chiudi</value>
   </data>
@@ -257,21 +254,6 @@
   </data>
   <data name="SeparateMineGroupName" xml:space="preserve">
     <value>Le mie livree</value>
-  </data>
-  <data name="UpdateAvailableFormat" xml:space="preserve">
-    <value>È disponibile la versione {0}</value>
-  </data>
-  <data name="ButtonUpdateDownload" xml:space="preserve">
-    <value>Scarica</value>
-  </data>
-  <data name="WhatsNewTitleFormat" xml:space="preserve">
-    <value>Novità della versione {0}</value>
-  </data>
-  <data name="ChangelogNotAvailable" xml:space="preserve">
-    <value>L’elenco dettagliato delle modifiche non è disponibile. Si trova nella pagina della versione su GitHub.</value>
-  </data>
-  <data name="ChangelogSectionHeader" xml:space="preserve">
-    <value>Italiano</value>
   </data>
   <data name="MinimizeTooltip" xml:space="preserve">
     <value>Riduci a icona</value>
@@ -506,9 +488,6 @@
   </data>
   <data name="AutoRefreshLiveriesLabel" xml:space="preserve">
     <value>Aggiorna le livree automaticamente</value>
-  </data>
-  <data name="SearchByFolderNameLabel" xml:space="preserve">
-    <value>Mostra i nomi delle cartelle e cerca per nome</value>
   </data>
   <data name="RefreshOnButtonClickLabel" xml:space="preserve">
     <value>Aggiorna le livree con il pulsante di aggiornamento</value>
@@ -798,33 +777,6 @@ Ripristinare comunque queste livree?</value>
   <data name="GameFolderProblemUnknown" xml:space="preserve">
     <value>la cartella non è adatta</value>
   </data>
-  <data name="RenderErrorLiveryFilesNotFound" xml:space="preserve">
-    <value>Vinili del gioco non trovati. Controlli la cartella del gioco: media\Livery.</value>
-  </data>
-  <data name="RenderErrorGamePathInvalid" xml:space="preserve">
-    <value>La cartella del gioco non è impostata o non è stata trovata.</value>
-  </data>
-  <data name="RenderErrorCarNotFound" xml:space="preserve">
-    <value>L’auto di questa livrea non è nella cartella del gioco.</value>
-  </data>
-  <data name="RenderErrorCarFormat" xml:space="preserve">
-    <value>Impossibile leggere i file dell’auto.</value>
-  </data>
-  <data name="RenderErrorNoLiveryLayout" xml:space="preserve">
-    <value>Questa auto non ha un layout per le livree.</value>
-  </data>
-  <data name="RenderErrorMissingShapesFormat" xml:space="preserve">
-    <value>Forme non disegnate: {0}</value>
-  </data>
-  <data name="RenderErrorRasterLogosSkippedFormat" xml:space="preserve">
-    <value>Loghi non disegnati: {0}</value>
-  </data>
-  <data name="RenderErrorShapesWithoutSectionFormat" xml:space="preserve">
-    <value>Forme senza sezione: {0}</value>
-  </data>
-  <data name="RenderErrorGeneric" xml:space="preserve">
-    <value>Impossibile disegnare la livrea.</value>
-  </data>
   <data name="View3DGameFolderChecking" xml:space="preserve">
     <value>Vista 3D non ancora disponibile: è in corso la verifica della cartella del gioco</value>
   </data>
@@ -849,30 +801,6 @@ Ripristinare comunque queste livree?</value>
   <data name="View3DParseFailedFormat" xml:space="preserve">
     <value>Impossibile leggere la livrea: {0}</value>
   </data>
-  <data name="ViewerStatsFormat" xml:space="preserve">
-    <value>{0:N0} triangoli (LOD {1}) · livrea {2}×{3} · fotogramma {4}×{5}, MSAA {6}× · {7:F1} ms</value>
-  </data>
-  <data name="ViewerNoOpenGl" xml:space="preserve">
-    <value>Vista 3D non disponibile: impossibile avviare OpenGL.</value>
-  </data>
-  <data name="ViewerQualityLow" xml:space="preserve">
-    <value>Bassa</value>
-  </data>
-  <data name="ViewerQualityMedium" xml:space="preserve">
-    <value>Media</value>
-  </data>
-  <data name="ViewerQualityHigh" xml:space="preserve">
-    <value>Alta</value>
-  </data>
-  <data name="ViewerQualityUltra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
-  <data name="ViewerResetView" xml:space="preserve">
-    <value>Reimposta vista</value>
-  </data>
-  <data name="ViewerTitleFormat" xml:space="preserve">
-    <value>Vista 3D: {0}</value>
-  </data>
   <data name="GameFolderNotSetHint" xml:space="preserve">
     <value>La cartella del gioco serve per vedere le livree in 3D</value>
   </data>
@@ -887,9 +815,6 @@ Ripristinare comunque queste livree?</value>
   </data>
   <data name="GameFolderValidWithWarningsFormat" xml:space="preserve">
     <value>Cartella del gioco trovata, auto: {0}. Però: {1}</value>
-  </data>
-  <data name="ViewerControlsHint" xml:space="preserve">
-    <value>Tasto sinistro: ruota. Tasto destro: sposta. Rotellina: zoom. Doppio clic: reimposta.</value>
   </data>
   <data name="AuctionBadgeLabel" xml:space="preserve">
     <value>Asta</value>
@@ -1128,11 +1053,26 @@ I dati vengono inviati al server solo con il Suo consenso. Attivare la connessio
   <data name="OnlyInstalledToggle" xml:space="preserve">
     <value>Solo quelle applicate alle auto</value>
   </data>
+  <data name="NotInstalledFirstToggle" xml:space="preserve">
+    <value>Prima quelle non applicate alle auto</value>
+  </data>
+  <data name="OnlyNotInstalledToggle" xml:space="preserve">
+    <value>Solo quelle non applicate alle auto</value>
+  </data>
+  <data name="FilterValueNotInstalledFirst" xml:space="preserve">
+    <value>Prima le non applicate</value>
+  </data>
+  <data name="FilterValueNotInstalledOnly" xml:space="preserve">
+    <value>Solo le non applicate</value>
+  </data>
   <data name="FilterValueUnavailable" xml:space="preserve">
     <value>Disattivato</value>
   </data>
   <data name="InstalledFilterNeedsServer" xml:space="preserve">
     <value>Per individuare le livree applicate alle auto, attivi il server delle livree nelle impostazioni.</value>
+  </data>
+  <data name="InstalledFilterWaitsForServer" xml:space="preserve">
+    <value>Il server delle livree non ha ancora indicato quali livree sono applicate alle auto.</value>
   </data>
   <data name="ArchiveLeftoverFoldersFormat" xml:space="preserve">
     <value>Alcune cartelle non sono state rimosse dalla vecchia posizione. Probabilmente un file è in uso, ad esempio dal gioco avviato. Non è andato perso nulla: la nuova copia è completa. Questi residui non servono più e possono essere eliminati:
@@ -1247,6 +1187,12 @@ Mentre il cursore si muove, non tocchi mouse e tastiera: muovere il mouse, preme
   <data name="NavigationRowsLabel" xml:space="preserve">
     <value>Righe in «I miei design»</value>
   </data>
+  <data name="ServerLiveriesLabel" xml:space="preserve">
+    <value>Livree sui server del gioco</value>
+  </data>
+  <data name="ServerLiveriesHint" xml:space="preserve">
+    <value>Alcuni giocatori hanno livree degli sviluppatori salvate sui server del gioco e non nel salvataggio. In «I miei design» compaiono sempre per prime. Indichi quante ne ha, così «Trova nel gioco» ne tiene conto.</value>
+  </data>
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>Automatico</value>
   </data>
@@ -1338,7 +1284,7 @@ Mentre il cursore si muove, non tocchi mouse e tastiera: muovere il mouse, preme
     <value>Account di gioco: passa da un account all’altro tra quelli trovati su questo PC</value>
   </data>
   <data name="AccountUnnamedFormat" xml:space="preserve">
-    <value>Account …{0}</value>
+    <value>Account ***{0}</value>
   </data>
   <data name="AccountLiveriesFormat" xml:space="preserve">
     <value>livree: {0}</value>
@@ -1462,12 +1408,6 @@ Tutti gli account e i nickname di questi autori saranno in una sola scheda. Potr
   <data name="GameRunningContinueButton" xml:space="preserve">
     <value>Continua comunque</value>
   </data>
-  <data name="AboutOpenPackagesLabel" xml:space="preserve">
-    <value>Pacchetti open source</value>
-  </data>
-  <data name="AboutClosedComponentsLabel" xml:space="preserve">
-    <value>Componenti closed source</value>
-  </data>
   <data name="SettingsPageAppearance" xml:space="preserve">
     <value>Aspetto</value>
   </data>
@@ -1539,9 +1479,6 @@ Tutti gli account e i nickname di questi autori saranno in una sola scheda. Potr
   </data>
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>nessun file di lingua StringTables: i nomi delle auto vengono dal database delle auto</value>
-  </data>
-  <data name="AboutTitleFormat" xml:space="preserve">
-    <value>Informazioni su {0}</value>
   </data>
   <data name="AboutDescriptionFormat" xml:space="preserve">
     <value>Una galleria delle livree dei salvataggi di {0}.</value>
@@ -2322,7 +2259,7 @@ Controlli i file prima di inviarli. I valori che la galleria non conosce, ad ese
     <value>Finestre</value>
   </data>
   <data name="ShortcutsNoteFormat" xml:space="preserve">
-    <value>Lettere, cifre, {0} e {1} non fanno nulla mentre il cursore è in un campo di testo. {0}, 3 e G funzionano quando è selezionata una sola livrea.</value>
+    <value>Lettere, cifre, {0} e {1} non fanno nulla mentre il cursore è in un campo di testo. Enter, 3 e G funzionano quando è selezionata una sola livrea.</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
     <value>Faccia clic per liberare spazio: le copie in più delle livree duplicate vanno nell’archivio.</value>
@@ -2446,5 +2383,1080 @@ Controlli i file prima di inviarli. I valori che la galleria non conosce, ad ese
   </data>
   <data name="AssignAuthorSkippedFormat" xml:space="preserve">
     <value>Le livree selezionate con un account come ID autore restano invariate: {0}.</value>
+  </data>
+  <data name="UpdatesSectionLabel" xml:space="preserve">
+    <value>Aggiornamenti</value>
+  </data>
+  <data name="BetaUpdatesLabel" xml:space="preserve">
+    <value>Ricevi le versioni beta</value>
+  </data>
+  <data name="BetaUpdatesHint" xml:space="preserve">
+    <value>Le beta escono prima delle versioni stabili e possono contenere errori. Disattivando l’opzione la galleria non torna a una versione precedente: attende una versione stabile più recente della beta.</value>
+  </data>
+  <data name="TagsDialogOneHint" xml:space="preserve">
+    <value>Una spunta aggiunge il tag alla livrea, una casella vuota lo toglie.</value>
+  </data>
+  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
+    <value>Nuovi tag, separati da virgole.</value>
+  </data>
+  <data name="KeyClick" xml:space="preserve">
+    <value>Clic</value>
+  </data>
+  <data name="ShortcutClick" xml:space="preserve">
+    <value>Seleziona solo questa livrea</value>
+  </data>
+  <data name="ShortcutCtrlClick" xml:space="preserve">
+    <value>Aggiungere la livrea alla selezione o toglierla</value>
+  </data>
+  <data name="ShortcutShiftClick" xml:space="preserve">
+    <value>Selezionare le livree dall’ultima cliccata fino a questa</value>
+  </data>
+  <data name="ShortcutCtrlShiftClick" xml:space="preserve">
+    <value>Lo stesso, aggiungendole alla selezione attuale</value>
+  </data>
+  <data name="LiveryDetailsTitleFormat" xml:space="preserve">
+    <value>Livrea: {0}</value>
+  </data>
+  <data name="LiveryDetailsPositionFormat" xml:space="preserve">
+    <value>{0} di {1}</value>
+  </data>
+  <data name="LiveryDetailsPrevTooltip" xml:space="preserve">
+    <value>Livrea precedente</value>
+  </data>
+  <data name="LiveryDetailsNextTooltip" xml:space="preserve">
+    <value>Livrea successiva</value>
+  </data>
+  <data name="LiveryDetailsNoPreview" xml:space="preserve">
+    <value>Nessuna anteprima</value>
+  </data>
+  <data name="LiveryDetailsView3D" xml:space="preserve">
+    <value>Vista 3D</value>
+  </data>
+  <data name="LiveryDetailsOtherByAuthor" xml:space="preserve">
+    <value>Altre livree dell’autore</value>
+  </data>
+  <data name="LiveryDetailsAllByAuthorFormat" xml:space="preserve">
+    <value>tutte le {0} nella galleria</value>
+  </data>
+  <data name="LiveryDetailsSameCarFormat" xml:space="preserve">
+    <value>Altre livree per {0} nella galleria: {1}</value>
+  </data>
+  <data name="LiveryDetailsShow" xml:space="preserve">
+    <value>mostra</value>
+  </data>
+  <data name="LiveryDetailsNoOtherByAuthor" xml:space="preserve">
+    <value>Nessun’altra livrea di questo autore nella galleria</value>
+  </data>
+  <data name="LiveryDetailsSimilar" xml:space="preserve">
+    <value>Livree simili</value>
+  </data>
+  <data name="LiveryDetailsExactCopyFormat" xml:space="preserve">
+    <value>copia esatta · {0}%</value>
+  </data>
+  <data name="LiveryDetailsPossibleCopyFormat" xml:space="preserve">
+    <value>possibile duplicato · {0}%</value>
+  </data>
+  <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
+    <value>Autore:</value>
+  </data>
+  <data name="LiveryDetailsChipLocked" xml:space="preserve">
+    <value>Bloccata</value>
+  </data>
+  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
+    <value>Preferita</value>
+  </data>
+  <data name="LiveryDetailsIdLabel" xml:space="preserve">
+    <value>Numero della livrea</value>
+  </data>
+  <data name="LiveryDetailsDatesLabel" xml:space="preserve">
+    <value>Creata · Scaricata</value>
+  </data>
+  <data name="LiveryDetailsLayersLabel" xml:space="preserve">
+    <value>Livelli</value>
+  </data>
+  <data name="LiveryDetailsBackupsFormat" xml:space="preserve">
+    <value>in {0} su {1}, l’ultimo {2}</value>
+  </data>
+  <data name="LiveryDetailsBackupsNone" xml:space="preserve">
+    <value>in nessuno</value>
+  </data>
+  <data name="LiveryDetailsCounting" xml:space="preserve">
+    <value>conteggio…</value>
+  </data>
+  <data name="LiveryDetailsUnknown" xml:space="preserve">
+    <value>sconosciuto</value>
+  </data>
+  <data name="LiveryDetailsAddTag" xml:space="preserve">
+    <value>+ tag</value>
+  </data>
+  <data name="LiveryDetailsNoteLabel" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="LiveryDetailsNoteSaved" xml:space="preserve">
+    <value>Salvato</value>
+  </data>
+  <data name="LiveryDetailsNoteHint" xml:space="preserve">
+    <value>La vede solo lei ed è salvata con i tag. La ricerca della galleria la trova.</value>
+  </data>
+  <data name="LiveryDetailsNotePlaceholder" xml:space="preserve">
+    <value>Qualsiasi cosa sulla livrea: perché tenerla, cosa correggere…</value>
+  </data>
+  <data name="LiveryDetailsAuthorNoteLabel" xml:space="preserve">
+    <value>Nota sull’autore</value>
+  </data>
+  <data name="LiveryDetailsAuthorNoteEdit" xml:space="preserve">
+    <value>modifica</value>
+  </data>
+  <data name="LiveryDetailsAuthorNoteFromCardFormat" xml:space="preserve">
+    <value>Dalla scheda autore di {0}: visibile su tutte le sue livree</value>
+  </data>
+  <data name="LiveryDetailsAuthorNoteEmpty" xml:space="preserve">
+    <value>Nessuna nota per ora. Si può scrivere nella scheda autore.</value>
+  </data>
+  <data name="LiveryDetailsHistoryLabel" xml:space="preserve">
+    <value>Cronologia</value>
+  </data>
+  <data name="LiveryDetailsHistoryEmpty" xml:space="preserve">
+    <value>Il registro non contiene ancora nulla su di essa</value>
+  </data>
+  <data name="HistoryAdded" xml:space="preserve">
+    <value>Comparsa nel salvataggio</value>
+  </data>
+  <data name="HistoryRestoredFromArchive" xml:space="preserve">
+    <value>Tornata dall’archivio</value>
+  </data>
+  <data name="HistoryReturned" xml:space="preserve">
+    <value>Tornata: da un backup o scaricata di nuovo</value>
+  </data>
+  <data name="HistoryRemoved" xml:space="preserve">
+    <value>Sparita dal salvataggio</value>
+  </data>
+  <data name="HistoryArchived" xml:space="preserve">
+    <value>Spostata nell’archivio</value>
+  </data>
+  <data name="HistoryChanged" xml:space="preserve">
+    <value>File modificato</value>
+  </data>
+  <data name="HistoryMoved" xml:space="preserve">
+    <value>Spostata in un’altra cartella del salvataggio</value>
+  </data>
+  <data name="LiveryDetailsFooterHint" xml:space="preserve">
+    <value>← → livree vicine · Esc chiude</value>
+  </data>
+  <data name="ContextMenuOpenDetails" xml:space="preserve">
+    <value>Apri la livrea</value>
+  </data>
+  <data name="NoteTooltipFormat" xml:space="preserve">
+    <value>Nota: {0}</value>
+  </data>
+  <data name="KeyDoubleClick" xml:space="preserve">
+    <value>Doppio clic</value>
+  </data>
+  <data name="UnassignedCountFormat" xml:space="preserve">
+    <value>Senza account: {0}</value>
+  </data>
+  <data name="UnassignedTakeButton" xml:space="preserve">
+    <value>Sposta in questo account</value>
+  </data>
+  <data name="ArchiveUnassignedTooltip" xml:space="preserve">
+    <value>Una versione precedente le ha archiviate senza annotare l’account, e gli account erano più di uno. Le sposti qui se sono di questo account.</value>
+  </data>
+  <data name="BackupsUnassignedTooltip" xml:space="preserve">
+    <value>Una versione precedente ha creato questi backup senza annotare l’account, e gli account erano più di uno. Li sposti qui se sono di questo account.</value>
+  </data>
+  <data name="MigrationFailedMessageFormat" xml:space="preserve">
+    <value>Non è stato possibile copiare i dati della versione precedente da {0}. La cartella non è stata modificata. La galleria riproverà al prossimo avvio. I dettagli sono nel registro.</value>
+  </data>
+  <data name="GameSwitcherTooltip" xml:space="preserve">
+    <value>Cambia gioco</value>
+  </data>
+  <data name="GameStateFoundFormat" xml:space="preserve">
+    <value>Salvataggi trovati: {0}</value>
+  </data>
+  <data name="GameStateChosen" xml:space="preserve">
+    <value>Cartella di salvataggio scelta da Lei</value>
+  </data>
+  <data name="GameStateNotFound" xml:space="preserve">
+    <value>Salvataggio non trovato</value>
+  </data>
+  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
+    <value>Scegli la cartella di salvataggio…</value>
+  </data>
+  <data name="ChooseSaveFolderButton" xml:space="preserve">
+    <value>Scegli cartella…</value>
+  </data>
+  <data name="SearchSaveAgainButton" xml:space="preserve">
+    <value>Cerca di nuovo</value>
+  </data>
+  <data name="SaveNotFoundFormat" xml:space="preserve">
+    <value>Nessun salvataggio di {0} trovato</value>
+  </data>
+  <data name="ServerRejectedHeaderFormat" xml:space="preserve">
+    <value>Il server non ha riconosciuto la galleria dal nome e dalla versione. Probabilmente il server non è ancora configurato per questa versione della galleria ({0}).</value>
+  </data>
+  <data name="ServerRejectedFingerprintFormat" xml:space="preserve">
+    <value>La galleria non ha inviato l’impronta della sua build, oppure il server non è riuscito a leggerla. Usi la versione ufficiale ({0}).</value>
+  </data>
+  <data name="ServerRejectedBuildFormat" xml:space="preserve">
+    <value>Il server non conosce questa build della galleria: accetta solo le build del suo elenco. Usi la versione ufficiale, oppure una nuova versione potrebbe non essere ancora nell’elenco ({0}).</value>
+  </data>
+  <data name="ServerSyncDoneOnDayFormat" xml:space="preserve">
+    <value>Livree applicate alle auto: {0}
+Aggiornato il {1} alle {2}</value>
+  </data>
+  <data name="SettingsAccountsSectionLabel" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="SettingsAccountsHint" xml:space="preserve">
+    <value>La galleria trova da sola i salvataggi di tutti gli account di questo PC. Se il salvataggio di un account è altrove (su un altro disco, una copia), aggiungilo qui. Si passa da un account all'altro nella finestra principale, accanto alla ricerca.</value>
+  </data>
+  <data name="SettingsAccountFound" xml:space="preserve">
+    <value>Trovato su questo PC</value>
+  </data>
+  <data name="SettingsAccountAdded" xml:space="preserve">
+    <value>Aggiunto da te</value>
+  </data>
+  <data name="SettingsAccountAddButton" xml:space="preserve">
+    <value>Aggiungi account</value>
+  </data>
+  <data name="SettingsAccountNewLabel" xml:space="preserve">
+    <value>Cartella dei salvataggi dell'account</value>
+  </data>
+  <data name="SettingsAccountAddConfirm" xml:space="preserve">
+    <value>Aggiungi</value>
+  </data>
+  <data name="SettingsAccountNoSave" xml:space="preserve">
+    <value>In questa cartella non c'è un salvataggio del gioco.</value>
+  </data>
+  <data name="SettingsAccountAlreadyListed" xml:space="preserve">
+    <value>Questo account è già nell'elenco.</value>
+  </data>
+  <data name="AccountUnnamedLabel" xml:space="preserve">
+    <value>Account</value>
+  </data>
+  <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
+    <value>Archivio</value>
+  </data>
+  <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
+    <value>Chiedere prima di archiviare se non si sa quali livree sono sulle auto</value>
+  </data>
+  <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
+    <value>Chiedere prima di archiviare se l'elenco delle livree sulle auto può essere superato</value>
+  </data>
+  <data name="ArchiveWarningsHint" xml:space="preserve">
+    <value>Non è sicuro spostare nell'archivio una livrea che è su un'auto del gioco. «Non mostrare più» in queste domande le disattiva, e qui si possono riattivare.</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="KeyEnd" xml:space="preserve">
+    <value>Fine</value>
+  </data>
+  <data name="KeyPageUp" xml:space="preserve">
+    <value>PagSu</value>
+  </data>
+  <data name="KeyPageDown" xml:space="preserve">
+    <value>PagGiù</value>
+  </data>
+  <data name="ShortcutArrows" xml:space="preserve">
+    <value>Passare alla livrea vicina e selezionare solo quella</value>
+  </data>
+  <data name="ShortcutHomeEnd" xml:space="preserve">
+    <value>Passare alla prima o all’ultima livrea</value>
+  </data>
+  <data name="ShortcutPage" xml:space="preserve">
+    <value>Salire o scendere di una schermata</value>
+  </data>
+  <data name="ShortcutShiftArrows" xml:space="preserve">
+    <value>Selezionare le livree dall’ultima scelta a quella raggiunta</value>
+  </data>
+  <data name="ShortcutCtrlArrows" xml:space="preserve">
+    <value>Spostare solo il cursore: poi {0} aggiunge la livrea alla selezione o la toglie</value>
+  </data>
+  <data name="ShortcutToggleSelection" xml:space="preserve">
+    <value>Aggiungere alla selezione la livrea sotto il cursore o toglierla</value>
+  </data>
+  <data name="ShortcutView3DNewWindow" xml:space="preserve">
+    <value>Vedere in un’altra finestra 3D, per confrontare (fino a quattro)</value>
+  </data>
+  <data name="ScreenshotsLabel" xml:space="preserve">
+    <value>Screenshot</value>
+  </data>
+  <data name="ScreenshotsAdd" xml:space="preserve">
+    <value>Aggiungi</value>
+  </data>
+  <data name="ScreenshotsDropHint" xml:space="preserve">
+    <value>Trascina qui i file
+o Ctrl+V</value>
+  </data>
+  <data name="ScreenshotsLocalHint" xml:space="preserve">
+    <value>Conservati solo su questo PC. Vanno nell'archivio con la livrea e tornano con lei.</value>
+  </data>
+  <data name="ScreenshotsPickTitle" xml:space="preserve">
+    <value>Screenshot della livrea</value>
+  </data>
+  <data name="ScreenshotsFileType" xml:space="preserve">
+    <value>Immagini</value>
+  </data>
+  <data name="ScreenshotsSkippedFormat" xml:space="preserve">
+    <value>Non aggiunto, non è un'immagine: {0}</value>
+  </data>
+  <data name="ScreenshotPositionFormat" xml:space="preserve">
+    <value>{0} di {1}</value>
+  </data>
+  <data name="ScreenshotMakeCover" xml:space="preserve">
+    <value>Usa come copertina</value>
+  </data>
+  <data name="ScreenshotShowInFolder" xml:space="preserve">
+    <value>Mostra nella cartella</value>
+  </data>
+  <data name="ScreenshotCopy" xml:space="preserve">
+    <value>Copia</value>
+  </data>
+  <data name="ScreenshotDelete" xml:space="preserve">
+    <value>Elimina</value>
+  </data>
+  <data name="ScreenshotDeleteTitle" xml:space="preserve">
+    <value>Eliminare lo screenshot?</value>
+  </data>
+  <data name="ScreenshotDeleteMessage" xml:space="preserve">
+    <value>Il file viene eliminato da questo PC.</value>
+  </data>
+  <data name="ScreenshotGoToLivery" xml:space="preserve">
+    <value>Apri la livrea</value>
+  </data>
+  <data name="ScreenshotCoverTooltip" xml:space="preserve">
+    <value>Copertina: il tuo screenshot. L'anteprima del gioco si ripristina nella finestra della livrea</value>
+  </data>
+  <data name="ScreenshotCountTooltipFormat" xml:space="preserve">
+    <value>Screenshot: {0}</value>
+  </data>
+  <data name="GalleryViewLiveries" xml:space="preserve">
+    <value>Livree</value>
+  </data>
+  <data name="ScreenshotsEmptyView" xml:space="preserve">
+    <value>Nessuno screenshot. Aggiungili nella finestra della livrea: «Aggiungi», trascina i file o Ctrl+V.</value>
+  </data>
+  <data name="ScreenshotsKeepOriginal" xml:space="preserve">
+    <value>Conserva così come sono (originali)</value>
+  </data>
+  <data name="ScreenshotsWebP" xml:space="preserve">
+    <value>Comprimi in WebP</value>
+  </data>
+  <data name="ScreenshotsQualityLabel" xml:space="preserve">
+    <value>Qualità</value>
+  </data>
+  <data name="ScreenshotsWebPHint" xml:space="preserve">
+    <value>Solo per i nuovi screenshot. Quelli già aggiunti si possono comprimere con il pulsante qui sotto.</value>
+  </data>
+  <data name="ScreenshotsUsageFormat" xml:space="preserve">
+    <value>Occupato: {0} · screenshot: {1} · livree: {2}</value>
+  </data>
+  <data name="ScreenshotsConvertButton" xml:space="preserve">
+    <value>Comprimi quelli aggiunti…</value>
+  </data>
+  <data name="ScreenshotsOpenFolder" xml:space="preserve">
+    <value>Apri la cartella</value>
+  </data>
+  <data name="ScreenshotsConvertConfirmFormat" xml:space="preserve">
+    <value>Comprimere {0} screenshot in WebP con qualità {1}? Un file viene sostituito solo se il WebP è più piccolo.</value>
+  </data>
+  <data name="ScreenshotsConvertedFormat" xml:space="preserve">
+    <value>Screenshot compressi: {0}. Ora occupato: {1}.</value>
+  </data>
+  <data name="ScreenshotsDeleteWithLiveryFormat" xml:space="preserve">
+    <value>Le livree eliminate hanno screenshot ({0}). Eliminare anche quelli?</value>
+  </data>
+  <data name="ScreenshotsInBackups" xml:space="preserve">
+    <value>Includi gli screenshot nei backup</value>
+  </data>
+  <data name="ScreenshotRestorePreview" xml:space="preserve">
+    <value>Ripristina l'anteprima del gioco</value>
+  </data>
+  <data name="ScreenshotsGroupLabel" xml:space="preserve">
+    <value>Raggruppa</value>
+  </data>
+  <data name="ScreenshotsGroupByLivery" xml:space="preserve">
+    <value>Per livrea</value>
+  </data>
+  <data name="ScreenshotsGroupLikeLiveries" xml:space="preserve">
+    <value>Come le livree</value>
+  </data>
+  <data name="ScreenshotsGroupByDate" xml:space="preserve">
+    <value>Per data</value>
+  </data>
+  <data name="ScreenshotsNewestFirst" xml:space="preserve">
+    <value>Prima i più recenti</value>
+  </data>
+  <data name="ScreenshotsOldestFirst" xml:space="preserve">
+    <value>Prima i più vecchi</value>
+  </data>
+  <data name="ScreenshotsToday" xml:space="preserve">
+    <value>Oggi</value>
+  </data>
+  <data name="ScreenshotsYesterday" xml:space="preserve">
+    <value>Ieri</value>
+  </data>
+  <data name="ScreenshotCountOne" xml:space="preserve">
+    <value>{0} screenshot</value>
+  </data>
+  <data name="ScreenshotCountFew" xml:space="preserve">
+    <value>{0} screenshot</value>
+  </data>
+  <data name="ScreenshotCountMany" xml:space="preserve">
+    <value>{0} screenshot</value>
+  </data>
+  <data name="ScreenshotCoverBadge" xml:space="preserve">
+    <value>copertina</value>
+  </data>
+  <data name="AlbumsHeading" xml:space="preserve">
+    <value>Album</value>
+  </data>
+  <data name="AlbumsAll" xml:space="preserve">
+    <value>Tutti gli screenshot</value>
+  </data>
+  <data name="AlbumsNone" xml:space="preserve">
+    <value>Senza album</value>
+  </data>
+  <data name="AlbumsNew" xml:space="preserve">
+    <value>Nuovo album</value>
+  </data>
+  <data name="AlbumsHint" xml:space="preserve">
+    <value>Trascina gli screenshot su un album. Uno screenshot può stare in più album. Toglierlo da uno non lo elimina. Trascina un album per cambiare l'ordine.</value>
+  </data>
+  <data name="AlbumRenameTitle" xml:space="preserve">
+    <value>Rinomina l'album</value>
+  </data>
+  <data name="AlbumNameLabel" xml:space="preserve">
+    <value>Nome dell'album</value>
+  </data>
+  <data name="AlbumCreate" xml:space="preserve">
+    <value>Crea</value>
+  </data>
+  <data name="CollectionNameEmpty" xml:space="preserve">
+    <value>Inserisci un nome, fino a 64 caratteri.</value>
+  </data>
+  <data name="AlbumNameTaken" xml:space="preserve">
+    <value>Esiste già un album con questo nome.</value>
+  </data>
+  <data name="AlbumDeleteTitle" xml:space="preserve">
+    <value>Eliminare l'album?</value>
+  </data>
+  <data name="AlbumDeleteMessageFormat" xml:space="preserve">
+    <value>L'album «{0}» verrà eliminato. Gli screenshot restano, solo fuori dall'album.</value>
+  </data>
+  <data name="ScreenshotsAddToAlbum" xml:space="preserve">
+    <value>Aggiungi all'album</value>
+  </data>
+  <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
+    <value>Nuovo album…</value>
+  </data>
+  <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
+    <value>Togli da «{0}»</value>
+  </data>
+  <data name="ScreenshotsDeleteSelectedTitle" xml:space="preserve">
+    <value>Eliminare gli screenshot?</value>
+  </data>
+  <data name="ScreenshotsDeleteSelectedFormat" xml:space="preserve">
+    <value>Screenshot selezionati: {0}. I loro file verranno eliminati da questo PC.</value>
+  </data>
+  <data name="ScreenshotsEmptyAlbum" xml:space="preserve">
+    <value>Questo album non ha screenshot delle livree mostrate.</value>
+  </data>
+  <data name="ScreenshotsInAlbums" xml:space="preserve">
+    <value>Negli album:</value>
+  </data>
+  <data name="ScreenshotAlbumsButton" xml:space="preserve">
+    <value>Album</value>
+  </data>
+  <data name="ScreenshotAlbumsButtonFormat" xml:space="preserve">
+    <value>Album: {0}</value>
+  </data>
+  <data name="CollectionRename" xml:space="preserve">
+    <value>Rinomina</value>
+  </data>
+  <data name="CollectionDelete" xml:space="preserve">
+    <value>Elimina…</value>
+  </data>
+  <data name="CollectionMoveUp" xml:space="preserve">
+    <value>Sposta su</value>
+  </data>
+  <data name="CollectionMoveDown" xml:space="preserve">
+    <value>Sposta giù</value>
+  </data>
+  <data name="ContextMenuMoveToStorage" xml:space="preserve">
+    <value>Sposta nel deposito</value>
+  </data>
+  <data name="LoadingMovingToStorage" xml:space="preserve">
+    <value>Spostamento nel deposito…</value>
+  </data>
+  <data name="StatusMovedToStorageFormat" xml:space="preserve">
+    <value>Spostate nel deposito: {0}</value>
+  </data>
+  <data name="StorageLockedSkippedFormat" xml:space="preserve">
+    <value>Una livrea bloccata non lascia mai il gioco. Livree bloccate selezionate rimaste nel gioco: {0}.</value>
+  </data>
+  <data name="StorageInstalledSkippedFormat" xml:space="preserve">
+    <value>Una livrea montata su un'auto nel gioco non può andare nel deposito. Livree selezionate rimaste nel gioco: {0}.</value>
+  </data>
+  <data name="StorageAuctionSkippedFormat" xml:space="preserve">
+    <value>Le livree d'asta non vanno mai nel deposito. Livree d'asta selezionate rimaste nel gioco: {0}.</value>
+  </data>
+  <data name="StorageInstalledUnknownMessage" xml:space="preserve">
+    <value>Non si sa quali livree siano montate sulle auto, quindi spostare questa livrea nel deposito non è sicuro: potrebbe essere su un'auto nel gioco.</value>
+  </data>
+  <data name="StorageInstalledUnknownMessageMany" xml:space="preserve">
+    <value>Non si sa quali livree siano montate sulle auto, quindi spostare queste livree nel deposito non è sicuro: alcune potrebbero essere su auto nel gioco.</value>
+  </data>
+  <data name="StorageInstalledOutdatedMessage" xml:space="preserve">
+    <value>Il salvataggio è cambiato dopo l'ultima sincronizzazione e i nuovi dati non sono ancora arrivati al server delle livree. L'elenco delle livree sulle auto potrebbe essere vecchio, quindi spostare questa livrea nel deposito non è sicuro: potrebbe essere su un'auto nel gioco.</value>
+  </data>
+  <data name="StorageInstalledOutdatedMessageMany" xml:space="preserve">
+    <value>Il salvataggio è cambiato dopo l'ultima sincronizzazione e i nuovi dati non sono ancora arrivati al server delle livree. L'elenco delle livree sulle auto potrebbe essere vecchio, quindi spostare queste livree nel deposito non è sicuro: alcune potrebbero essere su auto nel gioco.</value>
+  </data>
+  <data name="ArchiveToStorageButton" xml:space="preserve">
+    <value>Nel deposito</value>
+  </data>
+  <data name="ArchiveToStorageTooltip" xml:space="preserve">
+    <value>Tenere per sempre le livree selezionate nel deposito dell'account invece di eliminarle. Il salvataggio non cambia.</value>
+  </data>
+  <data name="ArchiveToStorageSkippedFormat" xml:space="preserve">
+    <value>Non spostate nel deposito: {0}. Il deposito ha già una livrea con la stessa chiave.</value>
+  </data>
+  <data name="HistoryStored" xml:space="preserve">
+    <value>Spostata nel deposito</value>
+  </data>
+  <data name="HistoryRestoredFromStorage" xml:space="preserve">
+    <value>Tornata dal deposito</value>
+  </data>
+  <data name="StoredSinceFormat" xml:space="preserve">
+    <value>nel deposito dal {0}</value>
+  </data>
+  <data name="StoredDateTooltip" xml:space="preserve">
+    <value>Quando la livrea è andata nel deposito</value>
+  </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>Ins</value>
+  </data>
+  <data name="ShortcutStoredToArchive" xml:space="preserve">
+    <value>Dal deposito all'archivio</value>
+  </data>
+  <data name="ContextMenuReturnToGame" xml:space="preserve">
+    <value>Riporta nel gioco</value>
+  </data>
+  <data name="ReturnToGameTooltip" xml:space="preserve">
+    <value>Nel gioco: la livrea torna nel salvataggio</value>
+  </data>
+  <data name="ShortcutShowGame" xml:space="preserve">
+    <value>Mostra le livree del gioco</value>
+  </data>
+  <data name="ShortcutShowStorage" xml:space="preserve">
+    <value>Mostra il deposito</value>
+  </data>
+  <data name="ShortcutsGroupStorage" xml:space="preserve">
+    <value>Gioco e deposito</value>
+  </data>
+  <data name="ModeGame" xml:space="preserve">
+    <value>Gioco</value>
+  </data>
+  <data name="ModeStorage" xml:space="preserve">
+    <value>Deposito</value>
+  </data>
+  <data name="ModeGameTooltip" xml:space="preserve">
+    <value>Le livree nel salvataggio del gioco e lo spazio rimasto</value>
+  </data>
+  <data name="ModeStorageTooltip" xml:space="preserve">
+    <value>Livree che la galleria tiene fuori dal gioco, oltre il suo limite. Ins le riporta nel gioco</value>
+  </data>
+  <data name="StatusStoredCountFormat" xml:space="preserve">
+    <value>Nel deposito: {0}</value>
+  </data>
+  <data name="StorageKeysHintFormat" xml:space="preserve">
+    <value>{0}: nel gioco · {1}: all'archivio</value>
+  </data>
+  <data name="StatusReturnedToGameFormat" xml:space="preserve">
+    <value>Riportate nel gioco: {0}</value>
+  </data>
+  <data name="StatusStoredToArchiveFormat" xml:space="preserve">
+    <value>Dal deposito all'archivio: {0}</value>
+  </data>
+  <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
+    <value>Rimaste nel deposito: {0}. L'archivio ha già una livrea con la stessa chiave.</value>
+  </data>
+  <data name="LoadingReturningToGame" xml:space="preserve">
+    <value>Riporto le livree nel gioco…</value>
+  </data>
+  <data name="ReturnBeyondLimitTitle" xml:space="preserve">
+    <value>Poco spazio nel gioco</value>
+  </data>
+  <data name="ReturnBeyondLimitButton" xml:space="preserve">
+    <value>Riporta tutte</value>
+  </data>
+  <data name="StorageEmptyHint" xml:space="preserve">
+    <value>Il deposito è vuoto. Canc nel gioco ci manda le livree scelte</value>
+  </data>
+  <data name="StorageNoAccountTooltip" xml:space="preserve">
+    <value>Il deposito appartiene a un account: scegli prima il salvataggio del gioco</value>
+  </data>
+  <data name="ReturnRoomTitleFormat" xml:space="preserve">
+    <value>Riporta nel gioco: {0}</value>
+  </data>
+  <data name="ReturnRoomInfoFormat" xml:space="preserve">
+    <value>Il gioco ne ha {0} su {1}, posti liberi: {2}. Ne mancano: {3}.</value>
+  </data>
+  <data name="ReturnRoomExchangeFormat" xml:space="preserve">
+    <value>Scambia: manda {0} dal gioco al deposito</value>
+  </data>
+  <data name="ReturnRoomExchangeNoteFormat" xml:space="preserve">
+    <value>Tornano tutte, il contatore diventa {0} / {1}.</value>
+  </data>
+  <data name="ReturnRoomTooFewFormat" xml:space="preserve">
+    <value>Ne vanno bene solo {0}: le altre sono su un'auto, bloccate, preferite, tue o d'asta.</value>
+  </data>
+  <data name="ReturnRoomCheckedFormat" xml:space="preserve">
+    <value>Spuntate {0} su {1} necessarie · ne vanno bene {2}</value>
+  </data>
+  <data name="ReturnRoomCandidatesNote" xml:space="preserve">
+    <value>Prima quelle entrate per prime nel gioco. Non proposte: su un'auto, bloccate, preferite, tue, d'asta</value>
+  </data>
+  <data name="ReturnRoomFolderLabel" xml:space="preserve">
+    <value>nella cartella</value>
+  </data>
+  <data name="ReturnRoomExchangeFolderFormat" xml:space="preserve">
+    <value>Scambio {0}</value>
+  </data>
+  <data name="StorageNoFolder" xml:space="preserve">
+    <value>Senza cartella</value>
+  </data>
+  <data name="ReturnRoomInGameSinceFormat" xml:space="preserve">
+    <value>nel gioco dal {0}</value>
+  </data>
+  <data name="ReturnRoomAllFormat" xml:space="preserve">
+    <value>Riporta tutte oltre il limite ({0})</value>
+  </data>
+  <data name="ReturnRoomAllNoteFormat" xml:space="preserve">
+    <value>Diventa {0} / {1}. Finché il gioco supera il limite, non permette di scaricare né di creare una livrea.</value>
+  </data>
+  <data name="ReturnRoomFitFormat" xml:space="preserve">
+    <value>Riporta solo quelle che ci stanno ({0})</value>
+  </data>
+  <data name="ReturnRoomFitNoteFormat" xml:space="preserve">
+    <value>Le prime {0} nell'ordine della finestra, le altre {1} restano nel deposito.</value>
+  </data>
+  <data name="ReturnRoomExchangeButton" xml:space="preserve">
+    <value>Scambia e riporta</value>
+  </data>
+  <data name="ReturnRoomFitButtonFormat" xml:space="preserve">
+    <value>Riporta {0}</value>
+  </data>
+  <data name="ReturnRoomNeedMoreFormat" xml:space="preserve">
+    <value>Spuntane altre {0}</value>
+  </data>
+  <data name="StorageFoldersHeading" xml:space="preserve">
+    <value>Cartelle</value>
+  </data>
+  <data name="StorageAll" xml:space="preserve">
+    <value>Tutto il deposito</value>
+  </data>
+  <data name="StorageNewFolder" xml:space="preserve">
+    <value>Nuova cartella</value>
+  </data>
+  <data name="StorageFoldersHint" xml:space="preserve">
+    <value>Trascina le livree su una cartella, o su «Senza cartella» per toglierle. Trascina le cartelle per cambiarne l'ordine. Una cartella è solo un'etichetta: eliminarla tiene le livree.</value>
+  </data>
+  <data name="StorageSidebarRoomFormat" xml:space="preserve">
+    <value>Nel gioco {0} / {1} · liberi {2}</value>
+  </data>
+  <data name="StorageSidebarRoomNoLimitFormat" xml:space="preserve">
+    <value>Nel gioco: {0}</value>
+  </data>
+  <data name="StorageFolderNameLabel" xml:space="preserve">
+    <value>Nome della cartella</value>
+  </data>
+  <data name="StorageFolderRenameTitle" xml:space="preserve">
+    <value>Rinomina la cartella</value>
+  </data>
+  <data name="StorageFolderNameTaken" xml:space="preserve">
+    <value>Esiste già una cartella con questo nome.</value>
+  </data>
+  <data name="StorageFolderDeleteTitle" xml:space="preserve">
+    <value>Elimina la cartella</value>
+  </data>
+  <data name="StorageFolderDeleteMessageFormat" xml:space="preserve">
+    <value>La cartella «{0}» sarà eliminata. Le sue livree ({1}) restano nel deposito, in «Senza cartella».</value>
+  </data>
+  <data name="StorageFolderDeleteEmptyMessageFormat" xml:space="preserve">
+    <value>Eliminare la cartella vuota «{0}»?</value>
+  </data>
+  <data name="StorageFolderDeleteToArchive" xml:space="preserve">
+    <value>Manda le sue livree all'archivio</value>
+  </data>
+  <data name="StorageReturnFolder" xml:space="preserve">
+    <value>Riporta la cartella nel gioco</value>
+  </data>
+  <data name="ContextMenuMoveToFolder" xml:space="preserve">
+    <value>Sposta nella cartella</value>
+  </data>
+  <data name="ContextMenuNewFolder" xml:space="preserve">
+    <value>Nuova cartella…</value>
+  </data>
+  <data name="StatusMovedToFolderFormat" xml:space="preserve">
+    <value>Spostate in «{0}»: {1}</value>
+  </data>
+  <data name="ShortcutRenameFolder" xml:space="preserve">
+    <value>Rinomina la cartella aperta</value>
+  </data>
+  <data name="StorageFolderEmptyHint" xml:space="preserve">
+    <value>Ancora nessuna livrea in questa cartella. Trascinale qui o usa «Sposta nella cartella» nel loro menu</value>
+  </data>
+  <data name="CopyInGameLabel" xml:space="preserve">
+    <value>Nel gioco</value>
+  </data>
+  <data name="SimilarInGameLabel" xml:space="preserve">
+    <value>Simile nel gioco</value>
+  </data>
+  <data name="CopyInStorageLabel" xml:space="preserve">
+    <value>Nel deposito</value>
+  </data>
+  <data name="SimilarInStorageLabel" xml:space="preserve">
+    <value>Simile nel deposito</value>
+  </data>
+  <data name="CopyInGameTooltipFormat" xml:space="preserve">
+    <value>Il gioco ha già questa livrea: {0}</value>
+  </data>
+  <data name="SimilarInGameTooltipFormat" xml:space="preserve">
+    <value>Il gioco ha una livrea simile: {0}</value>
+  </data>
+  <data name="CopyInStorageTooltipFormat" xml:space="preserve">
+    <value>Il deposito ha già questa livrea: {0}</value>
+  </data>
+  <data name="SimilarInStorageTooltipFormat" xml:space="preserve">
+    <value>Il deposito ha una livrea simile: {0}</value>
+  </data>
+  <data name="StatsTileInGame" xml:space="preserve">
+    <value>Già nel gioco</value>
+  </data>
+  <data name="StatsTileInGameTooltip" xml:space="preserve">
+    <value>Mostra le livree del deposito che ha anche il gioco: il deposito può farne a meno</value>
+  </data>
+  <data name="StatsTileFolders" xml:space="preserve">
+    <value>Cartelle</value>
+  </data>
+  <data name="StatsTileNoFolderFormat" xml:space="preserve">
+    <value>senza cartella: {0}</value>
+  </data>
+  <data name="StatsHealthStorageTitle" xml:space="preserve">
+    <value>Deposito</value>
+  </data>
+  <data name="StatsHealthStorageNote" xml:space="preserve">
+    <value>Il deposito è spesso l'unica copia di una livrea: tienilo presente quando fai pulizia.</value>
+  </data>
+  <data name="StatsHealthStorageSize" xml:space="preserve">
+    <value>Su disco</value>
+  </data>
+  <data name="StatsHealthNoFolder" xml:space="preserve">
+    <value>Senza cartella</value>
+  </data>
+  <data name="StatsLegendStored" xml:space="preserve">
+    <value>Andate nel deposito</value>
+  </data>
+  <data name="StatsStorageTimeNote" xml:space="preserve">
+    <value>Il deposito secondo il giorno in cui ogni livrea ci è entrata. I grafici del registro del gioco sono nelle statistiche del gioco.</value>
+  </data>
+  <data name="StatsStorageModeNote" xml:space="preserve">
+    <value>Le livree del deposito</value>
+  </data>
+  <data name="BackupCreateStorageButton" xml:space="preserve">
+    <value>Copia del deposito</value>
+  </data>
+  <data name="BackupCreateStorageTooltip" xml:space="preserve">
+    <value>Il deposito è spesso l'unica copia delle sue livree: una copia le conserva, con le cartelle</value>
+  </data>
+  <data name="BackupStorageChip" xml:space="preserve">
+    <value>Deposito</value>
+  </data>
+  <data name="BackupStorageChipTooltip" xml:space="preserve">
+    <value>Una copia del deposito: confrontata con il deposito e ripristinata in esso con le cartelle</value>
+  </data>
+  <data name="BackupKindStorageChanged" xml:space="preserve">
+    <value>Creata dopo che le livree del deposito sono cambiate</value>
+  </data>
+  <data name="BackupNoStorageMessage" xml:space="preserve">
+    <value>Il deposito è vuoto: niente da salvare</value>
+  </data>
+  <data name="StorageBackupFolder" xml:space="preserve">
+    <value>Copia della cartella</value>
+  </data>
+  <data name="StatusStorageBackupMadeFormat" xml:space="preserve">
+    <value>Copia creata: {0}</value>
+  </data>
+  <data name="StatusAutoStorageBackupMade" xml:space="preserve">
+    <value>È stata creata una copia automatica del deposito</value>
+  </data>
+  <data name="BackupRestoreIntoStorageNote" xml:space="preserve">
+    <value>Le livree ripristinate tornano nel deposito, ognuna nella sua cartella.</value>
+  </data>
+  <data name="DownloadDateLabel" xml:space="preserve">
+    <value>Data di download</value>
+  </data>
+  <data name="StorageAccountFolderUnnamedFormat" xml:space="preserve">
+    <value>Account (…{0})</value>
+  </data>
+  <data name="StoragePlaceNotFullPath" xml:space="preserve">
+    <value>indica un percorso completo, ad esempio D:\Livree Forza.</value>
+  </data>
+  <data name="StoragePlaceDriveRoot" xml:space="preserve">
+    <value>è la radice di un disco. Scegli o crea una cartella al suo interno.</value>
+  </data>
+  <data name="StoragePlaceIsFile" xml:space="preserve">
+    <value>è un file, non una cartella.</value>
+  </data>
+  <data name="StoragePlaceInSave" xml:space="preserve">
+    <value>è la cartella dei salvataggi del gioco.</value>
+  </data>
+  <data name="StoragePlaceHoldsSave" xml:space="preserve">
+    <value>al suo interno c’è un salvataggio del gioco.</value>
+  </data>
+  <data name="StoragePlaceInProgram" xml:space="preserve">
+    <value>è la cartella del programma.</value>
+  </data>
+  <data name="StoragePlaceHoldsProgram" xml:space="preserve">
+    <value>al suo interno c’è la cartella del programma.</value>
+  </data>
+  <data name="StoragePlaceOtherStorageFormat" xml:space="preserve">
+    <value>qui c’è il deposito di un altro account ({0}).</value>
+  </data>
+  <data name="StoragePlaceRule" xml:space="preserve">
+    <value>Il deposito non può stare in un salvataggio, nell’archivio, nella cartella del programma o nel deposito di un altro account.</value>
+  </data>
+  <data name="StorageNotSuitable" xml:space="preserve">
+    <value>Questa cartella non va bene:</value>
+  </data>
+  <data name="StorageFolderDialogTitle" xml:space="preserve">
+    <value>Cartella del deposito</value>
+  </data>
+  <data name="StorageFolderHeaderFormat" xml:space="preserve">
+    <value>Dove tenere le livree di {0}</value>
+  </data>
+  <data name="StorageFolderNowFormat" xml:space="preserve">
+    <value>{0}. Ora: {1}.</value>
+  </data>
+  <data name="StorageFolderNowProgram" xml:space="preserve">
+    <value>la cartella del programma</value>
+  </data>
+  <data name="StorageOptionProgram" xml:space="preserve">
+    <value>Cartella del programma</value>
+  </data>
+  <data name="StorageOptionCommon" xml:space="preserve">
+    <value>Una cartella comune tua, divisa per gioco e account</value>
+  </data>
+  <data name="StorageOptionRecommended" xml:space="preserve">
+    <value>consigliato</value>
+  </data>
+  <data name="StorageOptionCommonResultFormat" xml:space="preserve">
+    <value>Le livree dell’account saranno in {0}</value>
+  </data>
+  <data name="StorageOptionExact" xml:space="preserve">
+    <value>Esattamente questa cartella</value>
+  </data>
+  <data name="StorageOptionExactHint" xml:space="preserve">
+    <value>Solo questo account di questo gioco. Adatta a una cartella in cui ci sono già livree.</value>
+  </data>
+  <data name="StorageFolderPickerTitle" xml:space="preserve">
+    <value>Cartella per il deposito</value>
+  </data>
+  <data name="StorageMoveSummaryFormat" xml:space="preserve">
+    <value>Tutto il deposito passa nella nuova cartella: {0}, {1}.</value>
+  </data>
+  <data name="StorageMoveOtherDiskFormat" xml:space="preserve">
+    <value>Altro disco: i file vengono copiati, circa {0} min, e la vecchia cartella viene rimossa dopo il controllo della copia.</value>
+  </data>
+  <data name="StorageMoveSameDisk" xml:space="preserve">
+    <value>Lo stesso disco: le cartelle vengono solo spostate, è veloce.</value>
+  </data>
+  <data name="StorageMoveKeeps" xml:space="preserve">
+    <value>Le cartelle del deposito, le note, i tag e i preferiti restano con le livree.</value>
+  </data>
+  <data name="StorageMoveNothing" xml:space="preserve">
+    <value>Il deposito non ha ancora livree: non c’è nulla da spostare.</value>
+  </data>
+  <data name="StorageMoveUnreachable" xml:space="preserve">
+    <value>La cartella attuale non è disponibile, non si può spostare nulla. Il deposito sarà semplicemente nella nuova cartella.</value>
+  </data>
+  <data name="StorageAlreadyHere" xml:space="preserve">
+    <value>Il deposito è già in questa cartella.</value>
+  </data>
+  <data name="StorageExistingFormat" xml:space="preserve">
+    <value>Nella cartella ci sono già livree non messe dalla galleria: {0}. Diventeranno livree del deposito: la galleria leggerà nomi, auto, autori e anteprime.</value>
+  </data>
+  <data name="StorageExistingFoldersFormat" xml:space="preserve">
+    <value>Nelle sottocartelle: {0}. Le sottocartelle diventeranno cartelle del deposito: {1}.</value>
+  </data>
+  <data name="StorageExistingAddFormat" xml:space="preserve">
+    <value>Le livree del deposito attuale ({0}) si aggiungono a queste.</value>
+  </data>
+  <data name="StorageMoveButton" xml:space="preserve">
+    <value>Sposta</value>
+  </data>
+  <data name="StorageMoveAndAddButton" xml:space="preserve">
+    <value>Sposta e aggiungi</value>
+  </data>
+  <data name="StorageChooseButton" xml:space="preserve">
+    <value>Scegli</value>
+  </data>
+  <data name="StorageMovingFormat" xml:space="preserve">
+    <value>Spostamento: {0} di {1}</value>
+  </data>
+  <data name="StorageMoveFailedFormat" xml:space="preserve">
+    <value>Non è stato possibile spostare il deposito: {0}. È rimasto intero nella sua cartella.</value>
+  </data>
+  <data name="StorageMoveCancelled" xml:space="preserve">
+    <value>Lo spostamento è stato interrotto. Il deposito è rimasto intero nella sua cartella.</value>
+  </data>
+  <data name="StorageMoveLeftoversFormat" xml:space="preserve">
+    <value>Il deposito è stato spostato, ma non è stato possibile rimuovere parte della vecchia cartella:
+{0}</value>
+  </data>
+  <data name="StorageMovedStatusFormat" xml:space="preserve">
+    <value>Il deposito ora è in {0}</value>
+  </data>
+  <data name="SettingsStorageSectionLabel" xml:space="preserve">
+    <value>Deposito delle livree</value>
+  </data>
+  <data name="SettingsStorageHint" xml:space="preserve">
+    <value>Le livree che non entrano nel gioco. Ogni account ha il suo deposito. Puoi anche mettere livree a mano nella sua cartella: la galleria le trova da sola.</value>
+  </data>
+  <data name="SettingsStorageProgramFolderFormat" xml:space="preserve">
+    <value>Cartella del programma: {0}</value>
+  </data>
+  <data name="SettingsStorageFreeFormat" xml:space="preserve">
+    <value>libero sul disco {0}: {1}</value>
+  </data>
+  <data name="SettingsStorageUnavailable" xml:space="preserve">
+    <value>La cartella non è disponibile</value>
+  </data>
+  <data name="SettingsStorageChangeButton" xml:space="preserve">
+    <value>Cambia cartella…</value>
+  </data>
+  <data name="SettingsStorageOpenButton" xml:space="preserve">
+    <value>Apri la cartella del deposito</value>
+  </data>
+  <data name="StorageFoundTitleFormat" xml:space="preserve">
+    <value>Livree messe a mano nella cartella del deposito: {0} trovate.</value>
+  </data>
+  <data name="StorageFoundAddedFormat" xml:space="preserve">
+    <value>Aggiunte: {0}.</value>
+  </data>
+  <data name="StorageFoundAddedWithFormat" xml:space="preserve">
+    <value>Aggiunte: {0} ({1}).</value>
+  </data>
+  <data name="StorageFoundIntoFoldersFormat" xml:space="preserve">
+    <value>nelle cartelle {0}: {1}</value>
+  </data>
+  <data name="StorageFoundRenamedFormat" xml:space="preserve">
+    <value>con un nome del gioco: {0}</value>
+  </data>
+  <data name="StorageFoundSkippedFormat" xml:space="preserve">
+    <value>Non adatte: {0}.</value>
+  </data>
+  <data name="StorageFoundGoneFormat" xml:space="preserve">
+    <value>Sparite dalla cartella: {0}.</value>
+  </data>
+  <data name="StorageFoundDetailsButton" xml:space="preserve">
+    <value>Dettagli</value>
+  </data>
+  <data name="StorageFoundDialogTitle" xml:space="preserve">
+    <value>Livree messe a mano</value>
+  </data>
+  <data name="StorageFoundAddedSection" xml:space="preserve">
+    <value>Aggiunte</value>
+  </data>
+  <data name="StorageFoundFoldersSection" xml:space="preserve">
+    <value>Aggiunte nelle cartelle del deposito, secondo la sottocartella</value>
+  </data>
+  <data name="StorageFoundRenamedSection" xml:space="preserve">
+    <value>Con un nome del gioco</value>
+  </data>
+  <data name="StorageFoundSkippedSection" xml:space="preserve">
+    <value>Non adatte</value>
+  </data>
+  <data name="StorageFoundSkippedNote" xml:space="preserve">
+    <value>restano dove sono</value>
+  </data>
+  <data name="StorageFoundGoneSection" xml:space="preserve">
+    <value>Sparite dalla cartella del deposito</value>
+  </data>
+  <data name="StorageFoundGoneNote" xml:space="preserve">
+    <value>le loro cartelle non ci sono più, sono state tolte dal deposito</value>
+  </data>
+  <data name="StorageFoundShow" xml:space="preserve">
+    <value>mostra</value>
+  </data>
+  <data name="StorageFoundHide" xml:space="preserve">
+    <value>nascondi</value>
+  </data>
+  <data name="StorageFoundIntoFolderFormat" xml:space="preserve">
+    <value>Cartella del deposito «{0}». I file sono stati spostati nella radice del deposito.</value>
+  </data>
+  <data name="StorageFoundFolderRemoved" xml:space="preserve">
+    <value>La cartella sul disco è rimasta vuota ed è stata rimossa.</value>
+  </data>
+  <data name="StorageFoundCarFormat" xml:space="preserve">
+    <value>{0} (auto {1} dal file della livrea)</value>
+  </data>
+  <data name="StorageFoundKeyTakenFormat" xml:space="preserve">
+    <value>{0} (il suo nome appartiene a un’altra livrea)</value>
+  </data>
+  <data name="StorageFoundIncomplete" xml:space="preserve">
+    <value>Incompleta: manca l’intestazione o il file della livrea, solo una parte</value>
+  </data>
+  <data name="StorageFoundAuction" xml:space="preserve">
+    <value>Livrea di un’auto all’asta: il deposito non la tiene</value>
+  </data>
+  <data name="StorageFoundSameFormat" xml:space="preserve">
+    <value>Il deposito ha già questa livrea ({0}), gli stessi file: una seconda copia non serve</value>
+  </data>
+  <data name="StorageFoundNoCar" xml:space="preserve">
+    <value>Non è un nome del gioco e l’auto non si è potuta leggere dai file</value>
+  </data>
+  <data name="StorageFoundTooDeep" xml:space="preserve">
+    <value>Troppo in profondità: le cartelle del deposito hanno un solo livello</value>
+  </data>
+  <data name="StorageFoundFailed" xml:space="preserve">
+    <value>Impossibile spostare (un file è in uso o manca l’accesso)</value>
+  </data>
+  <data name="StorageFoundDone" xml:space="preserve">
+    <value>Fatto</value>
+  </data>
+  <data name="AddedByHandBadgeLabel" xml:space="preserve">
+    <value>Aggiunta a mano</value>
+  </data>
+  <data name="AddedByHandBadgeTooltip" xml:space="preserve">
+    <value>È stata messa a mano nella cartella del deposito e la galleria l’ha trovata. Il segno sparisce quando si apre la livrea.</value>
+  </data>
+  <data name="StorageUnavailableTitle" xml:space="preserve">
+    <value>La cartella del deposito non è disponibile</value>
+  </data>
+  <data name="StorageUnavailableText" xml:space="preserve">
+    <value>Collega il disco o scegli un’altra cartella. Finché manca, nessuna livrea va nel deposito.</value>
+  </data>
+  <data name="StorageCheckAgainButton" xml:space="preserve">
+    <value>Controlla di nuovo</value>
+  </data>
+  <data name="StorageChooseOtherButton" xml:space="preserve">
+    <value>Scegli un’altra cartella…</value>
+  </data>
+  <data name="StorageUnavailableReasonFormat" xml:space="preserve">
+    <value>La cartella del deposito non è disponibile: {0}</value>
+  </data>
+  <data name="StorageStillUnavailableFormat" xml:space="preserve">
+    <value>La cartella del deposito manca ancora: {0}</value>
+  </data>
+  <data name="StorageConflictsFormat" xml:space="preserve">
+    <value>Il deposito ha già altre livree con questi nomi, quindi queste sono rimaste nel gioco:
+{0}</value>
+  </data>
+  <data name="StoragePlaceAroundCurrent" xml:space="preserve">
+    <value>al suo interno c’è il deposito attuale, oppure è essa stessa dentro di esso.</value>
   </data>
 </root>

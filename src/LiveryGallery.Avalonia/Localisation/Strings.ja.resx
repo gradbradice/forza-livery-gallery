@@ -198,9 +198,6 @@
   <data name="DateLabel" xml:space="preserve">
     <value>作成日</value>
   </data>
-  <data name="AboutVersionLabel" xml:space="preserve">
-    <value>バージョン</value>
-  </data>
   <data name="ButtonClose" xml:space="preserve">
     <value>閉じる</value>
   </data>
@@ -257,21 +254,6 @@
   </data>
   <data name="SeparateMineGroupName" xml:space="preserve">
     <value>自作のリバリー</value>
-  </data>
-  <data name="UpdateAvailableFormat" xml:space="preserve">
-    <value>バージョン {0} を利用できます</value>
-  </data>
-  <data name="ButtonUpdateDownload" xml:space="preserve">
-    <value>ダウンロード</value>
-  </data>
-  <data name="WhatsNewTitleFormat" xml:space="preserve">
-    <value>バージョン {0} の新機能</value>
-  </data>
-  <data name="ChangelogNotAvailable" xml:space="preserve">
-    <value>詳しい変更内容はありません。GitHub のリリースページで確認できます。</value>
-  </data>
-  <data name="ChangelogSectionHeader" xml:space="preserve">
-    <value>日本語</value>
   </data>
   <data name="MinimizeTooltip" xml:space="preserve">
     <value>最小化</value>
@@ -506,9 +488,6 @@
   </data>
   <data name="AutoRefreshLiveriesLabel" xml:space="preserve">
     <value>リバリーを自動的に更新</value>
-  </data>
-  <data name="SearchByFolderNameLabel" xml:space="preserve">
-    <value>フォルダー名を表示して検索対象にする</value>
   </data>
   <data name="RefreshOnButtonClickLabel" xml:space="preserve">
     <value>更新ボタンでリバリーを更新</value>
@@ -798,33 +777,6 @@
   <data name="GameFolderProblemUnknown" xml:space="preserve">
     <value>このフォルダーは使用できません</value>
   </data>
-  <data name="RenderErrorLiveryFilesNotFound" xml:space="preserve">
-    <value>ゲームのビニールが見つかりません。ゲームフォルダーを確認してください: media\Livery。</value>
-  </data>
-  <data name="RenderErrorGamePathInvalid" xml:space="preserve">
-    <value>ゲームフォルダーが設定されていないか、見つかりません。</value>
-  </data>
-  <data name="RenderErrorCarNotFound" xml:space="preserve">
-    <value>このリバリーの車がゲームフォルダーにありません。</value>
-  </data>
-  <data name="RenderErrorCarFormat" xml:space="preserve">
-    <value>車のファイルを読み込めませんでした。</value>
-  </data>
-  <data name="RenderErrorNoLiveryLayout" xml:space="preserve">
-    <value>この車にはリバリーのレイアウトがありません。</value>
-  </data>
-  <data name="RenderErrorMissingShapesFormat" xml:space="preserve">
-    <value>描画されなかった図形: {0}</value>
-  </data>
-  <data name="RenderErrorRasterLogosSkippedFormat" xml:space="preserve">
-    <value>描画されなかったロゴ: {0}</value>
-  </data>
-  <data name="RenderErrorShapesWithoutSectionFormat" xml:space="preserve">
-    <value>セクションのない図形: {0}</value>
-  </data>
-  <data name="RenderErrorGeneric" xml:space="preserve">
-    <value>リバリーを描画できませんでした。</value>
-  </data>
   <data name="View3DGameFolderChecking" xml:space="preserve">
     <value>3D 表示はまだ使用できません: ゲームフォルダーを確認中です</value>
   </data>
@@ -849,30 +801,6 @@
   <data name="View3DParseFailedFormat" xml:space="preserve">
     <value>リバリーを読み込めませんでした: {0}</value>
   </data>
-  <data name="ViewerStatsFormat" xml:space="preserve">
-    <value>三角形 {0:N0}（LOD {1}）· リバリー {2}×{3} · フレーム {4}×{5}, MSAA {6}× · {7:F1} ms</value>
-  </data>
-  <data name="ViewerNoOpenGl" xml:space="preserve">
-    <value>3D 表示は使用できません: OpenGL を開始できませんでした。</value>
-  </data>
-  <data name="ViewerQualityLow" xml:space="preserve">
-    <value>低</value>
-  </data>
-  <data name="ViewerQualityMedium" xml:space="preserve">
-    <value>中</value>
-  </data>
-  <data name="ViewerQualityHigh" xml:space="preserve">
-    <value>高</value>
-  </data>
-  <data name="ViewerQualityUltra" xml:space="preserve">
-    <value>最高</value>
-  </data>
-  <data name="ViewerResetView" xml:space="preserve">
-    <value>表示をリセット</value>
-  </data>
-  <data name="ViewerTitleFormat" xml:space="preserve">
-    <value>3D 表示: {0}</value>
-  </data>
   <data name="GameFolderNotSetHint" xml:space="preserve">
     <value>リバリーを 3D で表示するにはゲームフォルダーが必要です</value>
   </data>
@@ -887,9 +815,6 @@
   </data>
   <data name="GameFolderValidWithWarningsFormat" xml:space="preserve">
     <value>ゲームフォルダーが見つかりました。車: {0}。ただし: {1}</value>
-  </data>
-  <data name="ViewerControlsHint" xml:space="preserve">
-    <value>左ボタン: 回転。右ボタン: 移動。ホイール: ズーム。ダブルクリック: リセット。</value>
   </data>
   <data name="AuctionBadgeLabel" xml:space="preserve">
     <value>オークション</value>
@@ -1128,11 +1053,26 @@
   <data name="OnlyInstalledToggle" xml:space="preserve">
     <value>車に適用中のもののみ</value>
   </data>
+  <data name="NotInstalledFirstToggle" xml:space="preserve">
+    <value>車に適用していないものを先頭に</value>
+  </data>
+  <data name="OnlyNotInstalledToggle" xml:space="preserve">
+    <value>車に適用していないもののみ</value>
+  </data>
+  <data name="FilterValueNotInstalledFirst" xml:space="preserve">
+    <value>未適用を先頭</value>
+  </data>
+  <data name="FilterValueNotInstalledOnly" xml:space="preserve">
+    <value>未適用のみ</value>
+  </data>
   <data name="FilterValueUnavailable" xml:space="preserve">
     <value>オフ</value>
   </data>
   <data name="InstalledFilterNeedsServer" xml:space="preserve">
     <value>車に適用中のリバリーを調べるには、設定でリバリーサーバーをオンにしてください。</value>
+  </data>
+  <data name="InstalledFilterWaitsForServer" xml:space="preserve">
+    <value>車に適用中のリバリーの情報を、リバリーサーバーからまだ受け取っていません。</value>
   </data>
   <data name="ArchiveLeftoverFoldersFormat" xml:space="preserve">
     <value>一部のフォルダーを元の場所から削除できませんでした。起動中のゲームなどがファイルを使用している可能性があります。データは失われていません。新しいコピーはそろっています。次の残ったフォルダーは不要なので削除できます:
@@ -1247,6 +1187,12 @@
   <data name="NavigationRowsLabel" xml:space="preserve">
     <value>「マイデザイン」の段数</value>
   </data>
+  <data name="ServerLiveriesLabel" xml:space="preserve">
+    <value>ゲームサーバー上のリバリー</value>
+  </data>
+  <data name="ServerLiveriesHint" xml:space="preserve">
+    <value>開発元から配布されたリバリーが、セーブデータではなくゲームのサーバーに保存されている場合があります。「マイデザイン」では常に先頭に並ぶため、その数を指定すると「ゲーム内で探す」が正しい位置を見つけられます。</value>
+  </data>
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>自動</value>
   </data>
@@ -1338,7 +1284,7 @@
     <value>ゲームアカウント: この PC で見つかったアカウントを切り替えます</value>
   </data>
   <data name="AccountUnnamedFormat" xml:space="preserve">
-    <value>アカウント …{0}</value>
+    <value>アカウント ***{0}</value>
   </data>
   <data name="AccountLiveriesFormat" xml:space="preserve">
     <value>リバリー: {0}</value>
@@ -1462,12 +1408,6 @@
   <data name="GameRunningContinueButton" xml:space="preserve">
     <value>それでも続行</value>
   </data>
-  <data name="AboutOpenPackagesLabel" xml:space="preserve">
-    <value>オープンソースのパッケージ</value>
-  </data>
-  <data name="AboutClosedComponentsLabel" xml:space="preserve">
-    <value>クローズドソースのコンポーネント</value>
-  </data>
   <data name="SettingsPageAppearance" xml:space="preserve">
     <value>外観</value>
   </data>
@@ -1539,9 +1479,6 @@
   </data>
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>言語ファイル StringTables がありません: 車名は車データベースから取得します</value>
-  </data>
-  <data name="AboutTitleFormat" xml:space="preserve">
-    <value>{0} について</value>
   </data>
   <data name="AboutDescriptionFormat" xml:space="preserve">
     <value>{0} のセーブデータにあるリバリーのギャラリーです。</value>
@@ -2322,7 +2259,7 @@ logs: 直近数日分のログ。既知のフォルダーとプレイヤー ID �
     <value>ウィンドウ</value>
   </data>
   <data name="ShortcutsNoteFormat" xml:space="preserve">
-    <value>カーソルがテキスト入力欄にある間は、文字、数字、{0}、{1} は使えません。{0}、3、G は、リバリーを 1 件だけ選択しているときに使えます。</value>
+    <value>カーソルがテキスト入力欄にある間は、文字、数字、{0}、{1} は使えません。Enter、3、G は、リバリーを 1 件だけ選択しているときに使えます。</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
     <value>クリックすると空きを作れます。重複したリバリーの余分なコピーをアーカイブに移動します。</value>
@@ -2446,5 +2383,1080 @@ logs: 直近数日分のログ。既知のフォルダーとプレイヤー ID �
   </data>
   <data name="AssignAuthorSkippedFormat" xml:space="preserve">
     <value>作者 ID がアカウントの選択中リバリーは変わりません: {0} 件。</value>
+  </data>
+  <data name="UpdatesSectionLabel" xml:space="preserve">
+    <value>アップデート</value>
+  </data>
+  <data name="BetaUpdatesLabel" xml:space="preserve">
+    <value>ベータ版を受け取る</value>
+  </data>
+  <data name="BetaUpdatesHint" xml:space="preserve">
+    <value>ベータ版は正式版より先に公開され、不具合を含む場合があります。オフにしても古いバージョンには戻らず、ベータ版より新しい正式版を待ちます。</value>
+  </data>
+  <data name="TagsDialogOneHint" xml:space="preserve">
+    <value>チェックを入れるとリバリーにタグを付け、空にすると外します。</value>
+  </data>
+  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
+    <value>新しいタグをカンマで区切って入力します。</value>
+  </data>
+  <data name="KeyClick" xml:space="preserve">
+    <value>クリック</value>
+  </data>
+  <data name="ShortcutClick" xml:space="preserve">
+    <value>このリバリーだけを選択</value>
+  </data>
+  <data name="ShortcutCtrlClick" xml:space="preserve">
+    <value>リバリーを選択に追加、または選択から外す</value>
+  </data>
+  <data name="ShortcutShiftClick" xml:space="preserve">
+    <value>最後にクリックしたリバリーからこのリバリーまでを選択</value>
+  </data>
+  <data name="ShortcutCtrlShiftClick" xml:space="preserve">
+    <value>同じ範囲を今の選択に追加</value>
+  </data>
+  <data name="LiveryDetailsTitleFormat" xml:space="preserve">
+    <value>リバリー: {0}</value>
+  </data>
+  <data name="LiveryDetailsPositionFormat" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="LiveryDetailsPrevTooltip" xml:space="preserve">
+    <value>前のリバリー</value>
+  </data>
+  <data name="LiveryDetailsNextTooltip" xml:space="preserve">
+    <value>次のリバリー</value>
+  </data>
+  <data name="LiveryDetailsNoPreview" xml:space="preserve">
+    <value>プレビューなし</value>
+  </data>
+  <data name="LiveryDetailsView3D" xml:space="preserve">
+    <value>3D表示</value>
+  </data>
+  <data name="LiveryDetailsOtherByAuthor" xml:space="preserve">
+    <value>この作者の他のリバリー</value>
+  </data>
+  <data name="LiveryDetailsAllByAuthorFormat" xml:space="preserve">
+    <value>ギャラリーの全 {0} 件</value>
+  </data>
+  <data name="LiveryDetailsSameCarFormat" xml:space="preserve">
+    <value>ギャラリー内の {0} の他のリバリー: {1}</value>
+  </data>
+  <data name="LiveryDetailsShow" xml:space="preserve">
+    <value>表示</value>
+  </data>
+  <data name="LiveryDetailsNoOtherByAuthor" xml:space="preserve">
+    <value>この作者の他のリバリーはギャラリーにありません</value>
+  </data>
+  <data name="LiveryDetailsSimilar" xml:space="preserve">
+    <value>似ているリバリー</value>
+  </data>
+  <data name="LiveryDetailsExactCopyFormat" xml:space="preserve">
+    <value>完全なコピー · {0}%</value>
+  </data>
+  <data name="LiveryDetailsPossibleCopyFormat" xml:space="preserve">
+    <value>重複の可能性 · {0}%</value>
+  </data>
+  <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
+    <value>作者:</value>
+  </data>
+  <data name="LiveryDetailsChipLocked" xml:space="preserve">
+    <value>ロック中</value>
+  </data>
+  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
+    <value>お気に入り</value>
+  </data>
+  <data name="LiveryDetailsIdLabel" xml:space="preserve">
+    <value>リバリー番号</value>
+  </data>
+  <data name="LiveryDetailsDatesLabel" xml:space="preserve">
+    <value>作成 · ダウンロード</value>
+  </data>
+  <data name="LiveryDetailsLayersLabel" xml:space="preserve">
+    <value>レイヤー数</value>
+  </data>
+  <data name="LiveryDetailsBackupsFormat" xml:space="preserve">
+    <value>{1} 件中 {0} 件、最新 {2}</value>
+  </data>
+  <data name="LiveryDetailsBackupsNone" xml:space="preserve">
+    <value>どれにもありません</value>
+  </data>
+  <data name="LiveryDetailsCounting" xml:space="preserve">
+    <value>集計中…</value>
+  </data>
+  <data name="LiveryDetailsUnknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="LiveryDetailsAddTag" xml:space="preserve">
+    <value>+ タグ</value>
+  </data>
+  <data name="LiveryDetailsNoteLabel" xml:space="preserve">
+    <value>メモ</value>
+  </data>
+  <data name="LiveryDetailsNoteSaved" xml:space="preserve">
+    <value>保存しました</value>
+  </data>
+  <data name="LiveryDetailsNoteHint" xml:space="preserve">
+    <value>自分だけに表示され、タグと一緒に保存されます。ギャラリーの検索で見つかります。</value>
+  </data>
+  <data name="LiveryDetailsNotePlaceholder" xml:space="preserve">
+    <value>リバリーについて何でも: 残す理由、直したい点…</value>
+  </data>
+  <data name="LiveryDetailsAuthorNoteLabel" xml:space="preserve">
+    <value>作者についてのメモ</value>
+  </data>
+  <data name="LiveryDetailsAuthorNoteEdit" xml:space="preserve">
+    <value>編集</value>
+  </data>
+  <data name="LiveryDetailsAuthorNoteFromCardFormat" xml:space="preserve">
+    <value>{0} の作者カードより: この作者のすべてのリバリーに表示</value>
+  </data>
+  <data name="LiveryDetailsAuthorNoteEmpty" xml:space="preserve">
+    <value>メモはまだありません。作者カードで書けます。</value>
+  </data>
+  <data name="LiveryDetailsHistoryLabel" xml:space="preserve">
+    <value>履歴</value>
+  </data>
+  <data name="LiveryDetailsHistoryEmpty" xml:space="preserve">
+    <value>まだ記録がありません</value>
+  </data>
+  <data name="HistoryAdded" xml:space="preserve">
+    <value>セーブデータに追加された</value>
+  </data>
+  <data name="HistoryRestoredFromArchive" xml:space="preserve">
+    <value>アーカイブから戻された</value>
+  </data>
+  <data name="HistoryReturned" xml:space="preserve">
+    <value>戻ってきた: バックアップから、または再ダウンロード</value>
+  </data>
+  <data name="HistoryRemoved" xml:space="preserve">
+    <value>セーブデータから消えた</value>
+  </data>
+  <data name="HistoryArchived" xml:space="preserve">
+    <value>アーカイブに移動された</value>
+  </data>
+  <data name="HistoryChanged" xml:space="preserve">
+    <value>ファイルが変更された</value>
+  </data>
+  <data name="HistoryMoved" xml:space="preserve">
+    <value>セーブデータ内の別のフォルダーに移った</value>
+  </data>
+  <data name="LiveryDetailsFooterHint" xml:space="preserve">
+    <value>← → 前後のリバリー · Esc で閉じる</value>
+  </data>
+  <data name="ContextMenuOpenDetails" xml:space="preserve">
+    <value>リバリーを開く</value>
+  </data>
+  <data name="NoteTooltipFormat" xml:space="preserve">
+    <value>メモ: {0}</value>
+  </data>
+  <data name="KeyDoubleClick" xml:space="preserve">
+    <value>ダブルクリック</value>
+  </data>
+  <data name="UnassignedCountFormat" xml:space="preserve">
+    <value>アカウント不明: {0}</value>
+  </data>
+  <data name="UnassignedTakeButton" xml:space="preserve">
+    <value>このアカウントに移動</value>
+  </data>
+  <data name="ArchiveUnassignedTooltip" xml:space="preserve">
+    <value>以前のバージョンがアカウントを記録せずにアーカイブしました（アカウントが複数ありました）。このアカウントのものなら、ここに移動してください。</value>
+  </data>
+  <data name="BackupsUnassignedTooltip" xml:space="preserve">
+    <value>以前のバージョンがアカウントを記録せずにこれらのバックアップを作成しました（アカウントが複数ありました）。このアカウントのものなら、ここに移動してください。</value>
+  </data>
+  <data name="MigrationFailedMessageFormat" xml:space="preserve">
+    <value>以前のバージョンのデータを {0} からコピーできませんでした。そのフォルダーは変更されていません。次回の起動時にもう一度試します。詳細はログにあります。</value>
+  </data>
+  <data name="GameSwitcherTooltip" xml:space="preserve">
+    <value>ゲームを切り替える</value>
+  </data>
+  <data name="GameStateFoundFormat" xml:space="preserve">
+    <value>見つかったセーブデータ: {0}</value>
+  </data>
+  <data name="GameStateChosen" xml:space="preserve">
+    <value>セーブフォルダーを手動で選択済み</value>
+  </data>
+  <data name="GameStateNotFound" xml:space="preserve">
+    <value>セーブデータが見つかりません</value>
+  </data>
+  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
+    <value>セーブフォルダーを選択…</value>
+  </data>
+  <data name="ChooseSaveFolderButton" xml:space="preserve">
+    <value>フォルダーを選択…</value>
+  </data>
+  <data name="SearchSaveAgainButton" xml:space="preserve">
+    <value>もう一度探す</value>
+  </data>
+  <data name="SaveNotFoundFormat" xml:space="preserve">
+    <value>{0} のセーブデータが見つかりません</value>
+  </data>
+  <data name="ServerRejectedHeaderFormat" xml:space="preserve">
+    <value>サーバーが名前とバージョンからギャラリーを認識できませんでした。サーバーがまだこのバージョンのギャラリーに対応していない可能性があります（{0}）。</value>
+  </data>
+  <data name="ServerRejectedFingerprintFormat" xml:space="preserve">
+    <value>ギャラリーがビルドのフィンガープリントを送信しなかったか、サーバーがそれを読み取れませんでした。公式リリースを使用してください（{0}）。</value>
+  </data>
+  <data name="ServerRejectedBuildFormat" xml:space="preserve">
+    <value>サーバーはこのビルドのギャラリーを認識していません。サーバーは登録済みのビルドのみを受け付けます。公式リリースを使用してください。新しいバージョンがまだ登録されていない可能性もあります（{0}）。</value>
+  </data>
+  <data name="ServerSyncDoneOnDayFormat" xml:space="preserve">
+    <value>車に適用中のリバリー: {0}
+更新日時: {1} {2}</value>
+  </data>
+  <data name="SettingsAccountsSectionLabel" xml:space="preserve">
+    <value>アカウント</value>
+  </data>
+  <data name="SettingsAccountsHint" xml:space="preserve">
+    <value>このPCにあるすべてのアカウントのセーブは、ギャラリーが自動で見つけます。別の場所（別のドライブやコピー）にあるアカウントのセーブは、ここで追加してください。アカウントの切り替えはメインウィンドウの検索欄の横で行います。</value>
+  </data>
+  <data name="SettingsAccountFound" xml:space="preserve">
+    <value>このPCで検出</value>
+  </data>
+  <data name="SettingsAccountAdded" xml:space="preserve">
+    <value>手動で追加</value>
+  </data>
+  <data name="SettingsAccountAddButton" xml:space="preserve">
+    <value>アカウントを追加</value>
+  </data>
+  <data name="SettingsAccountNewLabel" xml:space="preserve">
+    <value>アカウントのセーブフォルダー</value>
+  </data>
+  <data name="SettingsAccountAddConfirm" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="SettingsAccountNoSave" xml:space="preserve">
+    <value>このフォルダーにゲームのセーブはありません。</value>
+  </data>
+  <data name="SettingsAccountAlreadyListed" xml:space="preserve">
+    <value>このアカウントはすでに一覧にあります。</value>
+  </data>
+  <data name="AccountUnnamedLabel" xml:space="preserve">
+    <value>アカウント</value>
+  </data>
+  <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
+    <value>アーカイブ</value>
+  </data>
+  <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
+    <value>どのリバリーが車に付いているか不明なとき、アーカイブ前に確認する</value>
+  </data>
+  <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
+    <value>車に付いているリバリーの一覧が古い可能性があるとき、アーカイブ前に確認する</value>
+  </data>
+  <data name="ArchiveWarningsHint" xml:space="preserve">
+    <value>ゲーム内で車に付いているリバリーをアーカイブに移すのは安全ではありません。この確認の「今後は表示しない」でオフになり、ここで再びオンにできます。</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="KeyEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="KeyPageUp" xml:space="preserve">
+    <value>PgUp</value>
+  </data>
+  <data name="KeyPageDown" xml:space="preserve">
+    <value>PgDn</value>
+  </data>
+  <data name="ShortcutArrows" xml:space="preserve">
+    <value>隣のリバリーへ移動し、それだけを選択</value>
+  </data>
+  <data name="ShortcutHomeEnd" xml:space="preserve">
+    <value>最初または最後のリバリーへ移動</value>
+  </data>
+  <data name="ShortcutPage" xml:space="preserve">
+    <value>1 画面分上または下へ移動</value>
+  </data>
+  <data name="ShortcutShiftArrows" xml:space="preserve">
+    <value>最後に選んだリバリーから移動先までを選択</value>
+  </data>
+  <data name="ShortcutCtrlArrows" xml:space="preserve">
+    <value>カーソルだけを移動。続けて {0} でリバリーを選択に加えるか外す</value>
+  </data>
+  <data name="ShortcutToggleSelection" xml:space="preserve">
+    <value>カーソル位置のリバリーを選択に加えるか外す</value>
+  </data>
+  <data name="ShortcutView3DNewWindow" xml:space="preserve">
+    <value>比較用に別の 3D ウィンドウで表示（4 つまで）</value>
+  </data>
+  <data name="ScreenshotsLabel" xml:space="preserve">
+    <value>スクリーンショット</value>
+  </data>
+  <data name="ScreenshotsAdd" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="ScreenshotsDropHint" xml:space="preserve">
+    <value>ファイルをドロップ
+または Ctrl+V</value>
+  </data>
+  <data name="ScreenshotsLocalHint" xml:space="preserve">
+    <value>このPCにのみ保存されます。リバリーと一緒にアーカイブへ移り、一緒に戻ります。</value>
+  </data>
+  <data name="ScreenshotsPickTitle" xml:space="preserve">
+    <value>リバリーのスクリーンショット</value>
+  </data>
+  <data name="ScreenshotsFileType" xml:space="preserve">
+    <value>画像</value>
+  </data>
+  <data name="ScreenshotsSkippedFormat" xml:space="preserve">
+    <value>画像ではないため追加されませんでした：{0}</value>
+  </data>
+  <data name="ScreenshotPositionFormat" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="ScreenshotMakeCover" xml:space="preserve">
+    <value>カバーにする</value>
+  </data>
+  <data name="ScreenshotShowInFolder" xml:space="preserve">
+    <value>フォルダーに表示</value>
+  </data>
+  <data name="ScreenshotCopy" xml:space="preserve">
+    <value>コピー</value>
+  </data>
+  <data name="ScreenshotDelete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="ScreenshotDeleteTitle" xml:space="preserve">
+    <value>スクリーンショットを削除しますか？</value>
+  </data>
+  <data name="ScreenshotDeleteMessage" xml:space="preserve">
+    <value>ファイルはこのPCから削除されます。</value>
+  </data>
+  <data name="ScreenshotGoToLivery" xml:space="preserve">
+    <value>リバリーを開く</value>
+  </data>
+  <data name="ScreenshotCoverTooltip" xml:space="preserve">
+    <value>カバー：あなたのスクリーンショット。ゲームのプレビューはリバリーのウィンドウで戻せます</value>
+  </data>
+  <data name="ScreenshotCountTooltipFormat" xml:space="preserve">
+    <value>スクリーンショット：{0}</value>
+  </data>
+  <data name="GalleryViewLiveries" xml:space="preserve">
+    <value>リバリー</value>
+  </data>
+  <data name="ScreenshotsEmptyView" xml:space="preserve">
+    <value>スクリーンショットはまだありません。リバリーのウィンドウで「追加」、ファイルのドロップ、Ctrl+V で追加できます。</value>
+  </data>
+  <data name="ScreenshotsKeepOriginal" xml:space="preserve">
+    <value>そのまま保存（オリジナル）</value>
+  </data>
+  <data name="ScreenshotsWebP" xml:space="preserve">
+    <value>WebP に圧縮</value>
+  </data>
+  <data name="ScreenshotsQualityLabel" xml:space="preserve">
+    <value>品質</value>
+  </data>
+  <data name="ScreenshotsWebPHint" xml:space="preserve">
+    <value>新しいスクリーンショットのみ。追加済みのものは下のボタンで圧縮できます。</value>
+  </data>
+  <data name="ScreenshotsUsageFormat" xml:space="preserve">
+    <value>使用量：{0}・スクリーンショット：{1}（リバリー {2}）</value>
+  </data>
+  <data name="ScreenshotsConvertButton" xml:space="preserve">
+    <value>追加済みを圧縮…</value>
+  </data>
+  <data name="ScreenshotsOpenFolder" xml:space="preserve">
+    <value>フォルダーを開く</value>
+  </data>
+  <data name="ScreenshotsConvertConfirmFormat" xml:space="preserve">
+    <value>{0} 枚のスクリーンショットを品質 {1} の WebP に圧縮しますか？WebP の方が小さい場合のみ置き換えます。</value>
+  </data>
+  <data name="ScreenshotsConvertedFormat" xml:space="preserve">
+    <value>圧縮したスクリーンショット：{0}。現在の使用量：{1}。</value>
+  </data>
+  <data name="ScreenshotsDeleteWithLiveryFormat" xml:space="preserve">
+    <value>削除するリバリーにスクリーンショットがあります（{0}）。これらも削除しますか？</value>
+  </data>
+  <data name="ScreenshotsInBackups" xml:space="preserve">
+    <value>バックアップにスクリーンショットを含める</value>
+  </data>
+  <data name="ScreenshotRestorePreview" xml:space="preserve">
+    <value>ゲームのプレビューに戻す</value>
+  </data>
+  <data name="ScreenshotsGroupLabel" xml:space="preserve">
+    <value>グループ</value>
+  </data>
+  <data name="ScreenshotsGroupByLivery" xml:space="preserve">
+    <value>カラーリング別</value>
+  </data>
+  <data name="ScreenshotsGroupLikeLiveries" xml:space="preserve">
+    <value>カラーリングと同じ</value>
+  </data>
+  <data name="ScreenshotsGroupByDate" xml:space="preserve">
+    <value>撮影日別</value>
+  </data>
+  <data name="ScreenshotsNewestFirst" xml:space="preserve">
+    <value>新しい順</value>
+  </data>
+  <data name="ScreenshotsOldestFirst" xml:space="preserve">
+    <value>古い順</value>
+  </data>
+  <data name="ScreenshotsToday" xml:space="preserve">
+    <value>今日</value>
+  </data>
+  <data name="ScreenshotsYesterday" xml:space="preserve">
+    <value>昨日</value>
+  </data>
+  <data name="ScreenshotCountOne" xml:space="preserve">
+    <value>{0} 枚</value>
+  </data>
+  <data name="ScreenshotCountFew" xml:space="preserve">
+    <value>{0} 枚</value>
+  </data>
+  <data name="ScreenshotCountMany" xml:space="preserve">
+    <value>{0} 枚</value>
+  </data>
+  <data name="ScreenshotCoverBadge" xml:space="preserve">
+    <value>カバー</value>
+  </data>
+  <data name="AlbumsHeading" xml:space="preserve">
+    <value>アルバム</value>
+  </data>
+  <data name="AlbumsAll" xml:space="preserve">
+    <value>すべてのスクリーンショット</value>
+  </data>
+  <data name="AlbumsNone" xml:space="preserve">
+    <value>アルバムなし</value>
+  </data>
+  <data name="AlbumsNew" xml:space="preserve">
+    <value>新しいアルバム</value>
+  </data>
+  <data name="AlbumsHint" xml:space="preserve">
+    <value>スクリーンショットをアルバムにドラッグします。複数のアルバムに入れられ、アルバムから外しても削除されません。アルバムはドラッグで並べ替えられます。</value>
+  </data>
+  <data name="AlbumRenameTitle" xml:space="preserve">
+    <value>アルバム名を変更</value>
+  </data>
+  <data name="AlbumNameLabel" xml:space="preserve">
+    <value>アルバム名</value>
+  </data>
+  <data name="AlbumCreate" xml:space="preserve">
+    <value>作成</value>
+  </data>
+  <data name="CollectionNameEmpty" xml:space="preserve">
+    <value>64 文字以内で名前を入力してください。</value>
+  </data>
+  <data name="AlbumNameTaken" xml:space="preserve">
+    <value>同じ名前のアルバムがあります。</value>
+  </data>
+  <data name="AlbumDeleteTitle" xml:space="preserve">
+    <value>アルバムを削除しますか？</value>
+  </data>
+  <data name="AlbumDeleteMessageFormat" xml:space="preserve">
+    <value>アルバム「{0}」を削除します。スクリーンショットは残り、このアルバムから外れるだけです。</value>
+  </data>
+  <data name="ScreenshotsAddToAlbum" xml:space="preserve">
+    <value>アルバムに追加</value>
+  </data>
+  <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
+    <value>新しいアルバム…</value>
+  </data>
+  <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
+    <value>「{0}」から外す</value>
+  </data>
+  <data name="ScreenshotsDeleteSelectedTitle" xml:space="preserve">
+    <value>スクリーンショットを削除しますか？</value>
+  </data>
+  <data name="ScreenshotsDeleteSelectedFormat" xml:space="preserve">
+    <value>選択したスクリーンショット: {0}。ファイルはこの PC から削除されます。</value>
+  </data>
+  <data name="ScreenshotsEmptyAlbum" xml:space="preserve">
+    <value>このアルバムには、表示中のカラーリングのスクリーンショットがありません。</value>
+  </data>
+  <data name="ScreenshotsInAlbums" xml:space="preserve">
+    <value>アルバム:</value>
+  </data>
+  <data name="ScreenshotAlbumsButton" xml:space="preserve">
+    <value>アルバム</value>
+  </data>
+  <data name="ScreenshotAlbumsButtonFormat" xml:space="preserve">
+    <value>アルバム: {0}</value>
+  </data>
+  <data name="CollectionRename" xml:space="preserve">
+    <value>名前を変更</value>
+  </data>
+  <data name="CollectionDelete" xml:space="preserve">
+    <value>削除…</value>
+  </data>
+  <data name="CollectionMoveUp" xml:space="preserve">
+    <value>上へ移動</value>
+  </data>
+  <data name="CollectionMoveDown" xml:space="preserve">
+    <value>下へ移動</value>
+  </data>
+  <data name="ContextMenuMoveToStorage" xml:space="preserve">
+    <value>保管庫へ移動</value>
+  </data>
+  <data name="LoadingMovingToStorage" xml:space="preserve">
+    <value>保管庫へ移動中…</value>
+  </data>
+  <data name="StatusMovedToStorageFormat" xml:space="preserve">
+    <value>保管庫へ移動: {0}</value>
+  </data>
+  <data name="StorageLockedSkippedFormat" xml:space="preserve">
+    <value>ロックされたカラーリングはゲームから出ません。ゲームに残った選択中のロック済みカラーリング: {0}。</value>
+  </data>
+  <data name="StorageInstalledSkippedFormat" xml:space="preserve">
+    <value>ゲーム内で車に装着されているカラーリングは保管庫に移せません。ゲームに残った選択中のカラーリング: {0}。</value>
+  </data>
+  <data name="StorageAuctionSkippedFormat" xml:space="preserve">
+    <value>オークションのカラーリングは保管庫に移しません。ゲームに残った選択中のオークションのカラーリング: {0}。</value>
+  </data>
+  <data name="StorageInstalledUnknownMessage" xml:space="preserve">
+    <value>どのカラーリングが車に装着されているか不明なため、このカラーリングを保管庫へ移すのは安全ではありません。ゲーム内で車に装着されている可能性があります。</value>
+  </data>
+  <data name="StorageInstalledUnknownMessageMany" xml:space="preserve">
+    <value>どのカラーリングが車に装着されているか不明なため、これらのカラーリングを保管庫へ移すのは安全ではありません。一部はゲーム内で車に装着されている可能性があります。</value>
+  </data>
+  <data name="StorageInstalledOutdatedMessage" xml:space="preserve">
+    <value>前回の同期後にセーブが変わり、新しいデータはまだカラーリングサーバーに届いていません。車のカラーリング一覧が古い可能性があるため、このカラーリングを保管庫へ移すのは安全ではありません。ゲーム内で車に装着されている可能性があります。</value>
+  </data>
+  <data name="StorageInstalledOutdatedMessageMany" xml:space="preserve">
+    <value>前回の同期後にセーブが変わり、新しいデータはまだカラーリングサーバーに届いていません。車のカラーリング一覧が古い可能性があるため、これらのカラーリングを保管庫へ移すのは安全ではありません。一部はゲーム内で車に装着されている可能性があります。</value>
+  </data>
+  <data name="ArchiveToStorageButton" xml:space="preserve">
+    <value>保管庫へ</value>
+  </data>
+  <data name="ArchiveToStorageTooltip" xml:space="preserve">
+    <value>選択したカラーリングを削除せず、アカウントの保管庫にずっと残します。セーブは変わりません。</value>
+  </data>
+  <data name="ArchiveToStorageSkippedFormat" xml:space="preserve">
+    <value>保管庫へ移せなかったもの: {0}。同じキーのカラーリングが保管庫にあります。</value>
+  </data>
+  <data name="HistoryStored" xml:space="preserve">
+    <value>保管庫へ移動</value>
+  </data>
+  <data name="HistoryRestoredFromStorage" xml:space="preserve">
+    <value>保管庫から戻った</value>
+  </data>
+  <data name="StoredSinceFormat" xml:space="preserve">
+    <value>{0} から保管庫</value>
+  </data>
+  <data name="StoredDateTooltip" xml:space="preserve">
+    <value>デザインが保管庫に入った日</value>
+  </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="ShortcutStoredToArchive" xml:space="preserve">
+    <value>保管庫からアーカイブへ</value>
+  </data>
+  <data name="ContextMenuReturnToGame" xml:space="preserve">
+    <value>ゲームに戻す</value>
+  </data>
+  <data name="ReturnToGameTooltip" xml:space="preserve">
+    <value>ゲームへ: デザインをセーブデータに戻します</value>
+  </data>
+  <data name="ShortcutShowGame" xml:space="preserve">
+    <value>ゲームのデザインを表示</value>
+  </data>
+  <data name="ShortcutShowStorage" xml:space="preserve">
+    <value>保管庫を表示</value>
+  </data>
+  <data name="ShortcutsGroupStorage" xml:space="preserve">
+    <value>ゲームと保管庫</value>
+  </data>
+  <data name="ModeGame" xml:space="preserve">
+    <value>ゲーム</value>
+  </data>
+  <data name="ModeStorage" xml:space="preserve">
+    <value>保管庫</value>
+  </data>
+  <data name="ModeGameTooltip" xml:space="preserve">
+    <value>ゲームのセーブデータにあるデザインと空き</value>
+  </data>
+  <data name="ModeStorageTooltip" xml:space="preserve">
+    <value>ゲームの上限を超えて、ギャラリーがゲームの外に保管するデザイン。Insert でゲームに戻します</value>
+  </data>
+  <data name="StatusStoredCountFormat" xml:space="preserve">
+    <value>保管庫: {0}</value>
+  </data>
+  <data name="StorageKeysHintFormat" xml:space="preserve">
+    <value>{0}: ゲームへ · {1}: アーカイブへ</value>
+  </data>
+  <data name="StatusReturnedToGameFormat" xml:space="preserve">
+    <value>ゲームに戻しました: {0}</value>
+  </data>
+  <data name="StatusStoredToArchiveFormat" xml:space="preserve">
+    <value>保管庫からアーカイブへ: {0}</value>
+  </data>
+  <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
+    <value>保管庫に残りました: {0}。アーカイブに同じキーのデザインがあります。</value>
+  </data>
+  <data name="LoadingReturningToGame" xml:space="preserve">
+    <value>デザインをゲームに戻しています…</value>
+  </data>
+  <data name="ReturnBeyondLimitTitle" xml:space="preserve">
+    <value>ゲームの空きが足りません</value>
+  </data>
+  <data name="ReturnBeyondLimitButton" xml:space="preserve">
+    <value>すべて戻す</value>
+  </data>
+  <data name="StorageEmptyHint" xml:space="preserve">
+    <value>保管庫は空です。ゲームで Delete を押すと選んだデザインがここに入ります</value>
+  </data>
+  <data name="StorageNoAccountTooltip" xml:space="preserve">
+    <value>保管庫はアカウントごとです。先にゲームのセーブデータを選んでください</value>
+  </data>
+  <data name="ReturnRoomTitleFormat" xml:space="preserve">
+    <value>ゲームに戻す: {0}</value>
+  </data>
+  <data name="ReturnRoomInfoFormat" xml:space="preserve">
+    <value>ゲームには {1} 中 {0}、空き: {2}。不足: {3}。</value>
+  </data>
+  <data name="ReturnRoomExchangeFormat" xml:space="preserve">
+    <value>入れ替え: ゲームから {0} を保管庫へ</value>
+  </data>
+  <data name="ReturnRoomExchangeNoteFormat" xml:space="preserve">
+    <value>すべて戻り、カウンターは {0} / {1} になります。</value>
+  </data>
+  <data name="ReturnRoomTooFewFormat" xml:space="preserve">
+    <value>対象は {0} のみです。ほかは車に使用中、ロック中、お気に入り、自作、オークションです。</value>
+  </data>
+  <data name="ReturnRoomCheckedFormat" xml:space="preserve">
+    <value>チェック {0} / 必要 {1} · 対象 {2}</value>
+  </data>
+  <data name="ReturnRoomCandidatesNote" xml:space="preserve">
+    <value>ゲームに入った順に古いものから。対象外: 車に使用中、ロック中、お気に入り、自作、オークション</value>
+  </data>
+  <data name="ReturnRoomFolderLabel" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="ReturnRoomExchangeFolderFormat" xml:space="preserve">
+    <value>入れ替え {0}</value>
+  </data>
+  <data name="StorageNoFolder" xml:space="preserve">
+    <value>フォルダーなし</value>
+  </data>
+  <data name="ReturnRoomInGameSinceFormat" xml:space="preserve">
+    <value>{0} からゲーム内</value>
+  </data>
+  <data name="ReturnRoomAllFormat" xml:space="preserve">
+    <value>上限を超えてすべて戻す（{0}）</value>
+  </data>
+  <data name="ReturnRoomAllNoteFormat" xml:space="preserve">
+    <value>{0} / {1} になります。上限を超えている間は、デザインのダウンロードも作成もできません。</value>
+  </data>
+  <data name="ReturnRoomFitFormat" xml:space="preserve">
+    <value>入る分だけ戻す（{0}）</value>
+  </data>
+  <data name="ReturnRoomFitNoteFormat" xml:space="preserve">
+    <value>ウィンドウの順で最初の {0}、残りの {1} は保管庫に残ります。</value>
+  </data>
+  <data name="ReturnRoomExchangeButton" xml:space="preserve">
+    <value>入れ替えて戻す</value>
+  </data>
+  <data name="ReturnRoomFitButtonFormat" xml:space="preserve">
+    <value>{0} を戻す</value>
+  </data>
+  <data name="ReturnRoomNeedMoreFormat" xml:space="preserve">
+    <value>あと {0} 件チェックしてください</value>
+  </data>
+  <data name="StorageFoldersHeading" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="StorageAll" xml:space="preserve">
+    <value>保管庫すべて</value>
+  </data>
+  <data name="StorageNewFolder" xml:space="preserve">
+    <value>新しいフォルダー</value>
+  </data>
+  <data name="StorageFoldersHint" xml:space="preserve">
+    <value>デザインをフォルダーにドラッグします。「フォルダーなし」にドラッグするとフォルダーから外れます。フォルダーはドラッグで並べ替えられます。フォルダーはラベルなので、削除してもデザインは残ります。</value>
+  </data>
+  <data name="StorageSidebarRoomFormat" xml:space="preserve">
+    <value>ゲーム {0} / {1} · 空き {2}</value>
+  </data>
+  <data name="StorageSidebarRoomNoLimitFormat" xml:space="preserve">
+    <value>ゲーム: {0}</value>
+  </data>
+  <data name="StorageFolderNameLabel" xml:space="preserve">
+    <value>フォルダー名</value>
+  </data>
+  <data name="StorageFolderRenameTitle" xml:space="preserve">
+    <value>フォルダー名を変更</value>
+  </data>
+  <data name="StorageFolderNameTaken" xml:space="preserve">
+    <value>同じ名前のフォルダーがあります。</value>
+  </data>
+  <data name="StorageFolderDeleteTitle" xml:space="preserve">
+    <value>フォルダーを削除</value>
+  </data>
+  <data name="StorageFolderDeleteMessageFormat" xml:space="preserve">
+    <value>フォルダー「{0}」を削除します。中のデザイン（{1}）は保管庫の「フォルダーなし」に残ります。</value>
+  </data>
+  <data name="StorageFolderDeleteEmptyMessageFormat" xml:space="preserve">
+    <value>空のフォルダー「{0}」を削除しますか?</value>
+  </data>
+  <data name="StorageFolderDeleteToArchive" xml:space="preserve">
+    <value>中のデザインをアーカイブへ送る</value>
+  </data>
+  <data name="StorageReturnFolder" xml:space="preserve">
+    <value>フォルダーをゲームに戻す</value>
+  </data>
+  <data name="ContextMenuMoveToFolder" xml:space="preserve">
+    <value>フォルダーへ移動</value>
+  </data>
+  <data name="ContextMenuNewFolder" xml:space="preserve">
+    <value>新しいフォルダー…</value>
+  </data>
+  <data name="StatusMovedToFolderFormat" xml:space="preserve">
+    <value>「{0}」へ移動: {1}</value>
+  </data>
+  <data name="ShortcutRenameFolder" xml:space="preserve">
+    <value>表示中のフォルダー名を変更</value>
+  </data>
+  <data name="StorageFolderEmptyHint" xml:space="preserve">
+    <value>このフォルダーにはまだデザインがありません。ここへドラッグするか、メニューの「フォルダーへ移動」を使います</value>
+  </data>
+  <data name="CopyInGameLabel" xml:space="preserve">
+    <value>ゲームにあり</value>
+  </data>
+  <data name="SimilarInGameLabel" xml:space="preserve">
+    <value>ゲームに類似</value>
+  </data>
+  <data name="CopyInStorageLabel" xml:space="preserve">
+    <value>保管庫にあり</value>
+  </data>
+  <data name="SimilarInStorageLabel" xml:space="preserve">
+    <value>保管庫に類似</value>
+  </data>
+  <data name="CopyInGameTooltipFormat" xml:space="preserve">
+    <value>ゲームに同じデザインがあります: {0}</value>
+  </data>
+  <data name="SimilarInGameTooltipFormat" xml:space="preserve">
+    <value>ゲームに似たデザインがあります: {0}</value>
+  </data>
+  <data name="CopyInStorageTooltipFormat" xml:space="preserve">
+    <value>保管庫に同じデザインがあります: {0}</value>
+  </data>
+  <data name="SimilarInStorageTooltipFormat" xml:space="preserve">
+    <value>保管庫に似たデザインがあります: {0}</value>
+  </data>
+  <data name="StatsTileInGame" xml:space="preserve">
+    <value>ゲームにもある</value>
+  </data>
+  <data name="StatsTileInGameTooltip" xml:space="preserve">
+    <value>ゲームにもある保管デザインを表示します。保管庫から外してもかまいません</value>
+  </data>
+  <data name="StatsTileFolders" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="StatsTileNoFolderFormat" xml:space="preserve">
+    <value>フォルダーなし: {0}</value>
+  </data>
+  <data name="StatsHealthStorageTitle" xml:space="preserve">
+    <value>保管庫</value>
+  </data>
+  <data name="StatsHealthStorageNote" xml:space="preserve">
+    <value>保管庫はデザインの唯一のコピーであることが多いので、整理するときは注意してください。</value>
+  </data>
+  <data name="StatsHealthStorageSize" xml:space="preserve">
+    <value>ディスク上</value>
+  </data>
+  <data name="StatsHealthNoFolder" xml:space="preserve">
+    <value>フォルダーなし</value>
+  </data>
+  <data name="StatsLegendStored" xml:space="preserve">
+    <value>保管庫へ移動</value>
+  </data>
+  <data name="StatsStorageTimeNote" xml:space="preserve">
+    <value>保管庫は各デザインが入った日で集計します。ゲームの履歴のグラフはゲームの統計にあります。</value>
+  </data>
+  <data name="StatsStorageModeNote" xml:space="preserve">
+    <value>保管庫のデザイン</value>
+  </data>
+  <data name="BackupCreateStorageButton" xml:space="preserve">
+    <value>保管庫をバックアップ</value>
+  </data>
+  <data name="BackupCreateStorageTooltip" xml:space="preserve">
+    <value>保管庫はデザインの唯一のコピーであることが多いので、フォルダーごとバックアップします</value>
+  </data>
+  <data name="BackupStorageChip" xml:space="preserve">
+    <value>保管庫</value>
+  </data>
+  <data name="BackupStorageChipTooltip" xml:space="preserve">
+    <value>保管庫のバックアップ。保管庫と比較し、フォルダーごと保管庫へ復元します</value>
+  </data>
+  <data name="BackupKindStorageChanged" xml:space="preserve">
+    <value>保管庫のデザインが変わった後に作成</value>
+  </data>
+  <data name="BackupNoStorageMessage" xml:space="preserve">
+    <value>保管庫は空です。バックアップするものがありません</value>
+  </data>
+  <data name="StorageBackupFolder" xml:space="preserve">
+    <value>フォルダーをバックアップ</value>
+  </data>
+  <data name="StatusStorageBackupMadeFormat" xml:space="preserve">
+    <value>バックアップを作成しました: {0}</value>
+  </data>
+  <data name="StatusAutoStorageBackupMade" xml:space="preserve">
+    <value>保管庫の自動バックアップを作成しました</value>
+  </data>
+  <data name="BackupRestoreIntoStorageNote" xml:space="preserve">
+    <value>復元したデザインは保管庫の元のフォルダーに戻ります。</value>
+  </data>
+  <data name="DownloadDateLabel" xml:space="preserve">
+    <value>ダウンロード日</value>
+  </data>
+  <data name="StorageAccountFolderUnnamedFormat" xml:space="preserve">
+    <value>アカウント（…{0}）</value>
+  </data>
+  <data name="StoragePlaceNotFullPath" xml:space="preserve">
+    <value>D:\Forza リバリー のような完全なパスを指定してください。</value>
+  </data>
+  <data name="StoragePlaceDriveRoot" xml:space="preserve">
+    <value>ドライブのルートです。その中のフォルダーを選ぶか作成してください。</value>
+  </data>
+  <data name="StoragePlaceIsFile" xml:space="preserve">
+    <value>フォルダーではなくファイルです。</value>
+  </data>
+  <data name="StoragePlaceInSave" xml:space="preserve">
+    <value>ゲームのセーブデータのフォルダーです。</value>
+  </data>
+  <data name="StoragePlaceHoldsSave" xml:space="preserve">
+    <value>この中にゲームのセーブデータがあります。</value>
+  </data>
+  <data name="StoragePlaceInProgram" xml:space="preserve">
+    <value>プログラムのフォルダーです。</value>
+  </data>
+  <data name="StoragePlaceHoldsProgram" xml:space="preserve">
+    <value>この中にプログラムのフォルダーがあります。</value>
+  </data>
+  <data name="StoragePlaceOtherStorageFormat" xml:space="preserve">
+    <value>ここには別のアカウントの保管庫があります（{0}）。</value>
+  </data>
+  <data name="StoragePlaceRule" xml:space="preserve">
+    <value>保管庫は、セーブデータ、アーカイブ、プログラムのフォルダー、別のアカウントの保管庫の中には置けません。</value>
+  </data>
+  <data name="StorageNotSuitable" xml:space="preserve">
+    <value>このフォルダーは使えません：</value>
+  </data>
+  <data name="StorageFolderDialogTitle" xml:space="preserve">
+    <value>保管庫のフォルダー</value>
+  </data>
+  <data name="StorageFolderHeaderFormat" xml:space="preserve">
+    <value>{0} のリバリーの保管場所</value>
+  </data>
+  <data name="StorageFolderNowFormat" xml:space="preserve">
+    <value>{0}。現在：{1}。</value>
+  </data>
+  <data name="StorageFolderNowProgram" xml:space="preserve">
+    <value>プログラムのフォルダー</value>
+  </data>
+  <data name="StorageOptionProgram" xml:space="preserve">
+    <value>プログラムのフォルダー</value>
+  </data>
+  <data name="StorageOptionCommon" xml:space="preserve">
+    <value>自分の共通フォルダー（中はゲームとアカウントごと）</value>
+  </data>
+  <data name="StorageOptionRecommended" xml:space="preserve">
+    <value>おすすめ</value>
+  </data>
+  <data name="StorageOptionCommonResultFormat" xml:space="preserve">
+    <value>このアカウントのリバリーの場所：{0}</value>
+  </data>
+  <data name="StorageOptionExact" xml:space="preserve">
+    <value>このフォルダーそのもの</value>
+  </data>
+  <data name="StorageOptionExactHint" xml:space="preserve">
+    <value>このゲームのこのアカウント専用です。すでにリバリーがあるフォルダー向けです。</value>
+  </data>
+  <data name="StorageFolderPickerTitle" xml:space="preserve">
+    <value>保管庫用のフォルダー</value>
+  </data>
+  <data name="StorageMoveSummaryFormat" xml:space="preserve">
+    <value>保管庫全体が新しいフォルダーに移ります：{0}、{1}。</value>
+  </data>
+  <data name="StorageMoveOtherDiskFormat" xml:space="preserve">
+    <value>別のドライブ：ファイルをコピーします（約 {0} 分）。コピーを確認してから元のフォルダーを削除します。</value>
+  </data>
+  <data name="StorageMoveSameDisk" xml:space="preserve">
+    <value>同じドライブ：フォルダーを移動するだけなので速く終わります。</value>
+  </data>
+  <data name="StorageMoveKeeps" xml:space="preserve">
+    <value>保管庫のフォルダー、メモ、タグ、お気に入りはリバリーと一緒に残ります。</value>
+  </data>
+  <data name="StorageMoveNothing" xml:space="preserve">
+    <value>保管庫にはまだリバリーがないので、移すものはありません。</value>
+  </data>
+  <data name="StorageMoveUnreachable" xml:space="preserve">
+    <value>現在のフォルダーが使えないため、そこからは何も移せません。保管庫は新しいフォルダーに置かれます。</value>
+  </data>
+  <data name="StorageAlreadyHere" xml:space="preserve">
+    <value>保管庫はすでにこのフォルダーにあります。</value>
+  </data>
+  <data name="StorageExistingFormat" xml:space="preserve">
+    <value>このフォルダーには、ギャラリー以外が置いたリバリーがすでにあります：{0}。それらは保管庫のリバリーになり、ギャラリーが名前、車、作者、プレビューを読み取ります。</value>
+  </data>
+  <data name="StorageExistingFoldersFormat" xml:space="preserve">
+    <value>そのうちサブフォルダー内：{0}。サブフォルダーは保管庫のフォルダーになります：{1}。</value>
+  </data>
+  <data name="StorageExistingAddFormat" xml:space="preserve">
+    <value>現在の保管庫のリバリー（{0}）がそこに加わります。</value>
+  </data>
+  <data name="StorageMoveButton" xml:space="preserve">
+    <value>移動</value>
+  </data>
+  <data name="StorageMoveAndAddButton" xml:space="preserve">
+    <value>移動して追加</value>
+  </data>
+  <data name="StorageChooseButton" xml:space="preserve">
+    <value>選択</value>
+  </data>
+  <data name="StorageMovingFormat" xml:space="preserve">
+    <value>移動中：{0} / {1}</value>
+  </data>
+  <data name="StorageMoveFailedFormat" xml:space="preserve">
+    <value>保管庫を移動できませんでした：{0}。保管庫は元のフォルダーにそのまま残っています。</value>
+  </data>
+  <data name="StorageMoveCancelled" xml:space="preserve">
+    <value>移動を中止しました。保管庫は元のフォルダーにそのまま残っています。</value>
+  </data>
+  <data name="StorageMoveLeftoversFormat" xml:space="preserve">
+    <value>保管庫は移動しましたが、元のフォルダーの一部を削除できませんでした：
+{0}</value>
+  </data>
+  <data name="StorageMovedStatusFormat" xml:space="preserve">
+    <value>保管庫の場所：{0}</value>
+  </data>
+  <data name="SettingsStorageSectionLabel" xml:space="preserve">
+    <value>リバリーの保管庫</value>
+  </data>
+  <data name="SettingsStorageHint" xml:space="preserve">
+    <value>ゲームに入りきらないリバリーです。保管庫はアカウントごとにあります。フォルダーに手でリバリーを置いても、ギャラリーが自動で見つけます。</value>
+  </data>
+  <data name="SettingsStorageProgramFolderFormat" xml:space="preserve">
+    <value>プログラムのフォルダー：{0}</value>
+  </data>
+  <data name="SettingsStorageFreeFormat" xml:space="preserve">
+    <value>ドライブ {0} の空き：{1}</value>
+  </data>
+  <data name="SettingsStorageUnavailable" xml:space="preserve">
+    <value>フォルダーが見つかりません</value>
+  </data>
+  <data name="SettingsStorageChangeButton" xml:space="preserve">
+    <value>フォルダーを変更…</value>
+  </data>
+  <data name="SettingsStorageOpenButton" xml:space="preserve">
+    <value>保管庫のフォルダーを開く</value>
+  </data>
+  <data name="StorageFoundTitleFormat" xml:space="preserve">
+    <value>保管庫のフォルダーに手で置かれたリバリー：{0} 件見つかりました。</value>
+  </data>
+  <data name="StorageFoundAddedFormat" xml:space="preserve">
+    <value>追加：{0}。</value>
+  </data>
+  <data name="StorageFoundAddedWithFormat" xml:space="preserve">
+    <value>追加：{0}（{1}）。</value>
+  </data>
+  <data name="StorageFoundIntoFoldersFormat" xml:space="preserve">
+    <value>フォルダー {0} へ：{1}</value>
+  </data>
+  <data name="StorageFoundRenamedFormat" xml:space="preserve">
+    <value>ゲームの名前を付与：{0}</value>
+  </data>
+  <data name="StorageFoundSkippedFormat" xml:space="preserve">
+    <value>対象外：{0}。</value>
+  </data>
+  <data name="StorageFoundGoneFormat" xml:space="preserve">
+    <value>フォルダーから消えたもの：{0}。</value>
+  </data>
+  <data name="StorageFoundDetailsButton" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="StorageFoundDialogTitle" xml:space="preserve">
+    <value>手で置かれたリバリー</value>
+  </data>
+  <data name="StorageFoundAddedSection" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="StorageFoundFoldersSection" xml:space="preserve">
+    <value>サブフォルダーごとに保管庫のフォルダーへ追加</value>
+  </data>
+  <data name="StorageFoundRenamedSection" xml:space="preserve">
+    <value>ゲームの名前を付与</value>
+  </data>
+  <data name="StorageFoundSkippedSection" xml:space="preserve">
+    <value>対象外</value>
+  </data>
+  <data name="StorageFoundSkippedNote" xml:space="preserve">
+    <value>置かれた場所に残っています</value>
+  </data>
+  <data name="StorageFoundGoneSection" xml:space="preserve">
+    <value>保管庫のフォルダーから消えたもの</value>
+  </data>
+  <data name="StorageFoundGoneNote" xml:space="preserve">
+    <value>フォルダーがなくなったため、保管庫から外しました</value>
+  </data>
+  <data name="StorageFoundShow" xml:space="preserve">
+    <value>表示</value>
+  </data>
+  <data name="StorageFoundHide" xml:space="preserve">
+    <value>隠す</value>
+  </data>
+  <data name="StorageFoundIntoFolderFormat" xml:space="preserve">
+    <value>保管庫のフォルダー「{0}」。ファイルは保管庫の最上位に移しました。</value>
+  </data>
+  <data name="StorageFoundFolderRemoved" xml:space="preserve">
+    <value>ディスク上のフォルダーは空になったので削除しました。</value>
+  </data>
+  <data name="StorageFoundCarFormat" xml:space="preserve">
+    <value>{0}（リバリーファイルの車 {1}）</value>
+  </data>
+  <data name="StorageFoundKeyTakenFormat" xml:space="preserve">
+    <value>{0}（その名前は別のリバリーが使っています）</value>
+  </data>
+  <data name="StorageFoundIncomplete" xml:space="preserve">
+    <value>不完全：ヘッダーかリバリーファイルがなく、一部だけです</value>
+  </data>
+  <data name="StorageFoundAuction" xml:space="preserve">
+    <value>オークションの車のリバリーは保管庫に入れません</value>
+  </data>
+  <data name="StorageFoundSameFormat" xml:space="preserve">
+    <value>保管庫にはすでにこのリバリーがあり（{0}）、ファイルも同じなので2つ目のコピーは不要です</value>
+  </data>
+  <data name="StorageFoundNoCar" xml:space="preserve">
+    <value>ゲームの名前ではなく、ファイルから車も読み取れませんでした</value>
+  </data>
+  <data name="StorageFoundTooDeep" xml:space="preserve">
+    <value>階層が深すぎます：保管庫のフォルダーは1階層だけです</value>
+  </data>
+  <data name="StorageFoundFailed" xml:space="preserve">
+    <value>移動できませんでした（ファイルが使用中か、アクセス権がありません）</value>
+  </data>
+  <data name="StorageFoundDone" xml:space="preserve">
+    <value>完了</value>
+  </data>
+  <data name="AddedByHandBadgeLabel" xml:space="preserve">
+    <value>手で追加</value>
+  </data>
+  <data name="AddedByHandBadgeTooltip" xml:space="preserve">
+    <value>保管庫のフォルダーに手で置かれ、ギャラリーが見つけました。リバリーを開くとこの印は消えます。</value>
+  </data>
+  <data name="StorageUnavailableTitle" xml:space="preserve">
+    <value>保管庫のフォルダーが見つかりません</value>
+  </data>
+  <data name="StorageUnavailableText" xml:space="preserve">
+    <value>ドライブを接続するか、別のフォルダーを選んでください。見つかるまで、リバリーは保管庫に移りません。</value>
+  </data>
+  <data name="StorageCheckAgainButton" xml:space="preserve">
+    <value>もう一度確認</value>
+  </data>
+  <data name="StorageChooseOtherButton" xml:space="preserve">
+    <value>別のフォルダーを選択…</value>
+  </data>
+  <data name="StorageUnavailableReasonFormat" xml:space="preserve">
+    <value>保管庫のフォルダーが見つかりません：{0}</value>
+  </data>
+  <data name="StorageStillUnavailableFormat" xml:space="preserve">
+    <value>保管庫のフォルダーはまだ見つかりません：{0}</value>
+  </data>
+  <data name="StorageConflictsFormat" xml:space="preserve">
+    <value>保管庫にはすでに同じ名前の別のリバリーがあるため、これらはゲームに残りました：
+{0}</value>
+  </data>
+  <data name="StoragePlaceAroundCurrent" xml:space="preserve">
+    <value>現在の保管庫がこの中にあるか、このフォルダーが現在の保管庫の中にあります。</value>
   </data>
 </root>

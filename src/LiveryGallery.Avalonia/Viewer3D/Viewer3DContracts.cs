@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using ForzaToolkit.Games.Installation;
+using ForzaToolkit.UI.Dialogs;
 
 namespace LiveryGallery.Viewer3D;
 
@@ -21,7 +22,39 @@ internal interface IGameFolderCheck
 /// <param name="LiveryName">Its name, for the window title</param>
 /// <param name="CarId">Its car</param>
 /// <param name="LiveryFilePath">Its livery file (C_livery)</param>
-internal sealed record Livery3DRequest(string LiveryName, int CarId, string LiveryFilePath);
+/// <param name="GameName">The game whose livery and car are shown (Forza Horizon 6): the window names it</param>
+/// <param name="CarText">The car with its year and number, «Honda S2000 2004 (4231)»: the window's title names it</param>
+internal sealed record Livery3DRequest(string LiveryName, int CarId, string LiveryFilePath, string GameName, string CarText = "")
+{
+    /// <summary>The gallery's own name of the livery (its folder): what the window's ← and → step from</summary>
+    public string? Key { get; init; }
+
+    /// <summary>
+    /// The window to show it in: <see cref="Livery3DWindows.Active"/> (the last one used, a new one when there is none),
+    /// <see cref="Livery3DWindows.New"/> (one more, up to <see cref="Livery3DWindows.Max"/>), or the number of a window
+    /// (<see cref="Livery3DNavigation.Window"/>; a closed one's livery goes to the last one used)
+    /// </summary>
+    public int Window { get; init; } = Livery3DWindows.Active;
+}
+
+/// <summary>The windows a livery is shown in (<see cref="Livery3DRequest.Window"/>)</summary>
+internal static class Livery3DWindows
+{
+    /// <summary>The window used last; a new one when none is open</summary>
+    public const int Active = 0;
+
+    /// <summary>One more window, to see liveries side by side; the one used last when <see cref="Max"/> are open</summary>
+    public const int New = -1;
+
+    /// <summary>How many windows can be open at once (each draws its car on the graphics card)</summary>
+    public const int Max = 4;
+}
+
+/// <summary>← or → in a 3D window: the livery before or after <paramref name="Key"/> in the gallery, in that window</summary>
+/// <param name="Window">The window's number (<see cref="Livery3DRequest.Window"/>)</param>
+/// <param name="Key">The livery it shows (<see cref="Livery3DRequest.Key"/>)</param>
+/// <param name="Step">−1 the one before, +1 the one after</param>
+internal sealed record Livery3DNavigation(int Window, string Key, int Step);
 
 /// <summary>Why a livery was not shown</summary>
 internal enum Livery3DProblem
@@ -89,8 +122,11 @@ internal interface ILivery3DViewer
     /// <summary>Uses <paramref name="path"/> as the game folder (null: none); checks it first</summary>
     Task SetGamePathAsync(string? path);
 
-    /// <summary>Shows the livery in the viewer window, opening it over <paramref name="owner"/> when needed</summary>
+    /// <summary>Shows the livery in a viewer window (<see cref="Livery3DRequest.Window"/>), opening it over <paramref name="owner"/> when needed</summary>
     Task<Livery3DResult> ShowAsync(Window owner, Livery3DRequest request);
+
+    /// <summary>← or → in a window: the gallery shows the neighbouring livery there (<see cref="ShowAsync"/>)</summary>
+    event Action<Livery3DNavigation>? NavigateRequested;
 
     /// <summary>Previews drawn from the 3D model, with the same game folder</summary>
     ILiveryThumbnails Thumbnails { get; }
@@ -101,9 +137,6 @@ internal interface ILivery3DViewer
     /// <summary>Closes everything and waits up to <paramref name="timeout"/> for background work</summary>
     Task ShutdownAsync(TimeSpan timeout);
 }
-
-/// <summary>A package or library and its version, as the About dialog lists it</summary>
-internal sealed record ComponentVersion(string Name, string Version);
 
 /// <summary>Versions of the closed components (packages and the native library), for the About dialog</summary>
 internal sealed record AboutComponents(IReadOnlyList<ComponentVersion> Closed)

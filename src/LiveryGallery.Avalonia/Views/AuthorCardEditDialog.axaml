@@ -63,7 +63,7 @@
             </StackPanel>
 
             <!-- The bar sits in the window's right margin and hides until used, so it never covers the fields -->
-            <ScrollViewer Grid.Row="1" Margin="0,0,-20,0" AllowAutoHide="True"
+            <ScrollViewer Grid.Row="1" Margin="0,0,-20,0"
                           HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="0,0,20,0">
                     <TextBlock x:Name="AccountsLabel" FontSize="12" FontWeight="SemiBold" Margin="0,0,0,6" />
@@ -74,7 +74,7 @@
                     <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8"
                             BorderBrush="{DynamicResource BorderBrush2}" BorderThickness="1"
                             MaxHeight="220" Padding="10,6">
-                        <ScrollViewer AllowAutoHide="True" HorizontalScrollBarVisibility="Disabled">
+                        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
                             <ItemsControl ItemsSource="{Binding AvailableAccounts}" Margin="0,0,14,0"
                                           ItemTemplate="{StaticResource AccountCheckboxTemplate}" />
                         </ScrollViewer>
