@@ -19,6 +19,8 @@ internal partial class ContactsDialog : Window
         GithubLinkButton.Content = Strings.ContactsGithubLabel;
         TwitterRow.IsVisible = AppSettings.Identity.XUrl is not null;
         TwitterLinkButton.Content = AppSettings.Identity.XLabel ?? AppSettings.Identity.XUrl;
+        DiscordRow.IsVisible = AppSettings.Identity.DiscordUrl is not null;
+        DiscordLinkButton.Content = Strings.ContactsDiscordLabel;
         EmailRow.IsVisible = AppSettings.Identity.Email is not null;
         EmailText.Text = AppSettings.Identity.Email;
         CloseDialogButton.Content = Strings.ButtonClose;
@@ -31,6 +33,11 @@ internal partial class ContactsDialog : Window
     private void TwitterLink_Click(object? sender, RoutedEventArgs e)
     {
         if (AppSettings.Identity.XUrl is { } url) TrustedUrlLauncher.TryOpen(url);
+    }
+
+    private void DiscordLink_Click(object? sender, RoutedEventArgs e)
+    {
+        if (AppSettings.Identity.DiscordUrl is { } url) TrustedUrlLauncher.TryOpen(url);
     }
 
     private void CloseButton_Click(object? sender, RoutedEventArgs e) => Close();

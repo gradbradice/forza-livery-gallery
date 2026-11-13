@@ -137,7 +137,8 @@ internal static class LiveryRestoreConflicts
     private static string FormatName(LiveryData data) =>
         data.LiveryId > 0 ? $"{data.DisplayLiveryName} ({FormatLiveryId(data.LiveryId)})" : data.DisplayLiveryName;
 
-    private static string FormatList(IReadOnlyCollection<LiveryData> entries)
+    /// <summary>The liveries as a list for a message: "• name (#id)" a line each, the first few and how many more</summary>
+    internal static string FormatList(IReadOnlyCollection<LiveryData> entries)
     {
         var lines = entries
             .Take(MaxListedNames)

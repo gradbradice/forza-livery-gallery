@@ -318,6 +318,9 @@
   <data name="ContactsGithubLabel" xml:space="preserve">
     <value>GitHub 저장소</value>
   </data>
+  <data name="ContactsDiscordLabel" xml:space="preserve">
+    <value>Discord 서버</value>
+  </data>
   <data name="DuplicateBadgeLabel" xml:space="preserve">
     <value>중복</value>
   </data>
@@ -596,19 +599,19 @@
     <value>작성자 카드가 없습니다</value>
   </data>
   <data name="ContextMenuMoveToArchive" xml:space="preserve">
-    <value>보관함으로 이동</value>
+    <value>아카이브로 이동</value>
   </data>
   <data name="MenuOpenArchive" xml:space="preserve">
-    <value>보관함</value>
+    <value>아카이브</value>
   </data>
   <data name="MenuOpenBackups" xml:space="preserve">
     <value>백업</value>
   </data>
   <data name="ArchiveDialogTitle" xml:space="preserve">
-    <value>보관함</value>
+    <value>아카이브</value>
   </data>
   <data name="ArchiveEmptyHint" xml:space="preserve">
-    <value>보관함이 비어 있습니다</value>
+    <value>아카이브가 비어 있습니다</value>
   </data>
   <data name="ArchiveSelectedCountFormat" xml:space="preserve">
     <value>선택됨: {0}개</value>
@@ -626,7 +629,7 @@
     <value>{0}을(를) 휴지통으로 이동합니다. 갤러리에서는 되돌릴 수 없습니다.</value>
   </data>
   <data name="ArchivedOnFormat" xml:space="preserve">
-    <value>보관한 날짜: {0}</value>
+    <value>아카이브한 날짜: {0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
     <value>리버리를 복원하기 전에 설정에서 저장 폴더를 선택하세요</value>
@@ -644,7 +647,7 @@
     <value>원본 미리 보기 열기</value>
   </data>
   <data name="LoadingMovingToArchive" xml:space="preserve">
-    <value>보관함으로 이동하는 중…</value>
+    <value>아카이브로 이동하는 중…</value>
   </data>
   <data name="ArchiveSelectAllButton" xml:space="preserve">
     <value>모두 선택</value>
@@ -821,10 +824,10 @@
   </data>
   <data name="AuctionBadgeTooltip" xml:space="preserve">
     <value>경매장에서 구매한 리버리입니다.
-리버리 서버에서 어떤 차량도 사용하지 않음을 확인한 후에만 보관함으로 이동할 수 있습니다.</value>
+리버리 서버에서 어떤 차량도 사용하지 않음을 확인한 후에만 아카이브로 이동할 수 있습니다.</value>
   </data>
   <data name="ArchiveAuctionNotAllowedTooltip" xml:space="preserve">
-    <value>경매 리버리는 리버리 서버에서 어떤 차량도 사용하지 않음을 확인한 후에만 보관함으로 이동할 수 있습니다</value>
+    <value>경매 리버리는 리버리 서버에서 어떤 차량도 사용하지 않음을 확인한 후에만 아카이브로 이동할 수 있습니다</value>
   </data>
   <data name="ArchiveAuctionSkippedFormat" xml:space="preserve">
     <value>게임에 남은 선택한 경매 리버리: {0}개. 어떤 차량도 사용하지 않는지 확인되지 않았습니다. 리버리 서버가 현재 저장 데이터를 받으면 이동할 수 있습니다.</value>
@@ -1020,14 +1023,14 @@
     <value>서버를 사용해 차량에 적용된 리버리 확인</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>어떤 리버리가 차량에 적용되어 있는지 확인하기 위해 갤러리는 저장 파일 C_ProfileData를 서버로 보냅니다. 서버는 이 파일을 이 목적에만 사용하며 저장하지 않습니다.
+    <value>어떤 리버리가 차량에 적용되어 있는지와 계정 이름을 확인하기 위해 갤러리는 저장 파일 C_ProfileData를 서버로 보냅니다. 서버는 이 파일을 이 목적에만 사용하며 저장하지 않습니다.
 
 파일의 데이터는 보관되지 않으며 다른 용도로 사용되지 않습니다. 서버는 저장 파일을 복호화하는 데 필요한 키를 안전하게 보관합니다.
 
 이 서버는 Forza Horizon, Xbox, Microsoft의 공식 서버와 관련이 없습니다.</value>
   </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>어떤 리버리가 차량에 적용되어 있는지 확인하기 위해 갤러리는 저장 파일 C_ProfileData를 서버로 보냅니다. 서버는 이 파일을 이 목적에만 사용하며 저장하지 않습니다.
+    <value>어떤 리버리가 차량에 적용되어 있는지와 계정 이름을 확인하기 위해 갤러리는 저장 파일 C_ProfileData를 서버로 보냅니다. 서버는 이 파일을 이 목적에만 사용하며 저장하지 않습니다.
 
 파일의 데이터는 보관되지 않으며 다른 용도로 사용되지 않습니다. 서버는 저장 파일을 복호화하는 데 필요한 키를 안전하게 보관합니다.
 
@@ -1079,36 +1082,36 @@
 {0}</value>
   </data>
   <data name="ArchiveInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>게임에서 차량에 적용된 리버리는 보관함으로 이동할 수 없습니다</value>
+    <value>게임에서 차량에 적용된 리버리는 아카이브로 이동할 수 없습니다</value>
   </data>
   <data name="ArchiveInstalledSkippedFormat" xml:space="preserve">
-    <value>게임에서 차량에 적용된 리버리는 보관함으로 이동할 수 없습니다. 게임에 남은 선택한 리버리: {0}개.</value>
+    <value>게임에서 차량에 적용된 리버리는 아카이브로 이동할 수 없습니다. 게임에 남은 선택한 리버리: {0}개.</value>
   </data>
   <data name="ArchiveInstalledUnknownMessage" xml:space="preserve">
-    <value>어떤 리버리가 차량에 적용되어 있는지 알 수 없어 이 리버리를 보관함으로 이동하는 것은 안전하지 않습니다. 게임에서 차량에 적용되어 있을 수 있습니다.
+    <value>어떤 리버리가 차량에 적용되어 있는지 알 수 없어 이 리버리를 아카이브로 이동하는 것은 안전하지 않습니다. 게임에서 차량에 적용되어 있을 수 있습니다.
 
-리버리를 보관함으로 이동하시겠습니까?</value>
+리버리를 아카이브로 이동하시겠습니까?</value>
   </data>
   <data name="ArchiveInstalledUnknownMessageMany" xml:space="preserve">
-    <value>어떤 리버리가 차량에 적용되어 있는지 알 수 없어 이 리버리들을 보관함으로 이동하는 것은 안전하지 않습니다. 일부가 게임에서 차량에 적용되어 있을 수 있습니다.
+    <value>어떤 리버리가 차량에 적용되어 있는지 알 수 없어 이 리버리들을 아카이브로 이동하는 것은 안전하지 않습니다. 일부가 게임에서 차량에 적용되어 있을 수 있습니다.
 
-리버리를 보관함으로 이동하시겠습니까?</value>
+리버리를 아카이브로 이동하시겠습니까?</value>
   </data>
   <data name="DontShowAgainCheckBox" xml:space="preserve">
     <value>다시 표시하지 않음</value>
   </data>
   <data name="ArchiveAuctionOrInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>게임에서 차량에 적용된 리버리는 보관함으로 이동할 수 없습니다. 경매 리버리는 리버리 서버에서 어떤 차량도 사용하지 않음을 확인한 후에만 이동할 수 있습니다.</value>
+    <value>게임에서 차량에 적용된 리버리는 아카이브로 이동할 수 없습니다. 경매 리버리는 리버리 서버에서 어떤 차량도 사용하지 않음을 확인한 후에만 이동할 수 있습니다.</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessage" xml:space="preserve">
-    <value>마지막 동기화 이후 저장 데이터가 변경되었지만 새 데이터가 아직 리버리 서버에 전달되지 않았습니다. 차량에 적용된 리버리 목록이 최신이 아닐 수 있으므로 이 리버리를 보관함으로 이동하는 것은 안전하지 않습니다. 게임에서 차량에 적용되어 있을 수 있습니다.
+    <value>마지막 동기화 이후 저장 데이터가 변경되었지만 새 데이터가 아직 리버리 서버에 전달되지 않았습니다. 차량에 적용된 리버리 목록이 최신이 아닐 수 있으므로 이 리버리를 아카이브로 이동하는 것은 안전하지 않습니다. 게임에서 차량에 적용되어 있을 수 있습니다.
 
-자동으로 진행되는 동기화를 기다린 후 다시 시도하는 것이 좋습니다. 동기화에는 몇 분이 걸릴 수 있습니다. 지금 리버리를 보관함으로 이동하시겠습니까?</value>
+자동으로 진행되는 동기화를 기다린 후 다시 시도하는 것이 좋습니다. 동기화에는 몇 분이 걸릴 수 있습니다. 지금 리버리를 아카이브로 이동하시겠습니까?</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>마지막 동기화 이후 저장 데이터가 변경되었지만 새 데이터가 아직 리버리 서버에 전달되지 않았습니다. 차량에 적용된 리버리 목록이 최신이 아닐 수 있으므로 이 리버리들을 보관함으로 이동하는 것은 안전하지 않습니다. 일부가 게임에서 차량에 적용되어 있을 수 있습니다.
+    <value>마지막 동기화 이후 저장 데이터가 변경되었지만 새 데이터가 아직 리버리 서버에 전달되지 않았습니다. 차량에 적용된 리버리 목록이 최신이 아닐 수 있으므로 이 리버리들을 아카이브로 이동하는 것은 안전하지 않습니다. 일부가 게임에서 차량에 적용되어 있을 수 있습니다.
 
-자동으로 진행되는 동기화를 기다린 후 다시 시도하는 것이 좋습니다. 동기화에는 몇 분이 걸릴 수 있습니다. 지금 리버리를 보관함으로 이동하시겠습니까?</value>
+자동으로 진행되는 동기화를 기다린 후 다시 시도하는 것이 좋습니다. 동기화에는 몇 분이 걸릴 수 있습니다. 지금 리버리를 아카이브로 이동하시겠습니까?</value>
   </data>
   <data name="ContextMenuNavigateInGame" xml:space="preserve">
     <value>게임에서 찾기</value>
@@ -1191,7 +1194,7 @@
     <value>게임 서버에 있는 리버리</value>
   </data>
   <data name="ServerLiveriesHint" xml:space="preserve">
-    <value>개발사가 지급한 리버리가 세이브가 아닌 게임 서버에 저장되어 있는 경우가 있습니다. ‘내 디자인’에서는 항상 맨 앞에 표시되므로, 개수를 지정하면 ‘게임에서 찾기’가 정확한 위치를 찾습니다.</value>
+    <value>개발사가 지급한 리버리가 저장 데이터가 아닌 게임 서버에 저장되어 있는 경우가 있습니다. ‘내 디자인’에서는 항상 맨 앞에 표시되므로, 개수를 지정하면 ‘게임에서 찾기’가 정확한 위치를 찾습니다.</value>
   </data>
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>자동</value>
@@ -1376,7 +1379,7 @@
     <value>계정 데이터</value>
   </data>
   <data name="AccountDataHint" xml:space="preserve">
-    <value>게임 계정마다 스캔 캐시와 미리 보기가 따로 있습니다. 계정 데이터를 삭제하면 이 공간이 확보됩니다. 계정이 다시 나타나면 리버리를 다시 스캔합니다. 보관함과 백업에는 영향이 없습니다.</value>
+    <value>게임 계정마다 스캔 캐시와 미리 보기가 따로 있습니다. 계정 데이터를 삭제하면 이 공간이 확보됩니다. 계정이 다시 나타나면 리버리를 다시 스캔합니다. 아카이브와 백업에는 영향이 없습니다.</value>
   </data>
   <data name="AccountDataCurrent" xml:space="preserve">
     <value>현재 계정</value>
@@ -1397,7 +1400,7 @@
     <value>계정 데이터 삭제</value>
   </data>
   <data name="AccountDataForgetMessage" xml:space="preserve">
-    <value>계정 {0}의 데이터를 삭제하시겠습니까? 스캔 캐시와 미리 보기, 약 {1}이 삭제됩니다. 보관함과 백업은 남습니다. 계정이 다시 나타나면 리버리를 다시 스캔합니다.</value>
+    <value>계정 {0}의 데이터를 삭제하시겠습니까? 스캔 캐시와 미리 보기, 약 {1}이 삭제됩니다. 아카이브와 백업은 남습니다. 계정이 다시 나타나면 리버리를 다시 스캔합니다.</value>
   </data>
   <data name="AccountDataForgetFailedMessage" xml:space="preserve">
     <value>계정 데이터를 삭제하지 못했습니다. 자세한 내용은 로그에 있습니다.</value>
@@ -1740,7 +1743,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>삭제됨</value>
   </data>
   <data name="StatsLegendArchived" xml:space="preserve">
-    <value>보관됨</value>
+    <value>아카이브됨</value>
   </data>
   <data name="StatsSizeTooltipFormat" xml:space="preserve">
     <value>월말 리버리: {0}개</value>
@@ -1926,16 +1929,16 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>사용하지 않음</value>
   </data>
   <data name="StatsHealthUnusedNote" xml:space="preserve">
-    <value>차량에 적용되지 않았고 즐겨찾기, 잠긴 리버리, 내 리버리, 경매 리버리도 아닌 리버리입니다. 보관함으로 옮길 첫 후보입니다.</value>
+    <value>차량에 적용되지 않았고 즐겨찾기, 잠긴 리버리, 내 리버리, 경매 리버리도 아닌 리버리입니다. 아카이브로 옮길 첫 후보입니다.</value>
   </data>
   <data name="StatsHealthUnused" xml:space="preserve">
     <value>사용하지 않는 리버리</value>
   </data>
   <data name="StatsHealthArchiveTitle" xml:space="preserve">
-    <value>보관함</value>
+    <value>아카이브</value>
   </data>
   <data name="StatsHealthArchived" xml:space="preserve">
-    <value>보관함에 있음</value>
+    <value>아카이브에 있음</value>
   </data>
   <data name="StatsHealthLastArchived" xml:space="preserve">
     <value>마지막 이동</value>
@@ -2049,7 +2052,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>자주 삭제하는 작성자</value>
   </data>
   <data name="StatsDeparturesCellFormat" xml:space="preserve">
-    <value>{0} + 보관 {1}</value>
+    <value>{0} + 아카이브 {1}</value>
   </data>
   <data name="StatsNoJournalShort" xml:space="preserve">
     <value>기록에 아직 삭제가 없습니다</value>
@@ -2166,16 +2169,16 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>잠금 해제</value>
   </data>
   <data name="LockToggleTooltip" xml:space="preserve">
-    <value>리버리를 잠가 보관함으로 옮길 수 없게 합니다</value>
+    <value>리버리를 잠가 아카이브로 옮길 수 없게 합니다</value>
   </data>
   <data name="LockedTooltip" xml:space="preserve">
-    <value>잠김: 이 리버리는 보관함으로 옮길 수 없습니다. 클릭하면 잠금이 해제됩니다.</value>
+    <value>잠김: 이 리버리는 아카이브로 옮길 수 없습니다. 클릭하면 잠금이 해제됩니다.</value>
   </data>
   <data name="ArchiveLockedNotAllowedTooltip" xml:space="preserve">
-    <value>잠긴 리버리는 보관함으로 옮길 수 없습니다. 먼저 잠금을 해제하세요.</value>
+    <value>잠긴 리버리는 아카이브로 옮길 수 없습니다. 먼저 잠금을 해제하세요.</value>
   </data>
   <data name="ArchiveLockedSkippedFormat" xml:space="preserve">
-    <value>잠긴 리버리는 보관함으로 옮길 수 없습니다. 게임에 남은 선택한 잠긴 리버리: {0}.</value>
+    <value>잠긴 리버리는 아카이브로 옮길 수 없습니다. 게임에 남은 선택한 잠긴 리버리: {0}.</value>
   </data>
   <data name="AuthorLabelOwnFormat" xml:space="preserve">
     <value>{0} (나)</value>
@@ -2262,7 +2265,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>커서가 텍스트 입력란에 있는 동안에는 문자, 숫자, {0}, {1} 키가 동작하지 않습니다. Enter, 3, G는 리버리를 하나만 선택했을 때 동작합니다.</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
-    <value>클릭하면 자리를 확보합니다. 중복 리버리의 남는 사본을 보관함으로 옮깁니다.</value>
+    <value>클릭하면 자리를 확보합니다. 중복 리버리의 남는 사본을 아카이브로 옮깁니다.</value>
   </data>
   <data name="FreeSpaceMenuItem" xml:space="preserve">
     <value>자리 확보…</value>
@@ -2271,7 +2274,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>자리 확보</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>중복된 리버리마다 사본 하나가 남습니다. 태그가 있거나 내가 만든 것이 우선이고, 없으면 가장 먼저 다운로드한 것이 남습니다. 잠긴 리버리, 차량에 적용된 리버리, 경매 리버리, 즐겨찾기도 남습니다. 남길 사본은 선택을 해제하세요. 옮긴 것은 보관함에서 되돌릴 수 있습니다.</value>
+    <value>중복된 리버리마다 사본 하나가 남습니다. 태그가 있거나 내가 만든 것이 우선이고, 없으면 가장 먼저 다운로드한 것이 남습니다. 잠긴 리버리, 차량에 적용된 리버리, 경매 리버리, 즐겨찾기도 남습니다. 남길 사본은 선택을 해제하세요. 옮긴 것은 아카이브에서 되돌릴 수 있습니다.</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>다운로드: {0}</value>
@@ -2301,31 +2304,31 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>현재 저장 데이터: {1}개 중 {0}개.</value>
   </data>
   <data name="FreeSpaceAfterFormat" xml:space="preserve">
-    <value>보관함으로: {0}개, 이후 여유: {1}개.</value>
+    <value>아카이브로: {0}개, 이후 여유: {1}개.</value>
   </data>
   <data name="FreeSpaceAfterNoLimitFormat" xml:space="preserve">
-    <value>보관함으로: {0}개.</value>
+    <value>아카이브로: {0}개.</value>
   </data>
   <data name="FreeSpaceApplyFormat" xml:space="preserve">
-    <value>보관함으로 이동 ({0})</value>
+    <value>아카이브로 이동 ({0})</value>
   </data>
   <data name="FewFreeSlotsMessageFormat" xml:space="preserve">
-    <value>저장 데이터에 {1}개 중 {0}개 자리만 남았습니다. 한도에 도달하면 리버리를 다운로드하거나 만들 수 없습니다. 중복 리버리의 남는 사본을 보관함으로 옮겨 지금 자리를 확보할까요?</value>
+    <value>저장 데이터에 {1}개 중 {0}개 자리만 남았습니다. 한도에 도달하면 리버리를 다운로드하거나 만들 수 없습니다. 중복 리버리의 남는 사본을 아카이브로 옮겨 지금 자리를 확보할까요?</value>
   </data>
   <data name="FewFreeSlotsFullMessageFormat" xml:space="preserve">
-    <value>저장 데이터가 가득 찼습니다. {0}개 자리가 모두 사용 중이라 리버리를 다운로드하거나 만들 수 없습니다. 중복 리버리의 남는 사본을 보관함으로 옮겨 지금 자리를 확보할까요?</value>
+    <value>저장 데이터가 가득 찼습니다. {0}개 자리가 모두 사용 중이라 리버리를 다운로드하거나 만들 수 없습니다. 중복 리버리의 남는 사본을 아카이브로 옮겨 지금 자리를 확보할까요?</value>
   </data>
   <data name="AutoBackupFailedTitle" xml:space="preserve">
     <value>백업</value>
   </data>
   <data name="AutoBackupFailedMessage" xml:space="preserve">
-    <value>보관함으로 이동하기 전에 백업을 만들지 못했습니다. 백업 없이 리버리를 보관함으로 옮길까요?</value>
+    <value>아카이브로 이동하기 전에 백업을 만들지 못했습니다. 백업 없이 리버리를 아카이브로 옮길까요?</value>
   </data>
   <data name="AutoBackupFailedContinueButton" xml:space="preserve">
     <value>백업 없이 이동</value>
   </data>
   <data name="LoadingBackupBeforeArchive" xml:space="preserve">
-    <value>보관함으로 이동하기 전에 백업을 만드는 중…</value>
+    <value>아카이브로 이동하기 전에 백업을 만드는 중…</value>
   </data>
   <data name="StatusAutoBackupMade" xml:space="preserve">
     <value>자동 백업을 만들었습니다</value>
@@ -2334,7 +2337,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>자동 백업</value>
   </data>
   <data name="AutoBackupBeforeArchiveLabel" xml:space="preserve">
-    <value>리버리를 보관함으로 옮기기 전</value>
+    <value>리버리를 아카이브로 옮기기 전</value>
   </data>
   <data name="AutoBackupOnChangeLabel" xml:space="preserve">
     <value>저장 데이터의 리버리가 바뀔 때, 하루 최대 한 번</value>
@@ -2355,7 +2358,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>자동</value>
   </data>
   <data name="BackupKindBeforeArchive" xml:space="preserve">
-    <value>리버리를 보관함으로 옮기기 전에 만듦</value>
+    <value>리버리를 아카이브로 옮기기 전에 만듦</value>
   </data>
   <data name="BackupKindSaveChanged" xml:space="preserve">
     <value>저장 데이터의 리버리가 바뀐 뒤 만듦</value>
@@ -2387,11 +2390,23 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
   <data name="UpdatesSectionLabel" xml:space="preserve">
     <value>업데이트</value>
   </data>
+  <data name="UpdateInstallLabel" xml:space="preserve">
+    <value>업데이트 설치</value>
+  </data>
+  <data name="UpdateInstallAsk" xml:space="preserve">
+    <value>설치 전에 묻기</value>
+  </data>
+  <data name="UpdateInstallAutomatic" xml:space="preserve">
+    <value>자동으로 설치</value>
+  </data>
+  <data name="UpdateInstallHint" xml:space="preserve">
+    <value>묻기로 하면 갤러리가 새 버전을 알리고, 그 창에서 ‘설치’를 누를 때만 설치합니다. 자동으로 하면 백그라운드에서 다운로드하고 갤러리를 닫을 때 설치합니다.</value>
+  </data>
   <data name="BetaUpdatesLabel" xml:space="preserve">
     <value>베타 버전 받기</value>
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
-    <value>베타 버전은 정식 버전보다 먼저 나오며 오류가 있을 수 있습니다. 끄더라도 이전 버전으로 돌아가지 않고, 베타보다 새로운 정식 버전을 기다립니다.</value>
+    <value>베타 버전은 정식 버전보다 먼저 나오며 오류가 있을 수 있습니다. 베타 버전을 쓰는 중에 끄면 최신 정식 버전으로 돌아가도록 안내합니다.</value>
   </data>
   <data name="TagsDialogOneHint" xml:space="preserve">
     <value>체크하면 리버리에 태그를 추가하고, 비우면 제거합니다.</value>
@@ -2427,7 +2442,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>다음 리버리</value>
   </data>
   <data name="LiveryDetailsNoPreview" xml:space="preserve">
-    <value>미리보기 없음</value>
+    <value>미리 보기 없음</value>
   </data>
   <data name="LiveryDetailsView3D" xml:space="preserve">
     <value>3D 보기</value>
@@ -2458,12 +2473,6 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
   </data>
   <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
     <value>작성자:</value>
-  </data>
-  <data name="LiveryDetailsChipLocked" xml:space="preserve">
-    <value>잠김</value>
-  </data>
-  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
-    <value>즐겨찾기</value>
   </data>
   <data name="LiveryDetailsIdLabel" xml:space="preserve">
     <value>리버리 번호</value>
@@ -2520,31 +2529,34 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>아직 기록이 없습니다</value>
   </data>
   <data name="HistoryAdded" xml:space="preserve">
-    <value>세이브에 추가됨</value>
+    <value>저장 데이터에 추가됨</value>
   </data>
   <data name="HistoryRestoredFromArchive" xml:space="preserve">
-    <value>보관함에서 복원됨</value>
+    <value>아카이브에서 복원됨</value>
   </data>
   <data name="HistoryReturned" xml:space="preserve">
     <value>돌아옴: 백업에서 또는 다시 다운로드</value>
   </data>
   <data name="HistoryRemoved" xml:space="preserve">
-    <value>세이브에서 사라짐</value>
+    <value>저장 데이터에서 사라짐</value>
   </data>
   <data name="HistoryArchived" xml:space="preserve">
-    <value>보관함으로 이동됨</value>
+    <value>아카이브로 이동됨</value>
   </data>
   <data name="HistoryChanged" xml:space="preserve">
     <value>파일이 변경됨</value>
   </data>
   <data name="HistoryMoved" xml:space="preserve">
-    <value>세이브의 다른 폴더로 이동함</value>
+    <value>저장 데이터의 다른 폴더로 이동함</value>
   </data>
   <data name="LiveryDetailsFooterHint" xml:space="preserve">
     <value>← → 이전·다음 리버리 · Esc 닫기</value>
   </data>
   <data name="ContextMenuOpenDetails" xml:space="preserve">
     <value>리버리 열기</value>
+  </data>
+  <data name="ContextMenuView3DNewWindow" xml:space="preserve">
+    <value>3D 창을 하나 더 열어 보기</value>
   </data>
   <data name="NoteTooltipFormat" xml:space="preserve">
     <value>메모: {0}</value>
@@ -2559,7 +2571,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>이 계정으로 이동</value>
   </data>
   <data name="ArchiveUnassignedTooltip" xml:space="preserve">
-    <value>이전 버전이 계정을 기록하지 않고 보관했으며, 계정이 여러 개였습니다. 이 계정의 것이라면 여기로 옮기세요.</value>
+    <value>이전 버전이 계정을 기록하지 않고 아카이브했으며, 계정이 여러 개였습니다. 이 계정의 것이라면 여기로 옮기세요.</value>
   </data>
   <data name="BackupsUnassignedTooltip" xml:space="preserve">
     <value>이전 버전이 계정을 기록하지 않고 이 백업을 만들었으며, 계정이 여러 개였습니다. 이 계정의 것이라면 여기로 옮기세요.</value>
@@ -2570,17 +2582,8 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
   <data name="GameSwitcherTooltip" xml:space="preserve">
     <value>게임 전환</value>
   </data>
-  <data name="GameStateFoundFormat" xml:space="preserve">
-    <value>찾은 저장 데이터: {0}</value>
-  </data>
-  <data name="GameStateChosen" xml:space="preserve">
-    <value>직접 선택한 저장 폴더</value>
-  </data>
   <data name="GameStateNotFound" xml:space="preserve">
     <value>저장 데이터를 찾지 못했습니다</value>
-  </data>
-  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
-    <value>저장 폴더 선택…</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
     <value>폴더 선택…</value>
@@ -2608,7 +2611,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>계정</value>
   </data>
   <data name="SettingsAccountsHint" xml:space="preserve">
-    <value>이 PC에 있는 모든 계정의 세이브는 갤러리가 직접 찾습니다. 계정의 세이브가 다른 곳(다른 드라이브, 복사본)에 있다면 여기에서 추가하세요. 계정 전환은 메인 창의 검색창 옆에서 합니다.</value>
+    <value>이 PC에 있는 모든 계정의 저장 데이터는 갤러리가 직접 찾습니다. 계정의 저장 데이터가 다른 곳(다른 드라이브, 복사본)에 있다면 여기에서 추가하세요. 계정 전환은 메인 창의 검색창 옆에서 합니다.</value>
   </data>
   <data name="SettingsAccountFound" xml:space="preserve">
     <value>이 PC에서 찾음</value>
@@ -2620,13 +2623,13 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>계정 추가</value>
   </data>
   <data name="SettingsAccountNewLabel" xml:space="preserve">
-    <value>계정의 세이브 폴더</value>
+    <value>계정의 저장 데이터 폴더</value>
   </data>
   <data name="SettingsAccountAddConfirm" xml:space="preserve">
     <value>추가</value>
   </data>
   <data name="SettingsAccountNoSave" xml:space="preserve">
-    <value>이 폴더에는 게임 세이브가 없습니다.</value>
+    <value>이 폴더에는 게임 저장 데이터가 없습니다.</value>
   </data>
   <data name="SettingsAccountAlreadyListed" xml:space="preserve">
     <value>이 계정은 이미 목록에 있습니다.</value>
@@ -2635,16 +2638,16 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>계정</value>
   </data>
   <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
-    <value>보관함</value>
+    <value>아카이브</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>어떤 리버리가 차에 적용되어 있는지 알 수 없을 때 보관 전에 묻기</value>
+    <value>어떤 리버리가 차에 적용되어 있는지 알 수 없을 때 아카이브하기 전에 묻기</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>차에 적용된 리버리 목록이 오래되었을 수 있을 때 보관 전에 묻기</value>
+    <value>차에 적용된 리버리 목록이 오래되었을 수 있을 때 아카이브하기 전에 묻기</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>게임에서 차에 적용된 리버리를 보관함으로 옮기는 것은 안전하지 않습니다. 이 질문의 "다시 표시하지 않음"으로 꺼지며, 여기에서 다시 켤 수 있습니다.</value>
+    <value>게임에서 차에 적용된 리버리를 아카이브로 옮기는 것은 안전하지 않습니다. 이 질문의 “다시 표시하지 않음”으로 꺼지며, 여기에서 다시 켤 수 있습니다.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Home</value>
@@ -2677,7 +2680,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>커서가 있는 리버리를 선택에 넣거나 뺍니다</value>
   </data>
   <data name="ShortcutView3DNewWindow" xml:space="preserve">
-    <value>비교용으로 3D 창을 하나 더 열어 보기 (최대 4개)</value>
+    <value>비교를 위해 3D 창을 하나 더 열어 보기(최대 4개). 여러 개를 선택하면 각각 자기 창에서</value>
   </data>
   <data name="ScreenshotsLabel" xml:space="preserve">
     <value>스크린샷</value>
@@ -2690,7 +2693,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
 또는 Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>이 PC에만 저장됩니다. 리버리와 함께 보관함으로 옮겨지고 함께 돌아옵니다.</value>
+    <value>이 PC에만 저장됩니다. 리버리와 함께 아카이브로 옮겨지고 함께 돌아옵니다.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>리버리 스크린샷</value>
@@ -2726,7 +2729,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>리버리 열기</value>
   </data>
   <data name="ScreenshotCoverTooltip" xml:space="preserve">
-    <value>커버: 내 스크린샷. 게임 미리보기는 리버리 창에서 되돌릴 수 있습니다</value>
+    <value>커버: 내 스크린샷. 게임 미리 보기는 리버리 창에서 되돌릴 수 있습니다</value>
   </data>
   <data name="ScreenshotCountTooltipFormat" xml:space="preserve">
     <value>스크린샷: {0}</value>
@@ -2735,7 +2738,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>리버리</value>
   </data>
   <data name="ScreenshotsEmptyView" xml:space="preserve">
-    <value>아직 스크린샷이 없습니다. 리버리 창에서 "추가", 파일 끌어 놓기 또는 Ctrl+V로 추가하세요.</value>
+    <value>아직 스크린샷이 없습니다. 리버리 창에서 “추가”, 파일 끌어 놓기 또는 Ctrl+V로 추가하세요.</value>
   </data>
   <data name="ScreenshotsKeepOriginal" xml:space="preserve">
     <value>그대로 보관(원본)</value>
@@ -2771,7 +2774,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>백업에 스크린샷 포함</value>
   </data>
   <data name="ScreenshotRestorePreview" xml:space="preserve">
-    <value>게임 미리보기로 되돌리기</value>
+    <value>게임 미리 보기로 되돌리기</value>
   </data>
   <data name="ScreenshotsGroupLabel" xml:space="preserve">
     <value>그룹</value>
@@ -2843,7 +2846,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>앨범을 삭제할까요?</value>
   </data>
   <data name="AlbumDeleteMessageFormat" xml:space="preserve">
-    <value>앨범 "{0}"을(를) 삭제합니다. 스크린샷은 남고 이 앨범에서만 빠집니다.</value>
+    <value>앨범 “{0}”을(를) 삭제합니다. 스크린샷은 남고 이 앨범에서만 빠집니다.</value>
   </data>
   <data name="ScreenshotsAddToAlbum" xml:space="preserve">
     <value>앨범에 추가</value>
@@ -2852,7 +2855,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>새 앨범…</value>
   </data>
   <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
-    <value>"{0}"에서 빼기</value>
+    <value>“{0}”에서 빼기</value>
   </data>
   <data name="ScreenshotsDeleteSelectedTitle" xml:space="preserve">
     <value>스크린샷을 삭제할까요?</value>
@@ -2933,22 +2936,22 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>{0}부터 보관함</value>
   </data>
   <data name="StoredDateTooltip" xml:space="preserve">
-    <value>디자인이 보관함에 들어간 날</value>
+    <value>리버리가 보관함에 들어간 날</value>
   </data>
   <data name="KeyInsert" xml:space="preserve">
     <value>Insert</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>보관함에서 보관 목록으로</value>
+    <value>보관함에서 아카이브로</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>게임으로 되돌리기</value>
   </data>
   <data name="ReturnToGameTooltip" xml:space="preserve">
-    <value>게임으로: 디자인이 세이브로 돌아갑니다</value>
+    <value>게임으로: 리버리가 저장 데이터로 돌아갑니다</value>
   </data>
   <data name="ShortcutShowGame" xml:space="preserve">
-    <value>게임의 디자인 보기</value>
+    <value>게임의 리버리 보기</value>
   </data>
   <data name="ShortcutShowStorage" xml:space="preserve">
     <value>보관함 보기</value>
@@ -2963,28 +2966,28 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>보관함</value>
   </data>
   <data name="ModeGameTooltip" xml:space="preserve">
-    <value>게임 세이브에 있는 디자인과 남은 자리</value>
+    <value>게임 저장 데이터에 있는 리버리와 남은 자리</value>
   </data>
   <data name="ModeStorageTooltip" xml:space="preserve">
-    <value>게임 한도를 넘어 갤러리가 게임 밖에 보관하는 디자인. Insert로 게임에 되돌립니다</value>
+    <value>게임 한도를 넘어 갤러리가 게임 밖에 보관하는 리버리. Insert로 게임에 되돌립니다</value>
   </data>
   <data name="StatusStoredCountFormat" xml:space="preserve">
     <value>보관함: {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0}: 게임으로 · {1}: 보관 목록으로</value>
+    <value>{0}: 게임으로 · {1}: 아카이브로</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>게임으로 되돌림: {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>보관함에서 보관 목록으로: {0}</value>
+    <value>보관함에서 아카이브로: {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>보관함에 남음: {0}. 보관 목록에 같은 키의 디자인이 이미 있습니다.</value>
+    <value>보관함에 남음: {0}. 아카이브에 같은 키의 리버리가 이미 있습니다.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
-    <value>디자인을 게임으로 되돌리는 중…</value>
+    <value>리버리를 게임으로 되돌리는 중…</value>
   </data>
   <data name="ReturnBeyondLimitTitle" xml:space="preserve">
     <value>게임에 자리가 부족합니다</value>
@@ -2993,10 +2996,10 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>모두 되돌리기</value>
   </data>
   <data name="StorageEmptyHint" xml:space="preserve">
-    <value>보관함이 비어 있습니다. 게임에서 Delete를 누르면 선택한 디자인이 여기로 옵니다</value>
+    <value>보관함이 비어 있습니다. 게임에서 Delete를 누르면 선택한 리버리가 여기로 옵니다</value>
   </data>
   <data name="StorageNoAccountTooltip" xml:space="preserve">
-    <value>보관함은 계정마다 따로 있습니다. 먼저 게임 세이브를 고르세요</value>
+    <value>보관함은 계정마다 따로 있습니다. 먼저 게임 저장 데이터를 고르세요</value>
   </data>
   <data name="ReturnRoomTitleFormat" xml:space="preserve">
     <value>게임으로 되돌리기: {0}</value>
@@ -3011,13 +3014,13 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>모두 돌아오고 카운터는 {0} / {1}이 됩니다.</value>
   </data>
   <data name="ReturnRoomTooFewFormat" xml:space="preserve">
-    <value>가능한 것은 {0}뿐입니다. 나머지는 차에 적용됨, 잠김, 즐겨찾기, 내 디자인, 경매입니다.</value>
+    <value>가능한 것은 {0}뿐입니다. 나머지는 차에 적용됨, 잠김, 즐겨찾기, 내 리버리, 경매입니다.</value>
   </data>
   <data name="ReturnRoomCheckedFormat" xml:space="preserve">
     <value>선택 {0} / 필요 {1} · 가능 {2}</value>
   </data>
   <data name="ReturnRoomCandidatesNote" xml:space="preserve">
-    <value>게임에 먼저 들어온 순서. 제외: 차에 적용됨, 잠김, 즐겨찾기, 내 디자인, 경매</value>
+    <value>게임에 먼저 들어온 순서. 제외: 차에 적용됨, 잠김, 즐겨찾기, 내 리버리, 경매</value>
   </data>
   <data name="ReturnRoomFolderLabel" xml:space="preserve">
     <value>폴더</value>
@@ -3035,7 +3038,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>한도를 넘어 모두 되돌리기 ({0})</value>
   </data>
   <data name="ReturnRoomAllNoteFormat" xml:space="preserve">
-    <value>{0} / {1}이 됩니다. 한도를 넘는 동안에는 디자인을 받거나 만들 수 없습니다.</value>
+    <value>{0} / {1}이 됩니다. 한도를 넘는 동안에는 리버리를 받거나 만들 수 없습니다.</value>
   </data>
   <data name="ReturnRoomFitFormat" xml:space="preserve">
     <value>들어가는 만큼만 되돌리기 ({0})</value>
@@ -3062,7 +3065,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>새 폴더</value>
   </data>
   <data name="StorageFoldersHint" xml:space="preserve">
-    <value>디자인을 폴더로 끌어 놓으세요. 「폴더 없음」에 놓으면 폴더에서 빠집니다. 폴더를 끌어 순서를 바꿀 수 있습니다. 폴더는 표시일 뿐이라 지워도 디자인은 남습니다.</value>
+    <value>리버리를 폴더로 끌어 놓으세요. 「폴더 없음」에 놓으면 폴더에서 빠집니다. 폴더를 끌어 순서를 바꿀 수 있습니다. 폴더는 표시일 뿐이라 지워도 리버리는 남습니다.</value>
   </data>
   <data name="StorageSidebarRoomFormat" xml:space="preserve">
     <value>게임 {0} / {1} · 빈자리 {2}</value>
@@ -3083,13 +3086,13 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>폴더 삭제</value>
   </data>
   <data name="StorageFolderDeleteMessageFormat" xml:space="preserve">
-    <value>폴더 「{0}」을 삭제합니다. 안의 디자인({1})은 보관함의 「폴더 없음」에 남습니다.</value>
+    <value>폴더 「{0}」을 삭제합니다. 안의 리버리({1})는 보관함의 「폴더 없음」에 남습니다.</value>
   </data>
   <data name="StorageFolderDeleteEmptyMessageFormat" xml:space="preserve">
     <value>빈 폴더 「{0}」을 삭제할까요?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>안의 디자인을 보관 목록으로 보내기</value>
+    <value>안의 리버리를 아카이브로 보내기</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>폴더를 게임으로 되돌리기</value>
@@ -3107,7 +3110,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>열린 폴더 이름 바꾸기</value>
   </data>
   <data name="StorageFolderEmptyHint" xml:space="preserve">
-    <value>이 폴더에는 아직 디자인이 없습니다. 여기로 끌어 오거나 메뉴의 「폴더로 옮기기」를 쓰세요</value>
+    <value>이 폴더에는 아직 리버리가 없습니다. 여기로 끌어 오거나 메뉴의 「폴더로 옮기기」를 쓰세요</value>
   </data>
   <data name="CopyInGameLabel" xml:space="preserve">
     <value>게임에 있음</value>
@@ -3122,22 +3125,22 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>보관함에 비슷한 것</value>
   </data>
   <data name="CopyInGameTooltipFormat" xml:space="preserve">
-    <value>게임에 이미 같은 디자인이 있습니다: {0}</value>
+    <value>게임에 이미 같은 리버리가 있습니다: {0}</value>
   </data>
   <data name="SimilarInGameTooltipFormat" xml:space="preserve">
-    <value>게임에 비슷한 디자인이 있습니다: {0}</value>
+    <value>게임에 비슷한 리버리가 있습니다: {0}</value>
   </data>
   <data name="CopyInStorageTooltipFormat" xml:space="preserve">
-    <value>보관함에 이미 같은 디자인이 있습니다: {0}</value>
+    <value>보관함에 이미 같은 리버리가 있습니다: {0}</value>
   </data>
   <data name="SimilarInStorageTooltipFormat" xml:space="preserve">
-    <value>보관함에 비슷한 디자인이 있습니다: {0}</value>
+    <value>보관함에 비슷한 리버리가 있습니다: {0}</value>
   </data>
   <data name="StatsTileInGame" xml:space="preserve">
     <value>게임에도 있음</value>
   </data>
   <data name="StatsTileInGameTooltip" xml:space="preserve">
-    <value>게임에도 있는 보관 디자인을 보여 줍니다. 보관함에서 빼도 됩니다</value>
+    <value>게임에도 있는 보관 리버리를 보여 줍니다. 보관함에서 빼도 됩니다</value>
   </data>
   <data name="StatsTileFolders" xml:space="preserve">
     <value>폴더</value>
@@ -3149,7 +3152,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>보관함</value>
   </data>
   <data name="StatsHealthStorageNote" xml:space="preserve">
-    <value>보관함이 디자인의 유일한 사본인 경우가 많으니 정리할 때 유의하세요.</value>
+    <value>보관함이 리버리의 유일한 사본인 경우가 많으니 정리할 때 유의하세요.</value>
   </data>
   <data name="StatsHealthStorageSize" xml:space="preserve">
     <value>디스크 사용량</value>
@@ -3161,16 +3164,16 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>보관함으로 이동</value>
   </data>
   <data name="StatsStorageTimeNote" xml:space="preserve">
-    <value>보관함은 각 디자인이 들어온 날 기준입니다. 게임 기록 그래프는 게임 통계에 있습니다.</value>
+    <value>보관함은 각 리버리가 들어온 날 기준입니다. 게임 기록 그래프는 게임 통계에 있습니다.</value>
   </data>
   <data name="StatsStorageModeNote" xml:space="preserve">
-    <value>보관함의 디자인</value>
+    <value>보관함의 리버리</value>
   </data>
   <data name="BackupCreateStorageButton" xml:space="preserve">
     <value>보관함 백업</value>
   </data>
   <data name="BackupCreateStorageTooltip" xml:space="preserve">
-    <value>보관함이 디자인의 유일한 사본인 경우가 많습니다. 백업은 폴더와 함께 보관합니다</value>
+    <value>보관함이 리버리의 유일한 사본인 경우가 많습니다. 백업은 폴더와 함께 보관합니다</value>
   </data>
   <data name="BackupStorageChip" xml:space="preserve">
     <value>보관함</value>
@@ -3179,7 +3182,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>보관함 백업입니다. 보관함과 비교하고 폴더와 함께 보관함으로 복원합니다</value>
   </data>
   <data name="BackupKindStorageChanged" xml:space="preserve">
-    <value>보관함의 디자인이 바뀐 뒤 생성됨</value>
+    <value>보관함의 리버리가 바뀐 뒤 생성됨</value>
   </data>
   <data name="BackupNoStorageMessage" xml:space="preserve">
     <value>보관함이 비어 있어 백업할 것이 없습니다</value>
@@ -3194,7 +3197,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>보관함 자동 백업을 만들었습니다</value>
   </data>
   <data name="BackupRestoreIntoStorageNote" xml:space="preserve">
-    <value>복원한 디자인은 보관함의 원래 폴더로 돌아갑니다.</value>
+    <value>복원한 리버리는 보관함의 원래 폴더로 돌아갑니다.</value>
   </data>
   <data name="DownloadDateLabel" xml:space="preserve">
     <value>다운로드 날짜</value>
@@ -3227,7 +3230,7 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
     <value>여기에 다른 계정의 보관함이 있습니다({0}).</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>보관함은 저장 데이터, 보관소, 프로그램 폴더, 다른 계정의 보관함 안에 둘 수 없습니다.</value>
+    <value>보관함은 저장 데이터, 아카이브, 프로그램 폴더, 다른 계정의 보관함 안에 둘 수 없습니다.</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>이 폴더는 쓸 수 없습니다:</value>
@@ -3458,5 +3461,176 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
   </data>
   <data name="StoragePlaceAroundCurrent" xml:space="preserve">
     <value>현재 보관함이 이 안에 있거나, 이 폴더가 현재 보관함 안에 있습니다.</value>
+  </data>
+  <data name="StoreFailedFormat" xml:space="preserve">
+    <value>다음 리버리를 보관함으로 옮기지 못했습니다({0}). 게임이 파일을 사용 중이거나, 디스크 공간이 부족하거나, 보관함 폴더를 찾을 수 없을 수 있습니다. 자세한 내용은 로그에 있습니다:
+{1}</value>
+  </data>
+  <data name="ArchiveFailedFormat" xml:space="preserve">
+    <value>다음 리버리를 아카이브로 옮기지 못했습니다({0}). 게임이 파일을 사용 중이거나 디스크 공간이 부족할 수 있습니다. 자세한 내용은 로그에 있습니다:
+{1}</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
+    <value>보관함 폴더를 디스크의 폴더로 저장</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDiskHint" xml:space="preserve">
+    <value>끄기(기본값): 모든 리버리가 보관함 폴더 바로 아래에 있고, 갤러리의 폴더는 표시일 뿐입니다. 켜기: 갤러리의 각 폴더가 디스크의 폴더가 되어 그 리버리를 담고, 그곳에 직접 만든 폴더는 갤러리의 폴더가 됩니다. 모든 계정의 보관함에 적용되며, 파일은 바로 옮겨집니다.</value>
+  </data>
+  <data name="StorageLayoutTitle" xml:space="preserve">
+    <value>디스크의 폴더</value>
+  </data>
+  <data name="StorageLayoutOnConfirmFormat" xml:space="preserve">
+    <value>보관함의 리버리를 디스크의 폴더로 나눌까요? 폴더로 옮겨질 리버리: {0}. 보관함을 벗어나는 것은 없으며, 게임에는 영향이 없습니다.</value>
+  </data>
+  <data name="StorageLayoutOffConfirmFormat" xml:space="preserve">
+    <value>보관함의 모든 리버리를 보관함 폴더 바로 아래로 되돌릴까요? 폴더에서 나올 리버리: {0}. 갤러리의 폴더는 표시로 남습니다.</value>
+  </data>
+  <data name="StorageLayoutOnButton" xml:space="preserve">
+    <value>나누기</value>
+  </data>
+  <data name="StorageLayoutOffButton" xml:space="preserve">
+    <value>평평하게</value>
+  </data>
+  <data name="StorageLayoutProgressFormat" xml:space="preserve">
+    <value>리버리를 옮기는 중: {1}개 중 {0}개…</value>
+  </data>
+  <data name="StorageLayoutDoneFormat" xml:space="preserve">
+    <value>보관함을 정리했습니다: 옮긴 리버리: {0}</value>
+  </data>
+  <data name="StorageLayoutFailedFormat" xml:space="preserve">
+    <value>옮기지 못한 리버리: {0}. 파일이 사용 중(다른 프로그램에서 열림)일 수 있습니다. 원래 자리에 남으며 갤러리는 계속 찾을 수 있고, 다음에 보관함을 열 때 다시 시도합니다. 자세한 내용은 로그에 있습니다.</value>
+  </data>
+  <data name="StorageLayoutAwayFormat" xml:space="preserve">
+    <value>지금 사용할 수 없는 보관함(디스크가 연결되지 않음): {0}. 다시 연결되면 정리됩니다.</value>
+  </data>
+  <data name="StorageFolderRenameOnDiskFailed" xml:space="preserve">
+    <value>디스크에서 폴더 이름을 바꾸지 못했습니다. 그 안의 파일이 사용 중(탐색기나 다른 프로그램에서 열림)일 수 있습니다. 이름은 바뀌지 않았습니다. 자세한 내용은 로그에 있습니다.</value>
+  </data>
+  <data name="StorageFolderMoveOnDiskFailedFormat" xml:space="preserve">
+    <value>다음 리버리를 디스크의 폴더로 옮기지 못했습니다({0}). 파일이 사용 중일 수 있습니다. 원래 자리에 남아 있습니다. 자세한 내용은 로그에 있습니다:
+{1}</value>
+  </data>
+  <data name="StorageFolderDeleteOnDiskFailedFormat" xml:space="preserve">
+    <value>폴더를 삭제하지 않았습니다. 디스크에서 폴더 밖으로 옮기지 못한 리버리가 있습니다({0}). 파일이 사용 중일 수 있습니다. 폴더에 남아 있습니다. 자세한 내용은 로그에 있습니다.</value>
+  </data>
+  <data name="SettingsSectionCards" xml:space="preserve">
+    <value>리버리 카드</value>
+  </data>
+  <data name="BadgesOnPictureLabel" xml:space="preserve">
+    <value>아이콘을 그림 위에 표시</value>
+  </data>
+  <data name="BadgesAtBottomLabel" xml:space="preserve">
+    <value>아이콘을 카드 아래쪽에 표시</value>
+  </data>
+  <data name="BadgesPlaceHint" xml:space="preserve">
+    <value>그림 위에 두면 카드가 낮아지고, 아래쪽에 두면 그림 전체가 보입니다. 아이콘의 뜻은 툴팁에 나옵니다.</value>
+  </data>
+  <data name="BadgesMoreOne" xml:space="preserve">
+    <value>아이콘 {0}개 더:</value>
+  </data>
+  <data name="BadgesMoreFew" xml:space="preserve">
+    <value>아이콘 {0}개 더:</value>
+  </data>
+  <data name="BadgesMoreMany" xml:space="preserve">
+    <value>아이콘 {0}개 더:</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInStorageFormat" xml:space="preserve">
+    <value>그림이 보관함의 “{1}”과 {0}% 비슷합니다</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInGameFormat" xml:space="preserve">
+    <value>그림이 게임의 “{1}”과 {0}% 비슷합니다</value>
+  </data>
+  <data name="ContextMenuView3DSeveralFormat" xml:space="preserve">
+    <value>선택한 항목을 각각 3D 창에서 보기({0})</value>
+  </data>
+  <data name="Status3DWindowsFull" xml:space="preserve">
+    <value>3D 창이 이미 네 개 열려 있습니다. 다른 리버리를 열려면 하나를 닫으세요.</value>
+  </data>
+  <data name="Status3DWindowsNotAllFormat" xml:space="preserve">
+    <value>3D로 연 리버리: {1}개 중 {0}개. 3D 창은 한 번에 최대 {2}개까지 열 수 있습니다.</value>
+  </data>
+  <data name="FilterCopiesInStorageLabel" xml:space="preserve">
+    <value>보관함</value>
+  </data>
+  <data name="FilterCopiesInGameLabel" xml:space="preserve">
+    <value>게임</value>
+  </data>
+  <data name="FilterCopiesSame" xml:space="preserve">
+    <value>같은 것 있음</value>
+  </data>
+  <data name="FilterCopiesSameOrSimilar" xml:space="preserve">
+    <value>같거나 비슷한 것</value>
+  </data>
+  <data name="FilterCopiesSimilar" xml:space="preserve">
+    <value>비슷한 것만</value>
+  </data>
+  <data name="FilterCopiesNone" xml:space="preserve">
+    <value>같은 것도 비슷한 것도 없음</value>
+  </data>
+  <data name="FilterValueCopySame" xml:space="preserve">
+    <value>같음</value>
+  </data>
+  <data name="FilterValueCopySameOrSimilar" xml:space="preserve">
+    <value>같거나 비슷함</value>
+  </data>
+  <data name="FilterValueCopySimilar" xml:space="preserve">
+    <value>비슷함</value>
+  </data>
+  <data name="FilterValueCopyNone" xml:space="preserve">
+    <value>없음</value>
+  </data>
+  <data name="ResetFiltersTooltip" xml:space="preserve">
+    <value>필터 초기화: 검색과 필터를 지웁니다. 정렬은 그대로입니다</value>
+  </data>
+  <data name="UndoLabel" xml:space="preserve">
+    <value>실행 취소</value>
+  </data>
+  <data name="UndoTooltipFormat" xml:space="preserve">
+    <value>실행 취소: {0}</value>
+  </data>
+  <data name="StatusUndoneFormat" xml:space="preserve">
+    <value>실행 취소됨: {0}</value>
+  </data>
+  <data name="ShortcutUndo" xml:space="preserve">
+    <value>마지막 작업 실행 취소</value>
+  </data>
+  <data name="UndoFavoritesFormat" xml:space="preserve">
+    <value>즐겨찾기 변경: {0}</value>
+  </data>
+  <data name="UndoLocksFormat" xml:space="preserve">
+    <value>잠금 변경: {0}</value>
+  </data>
+  <data name="UndoTagsFormat" xml:space="preserve">
+    <value>태그 변경: {0}</value>
+  </data>
+  <data name="WheelClickScrollLabel" xml:space="preserve">
+    <value>마우스 휠 클릭으로 누르고 있지 않아도 스크롤</value>
+  </data>
+  <data name="WheelScrollSpeedFormat" xml:space="preserve">
+    <value>휠을 누른 상태의 스크롤 속도: {0}%</value>
+  </data>
+  <data name="FilterPresetsTooltip" xml:space="preserve">
+    <value>저장된 필터 세트</value>
+  </data>
+  <data name="FilterPresetSave" xml:space="preserve">
+    <value>현재 필터 저장…</value>
+  </data>
+  <data name="FilterPresetDelete" xml:space="preserve">
+    <value>세트 삭제</value>
+  </data>
+  <data name="FilterPresetNameLabel" xml:space="preserve">
+    <value>세트 이름</value>
+  </data>
+  <data name="FilterPresetsEmpty" xml:space="preserve">
+    <value>저장된 세트가 아직 없습니다</value>
+  </data>
+  <data name="FilterPresetApply" xml:space="preserve">
+    <value>세트 적용</value>
+  </data>
+  <data name="FilterPresetHint" xml:space="preserve">
+    <value>오른쪽 클릭: 적용 또는 삭제</value>
+  </data>
+  <data name="ShortcutSaveFilterSet" xml:space="preserve">
+    <value>현재 필터를 세트로 저장</value>
   </data>
 </root>

@@ -1,6 +1,7 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="using:LiveryGallery.ViewModels"
+        xmlns:views="using:LiveryGallery.Views"
         xmlns:loc="using:LiveryGallery.Localisation"
         xmlns:shots="using:LiveryGallery.Services.Screenshots"
         xmlns:ui="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
@@ -24,13 +25,12 @@
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="VerticalContentAlignment" Value="Center" />
         </Style>
-        <Style Selector="Button.iconSquare Path">
-            <Setter Property="MaxWidth" Value="15" />
-            <Setter Property="MaxHeight" Value="15" />
-            <Setter Property="Stretch" Value="Uniform" />
+        <!-- The icon of a square button of 34 (a ring of 1): the toolkit's 24 grid in 20 x 20, 6 on each side, in the middle -->
+        <Style Selector="Button.iconSquare ui|GridIcon">
+            <Setter Property="Width" Value="20" />
+            <Setter Property="Height" Value="20" />
             <Setter Property="HorizontalAlignment" Value="Center" />
             <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="UseLayoutRounding" Value="False" />
         </Style>
         <Style Selector="Border.panel">
             <Setter Property="Background" Value="{DynamicResource CardBrush}" />
@@ -153,8 +153,8 @@
                         <StackPanel Spacing="10">
                             <Grid ColumnDefinitions="Auto,*,Auto">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
-                                    <Path Data="{StaticResource IconCamera}" Width="17" Height="13" Stretch="Uniform"
-                                          Fill="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                                    <ui:GridIcon Data="{StaticResource IconCamera}" Width="18" Height="18"
+                                                 Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
                                     <TextBlock x:Name="ScreenshotsLabel" Classes="section" VerticalAlignment="Center" />
                                     <TextBlock Text="{Binding ScreenshotsCountText}" FontSize="12" VerticalAlignment="Center"
                                                Foreground="{DynamicResource TextSecondaryBrush}" />
@@ -184,9 +184,8 @@
                                                         HorizontalAlignment="Right" VerticalAlignment="Top" Click="RestorePreview_Click"
                                                         ToolTip.Tip="{x:Static loc:Strings.ScreenshotRestorePreview}">
                                                     <Border>
-                                                        <Path Data="{StaticResource IconReset}" Width="10" Height="10" Stretch="Uniform"
-                                                              HorizontalAlignment="Center" VerticalAlignment="Center"
-                                                              Stroke="White" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                                                        <ui:GridIcon Data="{StaticResource IconReset}" Width="16" Height="16" StrokeThickness="2.5"
+                                                                     HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
                                                     </Border>
                                                 </Button>
                                                 <!-- The last tile adds screenshots -->
@@ -321,15 +320,15 @@
                                     IsVisible="{Binding Entry.ShowLockButton}"
                                     ToolTip.Tip="{Binding Entry.LockTooltip}">
                                 <Panel>
-                                    <Path Data="{StaticResource IconLockOpen}"
-                                          Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.5" IsVisible="{Binding !Entry.IsLocked}" />
-                                    <Path Data="{StaticResource IconLock}"
-                                          Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.5" IsVisible="{Binding Entry.IsLocked}" />
+                                    <ui:GridIcon Data="{StaticResource IconLockOpen}" StrokeThickness="2"
+                                                 Foreground="{DynamicResource TextPrimaryBrush}" IsVisible="{Binding !Entry.IsLocked}" />
+                                    <ui:GridIcon Data="{StaticResource IconLock}" StrokeThickness="2"
+                                                 Foreground="{DynamicResource AccentBrush}" IsVisible="{Binding Entry.IsLocked}" />
                                 </Panel>
                             </Button>
                             <Button Grid.Column="2" Classes="secondary iconSquare" Margin="8,0,0,0" Click="Favorite_Click"
                                     ToolTip.Tip="{x:Static loc:Strings.FavoriteToggleTooltip}">
-                                <ui:FavoriteStar IsOn="{Binding Entry.IsFavorite}" Width="15" Height="15" />
+                                <ui:FavoriteStar IsOn="{Binding Entry.IsFavorite}" Width="20" Height="20" />
                             </Button>
                         </Grid>
                         <TextBlock Text="{Binding CarLine}" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
@@ -339,32 +338,31 @@
                                 <TextBlock Text="{Binding AuthorText}" Foreground="{DynamicResource AccentBrush}" />
                             </Button>
                         </StackPanel>
-                        <ItemsControl ItemsSource="{Binding Chips}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:LiveryChip">
-                                    <Panel>
-                                        <Border Classes="chip" Background="#1F16A34A" IsVisible="{Binding IsGood}">
-                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource SuccessBrush}" />
-                                        </Border>
-                                        <Border Classes="chip" IsVisible="{Binding IsAccent}">
-                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource AccentBrush}" />
-                                        </Border>
-                                        <Border Classes="chip" Background="#24F59E0B" IsVisible="{Binding IsWarning}">
-                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource WarningTextBrush}" />
-                                        </Border>
-                                        <Border Classes="chip" Background="{DynamicResource HoverBrush}" IsVisible="{Binding IsNeutral}">
-                                            <TextBlock Text="{Binding Text}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                        </Border>
-                                    </Panel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
                     </StackPanel>
+
+                    <!-- The badges of the card as pills that wrap: the icon and its name (the cars, how alike after it), what it
+                         means for this livery in a tooltip. The lock and the star are the buttons by the name -->
+                    <ItemsControl ItemsSource="{Binding Badges}" IsVisible="{Binding HasBadges}" Margin="0,-6,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel ItemSpacing="6" LineSpacing="6" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="views:LiveryBadge">
+                                <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource BorderBrush2}" BorderThickness="1"
+                                        CornerRadius="14" Padding="3,3,11,3" ToolTip.Tip="{Binding Tooltip}">
+                                    <StackPanel Orientation="Horizontal" Spacing="7">
+                                        <views:BadgeChip Badge="{Binding Badge}" ChipSize="20" Shadow="False" />
+                                        <TextBlock VerticalAlignment="Center" FontSize="12.5">
+                                            <Run Text="{Binding Name}" FontWeight="SemiBold" />
+                                            <Run Text="{Binding NumberText}" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
 
                     <Grid ColumnDefinitions="*,8,*" RowDefinitions="Auto,8,Auto">
                         <Border Classes="tile">
@@ -419,8 +417,8 @@
                     <Border Classes="panel" BorderBrush="{DynamicResource AccentBrush}">
                         <StackPanel Spacing="8">
                             <Grid ColumnDefinitions="Auto,*,Auto">
-                                <Path Data="{StaticResource IconNote}" Width="14" Height="14" Stretch="Uniform" Margin="0,0,8,0"
-                                      Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.6" VerticalAlignment="Center" />
+                                <ui:GridIcon Data="{StaticResource IconNote}" Width="18" Height="18" StrokeThickness="2" Margin="0,0,8,0"
+                                             Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" />
                                 <TextBlock x:Name="NoteLabel" Grid.Column="1" Classes="section" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
                                 <TextBlock Grid.Column="2" Text="{Binding NoteStatus}" FontSize="12" Foreground="{DynamicResource SuccessBrush}" />
                             </Grid>

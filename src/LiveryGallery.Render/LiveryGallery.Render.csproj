@@ -40,8 +40,8 @@
     <PackageReference Include="ForzaToolkit.LiveryRender.Avalonia" Version="$(LiveryRenderAvaloniaVersion)" />
     <PackageReference Include="ForzaToolkit.LiveryRender.Formats" Version="$(LiveryRenderFormatsVersion)" />
   </ItemGroup>
-  <!-- The open packages the closed ones bring in, in the gallery's version: the closed packages were built on an older
-       one, and the open packages are taken in one version only (ForzaToolkit.AppHost's check) -->
+  <!-- The open packages the closed ones bring in, in the gallery's version: the open packages are taken in one version
+       only (ForzaToolkit.AppHost's check), whatever open version the closed packages were built on -->
   <ItemGroup Condition="'$(UseToolkitSource)' != 'true'">
     <PackageReference Include="ForzaToolkit.Artwork" Version="$(ForzaToolkitVersion)" />
     <PackageReference Include="ForzaToolkit.Games.Catalog" Version="$(ForzaToolkitVersion)" />

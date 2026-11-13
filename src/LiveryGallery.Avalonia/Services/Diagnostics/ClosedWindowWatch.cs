@@ -40,8 +40,9 @@ internal static class ClosedWindowWatch
     /// <summary>Watches <paramref name="window"/>, which has just closed</summary>
     internal static void Watch(Window window)
     {
-        // The main window closes the app: nothing is left to tell
-        if (window is Views.MainWindow) return;
+        // The main window closes the app: nothing is left to tell. Unless another game's window takes its place: then
+        // the app goes on, and a main window still held keeps the whole gallery of the game it showed
+        if (window is Views.MainWindow { IsSwitchingGame: false }) return;
         Track(window.GetType().Name, window);
     }
 

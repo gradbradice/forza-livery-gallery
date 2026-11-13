@@ -24,6 +24,7 @@ internal static class ProgramIdentity
         UpdatePublicKeys = ["MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE3yA/MBECZvv6OMVUN5z39McGV5Q7Hy8IvSEToWZTYvIlT7RCeLD7ezr1HQSwN/MYbCJ+iJv2HdiTg5uMy7Nl3g=="],
         XUrl = "https://x.com/bradice_livery",
         XLabel = "@bradice__livery",
+        DiscordUrl = "https://discord.gg/cETtBvEgSz",
         Email = "tbradice@proton.me",
     };
 }

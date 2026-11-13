@@ -159,7 +159,9 @@ internal sealed class GameSessions
         // ForzaToolkit apps, checked once per start
         var carUpgrades = new CarUpgradesService(_http(), CarUpgradesOptions.ForGame(profile.Game), AppLog.LoggerFactory.CreateLogger<CarUpgradesService>());
         _ = PublishedLists.Start([carUpgrades]);
-        var viewer3D = new Livery3DViewer(settings, carDatabase, profile.Game.Id, carUpgrades, () => carTexts.LanguageCode);
+        // The camera left on each car: the game's own file, games\<id>\viewer-cameras.json
+        var viewer3D = new Livery3DViewer(settings, carDatabase, profile.Game.Id, carUpgrades, () => carTexts.LanguageCode,
+            new ViewerCameraStore(gamePaths.Root));
         var diagnosticsService = new DiagnosticsExportService(cacheService);
         var accountRegistry = new AccountRegistry(cacheService, profile.Saves, AccountLabels.Title);
         var window = new MainWindow(

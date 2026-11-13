@@ -15,6 +15,19 @@ internal enum CopyKind
     Similar,
 }
 
+/// <summary>
+/// The filter "In the storage" (the game shown) or "In the game" (the storage shown): the liveries with the same one in the
+/// other place, the same or a similar one, only a similar one, or neither
+/// </summary>
+internal enum CopiesFilterMode
+{
+    All,
+    Same,
+    SameOrSimilar,
+    Similar,
+    None,
+}
+
 /// <summary>A livery of the other place this one matches</summary>
 internal sealed record CopyMark(CopyKind Kind, LiveryEntry Other);
 

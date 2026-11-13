@@ -17,8 +17,26 @@
                 <!-- Every icon of the gallery and of the dialogs: the gallery keeps none of its own -->
                 <ResourceInclude Source="avares://ForzaToolkit.UI.Avalonia/Themes/Icons.axaml" />
             </ResourceDictionary.MergedDictionaries>
+            <!-- The badges of a card (Views/CardBadges.cs). A fact: white on the colour, the same in both themes; a problem of
+                 reading the file: its own dark chip with a coloured sign, apart from the collection's colours -->
+            <SolidColorBrush x:Key="BadgeInstalledBrush" Color="#16A34A" />
+            <SolidColorBrush x:Key="BadgeDangerBrush" Color="#DC2626" />
+            <SolidColorBrush x:Key="BadgeNeutralBrush" Color="#475569" />
+            <SolidColorBrush x:Key="BadgeAuctionBrush" Color="#C026D3" />
+            <SolidColorBrush x:Key="BadgeMineBrush" Color="#4F46E5" />
+            <SolidColorBrush x:Key="BadgeGameBrush" Color="#2563EB" />
+            <SolidColorBrush x:Key="BadgeStorageBrush" Color="#0E7490" />
+            <SolidColorBrush x:Key="BadgeProblemBrush" Color="#1F2937" />
+            <SolidColorBrush x:Key="BadgeProblemErrorInk" Color="#F87171" />
+            <SolidColorBrush x:Key="BadgeProblemWarningInk" Color="#FBBF24" />
+            <SolidColorBrush x:Key="BadgeOnFillInk" Color="White" />
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
+                    <!-- An assumption's badge: the colour's line and icon on the card's colour -->
+                    <SolidColorBrush x:Key="BadgeWarningInk" Color="#D97706" />
+                    <SolidColorBrush x:Key="BadgeNeutralInk" Color="#475569" />
+                    <SolidColorBrush x:Key="BadgeGameInk" Color="#2563EB" />
+                    <SolidColorBrush x:Key="BadgeStorageInk" Color="#0E7490" />
                     <SolidColorBrush x:Key="GroupBackgroundBrush" Color="#E9E9EC" />
                     <!-- Fuchsia: apart from the danger red, the warning amber, the accent and the storage's cyan; white text 6.3 -->
                     <SolidColorBrush x:Key="AuctionBrush" Color="#A21CAF" />
@@ -32,6 +50,11 @@
                     <SolidColorBrush x:Key="ChipTextBrush" Color="#4F46E5" />
                 </ResourceDictionary>
                 <ResourceDictionary x:Key="Dark">
+                    <!-- Lighter on the dark card, so the line reads as well as on white -->
+                    <SolidColorBrush x:Key="BadgeWarningInk" Color="#FBBF24" />
+                    <SolidColorBrush x:Key="BadgeNeutralInk" Color="#94A3B8" />
+                    <SolidColorBrush x:Key="BadgeGameInk" Color="#60A5FA" />
+                    <SolidColorBrush x:Key="BadgeStorageInk" Color="#22D3EE" />
                     <SolidColorBrush x:Key="GroupBackgroundBrush" Color="#2A2A2E" />
                     <SolidColorBrush x:Key="AuctionBrush" Color="#C026D3" />
                     <SolidColorBrush x:Key="StorageBrush" Color="#0E7490" />

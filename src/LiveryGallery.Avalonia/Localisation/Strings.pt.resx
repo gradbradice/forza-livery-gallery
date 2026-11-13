@@ -318,6 +318,9 @@
   <data name="ContactsGithubLabel" xml:space="preserve">
     <value>Repositório no GitHub</value>
   </data>
+  <data name="ContactsDiscordLabel" xml:space="preserve">
+    <value>Servidor no Discord</value>
+  </data>
   <data name="DuplicateBadgeLabel" xml:space="preserve">
     <value>Duplicata</value>
   </data>
@@ -1020,14 +1023,14 @@ Atualizado às {1}</value>
     <value>Usar o servidor para identificar as pinturas aplicadas a carros</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Para saber quais pinturas estão aplicadas aos seus carros, a galeria envia ao servidor o arquivo de salvamento C_ProfileData. O servidor usa o arquivo só para isso e não o armazena.
+    <value>Para saber quais pinturas estão aplicadas aos seus carros e o nome da sua conta, a galeria envia ao servidor o arquivo de salvamento C_ProfileData. O servidor usa o arquivo só para isso e não o armazena.
 
 Os dados do arquivo não são guardados nem usados para outra finalidade. O servidor guarda com segurança as chaves necessárias para descriptografar o arquivo de salvamento.
 
 O servidor não tem relação com os servidores oficiais de Forza Horizon, Xbox ou Microsoft.</value>
   </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Para saber quais pinturas estão aplicadas aos seus carros, a galeria envia ao servidor o arquivo de salvamento C_ProfileData. O servidor usa o arquivo só para isso e não o armazena.
+    <value>Para saber quais pinturas estão aplicadas aos seus carros e o nome da sua conta, a galeria envia ao servidor o arquivo de salvamento C_ProfileData. O servidor usa o arquivo só para isso e não o armazena.
 
 Os dados do arquivo não são guardados nem usados para outra finalidade. O servidor guarda com segurança as chaves necessárias para descriptografar o arquivo de salvamento.
 
@@ -2387,11 +2390,23 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
   <data name="UpdatesSectionLabel" xml:space="preserve">
     <value>Atualizações</value>
   </data>
+  <data name="UpdateInstallLabel" xml:space="preserve">
+    <value>Instalação de atualizações</value>
+  </data>
+  <data name="UpdateInstallAsk" xml:space="preserve">
+    <value>Perguntar antes de instalar</value>
+  </data>
+  <data name="UpdateInstallAutomatic" xml:space="preserve">
+    <value>Instalar automaticamente</value>
+  </data>
+  <data name="UpdateInstallHint" xml:space="preserve">
+    <value>Perguntando, a galeria avisa da nova versão e só a instala quando você clica em “Instalar” na janela dela. No automático, ela baixa a versão em segundo plano e instala ao fechar a galeria.</value>
+  </data>
   <data name="BetaUpdatesLabel" xml:space="preserve">
     <value>Receber versões beta</value>
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
-    <value>As betas saem antes das versões estáveis e podem ter erros. Desativar não volta para uma versão anterior: a galeria espera uma versão estável mais nova que a beta.</value>
+    <value>As betas saem antes das versões estáveis e podem ter erros. Se você desativar isso numa beta, a galeria oferece voltar para a versão estável mais recente.</value>
   </data>
   <data name="TagsDialogOneHint" xml:space="preserve">
     <value>Uma marca coloca a tag na pintura e uma caixa vazia a remove.</value>
@@ -2458,12 +2473,6 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
   </data>
   <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
     <value>Autor:</value>
-  </data>
-  <data name="LiveryDetailsChipLocked" xml:space="preserve">
-    <value>Bloqueada</value>
-  </data>
-  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
-    <value>Favorita</value>
   </data>
   <data name="LiveryDetailsIdLabel" xml:space="preserve">
     <value>Número da pintura</value>
@@ -2546,6 +2555,9 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
   <data name="ContextMenuOpenDetails" xml:space="preserve">
     <value>Abrir a pintura</value>
   </data>
+  <data name="ContextMenuView3DNewWindow" xml:space="preserve">
+    <value>Ver em mais uma janela 3D</value>
+  </data>
   <data name="NoteTooltipFormat" xml:space="preserve">
     <value>Nota: {0}</value>
   </data>
@@ -2570,17 +2582,8 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
   <data name="GameSwitcherTooltip" xml:space="preserve">
     <value>Trocar de jogo</value>
   </data>
-  <data name="GameStateFoundFormat" xml:space="preserve">
-    <value>Salvamentos encontrados: {0}</value>
-  </data>
-  <data name="GameStateChosen" xml:space="preserve">
-    <value>Pasta de salvamento escolhida por você</value>
-  </data>
   <data name="GameStateNotFound" xml:space="preserve">
     <value>Salvamento não encontrado</value>
-  </data>
-  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
-    <value>Escolher a pasta de salvamento…</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
     <value>Escolher pasta…</value>
@@ -2608,7 +2611,7 @@ Atualizado em {1} às {2}</value>
     <value>Contas</value>
   </data>
   <data name="SettingsAccountsHint" xml:space="preserve">
-    <value>A galeria encontra sozinha os saves de todas as contas deste PC. Se o save de uma conta estiver em outro lugar (outro disco, uma cópia), adicione-o aqui. As contas são trocadas na janela principal, ao lado da busca.</value>
+    <value>A galeria encontra sozinha os salvamentos de todas as contas deste PC. Se o salvamento de uma conta estiver em outro lugar (outro disco, uma cópia), adicione-o aqui. As contas são trocadas na janela principal, ao lado da busca.</value>
   </data>
   <data name="SettingsAccountFound" xml:space="preserve">
     <value>Encontrada neste PC</value>
@@ -2620,13 +2623,13 @@ Atualizado em {1} às {2}</value>
     <value>Adicionar conta</value>
   </data>
   <data name="SettingsAccountNewLabel" xml:space="preserve">
-    <value>Pasta de saves da conta</value>
+    <value>Pasta de salvamentos da conta</value>
   </data>
   <data name="SettingsAccountAddConfirm" xml:space="preserve">
     <value>Adicionar</value>
   </data>
   <data name="SettingsAccountNoSave" xml:space="preserve">
-    <value>Não há save do jogo nesta pasta.</value>
+    <value>Não há salvamento do jogo nesta pasta.</value>
   </data>
   <data name="SettingsAccountAlreadyListed" xml:space="preserve">
     <value>Esta conta já está na lista.</value>
@@ -2677,7 +2680,7 @@ Atualizado em {1} às {2}</value>
     <value>Pôr na seleção a pintura sob o cursor ou tirá-la</value>
   </data>
   <data name="ShortcutView3DNewWindow" xml:space="preserve">
-    <value>Ver em mais uma janela 3D, para comparar (até quatro)</value>
+    <value>Ver em mais uma janela 3D, para comparar (até quatro). Várias selecionadas: cada uma na sua janela</value>
   </data>
   <data name="ScreenshotsLabel" xml:space="preserve">
     <value>Capturas</value>
@@ -2771,7 +2774,7 @@ ou Ctrl+V</value>
     <value>Incluir capturas nos backups</value>
   </data>
   <data name="ScreenshotRestorePreview" xml:space="preserve">
-    <value>Restaurar a pré-visualização do jogo</value>
+    <value>Restaurar a prévia do jogo</value>
   </data>
   <data name="ScreenshotsGroupLabel" xml:space="preserve">
     <value>Agrupar</value>
@@ -2909,16 +2912,16 @@ ou Ctrl+V</value>
     <value>Não se sabe que pinturas estão em carros, por isso mover estas pinturas para o armazém não é seguro: algumas podem estar em carros no jogo.</value>
   </data>
   <data name="StorageInstalledOutdatedMessage" xml:space="preserve">
-    <value>O save mudou após a última sincronização e os novos dados ainda não chegaram ao servidor de pinturas. A lista de pinturas nos carros pode estar desatualizada, por isso mover esta pintura para o armazém não é seguro: ela pode estar num carro no jogo.</value>
+    <value>O salvamento mudou após a última sincronização e os novos dados ainda não chegaram ao servidor de pinturas. A lista de pinturas nos carros pode estar desatualizada, por isso mover esta pintura para o armazém não é seguro: ela pode estar num carro no jogo.</value>
   </data>
   <data name="StorageInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>O save mudou após a última sincronização e os novos dados ainda não chegaram ao servidor de pinturas. A lista de pinturas nos carros pode estar desatualizada, por isso mover estas pinturas para o armazém não é seguro: algumas podem estar em carros no jogo.</value>
+    <value>O salvamento mudou após a última sincronização e os novos dados ainda não chegaram ao servidor de pinturas. A lista de pinturas nos carros pode estar desatualizada, por isso mover estas pinturas para o armazém não é seguro: algumas podem estar em carros no jogo.</value>
   </data>
   <data name="ArchiveToStorageButton" xml:space="preserve">
     <value>Para o armazém</value>
   </data>
   <data name="ArchiveToStorageTooltip" xml:space="preserve">
-    <value>Guardar de vez as pinturas selecionadas no armazém da conta em vez de excluí-las. O save não muda.</value>
+    <value>Guardar de vez as pinturas selecionadas no armazém da conta em vez de excluí-las. O salvamento não muda.</value>
   </data>
   <data name="ArchiveToStorageSkippedFormat" xml:space="preserve">
     <value>Não movidas para o armazém: {0}. O armazém já tem uma pintura com a mesma chave.</value>
@@ -2945,7 +2948,7 @@ ou Ctrl+V</value>
     <value>Devolver ao jogo</value>
   </data>
   <data name="ReturnToGameTooltip" xml:space="preserve">
-    <value>Para o jogo: a pintura volta ao save</value>
+    <value>Para o jogo: a pintura volta ao salvamento</value>
   </data>
   <data name="ShortcutShowGame" xml:space="preserve">
     <value>Mostrar as pinturas do jogo</value>
@@ -2963,7 +2966,7 @@ ou Ctrl+V</value>
     <value>Armazém</value>
   </data>
   <data name="ModeGameTooltip" xml:space="preserve">
-    <value>As pinturas no save do jogo e o espaço livre</value>
+    <value>As pinturas no salvamento do jogo e o espaço livre</value>
   </data>
   <data name="ModeStorageTooltip" xml:space="preserve">
     <value>Pinturas que a galeria guarda fora do jogo, além do limite dele. Insert devolve-as ao jogo</value>
@@ -2996,7 +2999,7 @@ ou Ctrl+V</value>
     <value>O armazém está vazio. Del no jogo envia para aqui as pinturas escolhidas</value>
   </data>
   <data name="StorageNoAccountTooltip" xml:space="preserve">
-    <value>O armazém pertence a uma conta: escolha primeiro o save do jogo</value>
+    <value>O armazém pertence a uma conta: escolha primeiro o salvamento do jogo</value>
   </data>
   <data name="ReturnRoomTitleFormat" xml:space="preserve">
     <value>Devolver ao jogo: {0}</value>
@@ -3212,10 +3215,10 @@ ou Ctrl+V</value>
     <value>é um arquivo, não uma pasta.</value>
   </data>
   <data name="StoragePlaceInSave" xml:space="preserve">
-    <value>é a pasta do save do jogo.</value>
+    <value>é a pasta do salvamento do jogo.</value>
   </data>
   <data name="StoragePlaceHoldsSave" xml:space="preserve">
-    <value>há um save do jogo dentro dela.</value>
+    <value>há um salvamento do jogo dentro dela.</value>
   </data>
   <data name="StoragePlaceInProgram" xml:space="preserve">
     <value>é a pasta do programa.</value>
@@ -3224,16 +3227,16 @@ ou Ctrl+V</value>
     <value>a pasta do programa está dentro dela.</value>
   </data>
   <data name="StoragePlaceOtherStorageFormat" xml:space="preserve">
-    <value>aqui está o depósito de outra conta ({0}).</value>
+    <value>aqui está o armazém de outra conta ({0}).</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>O depósito não pode ficar dentro de um save, do arquivo, da pasta do programa ou do depósito de outra conta.</value>
+    <value>O armazém não pode ficar dentro de um salvamento, do arquivo, da pasta do programa ou do armazém de outra conta.</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>Esta pasta não serve:</value>
   </data>
   <data name="StorageFolderDialogTitle" xml:space="preserve">
-    <value>Pasta do depósito</value>
+    <value>Pasta do armazém</value>
   </data>
   <data name="StorageFolderHeaderFormat" xml:space="preserve">
     <value>Onde guardar as pinturas de {0}</value>
@@ -3263,10 +3266,10 @@ ou Ctrl+V</value>
     <value>Só esta conta deste jogo. Serve para uma pasta onde já há pinturas.</value>
   </data>
   <data name="StorageFolderPickerTitle" xml:space="preserve">
-    <value>Pasta para o depósito</value>
+    <value>Pasta para o armazém</value>
   </data>
   <data name="StorageMoveSummaryFormat" xml:space="preserve">
-    <value>Todo o depósito passa para a nova pasta: {0}, {1}.</value>
+    <value>Todo o armazém passa para a nova pasta: {0}, {1}.</value>
   </data>
   <data name="StorageMoveOtherDiskFormat" xml:space="preserve">
     <value>Outro disco: os arquivos são copiados, cerca de {0} min, e a pasta antiga é removida depois de conferir a cópia.</value>
@@ -3275,25 +3278,25 @@ ou Ctrl+V</value>
     <value>O mesmo disco: as pastas só são movidas, é rápido.</value>
   </data>
   <data name="StorageMoveKeeps" xml:space="preserve">
-    <value>As pastas do depósito, as notas, as tags e os favoritos ficam com as pinturas.</value>
+    <value>As pastas do armazém, as notas, as tags e os favoritos ficam com as pinturas.</value>
   </data>
   <data name="StorageMoveNothing" xml:space="preserve">
-    <value>O depósito ainda não tem pinturas: não há nada para mover.</value>
+    <value>O armazém ainda não tem pinturas: não há nada para mover.</value>
   </data>
   <data name="StorageMoveUnreachable" xml:space="preserve">
-    <value>A pasta atual não está disponível, nada pode ser movido dela. O depósito simplesmente ficará na nova pasta.</value>
+    <value>A pasta atual não está disponível, nada pode ser movido dela. O armazém simplesmente ficará na nova pasta.</value>
   </data>
   <data name="StorageAlreadyHere" xml:space="preserve">
-    <value>O depósito já está nesta pasta.</value>
+    <value>O armazém já está nesta pasta.</value>
   </data>
   <data name="StorageExistingFormat" xml:space="preserve">
-    <value>A pasta já tem pinturas que a galeria não colocou: {0}. Elas passam a ser pinturas do depósito: a galeria lê os nomes, carros, autores e prévias.</value>
+    <value>A pasta já tem pinturas que a galeria não colocou: {0}. Elas passam a ser pinturas do armazém: a galeria lê os nomes, carros, autores e prévias.</value>
   </data>
   <data name="StorageExistingFoldersFormat" xml:space="preserve">
-    <value>Em subpastas: {0}. As subpastas passam a ser pastas do depósito: {1}.</value>
+    <value>Em subpastas: {0}. As subpastas passam a ser pastas do armazém: {1}.</value>
   </data>
   <data name="StorageExistingAddFormat" xml:space="preserve">
-    <value>As pinturas do depósito atual ({0}) se somam a elas.</value>
+    <value>As pinturas do armazém atual ({0}) se somam a elas.</value>
   </data>
   <data name="StorageMoveButton" xml:space="preserve">
     <value>Mover</value>
@@ -3308,23 +3311,23 @@ ou Ctrl+V</value>
     <value>Movendo: {0} de {1}</value>
   </data>
   <data name="StorageMoveFailedFormat" xml:space="preserve">
-    <value>Não foi possível mover o depósito: {0}. Ele ficou inteiro na pasta de antes.</value>
+    <value>Não foi possível mover o armazém: {0}. Ele ficou inteiro na pasta de antes.</value>
   </data>
   <data name="StorageMoveCancelled" xml:space="preserve">
-    <value>A mudança foi interrompida. O depósito ficou inteiro na pasta de antes.</value>
+    <value>A mudança foi interrompida. O armazém ficou inteiro na pasta de antes.</value>
   </data>
   <data name="StorageMoveLeftoversFormat" xml:space="preserve">
-    <value>O depósito foi movido, mas parte da pasta antiga não pôde ser removida:
+    <value>O armazém foi movido, mas parte da pasta antiga não pôde ser removida:
 {0}</value>
   </data>
   <data name="StorageMovedStatusFormat" xml:space="preserve">
-    <value>O depósito agora está em {0}</value>
+    <value>O armazém agora está em {0}</value>
   </data>
   <data name="SettingsStorageSectionLabel" xml:space="preserve">
-    <value>Depósito de pinturas</value>
+    <value>Armazém de pinturas</value>
   </data>
   <data name="SettingsStorageHint" xml:space="preserve">
-    <value>Pinturas que não cabem no jogo. Cada conta tem seu próprio depósito. Também dá para pôr pinturas à mão na pasta dele: a galeria as encontra sozinha.</value>
+    <value>Pinturas que não cabem no jogo. Cada conta tem seu próprio armazém. Também dá para pôr pinturas à mão na pasta dele: a galeria as encontra sozinha.</value>
   </data>
   <data name="SettingsStorageProgramFolderFormat" xml:space="preserve">
     <value>Pasta do programa: {0}</value>
@@ -3339,10 +3342,10 @@ ou Ctrl+V</value>
     <value>Mudar a pasta…</value>
   </data>
   <data name="SettingsStorageOpenButton" xml:space="preserve">
-    <value>Abrir a pasta do depósito</value>
+    <value>Abrir a pasta do armazém</value>
   </data>
   <data name="StorageFoundTitleFormat" xml:space="preserve">
-    <value>Pinturas colocadas à mão na pasta do depósito: {0} encontradas.</value>
+    <value>Pinturas colocadas à mão na pasta do armazém: {0} encontradas.</value>
   </data>
   <data name="StorageFoundAddedFormat" xml:space="preserve">
     <value>Adicionadas: {0}.</value>
@@ -3372,7 +3375,7 @@ ou Ctrl+V</value>
     <value>Adicionadas</value>
   </data>
   <data name="StorageFoundFoldersSection" xml:space="preserve">
-    <value>Adicionadas a pastas do depósito, por subpasta</value>
+    <value>Adicionadas a pastas do armazém, por subpasta</value>
   </data>
   <data name="StorageFoundRenamedSection" xml:space="preserve">
     <value>Com nome do jogo</value>
@@ -3384,10 +3387,10 @@ ou Ctrl+V</value>
     <value>ficam onde estão</value>
   </data>
   <data name="StorageFoundGoneSection" xml:space="preserve">
-    <value>Sumiram da pasta do depósito</value>
+    <value>Sumiram da pasta do armazém</value>
   </data>
   <data name="StorageFoundGoneNote" xml:space="preserve">
-    <value>as pastas delas não existem mais, foram tiradas do depósito</value>
+    <value>as pastas delas não existem mais, foram tiradas do armazém</value>
   </data>
   <data name="StorageFoundShow" xml:space="preserve">
     <value>mostrar</value>
@@ -3396,7 +3399,7 @@ ou Ctrl+V</value>
     <value>ocultar</value>
   </data>
   <data name="StorageFoundIntoFolderFormat" xml:space="preserve">
-    <value>Pasta do depósito “{0}”. Os arquivos foram para a raiz do depósito.</value>
+    <value>Pasta do armazém “{0}”. Os arquivos foram para a raiz do armazém.</value>
   </data>
   <data name="StorageFoundFolderRemoved" xml:space="preserve">
     <value>A pasta no disco ficou vazia e foi removida.</value>
@@ -3411,16 +3414,16 @@ ou Ctrl+V</value>
     <value>Incompleta: falta o cabeçalho ou o arquivo da pintura, só há uma parte</value>
   </data>
   <data name="StorageFoundAuction" xml:space="preserve">
-    <value>Pintura de carro de leilão: o depósito não a guarda</value>
+    <value>Pintura de carro de leilão: o armazém não a guarda</value>
   </data>
   <data name="StorageFoundSameFormat" xml:space="preserve">
-    <value>O depósito já tem esta pintura ({0}), com os mesmos arquivos: uma segunda cópia não é necessária</value>
+    <value>O armazém já tem esta pintura ({0}), com os mesmos arquivos: uma segunda cópia não é necessária</value>
   </data>
   <data name="StorageFoundNoCar" xml:space="preserve">
     <value>Não é um nome do jogo, e o carro não pôde ser lido dos arquivos</value>
   </data>
   <data name="StorageFoundTooDeep" xml:space="preserve">
-    <value>Fundo demais: as pastas do depósito têm um só nível</value>
+    <value>Fundo demais: as pastas do armazém têm um só nível</value>
   </data>
   <data name="StorageFoundFailed" xml:space="preserve">
     <value>Não foi possível mover (um arquivo está em uso ou sem acesso)</value>
@@ -3432,13 +3435,13 @@ ou Ctrl+V</value>
     <value>Adicionada à mão</value>
   </data>
   <data name="AddedByHandBadgeTooltip" xml:space="preserve">
-    <value>Alguém a pôs à mão na pasta do depósito e a galeria a encontrou. A marca some quando a pintura for aberta.</value>
+    <value>Alguém a pôs à mão na pasta do armazém e a galeria a encontrou. A marca some quando a pintura for aberta.</value>
   </data>
   <data name="StorageUnavailableTitle" xml:space="preserve">
-    <value>A pasta do depósito não está disponível</value>
+    <value>A pasta do armazém não está disponível</value>
   </data>
   <data name="StorageUnavailableText" xml:space="preserve">
-    <value>Conecte o disco ou escolha outra pasta. Enquanto ela não estiver lá, nenhuma pintura vai para o depósito.</value>
+    <value>Conecte o disco ou escolha outra pasta. Enquanto ela não estiver lá, nenhuma pintura vai para o armazém.</value>
   </data>
   <data name="StorageCheckAgainButton" xml:space="preserve">
     <value>Verificar de novo</value>
@@ -3447,16 +3450,187 @@ ou Ctrl+V</value>
     <value>Escolher outra pasta…</value>
   </data>
   <data name="StorageUnavailableReasonFormat" xml:space="preserve">
-    <value>A pasta do depósito não está disponível: {0}</value>
+    <value>A pasta do armazém não está disponível: {0}</value>
   </data>
   <data name="StorageStillUnavailableFormat" xml:space="preserve">
-    <value>A pasta do depósito continua sem estar lá: {0}</value>
+    <value>A pasta do armazém continua sem estar lá: {0}</value>
   </data>
   <data name="StorageConflictsFormat" xml:space="preserve">
-    <value>O depósito já tem outras pinturas com estes nomes, então estas ficaram no jogo:
+    <value>O armazém já tem outras pinturas com estes nomes, então estas ficaram no jogo:
 {0}</value>
   </data>
   <data name="StoragePlaceAroundCurrent" xml:space="preserve">
-    <value>o depósito atual está dentro dela, ou ela mesma está dentro dele.</value>
+    <value>o armazém atual está dentro dela, ou ela mesma está dentro dele.</value>
+  </data>
+  <data name="StoreFailedFormat" xml:space="preserve">
+    <value>Não foi possível mover estas pinturas para o armazém ({0}). Talvez o jogo esteja usando os arquivos delas, o disco esteja cheio ou a pasta do armazém não esteja disponível. Os detalhes estão no log:
+{1}</value>
+  </data>
+  <data name="ArchiveFailedFormat" xml:space="preserve">
+    <value>Não foi possível mover estas pinturas para o arquivo ({0}). Talvez o jogo esteja usando os arquivos delas ou o disco esteja cheio. Os detalhes estão no log:
+{1}</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
+    <value>Manter as pastas do armazém como pastas no disco</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDiskHint" xml:space="preserve">
+    <value>Desligado (padrão): todas as pinturas ficam direto na pasta do armazém, e as pastas da galeria são só rótulos. Ligado: cada pasta da galeria é uma pasta no disco com as suas pinturas, e uma pasta que você criar lá à mão vira uma pasta da galeria. Vale para o armazém de todas as contas. Os arquivos são movidos na hora.</value>
+  </data>
+  <data name="StorageLayoutTitle" xml:space="preserve">
+    <value>Pastas no disco</value>
+  </data>
+  <data name="StorageLayoutOnConfirmFormat" xml:space="preserve">
+    <value>Organizar as pinturas do armazém em pastas no disco? Pinturas a mover para as suas pastas: {0}. Nada sai do armazém, e o jogo não é tocado.</value>
+  </data>
+  <data name="StorageLayoutOffConfirmFormat" xml:space="preserve">
+    <value>Devolver todas as pinturas do armazém direto para a pasta do armazém? Pinturas a tirar das suas pastas: {0}. As pastas da galeria continuam, como rótulos.</value>
+  </data>
+  <data name="StorageLayoutOnButton" xml:space="preserve">
+    <value>Organizar</value>
+  </data>
+  <data name="StorageLayoutOffButton" xml:space="preserve">
+    <value>Deixar plano</value>
+  </data>
+  <data name="StorageLayoutProgressFormat" xml:space="preserve">
+    <value>Movendo pinturas: {0} de {1}…</value>
+  </data>
+  <data name="StorageLayoutDoneFormat" xml:space="preserve">
+    <value>Armazém organizado: pinturas movidas: {0}</value>
+  </data>
+  <data name="StorageLayoutFailedFormat" xml:space="preserve">
+    <value>Pinturas que não puderam ser movidas: {0}. Talvez algum arquivo delas esteja em uso (aberto em outro programa). Elas ficam onde estavam, e a galeria continua as encontrando. Vai tentar de novo da próxima vez que abrir o armazém. Os detalhes estão no log.</value>
+  </data>
+  <data name="StorageLayoutAwayFormat" xml:space="preserve">
+    <value>Armazéns indisponíveis agora (o disco deles não está conectado): {0}. Eles serão organizados quando voltarem.</value>
+  </data>
+  <data name="StorageFolderRenameOnDiskFailed" xml:space="preserve">
+    <value>Não foi possível renomear a pasta no disco: talvez algum arquivo dela esteja em uso (aberto no Explorador ou em outro programa). O nome não mudou. Os detalhes estão no log.</value>
+  </data>
+  <data name="StorageFolderMoveOnDiskFailedFormat" xml:space="preserve">
+    <value>Não foi possível mover estas pinturas para a pasta no disco ({0}): talvez algum arquivo delas esteja em uso. Elas ficam onde estavam. Os detalhes estão no log:
+{1}</value>
+  </data>
+  <data name="StorageFolderDeleteOnDiskFailedFormat" xml:space="preserve">
+    <value>A pasta não foi excluída: algumas pinturas não puderam ser tiradas dela no disco ({0}). Talvez algum arquivo delas esteja em uso. Elas ficam na pasta. Os detalhes estão no log.</value>
+  </data>
+  <data name="SettingsSectionCards" xml:space="preserve">
+    <value>Cartões das pinturas</value>
+  </data>
+  <data name="BadgesOnPictureLabel" xml:space="preserve">
+    <value>Ícones sobre a imagem</value>
+  </data>
+  <data name="BadgesAtBottomLabel" xml:space="preserve">
+    <value>Ícones no rodapé do cartão</value>
+  </data>
+  <data name="BadgesPlaceHint" xml:space="preserve">
+    <value>Sobre a imagem os cartões ficam mais baixos, embaixo a imagem aparece inteira. A dica de cada ícone diz o que ele significa.</value>
+  </data>
+  <data name="BadgesMoreOne" xml:space="preserve">
+    <value>Mais {0} ícone:</value>
+  </data>
+  <data name="BadgesMoreFew" xml:space="preserve">
+    <value>Mais {0} ícones:</value>
+  </data>
+  <data name="BadgesMoreMany" xml:space="preserve">
+    <value>Mais {0} ícones:</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInStorageFormat" xml:space="preserve">
+    <value>o desenho é {0}% parecido com “{1}”, do armazém</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInGameFormat" xml:space="preserve">
+    <value>o desenho é {0}% parecido com “{1}”, do jogo</value>
+  </data>
+  <data name="ContextMenuView3DSeveralFormat" xml:space="preserve">
+    <value>Ver as selecionadas em janelas 3D separadas ({0})</value>
+  </data>
+  <data name="Status3DWindowsFull" xml:space="preserve">
+    <value>Já há quatro janelas 3D abertas. Feche uma para abrir outra pintura.</value>
+  </data>
+  <data name="Status3DWindowsNotAllFormat" xml:space="preserve">
+    <value>Abertas em 3D: {0} de {1}. No máximo {2} janelas 3D podem ficar abertas ao mesmo tempo.</value>
+  </data>
+  <data name="FilterCopiesInStorageLabel" xml:space="preserve">
+    <value>No armazém</value>
+  </data>
+  <data name="FilterCopiesInGameLabel" xml:space="preserve">
+    <value>No jogo</value>
+  </data>
+  <data name="FilterCopiesSame" xml:space="preserve">
+    <value>Há a mesma</value>
+  </data>
+  <data name="FilterCopiesSameOrSimilar" xml:space="preserve">
+    <value>A mesma ou uma parecida</value>
+  </data>
+  <data name="FilterCopiesSimilar" xml:space="preserve">
+    <value>Só uma parecida</value>
+  </data>
+  <data name="FilterCopiesNone" xml:space="preserve">
+    <value>Nem a mesma nem uma parecida</value>
+  </data>
+  <data name="FilterValueCopySame" xml:space="preserve">
+    <value>A mesma</value>
+  </data>
+  <data name="FilterValueCopySameOrSimilar" xml:space="preserve">
+    <value>Mesma ou parecida</value>
+  </data>
+  <data name="FilterValueCopySimilar" xml:space="preserve">
+    <value>Parecida</value>
+  </data>
+  <data name="FilterValueCopyNone" xml:space="preserve">
+    <value>Nenhuma</value>
+  </data>
+  <data name="ResetFiltersTooltip" xml:space="preserve">
+    <value>Redefinir filtros: limpa a pesquisa e os filtros. A ordem é mantida</value>
+  </data>
+  <data name="UndoLabel" xml:space="preserve">
+    <value>Desfazer</value>
+  </data>
+  <data name="UndoTooltipFormat" xml:space="preserve">
+    <value>Desfazer: {0}</value>
+  </data>
+  <data name="StatusUndoneFormat" xml:space="preserve">
+    <value>Desfeito: {0}</value>
+  </data>
+  <data name="ShortcutUndo" xml:space="preserve">
+    <value>Desfazer a última ação</value>
+  </data>
+  <data name="UndoFavoritesFormat" xml:space="preserve">
+    <value>Favoritos alterados: {0}</value>
+  </data>
+  <data name="UndoLocksFormat" xml:space="preserve">
+    <value>Bloqueios alterados: {0}</value>
+  </data>
+  <data name="UndoTagsFormat" xml:space="preserve">
+    <value>Tags alteradas: {0}</value>
+  </data>
+  <data name="WheelClickScrollLabel" xml:space="preserve">
+    <value>Um clique na roda do mouse rola sem segurá-la</value>
+  </data>
+  <data name="WheelScrollSpeedFormat" xml:space="preserve">
+    <value>Velocidade de rolagem com a roda pressionada: {0}%</value>
+  </data>
+  <data name="FilterPresetsTooltip" xml:space="preserve">
+    <value>Conjuntos de filtros salvos</value>
+  </data>
+  <data name="FilterPresetSave" xml:space="preserve">
+    <value>Salvar os filtros atuais…</value>
+  </data>
+  <data name="FilterPresetDelete" xml:space="preserve">
+    <value>Excluir um conjunto</value>
+  </data>
+  <data name="FilterPresetNameLabel" xml:space="preserve">
+    <value>Nome do conjunto</value>
+  </data>
+  <data name="FilterPresetsEmpty" xml:space="preserve">
+    <value>Ainda não há conjuntos salvos</value>
+  </data>
+  <data name="FilterPresetApply" xml:space="preserve">
+    <value>Aplicar o conjunto</value>
+  </data>
+  <data name="FilterPresetHint" xml:space="preserve">
+    <value>Clique direito: aplicar ou excluir</value>
+  </data>
+  <data name="ShortcutSaveFilterSet" xml:space="preserve">
+    <value>Salvar os filtros atuais como conjunto</value>
   </data>
 </root>

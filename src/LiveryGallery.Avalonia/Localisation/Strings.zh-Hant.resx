@@ -318,6 +318,9 @@
   <data name="ContactsGithubLabel" xml:space="preserve">
     <value>GitHub 儲存庫</value>
   </data>
+  <data name="ContactsDiscordLabel" xml:space="preserve">
+    <value>Discord 伺服器</value>
+  </data>
   <data name="DuplicateBadgeLabel" xml:space="preserve">
     <value>重複</value>
   </data>
@@ -1020,14 +1023,14 @@
     <value>使用伺服器確定已套用到車輛的塗裝</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>為了確定哪些塗裝已套用到車輛，圖庫會將存檔檔案 C_ProfileData 傳送到伺服器。伺服器僅將該檔案用於此目的，不會保存它。
+    <value>為了確定哪些塗裝已套用到車輛以及您的帳戶名稱，圖庫會將存檔檔案 C_ProfileData 傳送到伺服器。伺服器僅將該檔案用於此目的，不會保存它。
 
 檔案中的資料不會被保留，也不會用於其他任何用途。伺服器會安全保管解密存檔檔案所需的金鑰。
 
 此伺服器與 Forza Horizon、Xbox 或 Microsoft 的官方伺服器無關。</value>
   </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>為了確定哪些塗裝已套用到車輛，圖庫會將存檔檔案 C_ProfileData 傳送到伺服器。伺服器僅將該檔案用於此目的，不會保存它。
+    <value>為了確定哪些塗裝已套用到車輛以及您的帳戶名稱，圖庫會將存檔檔案 C_ProfileData 傳送到伺服器。伺服器僅將該檔案用於此目的，不會保存它。
 
 檔案中的資料不會被保留，也不會用於其他任何用途。伺服器會安全保管解密存檔檔案所需的金鑰。
 
@@ -2387,11 +2390,23 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   <data name="UpdatesSectionLabel" xml:space="preserve">
     <value>更新</value>
   </data>
+  <data name="UpdateInstallLabel" xml:space="preserve">
+    <value>安裝更新</value>
+  </data>
+  <data name="UpdateInstallAsk" xml:space="preserve">
+    <value>安裝前詢問</value>
+  </data>
+  <data name="UpdateInstallAutomatic" xml:space="preserve">
+    <value>自動安裝</value>
+  </data>
+  <data name="UpdateInstallHint" xml:space="preserve">
+    <value>選擇詢問時，圖庫會提示有新版本，只有在其視窗中按下「安裝」後才安裝。選擇自動時，圖庫會在背景下載新版本，並在關閉時安裝。</value>
+  </data>
   <data name="BetaUpdatesLabel" xml:space="preserve">
     <value>接收測試版</value>
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
-    <value>測試版會比正式版早發布，可能含有錯誤。關閉此選項不會退回舊版本：圖庫會等待比測試版更新的正式版。</value>
+    <value>測試版會比正式版早發布，可能含有錯誤。在使用測試版時關閉此選項，圖庫會提示返回最新的正式版。</value>
   </data>
   <data name="TagsDialogOneHint" xml:space="preserve">
     <value>勾選會為此塗裝加入標籤，留空則移除。</value>
@@ -2458,12 +2473,6 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   </data>
   <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
     <value>作者：</value>
-  </data>
-  <data name="LiveryDetailsChipLocked" xml:space="preserve">
-    <value>已鎖定</value>
-  </data>
-  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
-    <value>已收藏</value>
   </data>
   <data name="LiveryDetailsIdLabel" xml:space="preserve">
     <value>塗裝編號</value>
@@ -2546,6 +2555,9 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   <data name="ContextMenuOpenDetails" xml:space="preserve">
     <value>開啟塗裝</value>
   </data>
+  <data name="ContextMenuView3DNewWindow" xml:space="preserve">
+    <value>在另一個 3D 視窗中檢視</value>
+  </data>
   <data name="NoteTooltipFormat" xml:space="preserve">
     <value>備註：{0}</value>
   </data>
@@ -2570,17 +2582,8 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   <data name="GameSwitcherTooltip" xml:space="preserve">
     <value>切換遊戲</value>
   </data>
-  <data name="GameStateFoundFormat" xml:space="preserve">
-    <value>找到的存檔：{0}</value>
-  </data>
-  <data name="GameStateChosen" xml:space="preserve">
-    <value>已手動選擇存檔資料夾</value>
-  </data>
   <data name="GameStateNotFound" xml:space="preserve">
     <value>找不到存檔</value>
-  </data>
-  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
-    <value>選擇存檔資料夾…</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
     <value>選擇資料夾…</value>
@@ -2677,7 +2680,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>把游標處的塗裝加入選取或移出</value>
   </data>
   <data name="ShortcutView3DNewWindow" xml:space="preserve">
-    <value>在另一個 3D 視窗中檢視以便比較（最多四個）</value>
+    <value>在另一個 3D 視窗中檢視以便比較（最多四個）。選取多個時：各自在自己的視窗中</value>
   </data>
   <data name="ScreenshotsLabel" xml:space="preserve">
     <value>截圖</value>
@@ -3458,5 +3461,176 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   </data>
   <data name="StoragePlaceAroundCurrent" xml:space="preserve">
     <value>目前倉庫在其中，或它本身位於目前倉庫之內。</value>
+  </data>
+  <data name="StoreFailedFormat" xml:space="preserve">
+    <value>無法將以下塗裝移到倉庫（{0}）。可能是遊戲正在使用其檔案、磁碟已滿或倉庫資料夾無法使用。詳細資訊請見記錄：
+{1}</value>
+  </data>
+  <data name="ArchiveFailedFormat" xml:space="preserve">
+    <value>無法將以下塗裝移至封存（{0}）。可能是遊戲正在使用其檔案或磁碟已滿。詳細資訊請見記錄：
+{1}</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
+    <value>將倉庫的資料夾儲存為磁碟上的資料夾</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDiskHint" xml:space="preserve">
+    <value>關閉（預設）：所有塗裝都直接放在倉庫資料夾中，圖庫的資料夾只是標籤。開啟：圖庫的每個資料夾都是磁碟上的一個資料夾，存放其中的塗裝。在那裡手動建立的資料夾會成為圖庫的資料夾。適用於所有帳戶的倉庫。檔案會立即移動。</value>
+  </data>
+  <data name="StorageLayoutTitle" xml:space="preserve">
+    <value>磁碟上的資料夾</value>
+  </data>
+  <data name="StorageLayoutOnConfirmFormat" xml:space="preserve">
+    <value>將倉庫中的塗裝分到磁碟上的資料夾中嗎？將移入各自資料夾的塗裝：{0}。不會有任何塗裝離開倉庫，也不會影響遊戲。</value>
+  </data>
+  <data name="StorageLayoutOffConfirmFormat" xml:space="preserve">
+    <value>將倉庫中的所有塗裝放回倉庫資料夾的頂層嗎？將移出各自資料夾的塗裝：{0}。圖庫的資料夾會作為標籤保留。</value>
+  </data>
+  <data name="StorageLayoutOnButton" xml:space="preserve">
+    <value>分到資料夾</value>
+  </data>
+  <data name="StorageLayoutOffButton" xml:space="preserve">
+    <value>全部放回頂層</value>
+  </data>
+  <data name="StorageLayoutProgressFormat" xml:space="preserve">
+    <value>正在移動塗裝：{0} / {1}…</value>
+  </data>
+  <data name="StorageLayoutDoneFormat" xml:space="preserve">
+    <value>倉庫已整理：移動的塗裝：{0}</value>
+  </data>
+  <data name="StorageLayoutFailedFormat" xml:space="preserve">
+    <value>無法移動的塗裝：{0}。可能是其中某個檔案正在使用（在其他程式中開啟）。它們留在原處，圖庫仍能找到它們。下次開啟倉庫時會再試。詳細資訊請見記錄。</value>
+  </data>
+  <data name="StorageLayoutAwayFormat" xml:space="preserve">
+    <value>目前無法使用的倉庫（其磁碟未連接）：{0}。重新連接後會進行整理。</value>
+  </data>
+  <data name="StorageFolderRenameOnDiskFailed" xml:space="preserve">
+    <value>無法在磁碟上重新命名該資料夾：其中某個檔案可能正在使用（在檔案總管或其他程式中開啟）。名稱未變更。詳細資訊請見記錄。</value>
+  </data>
+  <data name="StorageFolderMoveOnDiskFailedFormat" xml:space="preserve">
+    <value>無法將以下塗裝移入磁碟上的資料夾（{0}）：其中某個檔案可能正在使用。它們留在原處。詳細資訊請見記錄：
+{1}</value>
+  </data>
+  <data name="StorageFolderDeleteOnDiskFailedFormat" xml:space="preserve">
+    <value>資料夾未刪除：有些塗裝無法在磁碟上移出該資料夾（{0}）。可能是其中某個檔案正在使用。它們留在資料夾中。詳細資訊請見記錄。</value>
+  </data>
+  <data name="SettingsSectionCards" xml:space="preserve">
+    <value>塗裝卡片</value>
+  </data>
+  <data name="BadgesOnPictureLabel" xml:space="preserve">
+    <value>圖示顯示在圖片上</value>
+  </data>
+  <data name="BadgesAtBottomLabel" xml:space="preserve">
+    <value>圖示顯示在卡片底部</value>
+  </data>
+  <data name="BadgesPlaceHint" xml:space="preserve">
+    <value>顯示在圖片上時卡片較矮，顯示在底部時可看到整張圖片。圖示的含義見其提示。</value>
+  </data>
+  <data name="BadgesMoreOne" xml:space="preserve">
+    <value>另外 {0} 個圖示：</value>
+  </data>
+  <data name="BadgesMoreFew" xml:space="preserve">
+    <value>另外 {0} 個圖示：</value>
+  </data>
+  <data name="BadgesMoreMany" xml:space="preserve">
+    <value>另外 {0} 個圖示：</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInStorageFormat" xml:space="preserve">
+    <value>圖案與倉庫中的「{1}」相似度為 {0}%</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInGameFormat" xml:space="preserve">
+    <value>圖案與遊戲中的「{1}」相似度為 {0}%</value>
+  </data>
+  <data name="ContextMenuView3DSeveralFormat" xml:space="preserve">
+    <value>在各自的 3D 視窗中檢視所選項目（{0}）</value>
+  </data>
+  <data name="Status3DWindowsFull" xml:space="preserve">
+    <value>已開啟四個 3D 視窗。請關閉一個後再開啟其他塗裝。</value>
+  </data>
+  <data name="Status3DWindowsNotAllFormat" xml:space="preserve">
+    <value>已在 3D 中開啟 {1} 個中的 {0} 個。最多可同時開啟 {2} 個 3D 視窗。</value>
+  </data>
+  <data name="FilterCopiesInStorageLabel" xml:space="preserve">
+    <value>倉庫</value>
+  </data>
+  <data name="FilterCopiesInGameLabel" xml:space="preserve">
+    <value>遊戲</value>
+  </data>
+  <data name="FilterCopiesSame" xml:space="preserve">
+    <value>有相同的</value>
+  </data>
+  <data name="FilterCopiesSameOrSimilar" xml:space="preserve">
+    <value>相同或相似</value>
+  </data>
+  <data name="FilterCopiesSimilar" xml:space="preserve">
+    <value>僅相似</value>
+  </data>
+  <data name="FilterCopiesNone" xml:space="preserve">
+    <value>既無相同也無相似</value>
+  </data>
+  <data name="FilterValueCopySame" xml:space="preserve">
+    <value>相同</value>
+  </data>
+  <data name="FilterValueCopySameOrSimilar" xml:space="preserve">
+    <value>相同或相似</value>
+  </data>
+  <data name="FilterValueCopySimilar" xml:space="preserve">
+    <value>相似</value>
+  </data>
+  <data name="FilterValueCopyNone" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="ResetFiltersTooltip" xml:space="preserve">
+    <value>重設篩選：清除搜尋和篩選。排序保持不變</value>
+  </data>
+  <data name="UndoLabel" xml:space="preserve">
+    <value>復原</value>
+  </data>
+  <data name="UndoTooltipFormat" xml:space="preserve">
+    <value>復原：{0}</value>
+  </data>
+  <data name="StatusUndoneFormat" xml:space="preserve">
+    <value>已復原：{0}</value>
+  </data>
+  <data name="ShortcutUndo" xml:space="preserve">
+    <value>復原上一步操作</value>
+  </data>
+  <data name="UndoFavoritesFormat" xml:space="preserve">
+    <value>已變更最愛：{0}</value>
+  </data>
+  <data name="UndoLocksFormat" xml:space="preserve">
+    <value>已變更鎖定：{0}</value>
+  </data>
+  <data name="UndoTagsFormat" xml:space="preserve">
+    <value>已變更標籤：{0}</value>
+  </data>
+  <data name="WheelClickScrollLabel" xml:space="preserve">
+    <value>按一下滑鼠滾輪後不必按住即可捲動</value>
+  </data>
+  <data name="WheelScrollSpeedFormat" xml:space="preserve">
+    <value>按下滾輪時的捲動速度：{0}%</value>
+  </data>
+  <data name="FilterPresetsTooltip" xml:space="preserve">
+    <value>已儲存的篩選組合</value>
+  </data>
+  <data name="FilterPresetSave" xml:space="preserve">
+    <value>儲存目前的篩選…</value>
+  </data>
+  <data name="FilterPresetDelete" xml:space="preserve">
+    <value>刪除組合</value>
+  </data>
+  <data name="FilterPresetNameLabel" xml:space="preserve">
+    <value>組合名稱</value>
+  </data>
+  <data name="FilterPresetsEmpty" xml:space="preserve">
+    <value>尚無已儲存的組合</value>
+  </data>
+  <data name="FilterPresetApply" xml:space="preserve">
+    <value>套用組合</value>
+  </data>
+  <data name="FilterPresetHint" xml:space="preserve">
+    <value>按右鍵：套用或刪除</value>
+  </data>
+  <data name="ShortcutSaveFilterSet" xml:space="preserve">
+    <value>將目前的篩選儲存為組合</value>
   </data>
 </root>

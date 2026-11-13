@@ -55,5 +55,11 @@ internal sealed partial class StorageRowViewModel(StorageRowInfo info) : Observa
 /// <summary>What the settings may do with the storages, without knowing the services behind them</summary>
 /// <param name="List">Every account's storage</param>
 /// <param name="ChangeFolder">Shows "Storage folder" for an account (its key, its nickname) over a window; true when it moved</param>
+/// <param name="FoldersOnDisk">The storages keep their folders as folders on disk</param>
+/// <param name="SetFoldersOnDisk">
+/// Asks over a window, then lays every storage out with folders on disk or flat, reporting how many liveries have moved
+/// of how many; true when it was done
+/// </param>
 internal sealed record StorageActions(
-    Func<Task<List<StorageRowInfo>>> List, Func<Avalonia.Controls.Window, string, string?, Task<bool>> ChangeFolder);
+    Func<Task<List<StorageRowInfo>>> List, Func<Avalonia.Controls.Window, string, string?, Task<bool>> ChangeFolder,
+    Func<bool>? FoldersOnDisk = null, Func<Avalonia.Controls.Window, bool, IProgress<(int Done, int Total)>, Task<bool>>? SetFoldersOnDisk = null);

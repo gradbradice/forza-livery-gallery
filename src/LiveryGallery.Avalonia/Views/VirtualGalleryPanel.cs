@@ -63,6 +63,29 @@ public sealed class VirtualGalleryPanel : Panel
     private sealed record AnchorSnapshot(List<(string[] Keys, double RelativeTop)> Candidates, int HintIndex);
 
     private AnchorSnapshot? _pendingAnchor;
+    private bool _pendingTop;
+
+    // A place in the list to come back to: the rows that were in view (found again by their liveries), or the top
+    private sealed record Place(AnchorSnapshot? Anchor);
+
+    /// <summary>
+    /// Where the list is now, to come back to with <see cref="RestorePlace"/> after it showed something else (the
+    /// liveries a filter left, then all of them again). Taken before the items change
+    /// </summary>
+    public object CapturePlace() => new Place(CaptureAnchor());
+
+    /// <summary>
+    /// Scrolls back to a place taken with <see cref="CapturePlace"/>: the rows that were in view then, where they were,
+    /// as far as their liveries are still shown; the list stays where it is when none of them is
+    /// </summary>
+    public void RestorePlace(object? place)
+    {
+        if (place is not Place taken) return;
+        _pendingAnchor = taken.Anchor;
+        _pendingTop = taken.Anchor is null;
+        InvalidateMeasure();
+    }
+
     private ScrollViewer? _scrollViewer;
 
     public VirtualGalleryPanel()
@@ -180,7 +203,7 @@ public sealed class VirtualGalleryPanel : Panel
 
     private bool IsCoveredByRealizedArea(Rect previous, Rect viewport)
     {
-        if (_pendingAnchor is not null || _pendingScrollDelta != 0 || _coveredBottom < 0) return false;
+        if (_pendingAnchor is not null || _pendingTop || _pendingScrollDelta != 0 || _coveredBottom < 0) return false;
         if (viewport.Height <= 0 || viewport.Width != previous.Width || viewport.Height != previous.Height) return false;
 
         double total = _tops[^1];
@@ -224,6 +247,12 @@ public sealed class VirtualGalleryPanel : Panel
 
         var viewport = CurrentViewport(width);
 
+        if (_pendingTop)
+        {
+            _pendingTop = false;
+            _pendingScrollDelta += -viewport.Y;
+            viewport = new Rect(viewport.X, 0, viewport.Width, viewport.Height);
+        }
         if (_pendingAnchor is { } anchor)
         {
             _pendingAnchor = null;
@@ -380,6 +409,40 @@ public sealed class VirtualGalleryPanel : Panel
     // The cards of a row control (its template's GalleryRowPresenter), found once: a walk of all its visuals on every
     // recycle would go through every card's tree
     private readonly Dictionary<Control, GalleryRowPresenter?> _rowOf = [];
+
+    /// <summary>
+    /// The liveries whose cards a rectangle touches (<see cref="GalleryBand"/>), in the panel's coordinates, top to
+    /// bottom: of the rows on screen and of those that are not built now (scrolled away under the rectangle). A row not
+    /// built is taken to be laid out as the ones that are: the same left edge, the same card width
+    /// </summary>
+    internal List<ViewModels.LiveryEntry> EntriesIn(Rect band)
+    {
+        var found = new List<ViewModels.LiveryEntry>();
+        int n = _items.Count;
+        if (n == 0 || band.Width < 0 || band.Height < 0) return found;
+        RecomputeTops();
+
+        // The cards' slots, from a row that is built: every row starts at the same place and has cards of one width
+        double left = 0, pitch = 286, margin = 8;
+        foreach (var control in _realized.Values)
+        {
+            if (RowOf(control) is not { Children.Count: > 0 } presenter || presenter.Children[0] is not { IsVisible: true } card) continue;
+            if (card.DesiredSize.Width <= 0 || presenter.TranslatePoint(default, this) is not { } origin) continue;
+            left = origin.X;
+            pitch = card.DesiredSize.Width;
+            margin = card.Margin.Left;
+            break;
+        }
+
+        int from = FindIndexAt(Math.Max(0, band.Y)), to = FindIndexAt(Math.Max(0, band.Bottom));
+        for (int i = from; i <= to && i < n; i++)
+        {
+            if (_isHeader[i] || _items[i] is not Models.GalleryRow row) continue;
+            if (GalleryBand.Columns(band, _tops[i], _tops[i + 1], left, pitch, margin, row.Items.Count) is not var (first, last)) continue;
+            for (int c = first; c <= last; c++) found.Add(row.Items[c]);
+        }
+        return found;
+    }
 
     private GalleryRowPresenter? RowOf(Control control)
     {

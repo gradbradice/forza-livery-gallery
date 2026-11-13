@@ -1,3 +1,4 @@
+using ForzaToolkit.Liveries.Scanning;
 using LiveryGallery.Configuration;
 
 namespace LiveryGallery.Services;
@@ -8,7 +9,9 @@ namespace LiveryGallery.Services;
 /// kept. Nothing is shared between accounts: a livery archived or stored from one account is returned only into that
 /// account's save, a backup made from it is listed only with it. A storage is in the program's folder, or in a folder
 /// the user chose (<see cref="StorageFolderSettings"/>); one of those that is not there (a disk not plugged in) is
-/// unavailable: never made again, its liveries never taken for gone. Thread-safe.
+/// unavailable: never made again, its liveries never taken for gone. Every storage is flat on disk, or keeps its
+/// folders as folders there (<see cref="FoldersOnDisk"/>, one choice for all): laid out at once when the choice changes
+/// (<see cref="SetFoldersOnDiskAsync"/>), and when opened while it is not yet (<see cref="EnsureArrangedAsync"/>). Thread-safe.
 /// </summary>
 internal sealed class AccountStorage
 {
@@ -57,6 +60,88 @@ internal sealed class AccountStorage
 
     /// <summary>Where the account's storage is: the folder the user chose, or the program's</summary>
     public string StorageFolderOf(string accountKey) => CustomStorageFolderOf(accountKey) ?? _paths.StorageOf(accountKey);
+
+    /// <summary>
+    /// The folder of a stored livery of the account, in the storage wherever it is (<see cref="StorageFolderOf"/>: the
+    /// program's folder or the user's, not <see cref="GamePaths.StorageOf"/>) and wherever it lies in it (at the top, in
+    /// its folder's folder on disk); null when it is not there, or the storage's own folder is not
+    /// </summary>
+    public string? StoredLiveryFolderOf(string accountKey, string key) =>
+        LiveryFileNames.IsPlain(key) && StorageOf(accountKey) is { } storage ? storage.LiveryFolderOf(key) : null;
+
+    /// <summary>
+    /// The livery file of a stored livery of the account (the 3D view, the duplicate check), laid out in its folder as
+    /// the save keeps a livery folder; null as <see cref="StoredLiveryFolderOf"/>, or when the game keeps no livery folder
+    /// </summary>
+    public string? StoredLiveryFileOf(string accountKey, string key, ILiveryStore store)
+    {
+        ArgumentNullException.ThrowIfNull(store);
+        if (StoredLiveryFolderOf(accountKey, key) is not { } folder) return null;
+        // The folder it lies in, as the save's folder of liveries
+        string root = Path.GetDirectoryName(folder)!;
+        return store.GetLiveryFolder(root, key) is null ? null : store.GetFiles(root, key).LiveryPath;
+    }
+
+    /// <summary>The storages keep their folders as folders on disk (<see cref="StorageFolderSettings.FoldersOnDisk"/>); false: flat</summary>
+    public bool FoldersOnDisk => _folders?.FoldersOnDisk ?? false;
+
+    /// <summary>
+    /// The account's storage laid out as <see cref="FoldersOnDisk"/> says when it is not yet (its disk was away when the
+    /// choice changed, it was moved to another folder): what could not move stays where it is, and is found there. One
+    /// laid out already is left as it is: what the user moved there by hand is taken in as moved
+    /// (<see cref="LiveryArchive.TakeInPlacedByHandAsync"/>), not moved back
+    /// </summary>
+    public async Task EnsureArrangedAsync(string accountKey)
+    {
+        if (StorageOf(accountKey) is not { } storage || storage.IsLaidOut) return;
+        var result = await storage.ArrangeAsync().ConfigureAwait(false);
+        if (result.Failed.Count > 0)
+            AppLog.LogWarning($"The storage of {accountKey}: {result.Failed.Count} liveries could not be laid out, they stay where they are ({string.Join(", ", result.Failed)})");
+    }
+
+    /// <summary>How many stored liveries of every account whose storage is there would move for <paramref name="on"/></summary>
+    public int CountToArrange(bool on) =>
+        StorageAccounts().Select(StorageOf).OfType<LiveryArchive>().Sum(storage => storage.CountToArrange(on));
+
+    /// <summary>
+    /// Every storage keeps its folders as folders on disk from now on (or is flat): the choice is written, and each
+    /// storage that is there is laid out at once; one whose disk is away is laid out when it is opened again
+    /// </summary>
+    /// <param name="on">Folders on disk</param>
+    /// <param name="progress">How many liveries have moved of how many, all storages together</param>
+    /// <returns>How many moved, how many could not (they stay where they were, found there), and the accounts whose storage was away</returns>
+    public async Task<(int Moved, int Failed, IReadOnlyList<string> Away)> SetFoldersOnDiskAsync(bool on, IProgress<(int Done, int Total)>? progress = null)
+    {
+        _folders?.SetFoldersOnDisk(on);
+        List<LiveryArchive> open;
+        lock (_lock) open = [.. _storages.Values.Select(s => s.Archive)];
+        foreach (var storage in open) storage.FoldersOnDisk = on;
+
+        var away = new List<string>();
+        var storages = new List<LiveryArchive>();
+        foreach (string key in StorageAccounts())
+        {
+            if (StorageOf(key) is { } storage) storages.Add(storage);
+            else away.Add(key);
+        }
+        int total = storages.Sum(s => s.CountToArrange(on)), before = 0, moved = 0, failed = 0;
+        progress?.Report((0, total));
+        foreach (var storage in storages)
+        {
+            int offset = before;
+            var result = await storage.ArrangeAsync(progress is null ? null : new Relay(p => progress.Report((offset + p.Done, total)))).ConfigureAwait(false);
+            before += result.Moved + result.Failed.Count;
+            moved += result.Moved;
+            failed += result.Failed.Count;
+        }
+        return (moved, failed, away);
+    }
+
+    // Reports on the thread that reports (Progress<T> would post to the window's)
+    private sealed class Relay(Action<LiveryArchiveArrangeProgress> report) : IProgress<LiveryArchiveArrangeProgress>
+    {
+        public void Report(LiveryArchiveArrangeProgress value) => report(value);
+    }
 
     /// <summary>
     /// The account's storage can be opened: in the program's folder (made when needed), or in a chosen folder that is
@@ -119,6 +204,7 @@ internal sealed class AccountStorage
             if (_storages.TryGetValue(accountKey, out var open) && StoragePlaces.Same(open.Folder, folder)) return open.Archive;
             _storages[accountKey] = (folder, storage = _openArchive(folder));
         }
+        storage.FoldersOnDisk = FoldersOnDisk;
         RememberPreviews(accountKey, storage);
         return storage;
     }

@@ -76,6 +76,7 @@ internal static class AppLocalisationService
         app.Resources["Loc_TagChipTooltip"] = Strings.TagChipTooltip;
         app.Resources["Loc_ViewPreviewTooltip"] = Strings.ViewPreviewTooltip;
         app.Resources["Loc_ClearSelectionLabel"] = Strings.ClearSelectionLabel;
+        app.Resources["Loc_UndoLabel"] = Strings.UndoLabel;
         app.Resources["Loc_ClearSelectionTip"] = new ShortcutTip(Strings.ClearSelectionLabel, GalleryShortcut.Escape);
         app.Resources["Loc_AuctionBadgeLabel"] = Strings.AuctionBadgeLabel;
         app.Resources["Loc_InstalledBadgeLabel"] = Strings.InstalledBadgeLabel;
@@ -87,6 +88,7 @@ internal static class AppLocalisationService
         app.Resources["Loc_ReturnToGameTooltip"] = Strings.ReturnToGameTooltip;
         app.Resources["Loc_ContextMenuNavigateInGame"] = Strings.ContextMenuNavigateInGame;
         app.Resources["Loc_ContextMenuOpenDetails"] = Strings.ContextMenuOpenDetails;
+        app.Resources["Loc_ContextMenuView3DNewWindow"] = Strings.ContextMenuView3DNewWindow;
         app.Resources["Loc_ContextMenuOnlyThisCar"] = Strings.ContextMenuOnlyThisCar;
         app.Resources["Loc_ContextMenuOnlyThisManufacturer"] = Strings.ContextMenuOnlyThisManufacturer;
         app.Resources["Loc_ContextMenuOnlyThisAuthor"] = Strings.ContextMenuOnlyThisAuthor;

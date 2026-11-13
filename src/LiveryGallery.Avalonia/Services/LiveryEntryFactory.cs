@@ -136,6 +136,7 @@ internal sealed class LiveryEntryFactory(
             CarKnown = car is not null || known?.CarKnown == true,
             CreatedYear = c.CreatedYear,
             CreatedMonth = c.CreatedMonth,
+            Created = c.Created,
             DownloadDate = c.DownloadDate,
             ThumbnailPath = c.ThumbnailFile is not null
                 ? Path.Combine(appCacheService.ThumbsDir, c.ThumbnailFile)
@@ -222,6 +223,11 @@ internal sealed class LiveryEntryFactory(
         var caches = list.Select(s => ToCache(s.Data)).ToList();
         var storedKeys = caches.Select(c => c.FolderName).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var authors = CreateAuthorContext([.. caches, .. (gameCache ?? []).Where(c => !storedKeys.Contains(c.FolderName))], currentUserId);
+        // A livery put into the storage by hand never went through a scan of the game: its number is given here, as a
+        // scan gives one (the numbers' file keeps it; one moved from the game keeps the number it had there)
+        liveryIdService.EnsureAssigned(list
+            .Where(s => s.Data.LiveryId == 0 && liveryIdService.TryGet(s.Data.FolderName) is null)
+            .Select(s => (s.Data.FolderName, (DateTime?)(s.Data.DownloadDate ?? s.ArchivedAtUtc))));
         var entries = new List<LiveryEntry>(list.Count);
         int i = 0;
         foreach (var s in list)
@@ -253,9 +259,11 @@ internal sealed class LiveryEntryFactory(
         CarId = d.CarId,
         CreatedYear = d.CreatedYear ?? 0,
         CreatedMonth = d.CreatedMonth ?? 0,
+        Created = d.Created,
         DownloadDate = d.DownloadDate,
-        ThumbnailFile = d.ThumbnailPath is { } path ? Path.GetFileName(path) : null,
-        ThumbnailDrawn = d.ThumbnailDrawn,
+        // A drawn preview that is gone (deleted when the gallery began to draw another way) is none: the card draws it again
+        ThumbnailFile = d.ThumbnailPath is { } path && !(d.ThumbnailDrawn && !File.Exists(path)) ? Path.GetFileName(path) : null,
+        ThumbnailDrawn = d.ThumbnailDrawn && d.ThumbnailPath is { } drawn && File.Exists(drawn),
         ExternalThumbSource = d.ExternalPreviewPath,
         CLiveryHash = d.CLiveryHash,
     };

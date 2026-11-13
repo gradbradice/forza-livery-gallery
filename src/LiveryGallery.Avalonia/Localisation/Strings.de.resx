@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SavePathNotChosen" xml:space="preserve">
-    <value>Kein Speicherordner ausgewählt</value>
+    <value>Kein Spielstandordner ausgewählt</value>
   </data>
   <data name="RefreshTooltip" xml:space="preserve">
     <value>Aktualisieren: Änderungen erneut scannen</value>
@@ -166,13 +166,13 @@
     <value>ID {0}</value>
   </data>
   <data name="FolderNotFoundTitle" xml:space="preserve">
-    <value>Speicherordner nicht gefunden</value>
+    <value>Spielstandordner nicht gefunden</value>
   </data>
   <data name="ButtonYes" xml:space="preserve">
     <value>Ja</value>
   </data>
   <data name="SelectFolderDialogTitle" xml:space="preserve">
-    <value>Wählen Sie den Speicherordner aus, sein Name beginnt mit u_</value>
+    <value>Wählen Sie den Spielstandordner aus, sein Name beginnt mit u_</value>
   </data>
   <data name="CarDbUpdating" xml:space="preserve">
     <value>Autodatenbank wird auf Updates geprüft…</value>
@@ -283,7 +283,7 @@
     <value>Ordner</value>
   </data>
   <data name="SavePathFieldLabel" xml:space="preserve">
-    <value>Speicherordner</value>
+    <value>Spielstandordner</value>
   </data>
   <data name="PathFieldAutoHint" xml:space="preserve">
     <value>Leer lassen, um den Ordner automatisch zu finden</value>
@@ -298,7 +298,7 @@
     <value>Keine Lackierungen gefunden</value>
   </data>
   <data name="SavedPathNotFoundNotice" xml:space="preserve">
-    <value>Der angegebene Speicherordner wurde nicht gefunden. Die Galerie sucht automatisch danach.</value>
+    <value>Der angegebene Spielstandordner wurde nicht gefunden. Die Galerie sucht automatisch danach.</value>
   </data>
   <data name="ButtonOk" xml:space="preserve">
     <value>OK</value>
@@ -317,6 +317,9 @@
   </data>
   <data name="ContactsGithubLabel" xml:space="preserve">
     <value>GitHub-Repository</value>
+  </data>
+  <data name="ContactsDiscordLabel" xml:space="preserve">
+    <value>Discord-Server</value>
   </data>
   <data name="DuplicateBadgeLabel" xml:space="preserve">
     <value>Duplikat</value>
@@ -629,7 +632,7 @@ Eine Karte fasst die Nicknames eines Autors unter einem Namen zusammen.</value>
     <value>Archiviert am {0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
-    <value>Wählen Sie vor dem Wiederherstellen den Speicherordner in den Einstellungen</value>
+    <value>Wählen Sie vor dem Wiederherstellen den Spielstandordner in den Einstellungen</value>
   </data>
   <data name="FileOperationFailedMessage" xml:space="preserve">
     <value>Der Vorgang ist fehlgeschlagen. Details stehen im Protokoll.</value>
@@ -993,7 +996,7 @@ Sie kann erst ins Archiv verschoben werden, wenn der Lackierungsserver bestätig
 Aktualisiert um {1}</value>
   </data>
   <data name="ServerSyncProfileNotFound" xml:space="preserve">
-    <value>Der Speicherordner enthält keine Profildatei C_ProfileData.</value>
+    <value>Der Spielstandordner enthält keine Profildatei C_ProfileData.</value>
   </data>
   <data name="ServerSyncSaveNotSupported" xml:space="preserve">
     <value>Der Server kann diesen Spielstand noch nicht lesen. Vermutlich wurde das Spiel aktualisiert. Die Unterstützung wird nachgereicht.</value>
@@ -1020,14 +1023,14 @@ Aktualisiert um {1}</value>
     <value>Server verwenden, um Lackierungen auf Autos zu erkennen</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Um festzustellen, welche Lackierungen auf Ihren Autos sind, sendet die Galerie die Spielstanddatei C_ProfileData an den Server. Der Server verwendet die Datei nur dafür und speichert sie nicht.
+    <value>Um festzustellen, welche Lackierungen auf Ihren Autos sind und wie Ihr Konto heißt, sendet die Galerie die Spielstanddatei C_ProfileData an den Server. Der Server verwendet die Datei nur dafür und speichert sie nicht.
 
 Die Daten aus der Datei werden weder aufbewahrt noch für andere Zwecke verwendet. Der Server bewahrt die Schlüssel, die zum Entschlüsseln der Spielstanddatei nötig sind, sicher auf.
 
 Der Server steht in keiner Verbindung zu den offiziellen Servern von Forza Horizon, Xbox oder Microsoft.</value>
   </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Um festzustellen, welche Lackierungen auf Ihren Autos sind, sendet die Galerie die Spielstanddatei C_ProfileData an den Server. Der Server verwendet die Datei nur dafür und speichert sie nicht.
+    <value>Um festzustellen, welche Lackierungen auf Ihren Autos sind und wie Ihr Konto heißt, sendet die Galerie die Spielstanddatei C_ProfileData an den Server. Der Server verwendet die Datei nur dafür und speichert sie nicht.
 
 Die Daten aus der Datei werden weder aufbewahrt noch für andere Zwecke verwendet. Der Server bewahrt die Schlüssel, die zum Entschlüsseln der Spielstanddatei nötig sind, sicher auf.
 
@@ -1137,7 +1140,7 @@ Berühren Sie Maus und Tastatur nicht, solange sich der Cursor bewegt: Eine Maus
     <value>Der Cursor im Spiel konnte nicht bewegt werden. Details stehen im Protokoll.</value>
   </data>
   <data name="NavigateNoSavePathMessage" xml:space="preserve">
-    <value>Der Speicherordner ist nicht festgelegt. Wählen Sie ihn in den Einstellungen.</value>
+    <value>Der Spielstandordner ist nicht festgelegt. Wählen Sie ihn in den Einstellungen.</value>
   </data>
   <data name="NavigateGameFolderCheckingMessage" xml:space="preserve">
     <value>Der Spielordner wird noch geprüft. Versuchen Sie es gleich noch einmal.</value>
@@ -1146,10 +1149,10 @@ Berühren Sie Maus und Tastatur nicht, solange sich der Cursor bewegt: Eine Maus
     <value>Die Anzahl der Reihen in „Meine Designs“ konnte nicht ermittelt werden: Ein Mod hat die Menüdatei auf unbekannte Weise geändert. Wählen Sie die Anzahl in den Einstellungen im Abschnitt „Im Spiel finden“.</value>
   </data>
   <data name="NavigateSaveReadFailedMessage" xml:space="preserve">
-    <value>Der Speicherordner konnte nicht gelesen werden.</value>
+    <value>Der Spielstandordner konnte nicht gelesen werden.</value>
   </data>
   <data name="NavigateLiveryNotInSaveMessage" xml:space="preserve">
-    <value>Diese Lackierung ist nicht mehr im Speicherordner. Aktualisieren Sie die Liste.</value>
+    <value>Diese Lackierung ist nicht mehr im Spielstandordner. Aktualisieren Sie die Liste.</value>
   </data>
   <data name="NavigateProgressFormat" xml:space="preserve">
     <value>Wechsel zu {0} im Spiel: {1} von {2} Tasten. Maus nicht bewegen. Esc bricht ab.</value>
@@ -1290,7 +1293,7 @@ Berühren Sie Maus und Tastatur nicht, solange sich der Cursor bewegt: Eine Maus
     <value>Lackierungen: {0}</value>
   </data>
   <data name="AccountUnavailableMessage" xml:space="preserve">
-    <value>Der Speicherordner dieses Kontos ist nicht mehr verfügbar.</value>
+    <value>Der Spielstandordner dieses Kontos ist nicht mehr verfügbar.</value>
   </data>
   <data name="AccountSourceOtherFormat" xml:space="preserve">
     <value>Von einem anderen Konto: {0}</value>
@@ -1382,13 +1385,13 @@ Alle Konten und Nicknames dieser Autoren gehören dann zu einer Karte. Sie könn
     <value>Aktuelles Konto</value>
   </data>
   <data name="AccountDataPresent" xml:space="preserve">
-    <value>Speicherordner vorhanden</value>
+    <value>Spielstandordner vorhanden</value>
   </data>
   <data name="AccountDataGoneSinceFormat" xml:space="preserve">
     <value>Nicht gefunden seit {0}</value>
   </data>
   <data name="AccountDataGone" xml:space="preserve">
-    <value>Speicherordner nicht gefunden</value>
+    <value>Spielstandordner nicht gefunden</value>
   </data>
   <data name="AccountDataForgetButton" xml:space="preserve">
     <value>Vergessen</value>
@@ -1403,7 +1406,7 @@ Alle Konten und Nicknames dieser Autoren gehören dann zu einer Karte. Sie könn
     <value>Die Daten des Kontos konnten nicht gelöscht werden. Details stehen im Protokoll.</value>
   </data>
   <data name="GameRunningFileChangeMessage" xml:space="preserve">
-    <value>Lackierungen werden im Speicherordner verschoben, während das Spiel läuft. Das Spiel kann Dateien weiter verwenden oder die Änderung erst nach einem Neustart sehen, und sein eigenes Speichern kann die Änderung rückgängig machen. Sicherer ist es, das Spiel vorher zu schließen.</value>
+    <value>Lackierungen werden im Spielstandordner verschoben, während das Spiel läuft. Das Spiel kann Dateien weiter verwenden oder die Änderung erst nach einem Neustart sehen, und sein eigenes Speichern kann die Änderung rückgängig machen. Sicherer ist es, das Spiel vorher zu schließen.</value>
   </data>
   <data name="GameRunningContinueButton" xml:space="preserve">
     <value>Trotzdem fortfahren</value>
@@ -1484,7 +1487,7 @@ Alle Konten und Nicknames dieser Autoren gehören dann zu einer Karte. Sie könn
     <value>Eine Galerie der Lackierungen aus Spielständen von {0}.</value>
   </data>
   <data name="FolderNotFoundMessageFormat" xml:space="preserve">
-    <value>Der Speicherordner von {0} konnte nicht automatisch gefunden werden.
+    <value>Der Spielstandordner von {0} konnte nicht automatisch gefunden werden.
 
 Manuell auswählen?
 Normalerweise ist es C:\XboxGames\GameSave\pgs\u_[Nummer]_{1}</value>
@@ -2387,11 +2390,23 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
   <data name="UpdatesSectionLabel" xml:space="preserve">
     <value>Updates</value>
   </data>
+  <data name="UpdateInstallLabel" xml:space="preserve">
+    <value>Updates installieren</value>
+  </data>
+  <data name="UpdateInstallAsk" xml:space="preserve">
+    <value>Vor der Installation fragen</value>
+  </data>
+  <data name="UpdateInstallAutomatic" xml:space="preserve">
+    <value>Automatisch installieren</value>
+  </data>
+  <data name="UpdateInstallHint" xml:space="preserve">
+    <value>Beim Fragen meldet die Galerie eine neue Version und installiert sie erst, wenn Sie in ihrem Fenster auf „Installieren“ klicken. Automatisch lädt sie die Version im Hintergrund herunter und installiert sie beim Schließen der Galerie.</value>
+  </data>
   <data name="BetaUpdatesLabel" xml:space="preserve">
     <value>Beta-Versionen erhalten</value>
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
-    <value>Betas erscheinen vor den Releases und können Fehler enthalten. Ausschalten führt nicht zu einer älteren Version zurück: Die Galerie wartet auf ein Release, das neuer als die Beta ist.</value>
+    <value>Betas erscheinen vor den Releases und können Fehler enthalten. Schalten Sie dies in einer Beta aus, bietet die Galerie die Rückkehr zur neuesten stabilen Version an.</value>
   </data>
   <data name="TagsDialogOneHint" xml:space="preserve">
     <value>Ein Haken setzt den Tag auf die Lackierung, ein leeres Kästchen entfernt ihn.</value>
@@ -2458,12 +2473,6 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
   </data>
   <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
     <value>Autor:</value>
-  </data>
-  <data name="LiveryDetailsChipLocked" xml:space="preserve">
-    <value>Gesperrt</value>
-  </data>
-  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
-    <value>Favorit</value>
   </data>
   <data name="LiveryDetailsIdLabel" xml:space="preserve">
     <value>Lackierungsnummer</value>
@@ -2546,6 +2555,9 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
   <data name="ContextMenuOpenDetails" xml:space="preserve">
     <value>Lackierung öffnen</value>
   </data>
+  <data name="ContextMenuView3DNewWindow" xml:space="preserve">
+    <value>In einem weiteren 3D-Fenster ansehen</value>
+  </data>
   <data name="NoteTooltipFormat" xml:space="preserve">
     <value>Notiz: {0}</value>
   </data>
@@ -2570,17 +2582,8 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
   <data name="GameSwitcherTooltip" xml:space="preserve">
     <value>Spiel wechseln</value>
   </data>
-  <data name="GameStateFoundFormat" xml:space="preserve">
-    <value>Gefundene Spielstände: {0}</value>
-  </data>
-  <data name="GameStateChosen" xml:space="preserve">
-    <value>Speicherordner von Ihnen gewählt</value>
-  </data>
   <data name="GameStateNotFound" xml:space="preserve">
     <value>Spielstand nicht gefunden</value>
-  </data>
-  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
-    <value>Speicherordner wählen…</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
     <value>Ordner wählen…</value>
@@ -2677,7 +2680,7 @@ Aktualisiert am {1} um {2}</value>
     <value>Die Lackierung unter dem Cursor in die Auswahl aufnehmen oder herausnehmen</value>
   </data>
   <data name="ShortcutView3DNewWindow" xml:space="preserve">
-    <value>In einem weiteren 3D-Fenster ansehen, zum Vergleichen (bis zu vier)</value>
+    <value>In einem weiteren 3D-Fenster ansehen, zum Vergleichen (bis zu vier). Mehrere ausgewählt: jede in ihrem eigenen Fenster</value>
   </data>
   <data name="ScreenshotsLabel" xml:space="preserve">
     <value>Screenshots</value>
@@ -2726,7 +2729,7 @@ oder Strg+V</value>
     <value>Zur Lackierung</value>
   </data>
   <data name="ScreenshotCoverTooltip" xml:space="preserve">
-    <value>Titelbild: dein Screenshot. Die Spielvorschau lässt sich im Lackierungsfenster zurückholen</value>
+    <value>Titelbild: Ihr Screenshot. Die Spielvorschau lässt sich im Lackierungsfenster zurückholen</value>
   </data>
   <data name="ScreenshotCountTooltipFormat" xml:space="preserve">
     <value>Screenshots: {0}</value>
@@ -2768,7 +2771,7 @@ oder Strg+V</value>
     <value>Die gelöschten Lackierungen haben Screenshots ({0}). Auch löschen?</value>
   </data>
   <data name="ScreenshotsInBackups" xml:space="preserve">
-    <value>Screenshots in Sicherungen aufnehmen</value>
+    <value>Screenshots in Backups aufnehmen</value>
   </data>
   <data name="ScreenshotRestorePreview" xml:space="preserve">
     <value>Vorschau des Spiels wiederherstellen</value>
@@ -2885,61 +2888,61 @@ oder Strg+V</value>
     <value>Nach unten</value>
   </data>
   <data name="ContextMenuMoveToStorage" xml:space="preserve">
-    <value>In den Speicher verschieben</value>
+    <value>Ins Lager verschieben</value>
   </data>
   <data name="LoadingMovingToStorage" xml:space="preserve">
-    <value>Verschieben in den Speicher…</value>
+    <value>Verschieben ins Lager…</value>
   </data>
   <data name="StatusMovedToStorageFormat" xml:space="preserve">
-    <value>In den Speicher verschoben: {0}</value>
+    <value>Ins Lager verschoben: {0}</value>
   </data>
   <data name="StorageLockedSkippedFormat" xml:space="preserve">
     <value>Eine gesperrte Lackierung verlässt das Spiel nie. Ausgewählte gesperrte Lackierungen im Spiel geblieben: {0}.</value>
   </data>
   <data name="StorageInstalledSkippedFormat" xml:space="preserve">
-    <value>Eine Lackierung, die im Spiel auf einem Auto ist, kann nicht in den Speicher. Ausgewählte Lackierungen im Spiel geblieben: {0}.</value>
+    <value>Eine Lackierung, die im Spiel auf einem Auto ist, kann nicht ins Lager. Ausgewählte Lackierungen im Spiel geblieben: {0}.</value>
   </data>
   <data name="StorageAuctionSkippedFormat" xml:space="preserve">
-    <value>Auktionslackierungen kommen nie in den Speicher. Ausgewählte Auktionslackierungen im Spiel geblieben: {0}.</value>
+    <value>Auktionslackierungen kommen nie ins Lager. Ausgewählte Auktionslackierungen im Spiel geblieben: {0}.</value>
   </data>
   <data name="StorageInstalledUnknownMessage" xml:space="preserve">
-    <value>Es ist nicht bekannt, welche Lackierungen auf Autos sind, daher ist das Verschieben dieser Lackierung in den Speicher nicht sicher: Sie könnte im Spiel auf einem Auto sein.</value>
+    <value>Es ist nicht bekannt, welche Lackierungen auf Autos sind, daher ist das Verschieben dieser Lackierung ins Lager nicht sicher: Sie könnte im Spiel auf einem Auto sein.</value>
   </data>
   <data name="StorageInstalledUnknownMessageMany" xml:space="preserve">
-    <value>Es ist nicht bekannt, welche Lackierungen auf Autos sind, daher ist das Verschieben dieser Lackierungen in den Speicher nicht sicher: Einige könnten im Spiel auf Autos sein.</value>
+    <value>Es ist nicht bekannt, welche Lackierungen auf Autos sind, daher ist das Verschieben dieser Lackierungen ins Lager nicht sicher: Einige könnten im Spiel auf Autos sein.</value>
   </data>
   <data name="StorageInstalledOutdatedMessage" xml:space="preserve">
-    <value>Der Spielstand hat sich seit der letzten Synchronisierung geändert, und die neuen Daten haben den Lackierungsserver noch nicht erreicht. Die Liste der Lackierungen auf Autos könnte veraltet sein, daher ist das Verschieben dieser Lackierung in den Speicher nicht sicher: Sie könnte im Spiel auf einem Auto sein.</value>
+    <value>Der Spielstand hat sich seit der letzten Synchronisierung geändert, und die neuen Daten haben den Lackierungsserver noch nicht erreicht. Die Liste der Lackierungen auf Autos könnte veraltet sein, daher ist das Verschieben dieser Lackierung ins Lager nicht sicher: Sie könnte im Spiel auf einem Auto sein.</value>
   </data>
   <data name="StorageInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>Der Spielstand hat sich seit der letzten Synchronisierung geändert, und die neuen Daten haben den Lackierungsserver noch nicht erreicht. Die Liste der Lackierungen auf Autos könnte veraltet sein, daher ist das Verschieben dieser Lackierungen in den Speicher nicht sicher: Einige könnten im Spiel auf Autos sein.</value>
+    <value>Der Spielstand hat sich seit der letzten Synchronisierung geändert, und die neuen Daten haben den Lackierungsserver noch nicht erreicht. Die Liste der Lackierungen auf Autos könnte veraltet sein, daher ist das Verschieben dieser Lackierungen ins Lager nicht sicher: Einige könnten im Spiel auf Autos sein.</value>
   </data>
   <data name="ArchiveToStorageButton" xml:space="preserve">
-    <value>In den Speicher</value>
+    <value>Ins Lager</value>
   </data>
   <data name="ArchiveToStorageTooltip" xml:space="preserve">
-    <value>Die ausgewählten Lackierungen dauerhaft im Speicher des Kontos behalten, statt sie zu löschen. Der Spielstand bleibt unverändert.</value>
+    <value>Die ausgewählten Lackierungen dauerhaft im Lager des Kontos behalten, statt sie zu löschen. Der Spielstand bleibt unverändert.</value>
   </data>
   <data name="ArchiveToStorageSkippedFormat" xml:space="preserve">
-    <value>Nicht in den Speicher verschoben: {0}. Der Speicher hat schon eine Lackierung mit demselben Schlüssel.</value>
+    <value>Nicht ins Lager verschoben: {0}. Das Lager hat schon eine Lackierung mit demselben Schlüssel.</value>
   </data>
   <data name="HistoryStored" xml:space="preserve">
-    <value>In den Speicher verschoben</value>
+    <value>Ins Lager verschoben</value>
   </data>
   <data name="HistoryRestoredFromStorage" xml:space="preserve">
-    <value>Aus dem Speicher zurück</value>
+    <value>Aus dem Lager zurück</value>
   </data>
   <data name="StoredSinceFormat" xml:space="preserve">
-    <value>im Speicher seit {0}</value>
+    <value>im Lager seit {0}</value>
   </data>
   <data name="StoredDateTooltip" xml:space="preserve">
-    <value>Wann die Lackierung in den Speicher kam</value>
+    <value>Wann die Lackierung ins Lager kam</value>
   </data>
   <data name="KeyInsert" xml:space="preserve">
     <value>Einfg</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>Aus dem Speicher ins Archiv</value>
+    <value>Aus dem Lager ins Archiv</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Zurück ins Spiel</value>
@@ -2951,16 +2954,16 @@ oder Strg+V</value>
     <value>Lackierungen des Spiels zeigen</value>
   </data>
   <data name="ShortcutShowStorage" xml:space="preserve">
-    <value>Speicher zeigen</value>
+    <value>Lager zeigen</value>
   </data>
   <data name="ShortcutsGroupStorage" xml:space="preserve">
-    <value>Spiel und Speicher</value>
+    <value>Spiel und Lager</value>
   </data>
   <data name="ModeGame" xml:space="preserve">
     <value>Spiel</value>
   </data>
   <data name="ModeStorage" xml:space="preserve">
-    <value>Speicher</value>
+    <value>Lager</value>
   </data>
   <data name="ModeGameTooltip" xml:space="preserve">
     <value>Die Lackierungen im Spielstand und der Platz darin</value>
@@ -2969,7 +2972,7 @@ oder Strg+V</value>
     <value>Lackierungen, die die Galerie außerhalb des Spiels aufbewahrt, über sein Limit hinaus. Einfg bringt sie zurück ins Spiel</value>
   </data>
   <data name="StatusStoredCountFormat" xml:space="preserve">
-    <value>Im Speicher: {0}</value>
+    <value>Im Lager: {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
     <value>{0}: ins Spiel · {1}: ins Archiv</value>
@@ -2978,10 +2981,10 @@ oder Strg+V</value>
     <value>Zurück im Spiel: {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>Aus dem Speicher ins Archiv: {0}</value>
+    <value>Aus dem Lager ins Archiv: {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Im Speicher geblieben: {0}. Das Archiv hat schon eine Lackierung mit demselben Schlüssel.</value>
+    <value>Im Lager geblieben: {0}. Das Archiv hat schon eine Lackierung mit demselben Schlüssel.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>Lackierungen kommen zurück ins Spiel…</value>
@@ -2993,10 +2996,10 @@ oder Strg+V</value>
     <value>Alle zurück</value>
   </data>
   <data name="StorageEmptyHint" xml:space="preserve">
-    <value>Der Speicher ist leer. Entf im Spiel schickt die gewählten Lackierungen hierher</value>
+    <value>Das Lager ist leer. Entf im Spiel schickt die gewählten Lackierungen hierher</value>
   </data>
   <data name="StorageNoAccountTooltip" xml:space="preserve">
-    <value>Der Speicher gehört zu einem Konto: zuerst den Spielstand wählen</value>
+    <value>Das Lager gehört zu einem Konto: zuerst den Spielstand wählen</value>
   </data>
   <data name="ReturnRoomTitleFormat" xml:space="preserve">
     <value>Zurück ins Spiel: {0}</value>
@@ -3005,7 +3008,7 @@ oder Strg+V</value>
     <value>Im Spiel sind {0} von {1}, freie Plätze: {2}. Es fehlen: {3}.</value>
   </data>
   <data name="ReturnRoomExchangeFormat" xml:space="preserve">
-    <value>Tauschen: {0} aus dem Spiel in den Speicher</value>
+    <value>Tauschen: {0} aus dem Spiel ins Lager</value>
   </data>
   <data name="ReturnRoomExchangeNoteFormat" xml:space="preserve">
     <value>Alle kommen zurück, der Zähler wird {0} / {1}.</value>
@@ -3041,7 +3044,7 @@ oder Strg+V</value>
     <value>Nur so viele zurück, wie passen ({0})</value>
   </data>
   <data name="ReturnRoomFitNoteFormat" xml:space="preserve">
-    <value>Die ersten {0} in der Reihenfolge des Fensters, die anderen {1} bleiben im Speicher.</value>
+    <value>Die ersten {0} in der Reihenfolge des Fensters, die anderen {1} bleiben im Lager.</value>
   </data>
   <data name="ReturnRoomExchangeButton" xml:space="preserve">
     <value>Tauschen und zurück</value>
@@ -3056,7 +3059,7 @@ oder Strg+V</value>
     <value>Ordner</value>
   </data>
   <data name="StorageAll" xml:space="preserve">
-    <value>Ganzer Speicher</value>
+    <value>Ganzes Lager</value>
   </data>
   <data name="StorageNewFolder" xml:space="preserve">
     <value>Neuer Ordner</value>
@@ -3083,7 +3086,7 @@ oder Strg+V</value>
     <value>Ordner löschen</value>
   </data>
   <data name="StorageFolderDeleteMessageFormat" xml:space="preserve">
-    <value>Der Ordner „{0}“ wird gelöscht. Seine Lackierungen ({1}) bleiben im Speicher, unter „Ohne Ordner“.</value>
+    <value>Der Ordner „{0}“ wird gelöscht. Seine Lackierungen ({1}) bleiben im Lager, unter „Ohne Ordner“.</value>
   </data>
   <data name="StorageFolderDeleteEmptyMessageFormat" xml:space="preserve">
     <value>Den leeren Ordner „{0}“ löschen?</value>
@@ -3116,10 +3119,10 @@ oder Strg+V</value>
     <value>Ähnliche im Spiel</value>
   </data>
   <data name="CopyInStorageLabel" xml:space="preserve">
-    <value>Im Speicher</value>
+    <value>Im Lager</value>
   </data>
   <data name="SimilarInStorageLabel" xml:space="preserve">
-    <value>Ähnliche im Speicher</value>
+    <value>Ähnliche im Lager</value>
   </data>
   <data name="CopyInGameTooltipFormat" xml:space="preserve">
     <value>Das Spiel hat diese Lackierung schon: {0}</value>
@@ -3128,16 +3131,16 @@ oder Strg+V</value>
     <value>Das Spiel hat eine ähnliche Lackierung: {0}</value>
   </data>
   <data name="CopyInStorageTooltipFormat" xml:space="preserve">
-    <value>Der Speicher hat diese Lackierung schon: {0}</value>
+    <value>Das Lager hat diese Lackierung schon: {0}</value>
   </data>
   <data name="SimilarInStorageTooltipFormat" xml:space="preserve">
-    <value>Der Speicher hat eine ähnliche Lackierung: {0}</value>
+    <value>Das Lager hat eine ähnliche Lackierung: {0}</value>
   </data>
   <data name="StatsTileInGame" xml:space="preserve">
     <value>Schon im Spiel</value>
   </data>
   <data name="StatsTileInGameTooltip" xml:space="preserve">
-    <value>Gespeicherte Lackierungen zeigen, die auch im Spiel sind: diese kann der Speicher abgeben</value>
+    <value>Lackierungen im Lager zeigen, die auch im Spiel sind: diese kann das Lager abgeben</value>
   </data>
   <data name="StatsTileFolders" xml:space="preserve">
     <value>Ordner</value>
@@ -3146,10 +3149,10 @@ oder Strg+V</value>
     <value>ohne Ordner: {0}</value>
   </data>
   <data name="StatsHealthStorageTitle" xml:space="preserve">
-    <value>Speicher</value>
+    <value>Lager</value>
   </data>
   <data name="StatsHealthStorageNote" xml:space="preserve">
-    <value>Der Speicher ist oft die einzige Kopie einer Lackierung: beim Aufräumen daran denken.</value>
+    <value>Das Lager ist oft die einzige Kopie einer Lackierung: beim Aufräumen daran denken.</value>
   </data>
   <data name="StatsHealthStorageSize" xml:space="preserve">
     <value>Auf der Festplatte</value>
@@ -3158,43 +3161,43 @@ oder Strg+V</value>
     <value>Ohne Ordner</value>
   </data>
   <data name="StatsLegendStored" xml:space="preserve">
-    <value>In den Speicher gekommen</value>
+    <value>Ins Lager gekommen</value>
   </data>
   <data name="StatsStorageTimeNote" xml:space="preserve">
-    <value>Der Speicher nach dem Tag, an dem jede Lackierung hineinkam. Die Diagramme des Spieljournals sind in der Statistik des Spiels.</value>
+    <value>Das Lager nach dem Tag, an dem jede Lackierung hineinkam. Die Diagramme des Spieljournals sind in der Statistik des Spiels.</value>
   </data>
   <data name="StatsStorageModeNote" xml:space="preserve">
-    <value>Die Lackierungen des Speichers</value>
+    <value>Die Lackierungen des Lagers</value>
   </data>
   <data name="BackupCreateStorageButton" xml:space="preserve">
-    <value>Speicher sichern</value>
+    <value>Backup des Lagers erstellen</value>
   </data>
   <data name="BackupCreateStorageTooltip" xml:space="preserve">
-    <value>Der Speicher ist oft die einzige Kopie seiner Lackierungen: eine Sicherung bewahrt sie mit ihren Ordnern</value>
+    <value>Das Lager ist oft die einzige Kopie seiner Lackierungen: ein Backup bewahrt sie mit ihren Ordnern</value>
   </data>
   <data name="BackupStorageChip" xml:space="preserve">
-    <value>Speicher</value>
+    <value>Lager</value>
   </data>
   <data name="BackupStorageChipTooltip" xml:space="preserve">
-    <value>Eine Sicherung des Speichers: mit dem Speicher verglichen und mit Ordnern in ihn zurückgeholt</value>
+    <value>Ein Backup des Lagers: mit dem Lager verglichen und mit seinen Ordnern dorthin zurückgeholt</value>
   </data>
   <data name="BackupKindStorageChanged" xml:space="preserve">
-    <value>Erstellt, nachdem sich die Lackierungen im Speicher geändert haben</value>
+    <value>Erstellt, nachdem sich die Lackierungen im Lager geändert haben</value>
   </data>
   <data name="BackupNoStorageMessage" xml:space="preserve">
-    <value>Der Speicher ist leer: nichts zu sichern</value>
+    <value>Das Lager ist leer: nichts zu sichern</value>
   </data>
   <data name="StorageBackupFolder" xml:space="preserve">
     <value>Ordner sichern</value>
   </data>
   <data name="StatusStorageBackupMadeFormat" xml:space="preserve">
-    <value>Sicherung erstellt: {0}</value>
+    <value>Backup erstellt: {0}</value>
   </data>
   <data name="StatusAutoStorageBackupMade" xml:space="preserve">
-    <value>Eine automatische Sicherung des Speichers wurde erstellt</value>
+    <value>Ein automatisches Backup des Lagers wurde erstellt</value>
   </data>
   <data name="BackupRestoreIntoStorageNote" xml:space="preserve">
-    <value>Wiederhergestellte Lackierungen kommen in den Speicher zurück, jede in ihren Ordner.</value>
+    <value>Wiederhergestellte Lackierungen kommen ins Lager zurück, jede in ihren Ordner.</value>
   </data>
   <data name="DownloadDateLabel" xml:space="preserve">
     <value>Downloaddatum</value>
@@ -3212,7 +3215,7 @@ oder Strg+V</value>
     <value>das ist eine Datei, kein Ordner.</value>
   </data>
   <data name="StoragePlaceInSave" xml:space="preserve">
-    <value>das ist der Speicherordner des Spiels.</value>
+    <value>das ist der Spielstandordner des Spiels.</value>
   </data>
   <data name="StoragePlaceHoldsSave" xml:space="preserve">
     <value>darin liegt ein Spielstand des Spiels.</value>
@@ -3458,5 +3461,176 @@ oder Strg+V</value>
   </data>
   <data name="StoragePlaceAroundCurrent" xml:space="preserve">
     <value>darin liegt das aktuelle Lager, oder er liegt selbst darin.</value>
+  </data>
+  <data name="StoreFailedFormat" xml:space="preserve">
+    <value>Diese Lackierungen konnten nicht ins Lager verschoben werden ({0}). Vielleicht verwendet das Spiel ihre Dateien, der Datenträger ist voll oder der Ordner des Lagers ist nicht erreichbar. Details stehen im Protokoll:
+{1}</value>
+  </data>
+  <data name="ArchiveFailedFormat" xml:space="preserve">
+    <value>Diese Lackierungen konnten nicht ins Archiv verschoben werden ({0}). Vielleicht verwendet das Spiel ihre Dateien oder der Datenträger ist voll. Details stehen im Protokoll:
+{1}</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
+    <value>Ordner des Lagers als Ordner auf dem Datenträger anlegen</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDiskHint" xml:space="preserve">
+    <value>Aus (Standard): Alle Lackierungen liegen direkt im Ordner des Lagers, die Ordner der Galerie sind nur Bezeichnungen. An: Jeder Ordner der Galerie ist ein Ordner auf dem Datenträger mit seinen Lackierungen, und ein Ordner, den Sie dort von Hand anlegen, wird zu einem Ordner der Galerie. Gilt für das Lager jedes Kontos. Die Dateien werden sofort verschoben.</value>
+  </data>
+  <data name="StorageLayoutTitle" xml:space="preserve">
+    <value>Ordner auf dem Datenträger</value>
+  </data>
+  <data name="StorageLayoutOnConfirmFormat" xml:space="preserve">
+    <value>Die Lackierungen des Lagers in Ordner auf dem Datenträger einsortieren? Lackierungen, die in ihre Ordner kommen: {0}. Nichts verlässt das Lager, das Spiel bleibt unberührt.</value>
+  </data>
+  <data name="StorageLayoutOffConfirmFormat" xml:space="preserve">
+    <value>Alle Lackierungen des Lagers wieder direkt in den Ordner des Lagers legen? Lackierungen, die ihre Ordner verlassen: {0}. Die Ordner der Galerie bleiben, als Bezeichnungen.</value>
+  </data>
+  <data name="StorageLayoutOnButton" xml:space="preserve">
+    <value>Einsortieren</value>
+  </data>
+  <data name="StorageLayoutOffButton" xml:space="preserve">
+    <value>Flach machen</value>
+  </data>
+  <data name="StorageLayoutProgressFormat" xml:space="preserve">
+    <value>Lackierungen werden verschoben: {0} von {1}…</value>
+  </data>
+  <data name="StorageLayoutDoneFormat" xml:space="preserve">
+    <value>Lager einsortiert: verschobene Lackierungen: {0}</value>
+  </data>
+  <data name="StorageLayoutFailedFormat" xml:space="preserve">
+    <value>Lackierungen, die nicht verschoben werden konnten: {0}. Vielleicht ist eine ihrer Dateien in Gebrauch (in einem anderen Programm geöffnet). Sie bleiben, wo sie waren, und die Galerie findet sie weiterhin. Sie versucht es beim nächsten Öffnen des Lagers erneut. Details stehen im Protokoll.</value>
+  </data>
+  <data name="StorageLayoutAwayFormat" xml:space="preserve">
+    <value>Gerade nicht erreichbare Lager (ihr Datenträger fehlt): {0}. Sie werden einsortiert, sobald sie wieder da sind.</value>
+  </data>
+  <data name="StorageFolderRenameOnDiskFailed" xml:space="preserve">
+    <value>Der Ordner konnte auf dem Datenträger nicht umbenannt werden: Vielleicht ist eine Datei darin in Gebrauch (im Explorer oder einem anderen Programm geöffnet). Sein Name bleibt unverändert. Details stehen im Protokoll.</value>
+  </data>
+  <data name="StorageFolderMoveOnDiskFailedFormat" xml:space="preserve">
+    <value>Diese Lackierungen konnten auf dem Datenträger nicht in den Ordner verschoben werden ({0}): Vielleicht ist eine ihrer Dateien in Gebrauch. Sie bleiben, wo sie waren. Details stehen im Protokoll:
+{1}</value>
+  </data>
+  <data name="StorageFolderDeleteOnDiskFailedFormat" xml:space="preserve">
+    <value>Der Ordner wurde nicht gelöscht: Lackierungen daraus konnten auf dem Datenträger nicht herausgeholt werden ({0}). Vielleicht ist eine ihrer Dateien in Gebrauch. Sie bleiben darin. Details stehen im Protokoll.</value>
+  </data>
+  <data name="SettingsSectionCards" xml:space="preserve">
+    <value>Lackierungskarten</value>
+  </data>
+  <data name="BadgesOnPictureLabel" xml:space="preserve">
+    <value>Symbole auf dem Bild</value>
+  </data>
+  <data name="BadgesAtBottomLabel" xml:space="preserve">
+    <value>Symbole unten auf der Karte</value>
+  </data>
+  <data name="BadgesPlaceHint" xml:space="preserve">
+    <value>Auf dem Bild bleiben die Karten niedrig, unten ist das ganze Bild zu sehen. Was ein Symbol bedeutet, sagt sein Tooltip.</value>
+  </data>
+  <data name="BadgesMoreOne" xml:space="preserve">
+    <value>{0} weiteres Symbol:</value>
+  </data>
+  <data name="BadgesMoreFew" xml:space="preserve">
+    <value>{0} weitere Symbole:</value>
+  </data>
+  <data name="BadgesMoreMany" xml:space="preserve">
+    <value>{0} weitere Symbole:</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInStorageFormat" xml:space="preserve">
+    <value>das Motiv ähnelt „{1}“ im Lager zu {0} %</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInGameFormat" xml:space="preserve">
+    <value>das Motiv ähnelt „{1}“ im Spiel zu {0} %</value>
+  </data>
+  <data name="ContextMenuView3DSeveralFormat" xml:space="preserve">
+    <value>Ausgewählte in eigenen 3D-Fenstern ansehen ({0})</value>
+  </data>
+  <data name="Status3DWindowsFull" xml:space="preserve">
+    <value>Es sind bereits vier 3D-Fenster geöffnet. Schließen Sie eines, um eine weitere Lackierung zu öffnen.</value>
+  </data>
+  <data name="Status3DWindowsNotAllFormat" xml:space="preserve">
+    <value>In 3D geöffnet: {0} von {1}. Es können höchstens {2} 3D-Fenster gleichzeitig offen sein.</value>
+  </data>
+  <data name="FilterCopiesInStorageLabel" xml:space="preserve">
+    <value>Im Lager</value>
+  </data>
+  <data name="FilterCopiesInGameLabel" xml:space="preserve">
+    <value>Im Spiel</value>
+  </data>
+  <data name="FilterCopiesSame" xml:space="preserve">
+    <value>Dieselbe ist da</value>
+  </data>
+  <data name="FilterCopiesSameOrSimilar" xml:space="preserve">
+    <value>Dieselbe oder eine ähnliche</value>
+  </data>
+  <data name="FilterCopiesSimilar" xml:space="preserve">
+    <value>Nur eine ähnliche</value>
+  </data>
+  <data name="FilterCopiesNone" xml:space="preserve">
+    <value>Weder dieselbe noch eine ähnliche</value>
+  </data>
+  <data name="FilterValueCopySame" xml:space="preserve">
+    <value>Dieselbe</value>
+  </data>
+  <data name="FilterValueCopySameOrSimilar" xml:space="preserve">
+    <value>Dieselbe oder ähnlich</value>
+  </data>
+  <data name="FilterValueCopySimilar" xml:space="preserve">
+    <value>Ähnlich</value>
+  </data>
+  <data name="FilterValueCopyNone" xml:space="preserve">
+    <value>Keine</value>
+  </data>
+  <data name="ResetFiltersTooltip" xml:space="preserve">
+    <value>Filter zurücksetzen: leert die Suche und die Filter. Die Reihenfolge bleibt</value>
+  </data>
+  <data name="UndoLabel" xml:space="preserve">
+    <value>Rückgängig</value>
+  </data>
+  <data name="UndoTooltipFormat" xml:space="preserve">
+    <value>Rückgängig: {0}</value>
+  </data>
+  <data name="StatusUndoneFormat" xml:space="preserve">
+    <value>Rückgängig gemacht: {0}</value>
+  </data>
+  <data name="ShortcutUndo" xml:space="preserve">
+    <value>Letzte Aktion rückgängig machen</value>
+  </data>
+  <data name="UndoFavoritesFormat" xml:space="preserve">
+    <value>Favoriten geändert: {0}</value>
+  </data>
+  <data name="UndoLocksFormat" xml:space="preserve">
+    <value>Sperren geändert: {0}</value>
+  </data>
+  <data name="UndoTagsFormat" xml:space="preserve">
+    <value>Tags geändert: {0}</value>
+  </data>
+  <data name="WheelClickScrollLabel" xml:space="preserve">
+    <value>Ein Klick mit dem Mausrad scrollt ohne Halten</value>
+  </data>
+  <data name="WheelScrollSpeedFormat" xml:space="preserve">
+    <value>Scrollgeschwindigkeit mit gedrücktem Mausrad: {0} %</value>
+  </data>
+  <data name="FilterPresetsTooltip" xml:space="preserve">
+    <value>Gespeicherte Filtersätze</value>
+  </data>
+  <data name="FilterPresetSave" xml:space="preserve">
+    <value>Aktuelle Filter speichern…</value>
+  </data>
+  <data name="FilterPresetDelete" xml:space="preserve">
+    <value>Satz löschen</value>
+  </data>
+  <data name="FilterPresetNameLabel" xml:space="preserve">
+    <value>Name des Satzes</value>
+  </data>
+  <data name="FilterPresetsEmpty" xml:space="preserve">
+    <value>Noch keine gespeicherten Sätze</value>
+  </data>
+  <data name="FilterPresetApply" xml:space="preserve">
+    <value>Satz anwenden</value>
+  </data>
+  <data name="FilterPresetHint" xml:space="preserve">
+    <value>Rechtsklick: anwenden oder löschen</value>
+  </data>
+  <data name="ShortcutSaveFilterSet" xml:space="preserve">
+    <value>Aktuelle Filter als Satz speichern</value>
   </data>
 </root>

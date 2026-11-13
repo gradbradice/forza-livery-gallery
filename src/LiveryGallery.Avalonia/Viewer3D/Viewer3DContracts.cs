@@ -54,7 +54,11 @@ internal static class Livery3DWindows
 /// <param name="Window">The window's number (<see cref="Livery3DRequest.Window"/>)</param>
 /// <param name="Key">The livery it shows (<see cref="Livery3DRequest.Key"/>)</param>
 /// <param name="Step">−1 the one before, +1 the one after</param>
-internal sealed record Livery3DNavigation(int Window, string Key, int Step);
+internal sealed record Livery3DNavigation(int Window, string Key, int Step)
+{
+    /// <summary>Shift with ← or →: the livery goes to one more window (<see cref="Livery3DWindows.New"/>), this one stays as it is</summary>
+    public bool NewWindow { get; init; }
+}
 
 /// <summary>Why a livery was not shown</summary>
 internal enum Livery3DProblem
@@ -125,8 +129,11 @@ internal interface ILivery3DViewer
     /// <summary>Shows the livery in a viewer window (<see cref="Livery3DRequest.Window"/>), opening it over <paramref name="owner"/> when needed</summary>
     Task<Livery3DResult> ShowAsync(Window owner, Livery3DRequest request);
 
-    /// <summary>← or → in a window: the gallery shows the neighbouring livery there (<see cref="ShowAsync"/>)</summary>
+    /// <summary>← or → in a window: the gallery shows the neighbouring livery there (<see cref="ShowAsync"/>), with Shift in one more</summary>
     event Action<Livery3DNavigation>? NavigateRequested;
+
+    /// <summary>How many more windows can open now (<see cref="Livery3DWindows.Max"/> less those open)</summary>
+    int FreeWindows { get; }
 
     /// <summary>Previews drawn from the 3D model, with the same game folder</summary>
     ILiveryThumbnails Thumbnails { get; }

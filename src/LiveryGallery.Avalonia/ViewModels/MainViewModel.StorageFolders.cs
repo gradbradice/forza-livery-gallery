@@ -8,7 +8,9 @@ namespace LiveryGallery.ViewModels;
 /// <summary>
 /// The storage's folders (docs/storage.md, stage 4): the part of the storage the grid shows (all, no folder, a folder),
 /// the folders made, renamed, reordered and deleted, liveries laid into a folder, a folder returned to the game. A
-/// folder is a field of the livery's entry, not a folder on disk (<see cref="LiveryArchive.MoveToFolder"/>)
+/// folder is a field of the livery's entry; on disk it is a folder only when the storages keep them there
+/// (<see cref="AccountStorage.FoldersOnDisk"/>), and then every change here moves the files too
+/// (<see cref="LiveryArchive.MoveToFolderAsync"/>)
 /// </summary>
 internal sealed partial class MainViewModel
 {
@@ -66,9 +68,18 @@ internal sealed partial class MainViewModel
         return folder;
     }
 
-    public bool RenameStorageFolder(string id, string name)
+    /// <summary>
+    /// Renames a folder; with folders on disk its folder there too, and when that cannot be (a file in it in use) the
+    /// name stays and the user is told
+    /// </summary>
+    public async Task<bool> RenameStorageFolderAsync(string id, string name)
     {
-        if (CurrentStorage is not { } store || StorageFolderNameProblem(name, id) is not null || !store.RenameFolder(id, name)) return false;
+        if (CurrentStorage is not { } store || StorageFolderNameProblem(name, id) is not null) return false;
+        if (!await store.RenameFolderAsync(id, name))
+        {
+            if (storage.FoldersOnDisk) ErrorMessageRequested?.Invoke(Strings.StorageFolderRenameOnDiskFailed);
+            return false;
+        }
         StorageFoldersChanged?.Invoke();
         return true;
     }
@@ -92,9 +103,17 @@ internal sealed partial class MainViewModel
     {
         if (CurrentStorage is not { } store) return false;
         if (toArchive && StoredIn(id) is { Count: > 0 } liveries && !await MoveStoredToArchiveAsync(liveries)) return false;
-        // The stored liveries that were in it (a game's copy of the same name is not one of them)
-        var keys = store.DeleteFolder(id).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        // The stored liveries that were in it (a game's copy of the same name is not one of them); with folders on disk
+        // they move up to the top
+        var keys = (await store.DeleteFolderAsync(id)).ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var entry in Gallery.AllEntries.Where(e => e.StorageFolderId == id && keys.Contains(e.FolderName))) entry.StorageFolderId = null;
+        // Folders on disk: a livery that could not leave it (a file in use) keeps the folder
+        if (store.GetFolders().Any(f => f.Id == id))
+        {
+            int stayed = Gallery.AllEntries.Count(e => e.IsStored && e.StorageFolderId == id);
+            ErrorMessageRequested?.Invoke(string.Format(Strings.StorageFolderDeleteOnDiskFailedFormat, stayed));
+            StorageFoldersChanged?.Invoke();
+        }
         if (StorageFolderView == id) StorageFolderView = AllStoredView;
         RefreshStorageCount();
         RefreshGallery();
@@ -102,16 +121,20 @@ internal sealed partial class MainViewModel
     }
 
     /// <summary>
-    /// Lays stored liveries into a folder (null: in none). Nothing moves on disk: only their entries change, and the
-    /// cards at once
+    /// Lays stored liveries into a folder (null: in none): their entries change, and the cards. With folders on disk
+    /// their files move into the folder's folder; one that cannot (a file in use) stays where it was, and the user is told
     /// </summary>
-    public int MoveToStorageFolder(IReadOnlyList<LiveryEntry> entries, string? folderId)
+    public async Task<int> MoveToStorageFolderAsync(IReadOnlyList<LiveryEntry> entries, string? folderId)
     {
         if (CurrentStorage is not { } store || entries.Count == 0) return 0;
-        var moved = store.MoveToFolder(entries.Select(e => e.FolderName), folderId).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var wanted = entries.Where(e => e.StorageFolderId != folderId).ToList();
+        var moved = (await store.MoveToFolderAsync(entries.Select(e => e.FolderName), folderId)).ToHashSet(StringComparer.OrdinalIgnoreCase);
         foreach (var entry in entries.Where(e => moved.Contains(e.FolderName))) entry.StorageFolderId = folderId;
         string name = folderId is null ? Strings.StorageNoFolder : StorageFolders().FirstOrDefault(f => f.Id == folderId)?.Name ?? "";
         if (moved.Count > 0) Status.SetStatusText(string.Format(Strings.StatusMovedToFolderFormat, name, moved.Count));
+        var stayed = wanted.Where(e => !moved.Contains(e.FolderName)).Select(e => e.Data).ToList();
+        if (stayed.Count > 0 && storage.FoldersOnDisk)
+            ErrorMessageRequested?.Invoke(string.Format(Strings.StorageFolderMoveOnDiskFailedFormat, stayed.Count, LiveryRestoreConflicts.FormatList(stayed)));
         RefreshStorageCount();
         RefreshGallery();
         return moved.Count;
@@ -126,17 +149,8 @@ internal sealed partial class MainViewModel
         var (all, none, _) = StorageFolderCounts();
         if (_storageBytes is not { } known || known.Count != all || DateTime.UtcNow - known.At > TimeSpan.FromMinutes(1))
         {
-            long bytes = 0;
-            try
-            {
-                var root = new DirectoryInfo(storage.Paths.StorageOf(key));
-                if (root.Exists) bytes = root.EnumerateFiles("*", SearchOption.AllDirectories).Sum(f => f.Length);
-            }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
-            {
-                AppLog.LogError("Failed to measure the storage", ex);
-            }
-            _storageBytes = (all, DateTime.UtcNow, bytes);
+            // Wherever the storage is: the program's folder or the user's (the same size as the settings show)
+            _storageBytes = (all, DateTime.UtcNow, StoragePlaces.SizeOf(storage.StorageFolderOf(key)));
         }
         return new StorageStatistics(StorageFolders().Count, none, _storageBytes.Value.Bytes);
     }

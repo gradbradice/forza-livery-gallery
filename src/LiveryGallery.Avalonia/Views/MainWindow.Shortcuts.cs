@@ -14,13 +14,24 @@ internal partial class MainWindow
     /// and the space would press it again instead of selecting the card. A dialog of the gallery is modal, so its keys
     /// never come here, and a menu or flyout that is open gets its keys in its own popup
     /// </summary>
-    private void InitializeShortcuts() => AddHandler(KeyDownEvent, OnShortcutKeyDown, RoutingStrategies.Tunnel);
+    private void InitializeShortcuts()
+    {
+        AddHandler(KeyDownEvent, OnShortcutKeyDown, RoutingStrategies.Tunnel);
+        // Before anything under the pointer takes the press: text selected in a folder's name is let go
+        AddHandler(PointerPressedEvent, (_, e) => GalleryClicks.DropTextSelection(FocusManager?.GetFocusedElement(), e.Source as Avalonia.Visual),
+            RoutingStrategies.Tunnel);
+    }
 
     private void OnShortcutKeyDown(object? sender, KeyEventArgs e)
     {
         if (e.Handled || !_isLoaded) return;
         var focused = FocusManager?.GetFocusedElement();
         bool typing = focused is TextBox;
+        if (ReferenceEquals(focused, SearchBox) && e.Key == Key.Enter && e.KeyModifiers == KeyModifiers.None && SearchEnter())
+        {
+            e.Handled = true;
+            return;
+        }
         if (!typing && (_showingScreenshots ? MoveScreenshotCursor(e, focused) : MoveCursor(e, focused)))
         {
             e.Handled = true;
@@ -47,6 +58,12 @@ internal partial class MainWindow
                 return Escape(focused);
             case GalleryShortcut.SelectAll:
                 gallery.SelectAllCommand.Execute(null);
+                return true;
+            case GalleryShortcut.SaveFilterSet:
+                RunUiTask(SaveFilterPresetAsync, "save filter preset");
+                return true;
+            case GalleryShortcut.Undo:
+                if (_mainViewModel.UndoCommand.CanExecute(null)) _mainViewModel.UndoCommand.Execute(null);
                 return true;
             case GalleryShortcut.Refresh:
                 if (!_mainViewModel.Status.CanRefresh || !_mainViewModel.RefreshCommand.CanExecute(null)) return true;
@@ -87,8 +104,9 @@ internal partial class MainWindow
             case GalleryShortcut.View3D when single is not null:
                 if (single.CanView3D) gallery.View3DCommand.Execute(single);
                 return true;
-            case GalleryShortcut.View3DNewWindow when single is not null:
-                if (single.CanView3D) RunUiTask(() => ShowLivery3DAsync(single, Viewer3D.Livery3DWindows.New), $"3D viewer for '{single.FolderName}'");
+            // One more window for the livery, or a window for each selected one
+            case GalleryShortcut.View3DNewWindow when first is not null:
+                gallery.View3DNewWindowCommand.Execute(first);
                 return true;
             case GalleryShortcut.FindInGame when single is not null:
                 if (single.ShowFindInGame && _mainViewModel.NavigateInGameCommand.CanExecute(single))
@@ -150,6 +168,11 @@ internal partial class MainWindow
     /// </summary>
     private bool Escape(object? focused)
     {
+        if (BandDrawn)
+        {
+            EndBand(keep: false); // a rectangle being dragged: dropped, the selection as it was before it
+            return true;
+        }
         if (ReferenceEquals(focused, SearchBox))
         {
             if (!string.IsNullOrEmpty(SearchBox.Text)) SearchBox.Text = "";

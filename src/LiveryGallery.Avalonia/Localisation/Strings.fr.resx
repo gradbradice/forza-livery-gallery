@@ -318,6 +318,9 @@
   <data name="ContactsGithubLabel" xml:space="preserve">
     <value>Dépôt GitHub</value>
   </data>
+  <data name="ContactsDiscordLabel" xml:space="preserve">
+    <value>Serveur Discord</value>
+  </data>
   <data name="DuplicateBadgeLabel" xml:space="preserve">
     <value>Doublon</value>
   </data>
@@ -1020,14 +1023,14 @@ Mis à jour à {1}</value>
     <value>Utiliser le serveur pour trouver les livrées posées sur des voitures</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Pour savoir quelles livrées sont posées sur vos voitures, la galerie envoie au serveur le fichier de sauvegarde du jeu C_ProfileData. Le serveur utilise ce fichier uniquement à cette fin et ne le conserve pas.
+    <value>Pour savoir quelles livrées sont posées sur vos voitures et connaître le nom de votre compte, la galerie envoie au serveur le fichier de sauvegarde du jeu C_ProfileData. Le serveur utilise ce fichier uniquement à cette fin et ne le conserve pas.
 
 Les données du fichier ne sont ni conservées ni utilisées à d’autres fins. Le serveur garde en sécurité les clés nécessaires pour déchiffrer le fichier de sauvegarde.
 
 Le serveur n’a aucun lien avec les serveurs officiels de Forza Horizon, Xbox ou Microsoft.</value>
   </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Pour savoir quelles livrées sont posées sur vos voitures, la galerie envoie au serveur le fichier de sauvegarde du jeu C_ProfileData. Le serveur utilise ce fichier uniquement à cette fin et ne le conserve pas.
+    <value>Pour savoir quelles livrées sont posées sur vos voitures et connaître le nom de votre compte, la galerie envoie au serveur le fichier de sauvegarde du jeu C_ProfileData. Le serveur utilise ce fichier uniquement à cette fin et ne le conserve pas.
 
 Les données du fichier ne sont ni conservées ni utilisées à d’autres fins. Le serveur garde en sécurité les clés nécessaires pour déchiffrer le fichier de sauvegarde.
 
@@ -1971,13 +1974,13 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Part</value>
   </data>
   <data name="StatsCoverageSortLiveriesTooltip" xml:space="preserve">
-    <value>D'abord les constructeurs ayant le plus de livrées</value>
+    <value>D’abord les constructeurs ayant le plus de livrées</value>
   </data>
   <data name="StatsCoverageSortCarsTooltip" xml:space="preserve">
-    <value>D'abord les constructeurs ayant le plus de voitures avec des livrées</value>
+    <value>D’abord les constructeurs ayant le plus de voitures avec des livrées</value>
   </data>
   <data name="StatsCoverageSortShareTooltip" xml:space="preserve">
-    <value>D'abord les constructeurs ayant la plus grande part de voitures avec des livrées</value>
+    <value>D’abord les constructeurs ayant la plus grande part de voitures avec des livrées</value>
   </data>
   <data name="StatsLiveryCountOne" xml:space="preserve">
     <value>{0} livrée</value>
@@ -2387,11 +2390,23 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
   <data name="UpdatesSectionLabel" xml:space="preserve">
     <value>Mises à jour</value>
   </data>
+  <data name="UpdateInstallLabel" xml:space="preserve">
+    <value>Installation des mises à jour</value>
+  </data>
+  <data name="UpdateInstallAsk" xml:space="preserve">
+    <value>Demander avant d’installer</value>
+  </data>
+  <data name="UpdateInstallAutomatic" xml:space="preserve">
+    <value>Installer automatiquement</value>
+  </data>
+  <data name="UpdateInstallHint" xml:space="preserve">
+    <value>En demandant, la galerie signale la nouvelle version et ne l’installe que lorsque vous cliquez sur « Installer » dans sa fenêtre. En automatique, elle télécharge la version en arrière-plan et l’installe à la fermeture de la galerie.</value>
+  </data>
   <data name="BetaUpdatesLabel" xml:space="preserve">
     <value>Recevoir les versions bêta</value>
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
-    <value>Les bêtas sortent avant les versions stables et peuvent contenir des bugs. Désactiver l’option ne ramène pas à une version plus ancienne : la galerie attend une version stable plus récente que la bêta.</value>
+    <value>Les bêtas sortent avant les versions stables et peuvent contenir des bugs. Si vous désactivez l’option sur une bêta, la galerie propose de revenir à la dernière version stable.</value>
   </data>
   <data name="TagsDialogOneHint" xml:space="preserve">
     <value>Une coche ajoute le tag à la livrée, une case vide le retire.</value>
@@ -2458,12 +2473,6 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
   </data>
   <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
     <value>Auteur :</value>
-  </data>
-  <data name="LiveryDetailsChipLocked" xml:space="preserve">
-    <value>Verrouillée</value>
-  </data>
-  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
-    <value>Favorite</value>
   </data>
   <data name="LiveryDetailsIdLabel" xml:space="preserve">
     <value>Numéro de livrée</value>
@@ -2546,6 +2555,9 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
   <data name="ContextMenuOpenDetails" xml:space="preserve">
     <value>Ouvrir la livrée</value>
   </data>
+  <data name="ContextMenuView3DNewWindow" xml:space="preserve">
+    <value>Voir dans une fenêtre 3D de plus</value>
+  </data>
   <data name="NoteTooltipFormat" xml:space="preserve">
     <value>Note : {0}</value>
   </data>
@@ -2570,17 +2582,8 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
   <data name="GameSwitcherTooltip" xml:space="preserve">
     <value>Changer de jeu</value>
   </data>
-  <data name="GameStateFoundFormat" xml:space="preserve">
-    <value>Sauvegardes trouvées : {0}</value>
-  </data>
-  <data name="GameStateChosen" xml:space="preserve">
-    <value>Dossier de sauvegarde choisi par vous</value>
-  </data>
   <data name="GameStateNotFound" xml:space="preserve">
     <value>Sauvegarde introuvable</value>
-  </data>
-  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
-    <value>Choisir le dossier de sauvegarde…</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
     <value>Choisir le dossier…</value>
@@ -2608,7 +2611,7 @@ Mis à jour le {1} à {2}</value>
     <value>Comptes</value>
   </data>
   <data name="SettingsAccountsHint" xml:space="preserve">
-    <value>La galerie trouve seule les sauvegardes de tous les comptes de ce PC. Si la sauvegarde d'un compte est ailleurs (sur un autre disque, une copie), ajoutez-la ici. On passe d'un compte à l'autre dans la fenêtre principale, à côté de la recherche.</value>
+    <value>La galerie trouve seule les sauvegardes de tous les comptes de ce PC. Si la sauvegarde d’un compte est ailleurs (sur un autre disque, une copie), ajoutez-la ici. On passe d’un compte à l’autre dans la fenêtre principale, à côté de la recherche.</value>
   </data>
   <data name="SettingsAccountFound" xml:space="preserve">
     <value>Trouvé sur ce PC</value>
@@ -2638,13 +2641,13 @@ Mis à jour le {1} à {2}</value>
     <value>Archive</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>Demander avant d'archiver quand on ne sait pas quelles livrées sont sur les voitures</value>
+    <value>Demander avant d’archiver quand on ne sait pas quelles livrées sont sur les voitures</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>Demander avant d'archiver quand la liste des livrées sur les voitures peut être périmée</value>
+    <value>Demander avant d’archiver quand la liste des livrées sur les voitures peut être périmée</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>Il n'est pas sûr de déplacer dans l'archive une livrée qui est sur une voiture du jeu. « Ne plus afficher » dans ces questions les désactive, et on peut les réactiver ici.</value>
+    <value>Il n’est pas sûr de déplacer dans l’archive une livrée qui est sur une voiture du jeu. « Ne plus afficher » dans ces questions les désactive, et on peut les réactiver ici.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Début</value>
@@ -2677,7 +2680,7 @@ Mis à jour le {1} à {2}</value>
     <value>Ajouter à la sélection la livrée sous le curseur ou l’en retirer</value>
   </data>
   <data name="ShortcutView3DNewWindow" xml:space="preserve">
-    <value>Voir dans une fenêtre 3D de plus, pour comparer (jusqu’à quatre)</value>
+    <value>Voir dans une fenêtre 3D de plus, pour comparer (jusqu’à quatre). Plusieurs sélectionnées : chacune dans sa fenêtre</value>
   </data>
   <data name="ScreenshotsLabel" xml:space="preserve">
     <value>Captures</value>
@@ -2690,7 +2693,7 @@ Mis à jour le {1} à {2}</value>
 ou Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>Conservées sur ce PC uniquement. Elles vont dans l'archive avec la livrée et en reviennent avec elle.</value>
+    <value>Conservées sur ce PC uniquement. Elles vont dans l’archive avec la livrée et en reviennent avec elle.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>Captures de la livrée</value>
@@ -2699,7 +2702,7 @@ ou Ctrl+V</value>
     <value>Images</value>
   </data>
   <data name="ScreenshotsSkippedFormat" xml:space="preserve">
-    <value>Non ajouté, ce n'est pas une image : {0}</value>
+    <value>Non ajouté, ce n’est pas une image : {0}</value>
   </data>
   <data name="ScreenshotPositionFormat" xml:space="preserve">
     <value>{0} sur {1}</value>
@@ -2726,7 +2729,7 @@ ou Ctrl+V</value>
     <value>Ouvrir la livrée</value>
   </data>
   <data name="ScreenshotCoverTooltip" xml:space="preserve">
-    <value>Couverture : votre capture. L'aperçu du jeu revient depuis la fenêtre de la livrée</value>
+    <value>Couverture : votre capture. L’aperçu du jeu revient depuis la fenêtre de la livrée</value>
   </data>
   <data name="ScreenshotCountTooltipFormat" xml:space="preserve">
     <value>Captures : {0}</value>
@@ -2759,7 +2762,7 @@ ou Ctrl+V</value>
     <value>Ouvrir le dossier</value>
   </data>
   <data name="ScreenshotsConvertConfirmFormat" xml:space="preserve">
-    <value>Compresser {0} captures en WebP avec la qualité {1} ? Un fichier n'est remplacé que si le WebP est plus petit.</value>
+    <value>Compresser {0} captures en WebP avec la qualité {1} ? Un fichier n’est remplacé que si le WebP est plus petit.</value>
   </data>
   <data name="ScreenshotsConvertedFormat" xml:space="preserve">
     <value>Captures compressées : {0}. Occupé maintenant : {1}.</value>
@@ -2768,10 +2771,10 @@ ou Ctrl+V</value>
     <value>Les livrées supprimées ont des captures ({0}). Les supprimer aussi ?</value>
   </data>
   <data name="ScreenshotsInBackups" xml:space="preserve">
-    <value>Inclure les captures dans les sauvegardes</value>
+    <value>Inclure les captures dans les copies de sauvegarde</value>
   </data>
   <data name="ScreenshotRestorePreview" xml:space="preserve">
-    <value>Rétablir l'aperçu du jeu</value>
+    <value>Rétablir l’aperçu du jeu</value>
   </data>
   <data name="ScreenshotsGroupLabel" xml:space="preserve">
     <value>Grouper</value>
@@ -2786,13 +2789,13 @@ ou Ctrl+V</value>
     <value>Par date</value>
   </data>
   <data name="ScreenshotsNewestFirst" xml:space="preserve">
-    <value>Les plus récentes d'abord</value>
+    <value>Les plus récentes d’abord</value>
   </data>
   <data name="ScreenshotsOldestFirst" xml:space="preserve">
-    <value>Les plus anciennes d'abord</value>
+    <value>Les plus anciennes d’abord</value>
   </data>
   <data name="ScreenshotsToday" xml:space="preserve">
-    <value>Aujourd'hui</value>
+    <value>Aujourd’hui</value>
   </data>
   <data name="ScreenshotsYesterday" xml:space="preserve">
     <value>Hier</value>
@@ -2822,13 +2825,13 @@ ou Ctrl+V</value>
     <value>Nouvel album</value>
   </data>
   <data name="AlbumsHint" xml:space="preserve">
-    <value>Glissez des captures sur un album. Une capture peut être dans plusieurs albums. La retirer d'un album ne la supprime pas. Glissez un album pour changer l'ordre.</value>
+    <value>Glissez des captures sur un album. Une capture peut être dans plusieurs albums. La retirer d’un album ne la supprime pas. Glissez un album pour changer l’ordre.</value>
   </data>
   <data name="AlbumRenameTitle" xml:space="preserve">
-    <value>Renommer l'album</value>
+    <value>Renommer l’album</value>
   </data>
   <data name="AlbumNameLabel" xml:space="preserve">
-    <value>Nom de l'album</value>
+    <value>Nom de l’album</value>
   </data>
   <data name="AlbumCreate" xml:space="preserve">
     <value>Créer</value>
@@ -2840,13 +2843,13 @@ ou Ctrl+V</value>
     <value>Un album porte déjà ce nom.</value>
   </data>
   <data name="AlbumDeleteTitle" xml:space="preserve">
-    <value>Supprimer l'album ?</value>
+    <value>Supprimer l’album ?</value>
   </data>
   <data name="AlbumDeleteMessageFormat" xml:space="preserve">
-    <value>L'album « {0} » sera supprimé. Ses captures restent, simplement hors de l'album.</value>
+    <value>L’album « {0} » sera supprimé. Ses captures restent, simplement hors de l’album.</value>
   </data>
   <data name="ScreenshotsAddToAlbum" xml:space="preserve">
-    <value>Ajouter à l'album</value>
+    <value>Ajouter à l’album</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
     <value>Nouvel album…</value>
@@ -2900,25 +2903,25 @@ ou Ctrl+V</value>
     <value>Une livrée posée sur une voiture dans le jeu ne peut pas aller dans le stockage. Livrées sélectionnées restées dans le jeu : {0}.</value>
   </data>
   <data name="StorageAuctionSkippedFormat" xml:space="preserve">
-    <value>Les livrées d'enchères ne vont jamais dans le stockage. Livrées d'enchères sélectionnées restées dans le jeu : {0}.</value>
+    <value>Les livrées d’enchères ne vont jamais dans le stockage. Livrées d’enchères sélectionnées restées dans le jeu : {0}.</value>
   </data>
   <data name="StorageInstalledUnknownMessage" xml:space="preserve">
-    <value>On ne sait pas quelles livrées sont posées sur des voitures : déplacer cette livrée vers le stockage n'est pas sûr, elle est peut-être sur une voiture dans le jeu.</value>
+    <value>On ne sait pas quelles livrées sont posées sur des voitures : déplacer cette livrée vers le stockage n’est pas sûr, elle est peut-être sur une voiture dans le jeu.</value>
   </data>
   <data name="StorageInstalledUnknownMessageMany" xml:space="preserve">
-    <value>On ne sait pas quelles livrées sont posées sur des voitures : déplacer ces livrées vers le stockage n'est pas sûr, certaines sont peut-être sur des voitures dans le jeu.</value>
+    <value>On ne sait pas quelles livrées sont posées sur des voitures : déplacer ces livrées vers le stockage n’est pas sûr, certaines sont peut-être sur des voitures dans le jeu.</value>
   </data>
   <data name="StorageInstalledOutdatedMessage" xml:space="preserve">
-    <value>La sauvegarde a changé depuis la dernière synchronisation et les nouvelles données ne sont pas encore arrivées au serveur de livrées. La liste des livrées sur les voitures est peut-être ancienne : déplacer cette livrée vers le stockage n'est pas sûr, elle est peut-être sur une voiture dans le jeu.</value>
+    <value>La sauvegarde a changé depuis la dernière synchronisation et les nouvelles données ne sont pas encore arrivées au serveur de livrées. La liste des livrées sur les voitures est peut-être ancienne : déplacer cette livrée vers le stockage n’est pas sûr, elle est peut-être sur une voiture dans le jeu.</value>
   </data>
   <data name="StorageInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>La sauvegarde a changé depuis la dernière synchronisation et les nouvelles données ne sont pas encore arrivées au serveur de livrées. La liste des livrées sur les voitures est peut-être ancienne : déplacer ces livrées vers le stockage n'est pas sûr, certaines sont peut-être sur des voitures dans le jeu.</value>
+    <value>La sauvegarde a changé depuis la dernière synchronisation et les nouvelles données ne sont pas encore arrivées au serveur de livrées. La liste des livrées sur les voitures est peut-être ancienne : déplacer ces livrées vers le stockage n’est pas sûr, certaines sont peut-être sur des voitures dans le jeu.</value>
   </data>
   <data name="ArchiveToStorageButton" xml:space="preserve">
     <value>Vers le stockage</value>
   </data>
   <data name="ArchiveToStorageTooltip" xml:space="preserve">
-    <value>Garder pour de bon les livrées sélectionnées dans le stockage du compte au lieu de les supprimer. La sauvegarde n'est pas modifiée.</value>
+    <value>Garder pour de bon les livrées sélectionnées dans le stockage du compte au lieu de les supprimer. La sauvegarde n’est pas modifiée.</value>
   </data>
   <data name="ArchiveToStorageSkippedFormat" xml:space="preserve">
     <value>Non déplacées vers le stockage : {0}. Le stockage contient déjà une livrée avec la même clé.</value>
@@ -2933,22 +2936,22 @@ ou Ctrl+V</value>
     <value>dans le stockage depuis le {0}</value>
   </data>
   <data name="StoredDateTooltip" xml:space="preserve">
-    <value>Quand le design est entré dans le stockage</value>
+    <value>Quand la livrée est entrée dans le stockage</value>
   </data>
   <data name="KeyInsert" xml:space="preserve">
     <value>Inser</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>Du stockage vers l'archive</value>
+    <value>Du stockage vers l’archive</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Remettre dans le jeu</value>
   </data>
   <data name="ReturnToGameTooltip" xml:space="preserve">
-    <value>Dans le jeu : le design retourne dans la sauvegarde</value>
+    <value>Dans le jeu : la livrée retourne dans la sauvegarde</value>
   </data>
   <data name="ShortcutShowGame" xml:space="preserve">
-    <value>Afficher les designs du jeu</value>
+    <value>Afficher les livrées du jeu</value>
   </data>
   <data name="ShortcutShowStorage" xml:space="preserve">
     <value>Afficher le stockage</value>
@@ -2963,28 +2966,28 @@ ou Ctrl+V</value>
     <value>Stockage</value>
   </data>
   <data name="ModeGameTooltip" xml:space="preserve">
-    <value>Les designs de la sauvegarde du jeu et la place qui reste</value>
+    <value>Les livrées de la sauvegarde du jeu et la place qui reste</value>
   </data>
   <data name="ModeStorageTooltip" xml:space="preserve">
-    <value>Les designs que la galerie garde hors du jeu, au-delà de sa limite. Inser les remet dans le jeu</value>
+    <value>Les livrées que la galerie garde hors du jeu, au-delà de sa limite. Inser les remet dans le jeu</value>
   </data>
   <data name="StatusStoredCountFormat" xml:space="preserve">
     <value>Dans le stockage : {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0} : dans le jeu · {1} : vers l'archive</value>
+    <value>{0} : dans le jeu · {1} : vers l’archive</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>Remis dans le jeu : {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>Du stockage vers l'archive : {0}</value>
+    <value>Du stockage vers l’archive : {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Restés dans le stockage : {0}. L'archive a déjà un design avec la même clé.</value>
+    <value>Restées dans le stockage : {0}. L’archive a déjà une livrée avec la même clé.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
-    <value>Retour des designs dans le jeu…</value>
+    <value>Retour des livrées dans le jeu…</value>
   </data>
   <data name="ReturnBeyondLimitTitle" xml:space="preserve">
     <value>Pas assez de place dans le jeu</value>
@@ -2993,10 +2996,10 @@ ou Ctrl+V</value>
     <value>Tout remettre</value>
   </data>
   <data name="StorageEmptyHint" xml:space="preserve">
-    <value>Le stockage est vide. Suppr dans le jeu y envoie les designs choisis</value>
+    <value>Le stockage est vide. Suppr dans le jeu y envoie les livrées choisies</value>
   </data>
   <data name="StorageNoAccountTooltip" xml:space="preserve">
-    <value>Le stockage appartient à un compte : choisissez d'abord la sauvegarde du jeu</value>
+    <value>Le stockage appartient à un compte : choisissez d’abord la sauvegarde du jeu</value>
   </data>
   <data name="ReturnRoomTitleFormat" xml:space="preserve">
     <value>Remettre dans le jeu : {0}</value>
@@ -3011,13 +3014,13 @@ ou Ctrl+V</value>
     <value>Tous reviennent, le compteur passe à {0} / {1}.</value>
   </data>
   <data name="ReturnRoomTooFewFormat" xml:space="preserve">
-    <value>Seuls {0} conviennent : les autres sont sur une voiture, verrouillés, favoris, à vous ou de l'enchère.</value>
+    <value>Seuls {0} conviennent : les autres sont sur une voiture, verrouillés, favoris, à vous ou de l’enchère.</value>
   </data>
   <data name="ReturnRoomCheckedFormat" xml:space="preserve">
     <value>Cochés {0} sur {1} nécessaires · {2} conviennent</value>
   </data>
   <data name="ReturnRoomCandidatesNote" xml:space="preserve">
-    <value>D'abord ceux arrivés les premiers dans le jeu. Non proposés : sur une voiture, verrouillés, favoris, à vous, enchère</value>
+    <value>D’abord ceux arrivés les premiers dans le jeu. Non proposés : sur une voiture, verrouillés, favoris, à vous, enchère</value>
   </data>
   <data name="ReturnRoomFolderLabel" xml:space="preserve">
     <value>dans le dossier</value>
@@ -3035,13 +3038,13 @@ ou Ctrl+V</value>
     <value>Tout remettre au-delà de la limite ({0})</value>
   </data>
   <data name="ReturnRoomAllNoteFormat" xml:space="preserve">
-    <value>Cela donne {0} / {1}. Tant que le jeu dépasse sa limite, il ne permet ni de télécharger ni de créer un design.</value>
+    <value>Cela donne {0} / {1}. Tant que le jeu dépasse sa limite, il ne permet ni de télécharger ni de créer une livrée.</value>
   </data>
   <data name="ReturnRoomFitFormat" xml:space="preserve">
     <value>Remettre seulement ce qui tient ({0})</value>
   </data>
   <data name="ReturnRoomFitNoteFormat" xml:space="preserve">
-    <value>Les {0} premiers dans l'ordre de la fenêtre, les {1} autres restent dans le stockage.</value>
+    <value>Les {0} premiers dans l’ordre de la fenêtre, les {1} autres restent dans le stockage.</value>
   </data>
   <data name="ReturnRoomExchangeButton" xml:space="preserve">
     <value>Échanger et remettre</value>
@@ -3062,7 +3065,7 @@ ou Ctrl+V</value>
     <value>Nouveau dossier</value>
   </data>
   <data name="StorageFoldersHint" xml:space="preserve">
-    <value>Glissez des designs sur un dossier, ou sur « Sans dossier » pour les en sortir. Glissez les dossiers pour changer leur ordre. Un dossier n'est qu'une étiquette : le supprimer garde ses designs.</value>
+    <value>Glissez des livrées sur un dossier, ou sur « Sans dossier » pour les en sortir. Glissez les dossiers pour changer leur ordre. Un dossier n’est qu’une étiquette : le supprimer garde ses livrées.</value>
   </data>
   <data name="StorageSidebarRoomFormat" xml:space="preserve">
     <value>Dans le jeu {0} / {1} · libres {2}</value>
@@ -3083,13 +3086,13 @@ ou Ctrl+V</value>
     <value>Supprimer le dossier</value>
   </data>
   <data name="StorageFolderDeleteMessageFormat" xml:space="preserve">
-    <value>Le dossier « {0} » sera supprimé. Ses designs ({1}) restent dans le stockage, dans « Sans dossier ».</value>
+    <value>Le dossier « {0} » sera supprimé. Ses livrées ({1}) restent dans le stockage, dans « Sans dossier ».</value>
   </data>
   <data name="StorageFolderDeleteEmptyMessageFormat" xml:space="preserve">
     <value>Supprimer le dossier vide « {0} » ?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>Envoyer ses designs vers l'archive</value>
+    <value>Envoyer ses livrées vers l’archive</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>Remettre le dossier dans le jeu</value>
@@ -3107,7 +3110,7 @@ ou Ctrl+V</value>
     <value>Renommer le dossier affiché</value>
   </data>
   <data name="StorageFolderEmptyHint" xml:space="preserve">
-    <value>Aucun design dans ce dossier. Glissez-en ici, ou choisissez « Ranger dans le dossier » dans leur menu</value>
+    <value>Aucune livrée dans ce dossier. Glissez-en ici, ou choisissez « Ranger dans le dossier » dans leur menu</value>
   </data>
   <data name="CopyInGameLabel" xml:space="preserve">
     <value>Dans le jeu</value>
@@ -3122,22 +3125,22 @@ ou Ctrl+V</value>
     <value>Semblable dans le stockage</value>
   </data>
   <data name="CopyInGameTooltipFormat" xml:space="preserve">
-    <value>Le jeu a déjà ce design : {0}</value>
+    <value>Le jeu a déjà cette livrée : {0}</value>
   </data>
   <data name="SimilarInGameTooltipFormat" xml:space="preserve">
-    <value>Le jeu a un design semblable : {0}</value>
+    <value>Le jeu a une livrée semblable : {0}</value>
   </data>
   <data name="CopyInStorageTooltipFormat" xml:space="preserve">
-    <value>Le stockage a déjà ce design : {0}</value>
+    <value>Le stockage a déjà cette livrée : {0}</value>
   </data>
   <data name="SimilarInStorageTooltipFormat" xml:space="preserve">
-    <value>Le stockage a un design semblable : {0}</value>
+    <value>Le stockage a une livrée semblable : {0}</value>
   </data>
   <data name="StatsTileInGame" xml:space="preserve">
     <value>Déjà dans le jeu</value>
   </data>
   <data name="StatsTileInGameTooltip" xml:space="preserve">
-    <value>Afficher les designs stockés que le jeu a aussi : le stockage peut s'en passer</value>
+    <value>Afficher les livrées stockées que le jeu a aussi : le stockage peut s’en passer</value>
   </data>
   <data name="StatsTileFolders" xml:space="preserve">
     <value>Dossiers</value>
@@ -3149,7 +3152,7 @@ ou Ctrl+V</value>
     <value>Stockage</value>
   </data>
   <data name="StatsHealthStorageNote" xml:space="preserve">
-    <value>Le stockage est souvent la seule copie d'un design : pensez-y en faisant le ménage.</value>
+    <value>Le stockage est souvent la seule copie d’une livrée : pensez-y en faisant le ménage.</value>
   </data>
   <data name="StatsHealthStorageSize" xml:space="preserve">
     <value>Sur le disque</value>
@@ -3161,25 +3164,25 @@ ou Ctrl+V</value>
     <value>Entrés dans le stockage</value>
   </data>
   <data name="StatsStorageTimeNote" xml:space="preserve">
-    <value>Le stockage selon le jour où chaque design y est entré. Les graphiques du journal du jeu sont dans les statistiques du jeu.</value>
+    <value>Le stockage selon le jour où chaque livrée y est entrée. Les graphiques du journal du jeu sont dans les statistiques du jeu.</value>
   </data>
   <data name="StatsStorageModeNote" xml:space="preserve">
-    <value>Les designs du stockage</value>
+    <value>Les livrées du stockage</value>
   </data>
   <data name="BackupCreateStorageButton" xml:space="preserve">
     <value>Sauvegarder le stockage</value>
   </data>
   <data name="BackupCreateStorageTooltip" xml:space="preserve">
-    <value>Le stockage est souvent la seule copie de ses designs : une sauvegarde les garde, avec leurs dossiers</value>
+    <value>Le stockage est souvent la seule copie de ses livrées : une copie de sauvegarde les garde, avec leurs dossiers</value>
   </data>
   <data name="BackupStorageChip" xml:space="preserve">
     <value>Stockage</value>
   </data>
   <data name="BackupStorageChipTooltip" xml:space="preserve">
-    <value>Une sauvegarde du stockage : comparée au stockage et restaurée dedans avec ses dossiers</value>
+    <value>Une copie de sauvegarde du stockage : comparée au stockage et restaurée dedans avec ses dossiers</value>
   </data>
   <data name="BackupKindStorageChanged" xml:space="preserve">
-    <value>Créée après un changement des designs du stockage</value>
+    <value>Créée après un changement des livrées du stockage</value>
   </data>
   <data name="BackupNoStorageMessage" xml:space="preserve">
     <value>Le stockage est vide : rien à sauvegarder</value>
@@ -3191,10 +3194,10 @@ ou Ctrl+V</value>
     <value>Sauvegarde créée : {0}</value>
   </data>
   <data name="StatusAutoStorageBackupMade" xml:space="preserve">
-    <value>Une sauvegarde automatique du stockage a été créée</value>
+    <value>Une copie de sauvegarde automatique du stockage a été créée</value>
   </data>
   <data name="BackupRestoreIntoStorageNote" xml:space="preserve">
-    <value>Les designs restaurés retournent dans le stockage, chacun dans son dossier.</value>
+    <value>Les livrées restaurées retournent dans le stockage, chacune dans son dossier.</value>
   </data>
   <data name="DownloadDateLabel" xml:space="preserve">
     <value>Date de téléchargement</value>
@@ -3458,5 +3461,176 @@ ou Ctrl+V</value>
   </data>
   <data name="StoragePlaceAroundCurrent" xml:space="preserve">
     <value>le stockage actuel se trouve dedans, ou il se trouve lui-même dans le stockage actuel.</value>
+  </data>
+  <data name="StoreFailedFormat" xml:space="preserve">
+    <value>Impossible de déplacer ces livrées vers le stockage ({0}). Le jeu utilise peut-être leurs fichiers, le disque est peut-être plein ou le dossier du stockage n’est pas disponible. Les détails figurent dans le journal :
+{1}</value>
+  </data>
+  <data name="ArchiveFailedFormat" xml:space="preserve">
+    <value>Impossible de déplacer ces livrées vers l’archive ({0}). Le jeu utilise peut-être leurs fichiers ou le disque est peut-être plein. Les détails figurent dans le journal :
+{1}</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
+    <value>Garder les dossiers du stockage comme dossiers sur le disque</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDiskHint" xml:space="preserve">
+    <value>Désactivé (par défaut) : toutes les livrées sont directement dans le dossier du stockage, et les dossiers de la galerie ne sont que des étiquettes. Activé : chaque dossier de la galerie est un dossier sur le disque contenant ses livrées, et un dossier que vous y créez à la main devient un dossier de la galerie. S’applique au stockage de tous les comptes. Les fichiers sont déplacés aussitôt.</value>
+  </data>
+  <data name="StorageLayoutTitle" xml:space="preserve">
+    <value>Dossiers sur le disque</value>
+  </data>
+  <data name="StorageLayoutOnConfirmFormat" xml:space="preserve">
+    <value>Ranger les livrées du stockage dans des dossiers sur le disque ? Livrées à déplacer dans leurs dossiers : {0}. Rien ne quitte le stockage, et le jeu n’est pas touché.</value>
+  </data>
+  <data name="StorageLayoutOffConfirmFormat" xml:space="preserve">
+    <value>Remettre toutes les livrées du stockage directement dans le dossier du stockage ? Livrées à sortir de leurs dossiers : {0}. Les dossiers de la galerie restent, comme étiquettes.</value>
+  </data>
+  <data name="StorageLayoutOnButton" xml:space="preserve">
+    <value>Ranger</value>
+  </data>
+  <data name="StorageLayoutOffButton" xml:space="preserve">
+    <value>Mettre à plat</value>
+  </data>
+  <data name="StorageLayoutProgressFormat" xml:space="preserve">
+    <value>Déplacement des livrées : {0} sur {1}…</value>
+  </data>
+  <data name="StorageLayoutDoneFormat" xml:space="preserve">
+    <value>Stockage rangé : livrées déplacées : {0}</value>
+  </data>
+  <data name="StorageLayoutFailedFormat" xml:space="preserve">
+    <value>Livrées qui n’ont pas pu être déplacées : {0}. Un de leurs fichiers est peut-être utilisé (ouvert dans un autre programme). Elles restent où elles étaient, et la galerie les trouve toujours. Elle réessaiera à la prochaine ouverture du stockage. Les détails figurent dans le journal.</value>
+  </data>
+  <data name="StorageLayoutAwayFormat" xml:space="preserve">
+    <value>Stockages indisponibles pour le moment (leur disque est absent) : {0}. Ils seront rangés à leur retour.</value>
+  </data>
+  <data name="StorageFolderRenameOnDiskFailed" xml:space="preserve">
+    <value>Impossible de renommer le dossier sur le disque : un de ses fichiers est peut-être utilisé (ouvert dans l’Explorateur ou un autre programme). Son nom n’a pas changé. Les détails figurent dans le journal.</value>
+  </data>
+  <data name="StorageFolderMoveOnDiskFailedFormat" xml:space="preserve">
+    <value>Impossible de déplacer ces livrées dans le dossier sur le disque ({0}) : un de leurs fichiers est peut-être utilisé. Elles restent où elles étaient. Les détails figurent dans le journal :
+{1}</value>
+  </data>
+  <data name="StorageFolderDeleteOnDiskFailedFormat" xml:space="preserve">
+    <value>Le dossier n’a pas été supprimé : des livrées n’ont pas pu en être sorties sur le disque ({0}). Un de leurs fichiers est peut-être utilisé. Elles y restent. Les détails figurent dans le journal.</value>
+  </data>
+  <data name="SettingsSectionCards" xml:space="preserve">
+    <value>Fiches des livrées</value>
+  </data>
+  <data name="BadgesOnPictureLabel" xml:space="preserve">
+    <value>Icônes sur l’image</value>
+  </data>
+  <data name="BadgesAtBottomLabel" xml:space="preserve">
+    <value>Icônes en bas de la fiche</value>
+  </data>
+  <data name="BadgesPlaceHint" xml:space="preserve">
+    <value>Sur l’image, les fiches restent basses, en bas l’image se voit en entier. L’info-bulle d’une icône dit ce qu’elle signifie.</value>
+  </data>
+  <data name="BadgesMoreOne" xml:space="preserve">
+    <value>{0} icône de plus :</value>
+  </data>
+  <data name="BadgesMoreFew" xml:space="preserve">
+    <value>{0} icônes de plus :</value>
+  </data>
+  <data name="BadgesMoreMany" xml:space="preserve">
+    <value>{0} icônes de plus :</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInStorageFormat" xml:space="preserve">
+    <value>le motif ressemble à {0} % à « {1} », dans le stockage</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInGameFormat" xml:space="preserve">
+    <value>le motif ressemble à {0} % à « {1} », dans le jeu</value>
+  </data>
+  <data name="ContextMenuView3DSeveralFormat" xml:space="preserve">
+    <value>Voir la sélection dans des fenêtres 3D séparées ({0})</value>
+  </data>
+  <data name="Status3DWindowsFull" xml:space="preserve">
+    <value>Quatre fenêtres 3D sont déjà ouvertes. Fermez-en une pour ouvrir une autre livrée.</value>
+  </data>
+  <data name="Status3DWindowsNotAllFormat" xml:space="preserve">
+    <value>Ouvertes en 3D : {0} sur {1}. Au plus {2} fenêtres 3D peuvent être ouvertes à la fois.</value>
+  </data>
+  <data name="FilterCopiesInStorageLabel" xml:space="preserve">
+    <value>Dans le stockage</value>
+  </data>
+  <data name="FilterCopiesInGameLabel" xml:space="preserve">
+    <value>Dans le jeu</value>
+  </data>
+  <data name="FilterCopiesSame" xml:space="preserve">
+    <value>La même y est</value>
+  </data>
+  <data name="FilterCopiesSameOrSimilar" xml:space="preserve">
+    <value>La même ou une semblable</value>
+  </data>
+  <data name="FilterCopiesSimilar" xml:space="preserve">
+    <value>Seulement une semblable</value>
+  </data>
+  <data name="FilterCopiesNone" xml:space="preserve">
+    <value>Ni la même ni une semblable</value>
+  </data>
+  <data name="FilterValueCopySame" xml:space="preserve">
+    <value>La même</value>
+  </data>
+  <data name="FilterValueCopySameOrSimilar" xml:space="preserve">
+    <value>Même ou semblable</value>
+  </data>
+  <data name="FilterValueCopySimilar" xml:space="preserve">
+    <value>Semblable</value>
+  </data>
+  <data name="FilterValueCopyNone" xml:space="preserve">
+    <value>Aucune</value>
+  </data>
+  <data name="ResetFiltersTooltip" xml:space="preserve">
+    <value>Réinitialiser les filtres : efface la recherche et les filtres. L’ordre est conservé</value>
+  </data>
+  <data name="UndoLabel" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="UndoTooltipFormat" xml:space="preserve">
+    <value>Annuler : {0}</value>
+  </data>
+  <data name="StatusUndoneFormat" xml:space="preserve">
+    <value>Annulé : {0}</value>
+  </data>
+  <data name="ShortcutUndo" xml:space="preserve">
+    <value>Annuler la dernière action</value>
+  </data>
+  <data name="UndoFavoritesFormat" xml:space="preserve">
+    <value>Favoris modifiés : {0}</value>
+  </data>
+  <data name="UndoLocksFormat" xml:space="preserve">
+    <value>Verrous modifiés : {0}</value>
+  </data>
+  <data name="UndoTagsFormat" xml:space="preserve">
+    <value>Tags modifiés : {0}</value>
+  </data>
+  <data name="WheelClickScrollLabel" xml:space="preserve">
+    <value>Un clic de la molette fait défiler sans la maintenir</value>
+  </data>
+  <data name="WheelScrollSpeedFormat" xml:space="preserve">
+    <value>Vitesse de défilement molette enfoncée : {0} %</value>
+  </data>
+  <data name="FilterPresetsTooltip" xml:space="preserve">
+    <value>Jeux de filtres enregistrés</value>
+  </data>
+  <data name="FilterPresetSave" xml:space="preserve">
+    <value>Enregistrer les filtres actuels…</value>
+  </data>
+  <data name="FilterPresetDelete" xml:space="preserve">
+    <value>Supprimer un jeu</value>
+  </data>
+  <data name="FilterPresetNameLabel" xml:space="preserve">
+    <value>Nom du jeu</value>
+  </data>
+  <data name="FilterPresetsEmpty" xml:space="preserve">
+    <value>Aucun jeu enregistré pour l’instant</value>
+  </data>
+  <data name="FilterPresetApply" xml:space="preserve">
+    <value>Appliquer le jeu</value>
+  </data>
+  <data name="FilterPresetHint" xml:space="preserve">
+    <value>Clic droit : appliquer ou supprimer</value>
+  </data>
+  <data name="ShortcutSaveFilterSet" xml:space="preserve">
+    <value>Enregistrer les filtres actuels comme jeu</value>
   </data>
 </root>

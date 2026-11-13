@@ -1,4 +1,7 @@
+using System.Text.Json.Serialization;
 using LiveryGallery.Enums;
+
+using LiveryGallery.Services;
 
 namespace LiveryGallery.Models;
 
@@ -21,8 +24,16 @@ internal sealed class GameSettingsData
     public InstalledMode InstalledMode { get; set; } = InstalledMode.None;
     public DuplicatesFilterMode DuplicatesFilterMode { get; set; } = DuplicatesFilterMode.All;
     public GeneratedFilterMode GeneratedFilterMode { get; set; } = GeneratedFilterMode.All;
+    /// <summary>The filter "In the storage" of the game's liveries (since 1.7.1)</summary>
+    public CopiesFilterMode CopiesFilterMode { get; set; } = CopiesFilterMode.All;
     public PaintFilterMode PaintFilterMode { get; set; } = PaintFilterMode.All;
     public AuctionFilterMode AuctionFilterMode { get; set; } = AuctionFilterMode.All;
+
+    /// <summary>The last searches in this game, newest first (the search box offers them again)</summary>
+    public List<string> SearchHistory { get; set; } = [];
+
+    /// <summary>The sets of filters the user saved for this game, in the order they were saved</summary>
+    public List<FilterPresetData> FilterPresets { get; set; } = [];
     public bool ServerConnectionEnabled { get; set; }
     public bool WarnArchiveWithoutInstalledData { get; set; } = true;
     public bool WarnArchiveWithOutdatedInstalledData { get; set; } = true;
@@ -52,9 +63,10 @@ internal sealed class GameSettingsData
     public bool WarnFewFreeSlots { get; set; } = true;
 
     /// <summary>
-    /// The 3D view's camera last left on each car of the game, the latest first (at most 50): a car shown again is seen
-    /// as it was left. None before the first
+    /// The 3D view's cameras as 1.7.0 kept them here; read only to be moved into the game's own file
+    /// (<c>games\&lt;id&gt;\viewer-cameras.json</c>, Services/ViewerCameraStore.cs), then null and no longer written
     /// </summary>
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<ViewerCameraData>? ViewerCameras { get; set; }
 
     public GameSettingsData Clone()

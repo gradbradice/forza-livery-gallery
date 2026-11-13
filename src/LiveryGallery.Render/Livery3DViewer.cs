@@ -30,6 +30,7 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
     private readonly LiveryThumbnails _thumbnails;
     private readonly AppSettingsData _settings;
     private readonly string _gameId;
+    private readonly LiveryGallery.Services.ViewerCameraStore? _cameraStore;
     private readonly LiveryUpgradeNames? _upgradeNames;
     private readonly ViewerCameraMemory _cameras;
     // The open windows, the one used last at the end
@@ -51,13 +52,14 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
         public int Asked { get; set; }
     }
 
-    /// <param name="settings">The viewer windows remember their quality setting there, and the game's cars' cameras</param>
+    /// <param name="settings">The viewer windows remember their quality setting there</param>
     /// <param name="cars">The car list: the stock wheels of each car (sizes and stance from the game database)</param>
     /// <param name="gameId">The game whose cars and shapes are drawn (ForzaToolkit.Games id): its game folder, its caches</param>
     /// <param name="upgrades">The game's names of the cars' tuning parts (car-upgrades.json); null — the window's own</param>
     /// <param name="language">The game language the car texts are shown in (<c>CarTextProvider.LanguageCode</c>), asked each time</param>
+    /// <param name="cameraStore">The game's file of the camera left on each car; null: they are not kept</param>
     public Livery3DViewer(AppSettingsData settings, CarDatabaseService cars, string gameId, CarUpgradesService? upgrades = null,
-        Func<string>? language = null)
+        Func<string>? language = null, LiveryGallery.Services.ViewerCameraStore? cameraStore = null)
     {
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(cars);
@@ -71,7 +73,9 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
                 RimName = rim => upgrades.Catalog.RimName(rim, language?.Invoke()),
                 TakesRims = car => upgrades.Catalog.TakesRims(car),
             };
-        var kept = settings.Games.TryGetValue(gameId, out var game) ? game.ViewerCameras : null;
+        // The game's own file; the cameras its settings kept before 1.7.1 move into it
+        _cameraStore = cameraStore;
+        var kept = cameraStore?.Load(settings.Games.GetValueOrDefault(gameId), () => LiveryGallery.Services.AppSettingsService.Save(settings));
         _cameras = new ViewerCameraMemory(kept?.Select(c => new ViewerCameraEntry(c.Car, new ViewerCamera(c.Yaw, c.Pitch, c.Zoom, c.PanX, c.PanY))));
         _cameras.Changed += (_, _) => _camerasChanged = true;
         _service = new LiveryRenderService(gameId, carId => cars.Get(carId)?.Wheels);
@@ -161,7 +165,8 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
         {
             if (acquired is not null) _service.Release();
             Touch(slot);
-            slot.Window.Activate();
+            // Back from the taskbar, or from under the gallery, with the livery asked for
+            slot.Window.BringToFront();
         }
 
         slot.Key = request.Key;
@@ -186,8 +191,15 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
         if (_slots.Remove(slot)) _slots.Add(slot);
     }
 
+    /// <inheritdoc/>
+    public int FreeWindows => Math.Max(0, Livery3DWindows.Max - _slots.Count);
+
+    // The gallery's window: the one the 3D windows stay over when the user wants them to
+    private Window? _gallery;
+
     private ViewerSlot Open(Window owner, LiveryRenderer renderer)
     {
+        _gallery = owner;
         var window = new LiveryViewerWindow(renderer, LiveryViewerTexts.Current, _settings.ViewerQualityIndex, index =>
         {
             _settings.ViewerQualityIndex = index;
@@ -198,6 +210,8 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
             ShowPlates = _settings.ViewerShowPlates,
             Cameras = _cameras,
             SyncCamera = _settings.ViewerSyncCamera,
+            CanKeepAbove = true,
+            KeepAbove = _settings.ViewerKeepAboveGallery,
         };
         var slot = new ViewerSlot(window, _nextWindowId++);
         // Beside the window used last, a step down and right of it, so both are seen
@@ -213,10 +227,15 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
             foreach (var other in Others(slot)) other.Window.ShowPlates = shown;
         };
         window.SyncCameraChanged += (_, on) => SyncChanged(slot, on);
+        window.KeepAboveChanged += (_, on) => KeepAboveChanged(on);
         window.ViewChanged += (_, view) => FollowView(slot, view);
         window.NavigateRequested += (_, step) =>
         {
             if (slot.Key is { } key) NavigateRequested?.Invoke(new Livery3DNavigation(slot.Id, key, step));
+        };
+        window.NavigateNewWindowRequested += (_, step) =>
+        {
+            if (slot.Key is { } key) NavigateRequested?.Invoke(new Livery3DNavigation(slot.Id, key, step) { NewWindow = true });
         };
         window.Activated += (_, _) => Touch(slot);
         // A closed window something still holds is told in the log by ClosedWindowWatch, as every window
@@ -229,8 +248,32 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
         };
         _slots.Add(slot);
         UpdateSyncSwitches();
+        // Opened over the gallery (centred on it, or a step from the window used last), then a window of its own unless
+        // the user keeps the 3D windows over the gallery
         window.Show(owner);
+        if (!window.KeepAbove) window.KeepAboveOf(null);
         return slot;
+    }
+
+    // One switch for every window, as the camera's: the setting, and each window over the gallery or on its own
+    private void KeepAboveChanged(bool on)
+    {
+        if (_syncing) return;
+        _syncing = true;
+        try
+        {
+            _settings.ViewerKeepAboveGallery = on;
+            LiveryGallery.Services.AppSettingsService.Save(_settings);
+            foreach (var slot in _slots)
+            {
+                slot.Window.KeepAbove = on;
+                slot.Window.KeepAboveOf(on ? _gallery : null);
+            }
+        }
+        finally
+        {
+            _syncing = false;
+        }
     }
 
     private IEnumerable<ViewerSlot> Others(ViewerSlot slot) => _slots.Where(s => !ReferenceEquals(s, slot));
@@ -277,14 +320,12 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
         }
     }
 
-    // The cars' cameras into the game's settings, when one changed
+    // The cars' cameras into the game's file, when one changed
     private void SaveCameras()
     {
-        if (!_camerasChanged) return;
+        if (!_camerasChanged || _cameraStore is null) return;
         _camerasChanged = false;
-        if (!_settings.Games.TryGetValue(_gameId, out var game)) return;
-        game.ViewerCameras = [.. _cameras.Entries.Select(c => new ViewerCameraData(c.CarId, c.View.Yaw, c.View.Pitch, c.View.Zoom, c.View.PanX, c.View.PanY))];
-        LiveryGallery.Services.AppSettingsService.Save(_settings);
+        _cameraStore.Save(_cameras.Entries.Select(c => new ViewerCameraData(c.CarId, c.View.Yaw, c.View.Pitch, c.View.Zoom, c.View.PanX, c.View.PanY)));
     }
 
     private async Task ReleaseAfterLoadsAsync(LiveryViewerWindow window, Task previous)

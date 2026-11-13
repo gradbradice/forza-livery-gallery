@@ -58,6 +58,12 @@ internal class AppSettingsData
     }
 
     public AppLanguage Language { get; set; } = AppLanguage.English;
+
+    /// <summary>
+    /// Where the window was when the gallery closed: it opens there again, maximized if it was, and never bigger than
+    /// the screen (1320×860 on 1920×1080 at 125 % put the title bar above it). Null the first time
+    /// </summary>
+    public ForzaToolkit.UI.WindowPlacement? Window { get; set; }
     // DarkTheme for backward compatibility (<= 1.1.0)
     public bool DarkTheme { get; set; }
     public AppThemeMode? ThemeMode { get; set; }
@@ -69,6 +75,11 @@ internal class AppSettingsData
     public bool ViewerShowPlates { get; set; } = true;
     /// <summary>The 3D windows turn together (their «Sync camera» switch)</summary>
     public bool ViewerSyncCamera { get; set; } = true;
+    /// <summary>
+    /// The 3D windows stay over the gallery (a click on a card does not hide them); off (the default since 1.7.1), they
+    /// are windows of their own: switched to with Alt+Tab, minimized on their own, covered by the gallery
+    /// </summary>
+    public bool ViewerKeepAboveGallery { get; set; }
     /// <summary>New screenshots of a livery are re-encoded as WebP (<see cref="ScreenshotsWebPQuality"/>); off: kept as they are</summary>
     public bool ScreenshotsWebP { get; set; }
     public int ScreenshotsWebPQuality { get; set; } = 90;
@@ -82,8 +93,18 @@ internal class AppSettingsData
     public bool RefreshLiveriesOnButtonClick { get; set; } = false;
     public bool SearchByFolderName { get; set; } = false;
     public bool ShowChangesSinceLastLaunch { get; set; } = true;
+
+    /// <summary>A click of the mouse wheel (pressed and let go on the spot) keeps the list scrolling with nothing held</summary>
+    public bool WheelClickScroll { get; set; } = true;
+
+    /// <summary>How fast a list goes with the wheel pressed, in percent of the usual speed (50–300)</summary>
+    public int WheelScrollSpeedPercent { get; set; } = 100;
+    /// <summary>A card's badges at its bottom, under its lines; else (the default) on its picture</summary>
+    public bool BadgesAtBottom { get; set; }
     /// <summary>Take betas as well as releases when the gallery updates itself (the beta channel)</summary>
     public bool BetaUpdates { get; set; }
+    /// <summary>Install a newer version only when the user says so (the default), or at once when the gallery closes</summary>
+    public UpdateInstallMode UpdateInstall { get; set; }
     public bool AutoBackupBeforeArchive { get; set; } = true;
     public bool AutoBackupOnChange { get; set; } = true;
     public bool AutoBackupPeriodic { get; set; }
@@ -100,6 +121,7 @@ internal class AppSettingsData
     [JsonIgnore] public InstalledMode InstalledMode { get => Game.InstalledMode; set => Game.InstalledMode = value; }
     [JsonIgnore] public DuplicatesFilterMode DuplicatesFilterMode { get => Game.DuplicatesFilterMode; set => Game.DuplicatesFilterMode = value; }
     [JsonIgnore] public GeneratedFilterMode GeneratedFilterMode { get => Game.GeneratedFilterMode; set => Game.GeneratedFilterMode = value; }
+    [JsonIgnore] public CopiesFilterMode CopiesFilterMode { get => Game.CopiesFilterMode; set => Game.CopiesFilterMode = value; }
     [JsonIgnore] public PaintFilterMode PaintFilterMode { get => Game.PaintFilterMode; set => Game.PaintFilterMode = value; }
     [JsonIgnore] public AuctionFilterMode AuctionFilterMode { get => Game.AuctionFilterMode; set => Game.AuctionFilterMode = value; }
     [JsonIgnore] public bool ServerConnectionEnabled { get => Game.ServerConnectionEnabled; set => Game.ServerConnectionEnabled = value; }
@@ -133,6 +155,7 @@ internal class AppSettingsData
     {
         ArgumentNullException.ThrowIfNull(other);
         Language = other.Language;
+        Window = other.Window;
         DarkTheme = other.DarkTheme;
         ThemeMode = other.ThemeMode;
         PossibleDuplicateThresholdPercent = other.PossibleDuplicateThresholdPercent;
@@ -140,6 +163,7 @@ internal class AppSettingsData
         ViewerQualityIndex = other.ViewerQualityIndex;
         ViewerShowPlates = other.ViewerShowPlates;
         ViewerSyncCamera = other.ViewerSyncCamera;
+        ViewerKeepAboveGallery = other.ViewerKeepAboveGallery;
         ScreenshotsWebP = other.ScreenshotsWebP;
         ScreenshotsWebPQuality = other.ScreenshotsWebPQuality;
         ScreenshotsInBackups = other.ScreenshotsInBackups;
@@ -149,7 +173,11 @@ internal class AppSettingsData
         RefreshLiveriesOnButtonClick = other.RefreshLiveriesOnButtonClick;
         SearchByFolderName = other.SearchByFolderName;
         ShowChangesSinceLastLaunch = other.ShowChangesSinceLastLaunch;
+        WheelClickScroll = other.WheelClickScroll;
+        WheelScrollSpeedPercent = other.WheelScrollSpeedPercent;
+        BadgesAtBottom = other.BadgesAtBottom;
         BetaUpdates = other.BetaUpdates;
+        UpdateInstall = other.UpdateInstall;
         AutoBackupBeforeArchive = other.AutoBackupBeforeArchive;
         AutoBackupOnChange = other.AutoBackupOnChange;
         AutoBackupPeriodic = other.AutoBackupPeriodic;

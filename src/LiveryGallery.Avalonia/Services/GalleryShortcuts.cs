@@ -42,6 +42,8 @@ internal enum GalleryShortcut
     ShowStorage,
     /// <summary>F2 in the storage: the folder shown gets another name</summary>
     RenameFolder,
+    Undo,
+    SaveFilterSet,
 }
 
 /// <summary>In which modes of the main window a key works (docs/storage.md)</summary>
@@ -86,6 +88,10 @@ internal static class GalleryShortcuts
         new(GalleryShortcut.Escape, GalleryShortcutGroup.SearchAndSelection, Key.Escape, KeyModifiers.None, WhileTyping: true),
         new(GalleryShortcut.Refresh, GalleryShortcutGroup.SearchAndSelection, Key.F5, KeyModifiers.None, WhileTyping: true),
         new(GalleryShortcut.ToggleSelection, GalleryShortcutGroup.SearchAndSelection, Key.Space, KeyModifiers.None, WhileTyping: false),
+        // Not while typing: a text field undoes its own typing with it
+        new(GalleryShortcut.Undo, GalleryShortcutGroup.SelectedLiveries, Key.Z, Ctrl, WhileTyping: false),
+        // In the search box too: the filters are often set from there
+        new(GalleryShortcut.SaveFilterSet, GalleryShortcutGroup.SearchAndSelection, Key.S, Ctrl, WhileTyping: true),
 
         new(GalleryShortcut.Favorite, GalleryShortcutGroup.SelectedLiveries, Key.F, KeyModifiers.None, WhileTyping: false),
         new(GalleryShortcut.Lock, GalleryShortcutGroup.SelectedLiveries, Key.L, KeyModifiers.None, WhileTyping: false),
@@ -248,6 +254,8 @@ internal static class GalleryShortcuts
     /// <summary>What the key does, for the list of keys</summary>
     public static string Description(GalleryShortcut action) => action switch
     {
+        GalleryShortcut.Undo => Strings.ShortcutUndo,
+        GalleryShortcut.SaveFilterSet => Strings.ShortcutSaveFilterSet,
         GalleryShortcut.Search => Strings.ShortcutSearch,
         GalleryShortcut.SelectAll => Strings.ShortcutSelectAll,
         GalleryShortcut.Escape => Strings.ShortcutEscape,

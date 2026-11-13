@@ -6,9 +6,11 @@
         xmlns:enums="clr-namespace:LiveryGallery.Enums"
         xmlns:gallery="using:ForzaToolkit.Liveries.Gallery"
         xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
+        xmlns:svc="clr-namespace:LiveryGallery.Services"
         xmlns:views="clr-namespace:LiveryGallery.Views"
         xmlns:services="clr-namespace:LiveryGallery.Services"
         xmlns:ui="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
+        xmlns:input="clr-namespace:ForzaToolkit.UI.Input;assembly=ForzaToolkit.UI.Avalonia"
         xmlns:updates="clr-namespace:ForzaToolkit.UI.Updates;assembly=ForzaToolkit.UI.Avalonia.Updates"
         x:Class="LiveryGallery.Views.MainWindow"
         x:DataType="vm:MainViewModel"
@@ -18,7 +20,8 @@
         WindowStartupLocation="CenterScreen"
         WindowDecorations="BorderOnly"
         ExtendClientAreaToDecorationsHint="True"
-        ExtendClientAreaTitleBarHeightHint="-1">
+        ExtendClientAreaTitleBarHeightHint="-1"
+        views:CardBadges.AtBottom="{Binding BadgesAtBottom}">
 
     <Window.DataTemplates>
         <!-- A tooltip with the key of its action (ShortcutTip): the text, and the key right of it -->
@@ -46,6 +49,19 @@
                           Fill="{DynamicResource TextPrimaryBrush}" />
                 </MenuItem.Icon>
             </MenuItem>
+            <!-- The card's 3D button shows the livery in the window used last; this one opens one more, to compare (a window
+                 for each selected livery when there are several) -->
+            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.View3DNewWindowMenuHeader}"
+                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.View3DNewWindowCommand}"
+                      CommandParameter="{Binding}"
+                      IsEnabled="{Binding CanView3D}"
+                      views:ShortcutHint.Action="View3DNewWindow"
+                      ToolTip.ShowOnDisabled="True"
+                      ToolTip.Tip="{Binding View3DTooltip}">
+                <MenuItem.Icon>
+                    <ui:GridIcon Data="{StaticResource Icon3D}" Foreground="{DynamicResource TextPrimaryBrush}" />
+                </MenuItem.Icon>
+            </MenuItem>
             <Separator />
             <!-- The context menu selects its card first: these three work on every selected livery -->
             <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuHeader}"
@@ -53,7 +69,7 @@
                       CommandParameter="{Binding}"
                       views:ShortcutHint.Action="Favorite">
                 <MenuItem.Icon>
-                    <ui:FavoriteStar Width="12" Height="12" StrokeThickness="1.4"
+                    <ui:FavoriteStar Width="16" Height="16" StrokeThickness="1.4"
                                      IsOn="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuRemoves}" />
                 </MenuItem.Icon>
             </MenuItem>
@@ -64,12 +80,10 @@
                       views:ShortcutHint.Action="Lock">
                 <MenuItem.Icon>
                     <Panel>
-                        <Path Data="{StaticResource IconLock}" Width="12" Height="12" Stretch="Uniform"
-                              Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.4"
-                              IsVisible="{Binding !$parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
-                        <Path Data="{StaticResource IconLockOpen}" Width="12" Height="12" Stretch="Uniform"
-                              Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.4"
-                              IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
+                        <ui:GridIcon Data="{StaticResource IconLock}" StrokeThickness="2" Foreground="{DynamicResource TextPrimaryBrush}"
+                                     IsVisible="{Binding !$parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
+                        <ui:GridIcon Data="{StaticResource IconLockOpen}" StrokeThickness="2" Foreground="{DynamicResource TextPrimaryBrush}"
+                                     IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
                     </Panel>
                 </MenuItem.Icon>
             </MenuItem>
@@ -78,8 +92,7 @@
                       CommandParameter="{Binding}"
                       views:ShortcutHint.Action="Tags">
                 <MenuItem.Icon>
-                    <Path Data="{StaticResource IconBookmark}" Width="12" Height="12" Stretch="Uniform"
-                          Fill="{DynamicResource TextPrimaryBrush}" />
+                    <ui:GridIcon Data="{StaticResource IconBookmark}" Foreground="{DynamicResource TextPrimaryBrush}" />
                 </MenuItem.Icon>
             </MenuItem>
             <Separator />
@@ -122,8 +135,7 @@
                       ToolTip.ShowOnDisabled="True"
                       ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameMenuBlockedTooltip}">
                 <MenuItem.Icon>
-                    <Path Data="{StaticResource IconLocate}" Width="13" Height="13" Stretch="Uniform"
-                          Fill="{DynamicResource TextPrimaryBrush}" />
+                    <ui:GridIcon Data="{StaticResource IconLocate}" Foreground="{DynamicResource TextPrimaryBrush}" />
                 </MenuItem.Icon>
             </MenuItem>
             <Separator IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuVisible}" />
@@ -147,9 +159,7 @@
                       views:ShortcutHint.Action="ReturnToGame"
                       Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).ReturnSelectedToGameCommand}">
                 <MenuItem.Icon>
-                    <Path Data="{StaticResource IconToGame}" Width="13" Height="13" Stretch="Uniform"
-                          Stroke="{DynamicResource StorageTextBrush}" StrokeThickness="1.6"
-                          StrokeLineCap="Round" StrokeJoin="Round" />
+                    <ui:GridIcon Data="{StaticResource IconToGame}" StrokeThickness="2" Foreground="{DynamicResource StorageTextBrush}" />
                 </MenuItem.Icon>
             </MenuItem>
             <!-- Filled when the menu opens: no folder, the storage's folders, "New folder…" -->
@@ -222,114 +232,37 @@
                                 </Border>
                             </Grid>
                         </Border>
-                        <Border IsVisible="{Binding IsDuplicate}"
-                                Background="{DynamicResource DangerBrush}"
-                                CornerRadius="6" Padding="7,3"
-                                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,8,0,0"
-                                ToolTip.Tip="{Binding DuplicateMatchTooltip}">
-                            <TextBlock Text="{DynamicResource Loc_DuplicateBadgeLabel}" FontSize="10.5"
-                                       FontWeight="SemiBold" Foreground="White" />
-                        </Border>
-                        <Border IsVisible="{Binding IsPossibleDuplicate}"
-                                Background="{DynamicResource WarningBrush}"
-                                CornerRadius="6" Padding="7,3"
-                                HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8,8,0,0"
-                                ToolTip.Tip="{Binding DuplicateMatchTooltip}">
-                            <TextBlock Text="{Binding PossibleDuplicateBadgeText}" FontSize="10.5"
-                                       FontWeight="SemiBold" Foreground="White" />
-                        </Border>
-                        <Border IsVisible="{Binding IsAuction}"
-                                Background="{DynamicResource AuctionBrush}"
-                                CornerRadius="6" Padding="7,3"
-                                HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,8,8,0"
-                                ToolTip.Tip="{DynamicResource Loc_AuctionBadgeTooltip}">
-                            <TextBlock Text="{DynamicResource Loc_AuctionBadgeLabel}" FontSize="10.5"
-                                       FontWeight="SemiBold" Foreground="White" />
-                        </Border>
-                        <StackPanel Orientation="Horizontal" Spacing="4"
-                                    HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,8,8">
-                            <!-- A screenshot is the cover: one click puts the game's preview back -->
-                            <Button Classes="coverReset" IsVisible="{Binding HasCover}"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).RestorePreviewCommand}"
-                                    CommandParameter="{Binding}"
-                                    ToolTip.Tip="{x:Static loc:Strings.ScreenshotRestorePreview}">
-                                <Border>
-                                    <Path Data="{StaticResource IconReset}" Width="11" Height="11" Stretch="Uniform"
-                                          HorizontalAlignment="Center" VerticalAlignment="Center"
-                                          Stroke="White" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                        <!-- On the picture (the setting's default): what the livery is over its top, where else it is and how its
+                             file was read over its bottom, as far as the cover's way back to the game's preview and the
+                             screenshots' count; badges that do not fit go into "+N". Under the selection's shade like the
+                             picture. All of them are 24 high, their icons 16 in the middle (the toolkit's 24 grid) -->
+                        <views:CardBadges Group="Top" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8" />
+                        <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Bottom" Margin="8">
+                            <views:CardBadges Group="Bottom" HorizontalAlignment="Left" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="8,0,0,0">
+                                <!-- A screenshot is the cover: one click puts the game's preview back -->
+                                <Button Classes="coverReset" IsVisible="{Binding HasCover}"
+                                        Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).RestorePreviewCommand}"
+                                        CommandParameter="{Binding}"
+                                        ToolTip.Tip="{x:Static loc:Strings.ScreenshotRestorePreview}">
+                                    <Border>
+                                        <ui:GridIcon Data="{StaticResource IconReset}" Width="16" Height="16" StrokeThickness="2.5"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
+                                    </Border>
+                                </Button>
+                                <!-- The user's screenshots of the livery: a pill of 24, the camera in its first circle, the count -->
+                                <Border IsVisible="{Binding HasScreenshots}" Background="#B0000000"
+                                        Height="24" MinWidth="24" CornerRadius="12"
+                                        ToolTip.Tip="{Binding ScreenshotCountTooltip}">
+                                    <Grid ColumnDefinitions="24,Auto" Height="24">
+                                        <ui:GridIcon Data="{StaticResource IconCamera}" Width="16" Height="16"
+                                                     HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
+                                        <TextBlock Grid.Column="1" Text="{Binding ScreenshotCountText}" FontSize="11.5" FontWeight="Bold"
+                                                   Foreground="White" VerticalAlignment="Center" Margin="0,0,8,0" />
+                                    </Grid>
                                 </Border>
-                            </Button>
-                            <!-- The user's screenshots of the livery: a camera with the count -->
-                            <Border IsVisible="{Binding HasScreenshots}" Background="#B0000000"
-                                    CornerRadius="6" Padding="7,3"
-                                    ToolTip.Tip="{Binding ScreenshotCountTooltip}">
-                                <StackPanel Orientation="Horizontal" Spacing="5">
-                                    <Path Data="{StaticResource IconCamera}" Width="15" Height="11" Stretch="Uniform"
-                                          Fill="White" VerticalAlignment="Center" />
-                                    <TextBlock Text="{Binding ScreenshotCountText}" FontSize="10.5"
-                                               FontWeight="SemiBold" Foreground="White" />
-                                </StackPanel>
-                            </Border>
-                            <Border IsVisible="{Binding IsInstalled}"
-                                    Background="{DynamicResource SuccessBrush}"
-                                    CornerRadius="6" Padding="7,3"
-                                    ToolTip.Tip="{Binding InstalledBadgeTooltip}">
-                                <TextBlock Text="{DynamicResource Loc_InstalledBadgeLabel}" FontSize="10.5"
-                                           FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <Border IsVisible="{Binding ShowMineBadge}"
-                                    Background="{DynamicResource AccentBrush}"
-                                    CornerRadius="6" Padding="7,3"
-                                    ToolTip.Tip="{DynamicResource Loc_MyLiveryBadgeTooltip}">
-                                <TextBlock Text="{DynamicResource Loc_MyLiveryBadgeLabel}" FontSize="10.5"
-                                           FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" Spacing="4"
-                                    HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="8,0,0,8">
-                            <!-- Put into the storage's folder by hand and found this launch, until the card is opened -->
-                            <Border IsVisible="{Binding IsAddedByHand}" Background="{DynamicResource StorageBrush}"
-                                    CornerRadius="6" Padding="7,3" ToolTip.Tip="{DynamicResource Loc_AddedByHandBadgeTooltip}">
-                                <TextBlock Text="{DynamicResource Loc_AddedByHandBadgeLabel}" FontSize="10.5" FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <!-- The other place has it too (docs/storage.md): the game for a stored livery, the storage for one of the game -->
-                            <Border IsVisible="{Binding ShowCopyInGame}" Background="{DynamicResource AccentBrush}"
-                                    CornerRadius="6" Padding="7,3" ToolTip.Tip="{Binding CopyTooltip}">
-                                <TextBlock Text="{Binding CopyText}" FontSize="10.5" FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <Border IsVisible="{Binding ShowCopyInStorage}" Background="{DynamicResource StorageBrush}"
-                                    CornerRadius="6" Padding="7,3" ToolTip.Tip="{Binding CopyTooltip}">
-                                <TextBlock Text="{Binding CopyText}" FontSize="10.5" FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <Border IsVisible="{Binding IsPossiblyGenerated}"
-                                    Background="{DynamicResource TextSecondaryBrush}"
-                                    CornerRadius="6" Padding="7,3"
-                                    ToolTip.Tip="{DynamicResource Loc_PossiblyGeneratedBadgeTooltip}">
-                                <TextBlock Text="{DynamicResource Loc_PossiblyGeneratedBadgeLabel}" FontSize="10.5"
-                                           FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <Border IsVisible="{Binding HasNoLayers}"
-                                    Background="{DynamicResource TextSecondaryBrush}"
-                                    CornerRadius="6" Padding="7,3"
-                                    ToolTip.Tip="{DynamicResource Loc_PaintBadgeTooltip}">
-                                <TextBlock Text="{DynamicResource Loc_PaintBadgeLabel}" FontSize="10.5"
-                                           FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <Border IsVisible="{Binding HasParseError}"
-                                    Background="{DynamicResource DangerBrush}"
-                                    CornerRadius="6" Padding="7,3"
-                                    ToolTip.Tip="{Binding ParseIssueTooltip}">
-                                <TextBlock Text="{DynamicResource Loc_ParseErrorBadgeLabel}" FontSize="10.5"
-                                           FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <Border IsVisible="{Binding HasParseWarning}"
-                                    Background="{DynamicResource WarningBrush}"
-                                    CornerRadius="6" Padding="7,3"
-                                    ToolTip.Tip="{Binding ParseIssueTooltip}">
-                                <TextBlock Text="{DynamicResource Loc_ParsePartialBadgeLabel}" FontSize="10.5"
-                                           FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                        </StackPanel>
+                            </StackPanel>
+                        </Grid>
                         <Border CornerRadius="0" Background="#4D000000"
                                 IsVisible="{Binding IsSelected}" IsHitTestVisible="False" />
                         <Border Classes="selectMark" Width="40" Height="40" CornerRadius="20"
@@ -340,7 +273,8 @@
                                   Fill="White" />
                         </Border>
                     </Grid>
-                    <!-- The round buttons. The icons take their size and centring from the style of Button.cardIconButton.
+                    <!-- The round buttons. The icons (the toolkit's 24 grid) take their size, 18 in the middle of the button of 28,
+                         and their pen from the style of Button.cardIconButton.
                          Seven fit in a row without touching (28 + 6 each: 232 of the card's 238), so one more can come -->
                     <Grid ColumnDefinitions="*,Auto" Margin="14,10,14,0">
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
@@ -348,7 +282,7 @@
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsCommand}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{DynamicResource Loc_EditTagsTooltip}">
-                                <Path Data="{StaticResource IconBookmark}" Fill="{DynamicResource TextPrimaryBrush}" />
+                                <ui:GridIcon Data="{StaticResource IconBookmark}" />
                             </Button>
 
                             <!-- The big preview: hidden for now (the livery window shows the picture), kept for a while -->
@@ -365,9 +299,7 @@
                                     IsEnabled="{Binding CanView3D}"
                                     ToolTip.ShowOnDisabled="True"
                                     ToolTip.Tip="{Binding View3DTooltip, Converter={x:Static views:ShortcutTipConverter.Instance}, ConverterParameter={x:Static services:GalleryShortcut.View3D}}">
-                                <TextBlock Text="3D" FontSize="10.5" FontWeight="Bold"
-                                           HorizontalAlignment="Center" VerticalAlignment="Center"
-                                           Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <ui:GridIcon Data="{StaticResource Icon3D}" />
                             </Button>
 
                             <!-- A stored livery: back into the game, in the storage's colour -->
@@ -376,8 +308,7 @@
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).ReturnToGameOneCommand}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{DynamicResource Loc_ReturnToGameTooltip}">
-                                <Path Data="{StaticResource IconToGame}" Stroke="White" StrokeThickness="1.7"
-                                      StrokeLineCap="Round" StrokeJoin="Round" />
+                                <ui:GridIcon Classes="line" Data="{StaticResource IconToGame}" Foreground="White" />
                             </Button>
 
                             <Button Classes="cardIconButton"
@@ -387,7 +318,7 @@
                                     IsEnabled="{Binding CanNavigateInGame}"
                                     ToolTip.ShowOnDisabled="True"
                                     ToolTip.Tip="{Binding NavigateInGameTooltip, Converter={x:Static views:ShortcutTipConverter.Instance}, ConverterParameter={x:Static services:GalleryShortcut.FindInGame}}">
-                                <Path Data="{StaticResource IconLocate}" Fill="{DynamicResource TextPrimaryBrush}" />
+                                <ui:GridIcon Data="{StaticResource IconLocate}" />
                             </Button>
                         </StackPanel>
 
@@ -398,7 +329,7 @@
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.OpenDetailsCommand}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{Binding NoteTooltip}">
-                                <Path Data="{StaticResource IconNote}" Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.6" />
+                                <ui:GridIcon Classes="line note" Data="{StaticResource IconNote}" />
                             </Button>
 
                             <!-- The lock: open and outlined while the livery may go to the archive, closed and in the
@@ -410,12 +341,8 @@
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{Binding LockTooltip, Converter={x:Static views:ShortcutTipConverter.Instance}, ConverterParameter={x:Static services:GalleryShortcut.Lock}}">
                                 <Panel>
-                                    <Path Data="{StaticResource IconLockOpen}"
-                                          Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.5"
-                                          IsVisible="{Binding !IsLocked}" />
-                                    <Path Data="{StaticResource IconLock}"
-                                          Stroke="White" StrokeThickness="1.5"
-                                          IsVisible="{Binding IsLocked}" />
+                                    <ui:GridIcon Classes="line" Data="{StaticResource IconLockOpen}" IsVisible="{Binding !IsLocked}" />
+                                    <ui:GridIcon Classes="line" Data="{StaticResource IconLock}" Foreground="White" IsVisible="{Binding IsLocked}" />
                                 </Panel>
                             </Button>
 
@@ -424,7 +351,7 @@
                                     Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleFavoriteCommand}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{DynamicResource Loc_FavoriteToggleTooltip}">
-                                <ui:FavoriteStar IsOn="{Binding IsFavorite}" Width="14" Height="14" />
+                                <ui:FavoriteStar IsOn="{Binding IsFavorite}" Width="18" Height="18" />
                             </Button>
                         </StackPanel>
                     </Grid>
@@ -438,12 +365,11 @@
                         <!-- A left-aligned grid: the model column hugs its text and gives way (with an ellipsis) only when the
                              row does not fit the card, so the year stays right after the model and never leaves the card -->
                         <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Left">
-                            <Border Classes="carChip" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding CarManufacturer}" FontSize="11.5" FontWeight="Medium"
-                                           Foreground="{DynamicResource ChipTextBrush}"
-                                           TextTrimming="CharacterEllipsis" MaxWidth="110"
-                                           ToolTip.Tip="{Binding CarManufacturer}" />
-                            </Border>
+                            <!-- The make in plain text, a step quieter than the model: a plate is the user's tag or a badge -->
+                            <TextBlock Text="{Binding CarManufacturer}" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource TextSecondaryBrush}"
+                                       TextTrimming="CharacterEllipsis" MaxWidth="110"
+                                       ToolTip.Tip="{Binding CarManufacturer}" />
                             <TextBlock Grid.Column="1" Text="{Binding CarModelName}" FontSize="12" FontWeight="Medium" Margin="6,0,0,0"
                                        TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
                                        ToolTip.Tip="{Binding CarModelName}" />
@@ -473,7 +399,7 @@
                         </Grid>
 
                         <!-- The hover highlight: square, from the icon to 3 px past the end of the line (so its edge does
-                             not touch the round warning mark) and as high as the make's chip above, with its 2 px above
+                             not touch the round warning mark) and 2 px above
                              and below the text. The negative margin keeps the row where it was -->
                         <Button Classes="rowLink" Padding="0,2,3,2" Margin="0,-2,-3,-2" CornerRadius="0"
                                 Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ShowAuthorRowCommand}"
@@ -501,6 +427,10 @@
                                        Foreground="{DynamicResource TextSecondaryBrush}" />
                         </StackPanel>
 
+                        <!-- The badges at the bottom of the card (a setting; on the picture by default): both groups in lines
+                             of 20, hidden when there is none (an empty row would still take the gap above it) -->
+                        <views:CardBadges Group="All" Below="True" />
+
                         <!-- Hidden without tags: an empty row would still take the gap above it -->
                         <ItemsControl ItemsSource="{Binding Tags}" IsVisible="{Binding HasTags}">
                             <ItemsControl.ItemsPanel>
@@ -519,9 +449,14 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        <TextBlock Text="{Binding FolderName}" FontSize="10"
+                        <!-- The folder's name can be selected with the mouse and copied with Ctrl+C (GalleryClicks.FolderNameClass):
+                             a press on it selects text, not the card, and a double click takes the word, not the livery
+                             window. No menu of its own: a right click gives the card's, as anywhere on the card. The
+                             transparent background makes all of its rectangle take the pointer, between the letters too -->
+                        <SelectableTextBlock Classes="cardFolderName" Text="{Binding FolderName}" FontSize="10"
                                    Foreground="{DynamicResource TextTertiaryBrush}"
-                                   TextTrimming="CharacterEllipsis"
+                                   TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"
+                                   ContextFlyout="{x:Null}" Background="Transparent"
                                    IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).ShowFolderNames}" />
                     </StackPanel>
                 </StackPanel>
@@ -537,7 +472,7 @@
             <ToggleButton Classes="groupHeader" Width="{Binding GroupWidth}" HorizontalAlignment="Center"
                           IsChecked="{Binding IsExpanded, Mode=TwoWay}" Click="GroupHeader_Click">
                 <StackPanel Orientation="Horizontal">
-						<ui:FavoriteStar IsOn="True" Width="13" Height="13" StrokeThickness="1.2" Margin="0,0,7,0" VerticalAlignment="Center"
+						<ui:FavoriteStar IsOn="True" Width="17" Height="17" StrokeThickness="1.2" Margin="0,0,7,0" VerticalAlignment="Center"
                           IsVisible="{Binding IsFavoritesGroup}" />
                     <PathIcon Data="{StaticResource IconUser}" Width="13" Height="13"
                           Foreground="{DynamicResource AccentBrush}" Margin="0,0,7,0" VerticalAlignment="Center"
@@ -551,7 +486,7 @@
 
 						<StackPanel Orientation="Horizontal" Margin="8,0,0,0" IsVisible="{Binding HasFavorites}"
                                 VerticalAlignment="Center">
-							<ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,4,0" />
+							<ui:FavoriteStar IsOn="True" Width="15" Height="15" StrokeThickness="1.2" Margin="0,0,4,0" />
 							<TextBlock Text="{Binding FavoriteCount}" FontSize="13"
 									   Foreground="{DynamicResource TextSecondaryBrush}" />
 						</StackPanel>
@@ -730,6 +665,15 @@
                                   Fill="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
+                    <!-- The sets of filters saved for this game: its menu is kept built (MainWindow.FilterPresets.cs) -->
+                    <Button x:Name="FilterPresetsButton" Classes="icon" Margin="0,0,8,0"
+                            ToolTip.Tip="{x:Static loc:Strings.FilterPresetsTooltip}">
+                        <ui:GridIcon Data="{StaticResource IconLayers}" Width="20" Height="20" StrokeThickness="2"
+                                     Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <Button.Flyout>
+                            <MenuFlyout Placement="BottomEdgeAlignedLeft" />
+                        </Button.Flyout>
+                    </Button>
 					<Button x:Name="DisplayFilterButton" Classes="icon" Margin="0,0,8,0"
                             DataContext="{Binding FilterBar}"
                             ToolTip.Tip="{x:Static loc:Strings.DisplayFilterTooltip}">
@@ -744,9 +688,10 @@
                                 </MenuItem>
                                 <MenuItem x:Name="SortMenuItem">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="SortLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding SortValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <Border Classes="menuBadgeSpace" />
+                                            <TextBlock Grid.Column="1" x:Name="SortLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding SortValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
@@ -772,9 +717,10 @@
                                 </MenuItem>
                                 <MenuItem x:Name="GroupingMenuItem">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="GroupingLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding GroupingValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <Border Classes="menuBadgeSpace" />
+                                            <TextBlock Grid.Column="1" x:Name="GroupingLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding GroupingValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
@@ -788,81 +734,106 @@
                                 <Separator />
                                 <MenuItem x:Name="FavMenuItem">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="FavLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding FavoriteValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <Panel><ui:FavoriteStar IsOn="True" Width="18" Height="18" StrokeThickness="1.2" Margin="0,0,8,0" VerticalAlignment="Center" /></Panel>
+                                            <TextBlock Grid.Column="1" x:Name="FavLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding FavoriteValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
                                     <MenuItem x:Name="FavNoneItem" ToggleType="Radio" GroupName="FavGroup"
                                               IsChecked="{Binding IsFavNone}"
-                                              Command="{Binding SetFavoriteModeCommand}" CommandParameter="{x:Static gallery:FavoriteMode.None}" />
+                                              Command="{Binding SetFavoriteModeCommand}" CommandParameter="{x:Static gallery:FavoriteMode.None}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="FavNoneItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="FavFirstItem" ToggleType="Radio" GroupName="FavGroup"
                                               IsChecked="{Binding IsFavFirst}"
                                               Command="{Binding SetFavoriteModeCommand}" CommandParameter="{x:Static gallery:FavoriteMode.FavoritesFirst}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,6,0"
-                                                      VerticalAlignment="Center" />
-                                                <TextBlock x:Name="FavFirstItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Panel Classes="menuStar">
+                                                        <ui:FavoriteStar IsOn="True" Width="15" Height="15" StrokeThickness="1.2" />
+                                                    </Panel>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="FavFirstItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                     <MenuItem x:Name="FavOnlyItem" ToggleType="Radio" GroupName="FavGroup"
                                               IsChecked="{Binding IsFavOnly}"
                                               Command="{Binding SetFavoriteModeCommand}" CommandParameter="{x:Static gallery:FavoriteMode.OnlyFavorites}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,6,0"
-                                                      VerticalAlignment="Center" />
-                                                <TextBlock x:Name="FavOnlyItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Panel Classes="menuStar">
+                                                        <ui:FavoriteStar IsOn="True" Width="15" Height="15" StrokeThickness="1.2" />
+                                                    </Panel>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="FavOnlyItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                     <MenuItem x:Name="FavSeparateItem" Classes="separateOption" ToggleType="Radio" GroupName="FavGroup"
                                               IsChecked="{Binding IsFavSeparate}" IsEnabled="{Binding IsFavSeparateEnabled}"
                                               Command="{Binding SetFavoriteModeCommand}" CommandParameter="{x:Static gallery:FavoriteMode.FavoritesSeparately}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,6,0"
-                                                      VerticalAlignment="Center" />
-                                                <TextBlock x:Name="FavSeparateItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <Panel Classes="menuStar">
+                                                        <ui:FavoriteStar IsOn="True" Width="15" Height="15" StrokeThickness="1.2" />
+                                                    </Panel>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="FavSeparateItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                 </MenuItem>
                                 <MenuItem x:Name="InstalledMenuItem" IsEnabled="{Binding IsInstalledFilterAvailable}" IsVisible="{Binding ShowInstalledFilter}"
                                           ToolTip.Tip="{Binding InstalledMenuTooltip}" ToolTip.ShowOnDisabled="True">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="InstalledLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding InstalledValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <views:BadgeChip Classes="menuBadge" Badge="Installed" />
+                                            <TextBlock Grid.Column="1" x:Name="InstalledLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding InstalledValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
                                     <MenuItem x:Name="InstalledNoneItem" ToggleType="Radio" GroupName="InstalledGroup"
                                               IsChecked="{Binding IsInstalledNone}"
-                                              Command="{Binding SetInstalledModeCommand}" CommandParameter="{x:Static gallery:InstalledMode.None}" />
+                                              Command="{Binding SetInstalledModeCommand}" CommandParameter="{x:Static gallery:InstalledMode.None}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="InstalledNoneItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="InstalledFirstItem" ToggleType="Radio" GroupName="InstalledGroup"
                                               IsChecked="{Binding IsInstalledFirst}"
                                               Command="{Binding SetInstalledModeCommand}" CommandParameter="{x:Static gallery:InstalledMode.InstalledFirst}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Classes="menuIcon installed" Data="{StaticResource IconCircleFilled}" Width="9" Height="9" Stretch="Uniform"
-                                                      Margin="1,0,7,0" VerticalAlignment="Center" />
-                                                <TextBlock x:Name="InstalledFirstItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Installed" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="InstalledFirstItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                     <MenuItem x:Name="InstalledOnlyItem" ToggleType="Radio" GroupName="InstalledGroup"
                                               IsChecked="{Binding IsInstalledOnly}"
                                               Command="{Binding SetInstalledModeCommand}" CommandParameter="{x:Static gallery:InstalledMode.OnlyInstalled}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Classes="menuIcon installed" Data="{StaticResource IconCircleFilled}" Width="9" Height="9" Stretch="Uniform"
-                                                      Margin="1,0,7,0" VerticalAlignment="Center" />
-                                                <TextBlock x:Name="InstalledOnlyItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Installed" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="InstalledOnlyItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                     <!-- The other way round: the liveries no car uses -->
@@ -870,144 +841,312 @@
                                               IsChecked="{Binding IsNotInstalledFirst}"
                                               Command="{Binding SetInstalledModeCommand}" CommandParameter="{x:Static gallery:InstalledMode.NotInstalledFirst}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Classes="menuIcon notInstalled" Data="{StaticResource IconCircleFilled}" Width="9" Height="9" Stretch="Uniform"
-                                                      Margin="1,0,7,0" VerticalAlignment="Center" />
-                                                <TextBlock x:Name="NotInstalledFirstItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Installed" Crossed="True" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="NotInstalledFirstItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                     <MenuItem x:Name="NotInstalledOnlyItem" ToggleType="Radio" GroupName="InstalledGroup"
                                               IsChecked="{Binding IsNotInstalledOnly}"
                                               Command="{Binding SetInstalledModeCommand}" CommandParameter="{x:Static gallery:InstalledMode.OnlyNotInstalled}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Path Classes="menuIcon notInstalled" Data="{StaticResource IconCircleFilled}" Width="9" Height="9" Stretch="Uniform"
-                                                      Margin="1,0,7,0" VerticalAlignment="Center" />
-                                                <TextBlock x:Name="NotInstalledOnlyItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Installed" Crossed="True" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="NotInstalledOnlyItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                 </MenuItem>
                                 <MenuItem x:Name="MineMenuItem">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="MineLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding MineValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <views:BadgeChip Classes="menuBadge" Badge="Mine" />
+                                            <TextBlock Grid.Column="1" x:Name="MineLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding MineValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
                                     <MenuItem x:Name="MineNoneItem" ToggleType="Radio" GroupName="MineGroup"
                                               IsChecked="{Binding IsMineNone}"
-                                              Command="{Binding SetMineModeCommand}" CommandParameter="{x:Static gallery:MineMode.None}" />
+                                              Command="{Binding SetMineModeCommand}" CommandParameter="{x:Static gallery:MineMode.None}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="MineNoneItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="MineFirstItem" ToggleType="Radio" GroupName="MineGroup"
                                               IsChecked="{Binding IsMineFirst}"
                                               Command="{Binding SetMineModeCommand}" CommandParameter="{x:Static gallery:MineMode.MineFirst}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <PathIcon Classes="menuIcon mine" Data="{StaticResource IconUser}" Width="11" Height="11"
-                                                          Margin="0,0,6,0"
-                                                          VerticalAlignment="Center" />
-                                                <TextBlock x:Name="MineFirstItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Mine" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="MineFirstItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                     <MenuItem x:Name="MineOnlyItem" ToggleType="Radio" GroupName="MineGroup"
                                               IsChecked="{Binding IsMineOnly}"
                                               Command="{Binding SetMineModeCommand}" CommandParameter="{x:Static gallery:MineMode.OnlyMine}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <PathIcon Classes="menuIcon mine" Data="{StaticResource IconUser}" Width="11" Height="11"
-                                                          Margin="0,0,6,0"
-                                                          VerticalAlignment="Center" />
-                                                <TextBlock x:Name="MineOnlyItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Mine" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="MineOnlyItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                     <MenuItem x:Name="MineSeparateItem" Classes="separateOption" ToggleType="Radio" GroupName="MineGroup"
                                               IsChecked="{Binding IsMineSeparate}" IsEnabled="{Binding IsMineSeparateEnabled}"
                                               Command="{Binding SetMineModeCommand}" CommandParameter="{x:Static gallery:MineMode.MineSeparately}">
                                         <MenuItem.Header>
-                                            <StackPanel Orientation="Horizontal">
-                                                <PathIcon Classes="menuIcon mine" Data="{StaticResource IconUser}" Width="11" Height="11"
-                                                          Margin="0,0,6,0"
-                                                          VerticalAlignment="Center" />
-                                                <TextBlock x:Name="MineSeparateItemText" VerticalAlignment="Center" />
-                                            </StackPanel>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Mine" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="MineSeparateItemText" VerticalAlignment="Center" />
+                                            </Grid>
                                         </MenuItem.Header>
                                     </MenuItem>
                                 </MenuItem>
                                 <MenuItem x:Name="DupMenuItem">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="DupLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding DuplicatesValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <views:BadgeChip Classes="menuBadge" Badge="Duplicate" />
+                                            <TextBlock Grid.Column="1" x:Name="DupLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding DuplicatesValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
                                     <MenuItem x:Name="DupAllItem" ToggleType="Radio" GroupName="DupGroup"
                                               IsChecked="{Binding IsDupAll}"
-                                              Command="{Binding SetDuplicatesFilterModeCommand}" CommandParameter="{x:Static gallery:DuplicatesFilterMode.All}" />
+                                              Command="{Binding SetDuplicatesFilterModeCommand}" CommandParameter="{x:Static gallery:DuplicatesFilterMode.All}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="45,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="DupAllItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="DupAndPossibleItem" ToggleType="Radio" GroupName="DupGroup"
                                               IsChecked="{Binding IsDupAndPossible}"
-                                              Command="{Binding SetDuplicatesFilterModeCommand}" CommandParameter="{x:Static gallery:DuplicatesFilterMode.DuplicatesAndPossible}" />
+                                              Command="{Binding SetDuplicatesFilterModeCommand}" CommandParameter="{x:Static gallery:DuplicatesFilterMode.DuplicatesAndPossible}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="45,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgePair Classes="menuBadge" First="Duplicate" Second="PossibleDuplicate" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="DupAndPossibleItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="DupOnlyItem" ToggleType="Radio" GroupName="DupGroup"
                                               IsChecked="{Binding IsDupOnly}"
-                                              Command="{Binding SetDuplicatesFilterModeCommand}" CommandParameter="{x:Static gallery:DuplicatesFilterMode.DuplicatesOnly}" />
+                                              Command="{Binding SetDuplicatesFilterModeCommand}" CommandParameter="{x:Static gallery:DuplicatesFilterMode.DuplicatesOnly}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="45,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Duplicate" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="DupOnlyItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                 </MenuItem>
                                 <MenuItem x:Name="GenMenuItem">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="GenLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding GeneratedValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <views:BadgeChip Classes="menuBadge" Badge="Generated" />
+                                            <TextBlock Grid.Column="1" x:Name="GenLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding GeneratedValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
                                     <MenuItem x:Name="GenAllItem" ToggleType="Radio" GroupName="GenGroup"
                                               IsChecked="{Binding IsGenAll}"
-                                              Command="{Binding SetGeneratedFilterModeCommand}" CommandParameter="{x:Static gallery:GeneratedFilterMode.All}" />
+                                              Command="{Binding SetGeneratedFilterModeCommand}" CommandParameter="{x:Static gallery:GeneratedFilterMode.All}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="GenAllItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="GenOnlyItem" ToggleType="Radio" GroupName="GenGroup"
                                               IsChecked="{Binding IsGenOnly}"
-                                              Command="{Binding SetGeneratedFilterModeCommand}" CommandParameter="{x:Static gallery:GeneratedFilterMode.GeneratedOnly}" />
+                                              Command="{Binding SetGeneratedFilterModeCommand}" CommandParameter="{x:Static gallery:GeneratedFilterMode.GeneratedOnly}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Generated" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="GenOnlyItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                </MenuItem>
+                                <!-- The other place: "In the storage" while the game is shown, "In the game" while the storage is -->
+                                <MenuItem x:Name="CopiesMenuItem">
+                                    <MenuItem.Header>
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <views:BadgeChip Classes="menuBadge" Badge="{Binding CopyBadge}" />
+                                            <TextBlock Grid.Column="1" Text="{Binding CopiesLabel}" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding CopiesValueText}" Margin="24,0,0,0"
+                                                       VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        </Grid>
+                                    </MenuItem.Header>
+                                    <MenuItem x:Name="CopiesAllItem" ToggleType="Radio" GroupName="CopiesGroup"
+                                              IsChecked="{Binding IsCopiesAll}"
+                                              Command="{Binding SetCopiesFilterModeCommand}" CommandParameter="{x:Static svc:CopiesFilterMode.All}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="45,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="CopiesAllItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem ToggleType="Radio" GroupName="CopiesGroup"
+                                              IsChecked="{Binding IsCopiesSame}"
+                                              Command="{Binding SetCopiesFilterModeCommand}" CommandParameter="{x:Static svc:CopiesFilterMode.Same}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="45,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="{Binding CopyBadge}" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="CopiesSameItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem ToggleType="Radio" GroupName="CopiesGroup"
+                                              IsChecked="{Binding IsCopiesSameOrSimilar}"
+                                              Command="{Binding SetCopiesFilterModeCommand}" CommandParameter="{x:Static svc:CopiesFilterMode.SameOrSimilar}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="45,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgePair Classes="menuBadge" First="{Binding CopyBadge}" Second="{Binding SimilarBadge}" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="CopiesSameOrSimilarItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem ToggleType="Radio" GroupName="CopiesGroup"
+                                              IsChecked="{Binding IsCopiesSimilar}"
+                                              Command="{Binding SetCopiesFilterModeCommand}" CommandParameter="{x:Static svc:CopiesFilterMode.Similar}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="45,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="{Binding SimilarBadge}" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="CopiesSimilarItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
+                                    <MenuItem ToggleType="Radio" GroupName="CopiesGroup"
+                                              IsChecked="{Binding IsCopiesNone}"
+                                              Command="{Binding SetCopiesFilterModeCommand}" CommandParameter="{x:Static svc:CopiesFilterMode.None}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="45,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="CopiesNoneItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                 </MenuItem>
                                 <MenuItem x:Name="PaintMenuItem">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="PaintLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding PaintValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <views:BadgeChip Classes="menuBadge" Badge="PaintOnly" />
+                                            <TextBlock Grid.Column="1" x:Name="PaintLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding PaintValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
                                     <MenuItem x:Name="PaintAllItem" ToggleType="Radio" GroupName="PaintGroup"
                                               IsChecked="{Binding IsPaintAll}"
-                                              Command="{Binding SetPaintFilterModeCommand}" CommandParameter="{x:Static gallery:PaintFilterMode.All}" />
+                                              Command="{Binding SetPaintFilterModeCommand}" CommandParameter="{x:Static gallery:PaintFilterMode.All}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="PaintAllItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="PaintOnlyItem" ToggleType="Radio" GroupName="PaintGroup"
                                               IsChecked="{Binding IsPaintOnly}"
-                                              Command="{Binding SetPaintFilterModeCommand}" CommandParameter="{x:Static gallery:PaintFilterMode.PaintOnly}" />
+                                              Command="{Binding SetPaintFilterModeCommand}" CommandParameter="{x:Static gallery:PaintFilterMode.PaintOnly}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="PaintOnly" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="PaintOnlyItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="PaintHideItem" ToggleType="Radio" GroupName="PaintGroup"
                                               IsChecked="{Binding IsPaintHidden}"
-                                              Command="{Binding SetPaintFilterModeCommand}" CommandParameter="{x:Static gallery:PaintFilterMode.HidePaint}" />
+                                              Command="{Binding SetPaintFilterModeCommand}" CommandParameter="{x:Static gallery:PaintFilterMode.HidePaint}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="PaintHideItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                 </MenuItem>
                                 <MenuItem x:Name="AuctionMenuItem" IsVisible="{Binding ShowAuctionFilter}">
                                     <MenuItem.Header>
-                                        <Grid ColumnDefinitions="*,Auto" MinWidth="240">
-                                            <TextBlock x:Name="AuctionLabelText" VerticalAlignment="Center" />
-                                            <TextBlock Grid.Column="1" Text="{Binding AuctionValueText}" Margin="24,0,0,0"
+                                        <Grid ColumnDefinitions="Auto,*,Auto" MinWidth="240">
+                                            <views:BadgeChip Classes="menuBadge" Badge="Auction" />
+                                            <TextBlock Grid.Column="1" x:Name="AuctionLabelText" VerticalAlignment="Center" />
+                                            <TextBlock Grid.Column="2" Text="{Binding AuctionValueText}" Margin="24,0,0,0"
                                                        VerticalAlignment="Center" Foreground="{DynamicResource TextSecondaryBrush}" />
                                         </Grid>
                                     </MenuItem.Header>
                                     <MenuItem x:Name="AuctionAllItem" ToggleType="Radio" GroupName="AuctionGroup"
                                               IsChecked="{Binding IsAuctionAll}"
-                                              Command="{Binding SetAuctionFilterModeCommand}" CommandParameter="{x:Static gallery:AuctionFilterMode.All}" />
+                                              Command="{Binding SetAuctionFilterModeCommand}" CommandParameter="{x:Static gallery:AuctionFilterMode.All}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="AuctionAllItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="AuctionOnlyItem" ToggleType="Radio" GroupName="AuctionGroup"
                                               IsChecked="{Binding IsAuctionOnly}"
-                                              Command="{Binding SetAuctionFilterModeCommand}" CommandParameter="{x:Static gallery:AuctionFilterMode.OnlyAuction}" />
+                                              Command="{Binding SetAuctionFilterModeCommand}" CommandParameter="{x:Static gallery:AuctionFilterMode.OnlyAuction}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Auction" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="AuctionOnlyItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="AuctionSeparateItem" ToggleType="Radio" GroupName="AuctionGroup"
                                               IsChecked="{Binding IsAuctionSeparate}" IsEnabled="{Binding IsAuctionSeparateEnabled}"
-                                              Command="{Binding SetAuctionFilterModeCommand}" CommandParameter="{x:Static gallery:AuctionFilterMode.AuctionSeparately}" />
+                                              Command="{Binding SetAuctionFilterModeCommand}" CommandParameter="{x:Static gallery:AuctionFilterMode.AuctionSeparately}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                    <views:BadgeChip Classes="menuBadge" Badge="Auction" />
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" x:Name="AuctionSeparateItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                     <MenuItem x:Name="AuctionHideItem" ToggleType="Radio" GroupName="AuctionGroup"
                                               IsChecked="{Binding IsAuctionHidden}"
-                                              Command="{Binding SetAuctionFilterModeCommand}" CommandParameter="{x:Static gallery:AuctionFilterMode.HideAuction}" />
+                                              Command="{Binding SetAuctionFilterModeCommand}" CommandParameter="{x:Static gallery:AuctionFilterMode.HideAuction}">
+                                        <MenuItem.Header>
+                                            <Grid Classes="menuChoice" ColumnDefinitions="26,Auto">
+                                                <TextBlock Grid.Column="1" x:Name="AuctionHideItemText" VerticalAlignment="Center" />
+                                            </Grid>
+                                        </MenuItem.Header>
+                                    </MenuItem>
                                 </MenuItem>
                             </MenuFlyout>
                         </Button.Flyout>
@@ -1114,21 +1253,22 @@
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
                 </Grid>
-                <Grid x:Name="QuickFiltersRow" Margin="0,12,0,0" ColumnDefinitions="Auto,*" x:DataType="vm:FilterBarViewModel"
-                      DataContext="{Binding FilterBar}" IsVisible="{Binding HasQuickFilters}">
+                <Grid x:Name="QuickFiltersRow" Margin="0,12,0,0" ColumnDefinitions="Auto,*,Auto" x:DataType="vm:FilterBarViewModel"
+                      DataContext="{Binding FilterBar}" IsVisible="{Binding HasFilterChips}">
                     <TextBlock Grid.Column="0" x:Name="QuickFiltersLabel" FontSize="12" Margin="0,5,10,0"
                                VerticalAlignment="Top" Foreground="{DynamicResource TextSecondaryBrush}" />
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding QuickFilters}">
+                    <!-- One row for everything that hides liveries now: the "only …" filters of the filter menu (filled
+                         chips), then the quick filters, a car or an author (outlined chips). Each chip's cross takes its
+                         filter off -->
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding FilterChips}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <WrapPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate x:DataType="vm:QuickFilterChipViewModel">
-                                <Button Classes="quickFilterChip" Margin="0,0,8,8"
-                                        Command="{Binding $parent[ItemsControl].((vm:FilterBarViewModel)DataContext).RemoveQuickFilterCommand}"
-                                        CommandParameter="{Binding}"
+                        <ItemsControl.DataTemplates>
+                            <DataTemplate x:DataType="vm:ModeFilterChipViewModel">
+                                <Button Classes="filterChipFilled" Margin="0,0,8,8" Command="{Binding RemoveCommand}"
                                         ToolTip.Tip="{DynamicResource Loc_QuickFilterRemoveTooltip}">
                                     <StackPanel Orientation="Horizontal" Spacing="7">
                                         <TextBlock Text="{Binding Text}" VerticalAlignment="Center"
@@ -1138,8 +1278,31 @@
                                     </StackPanel>
                                 </Button>
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:QuickFilterChipViewModel">
+                                <Button Classes="filterChipOutlined" Margin="0,0,8,8"
+                                        Command="{Binding $parent[ItemsControl].((vm:FilterBarViewModel)DataContext).RemoveQuickFilterCommand}"
+                                        CommandParameter="{Binding}"
+                                        ToolTip.Tip="{DynamicResource Loc_QuickFilterRemoveTooltip}">
+                                    <StackPanel Orientation="Horizontal" Spacing="7">
+                                        <TextBlock Text="{Binding Text}" VerticalAlignment="Center"
+                                                   TextTrimming="CharacterEllipsis" MaxWidth="360" />
+                                        <Path Data="{StaticResource IconCross}" Width="8" Height="8" Stretch="Uniform"
+                                              Stroke="{DynamicResource AccentBrush}" StrokeThickness="1.6" VerticalAlignment="Center" />
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.DataTemplates>
                     </ItemsControl>
+                    <!-- Every filter off at once (the search too). Always at the row's right end, on its first line: it
+                         does not move as chips come and go or wrap -->
+                    <Button Grid.Column="2" x:Name="ResetFiltersButton" Classes="filterChipReset" Margin="8,0,0,8"
+                            VerticalAlignment="Top" Command="{Binding ResetFiltersCommand}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <ui:GridIcon Data="{StaticResource IconReset}" Width="14" Height="14" StrokeThickness="2"
+                                         Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                            <TextBlock Text="{x:Static loc:Strings.ResetFiltersTooltip}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
                 </Grid>
             </StackPanel>
         </Border>
@@ -1181,6 +1344,13 @@
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock x:Name="StatusText" Text="{Binding StatusText}" FontSize="12"
                                Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
+                    <!-- The last action can be undone (MainViewModel.Undo.cs): shown until the next one. Ctrl+Z does the same -->
+                    <Button x:Name="UndoButton" Classes="rowLink" Margin="10,0,0,0" VerticalAlignment="Center"
+                            x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
+                            IsVisible="{Binding CanUndo}" Command="{Binding UndoCommand}" ToolTip.Tip="{Binding UndoTooltip}">
+                        <TextBlock Text="{DynamicResource Loc_UndoLabel}" FontSize="12"
+                                   Foreground="{DynamicResource AccentBrush}" />
+                    </Button>
                     <StackPanel x:Name="SelectionPanel" Orientation="Horizontal" Margin="10,0,0,0"
                                 VerticalAlignment="Center"
                                 IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.HasSelection}">
@@ -1224,7 +1394,7 @@
                                 IsVisible="{Binding HasFavorites}" VerticalAlignment="Center">
                         <TextBlock Text="·" FontSize="12" Margin="0,0,6,0"
                                    Foreground="{DynamicResource TextSecondaryBrush}" />
-                        <ui:FavoriteStar IsOn="True" Width="11" Height="11" StrokeThickness="1.2" Margin="0,0,4,0" />
+                        <ui:FavoriteStar IsOn="True" Width="15" Height="15" StrokeThickness="1.2" Margin="0,0,4,0" />
                         <TextBlock x:Name="FavoritesCountText" Text="{Binding FavoritesCount}" FontSize="12"
                                    Foreground="{DynamicResource TextSecondaryBrush}" />
                     </StackPanel>
@@ -1274,11 +1444,19 @@
                     </Button>
                 </Grid>
             </Border>
-            <ScrollViewer x:Name="GalleryScroll" Grid.Column="1" Grid.Row="1" Padding="12,0,12,20" Focusable="True" FocusAdorner="{x:Null}">
+            <ScrollViewer x:Name="GalleryScroll" Grid.Column="1" Grid.Row="1" Padding="12,0,12,20" Focusable="True" FocusAdorner="{x:Null}"
+                          input:MiddleButtonScroll.IsEnabled="True">
                 <views:VirtualGalleryPanel x:Name="GalleryPanel"
                                            HeaderTemplate="{StaticResource GroupHeaderTemplate}"
                                            RowTemplate="{StaticResource GalleryRowTemplate}" />
             </ScrollViewer>
+            <!-- The rectangle dragged over the cards to select them (MainWindow.Band.cs): drawn over the list, takes no pointer -->
+            <Canvas x:Name="BandLayer" Grid.Column="1" Grid.Row="1" ClipToBounds="True" IsHitTestVisible="False">
+                <Border x:Name="BandRect" IsVisible="False" BorderThickness="1" CornerRadius="2"
+                        BorderBrush="{DynamicResource AccentBrush}">
+                    <Border Background="{DynamicResource AccentBrush}" Opacity="0.16" />
+                </Border>
+            </Canvas>
 
             <StackPanel x:Name="EmptyState" Grid.Column="1" Grid.Row="1" MaxWidth="520" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding IsEmptyStateVisible}">
                 <Path Data="{StaticResource IconPalette}" Width="42" Height="42" Stretch="Uniform"
@@ -1315,7 +1493,8 @@
                             </Border>
                         </StackPanel>
                     </DockPanel>
-                    <ScrollViewer x:Name="ScreenshotsScroll" Grid.Row="1" Padding="20,4,20,20" HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer x:Name="ScreenshotsScroll" Grid.Row="1" Padding="20,4,20,20" HorizontalScrollBarVisibility="Disabled"
+                                  input:MiddleButtonScroll.IsEnabled="True">
                         <ItemsControl x:Name="ScreenshotGroups">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate x:DataType="vm:ScreenshotGroupViewModel">

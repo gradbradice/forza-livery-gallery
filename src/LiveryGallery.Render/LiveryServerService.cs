@@ -66,13 +66,17 @@ internal sealed class LiveryServerService(string gameId) : ILiveryServerClient
         return ToCheckResult(status);
     }
 
-    public async Task<IReadOnlyDictionary<string, int>> GetInstalledLiveriesAsync(ReadOnlyMemory<byte> profileData, CancellationToken ct)
+    public async Task<IReadOnlyDictionary<string, int>> GetInstalledLiveriesAsync(ReadOnlyMemory<byte> profileData, CancellationToken ct) =>
+        (await ReadSaveAsync(profileData, ct).ConfigureAwait(false)).Installed;
+
+    /// <summary>The liveries on the player's cars and the player's name as the game wrote it in the save (server 1.4.0; before, null)</summary>
+    public async Task<ServerSaveRead> ReadSaveAsync(ReadOnlyMemory<byte> profileData, CancellationToken ct)
     {
         var client = GetClient() ?? throw new InvalidOperationException("The livery server is not configured in this build");
         try
         {
-            var liveries = await client.GetInstalledLiveriesAsync(profileData, cancellationToken: ct).ConfigureAwait(false);
-            return CountByContainer(liveries);
+            var read = await client.ReadSaveAsync(profileData, cancellationToken: ct).ConfigureAwait(false);
+            return new ServerSaveRead(CountByContainer(read.Liveries), read.PlayerName);
         }
         catch (LiveryServiceException ex)
         {

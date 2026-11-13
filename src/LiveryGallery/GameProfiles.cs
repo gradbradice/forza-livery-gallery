@@ -41,6 +41,9 @@ internal static class GameProfiles
     /// Forza Horizon 6: Xbox app saves, a folder per livery, the auction house, the livery server and the My Designs
     /// grid of ForzaToolkit.Games.FH6
     /// </summary>
+    // Where a header that cannot be read is reported
+    private static readonly ILogger ItemAuthorLog = AppLog.LoggerFactory.CreateLogger("LiveryGallery.ItemAuthors");
+
     public static GameProfile Fh6()
     {
         // One resolver for the scan's auction previews and the gallery's copies of them: it looks for the game's cache
@@ -54,6 +57,7 @@ internal static class GameProfiles
             PreviewFileNames = Fh6LiveryFiles.PreviewFileNames,
             Features = new GameFeatures { Auction = true, LiveryServer = true },
             ScanParts = Fh6ScanParts,
+            ReadItemAuthor = header => SaveItemAuthors.ReadFile(header, FormatsGame.ForzaHorizon6, ItemAuthorLog),
             MyDesigns = new MyDesignsGrid(Fh6Rows, MyDesignsLayout.FromSaveFolder, DefaultRows: 2, RowChoices: [2, 3]),
             // Some players have a livery the developers gave, kept on the game's servers: first in My Designs
             // The game's only limit on liveries: at 1000 it lets the player neither download nor make another
@@ -84,6 +88,7 @@ internal static class GameProfiles
         PreviewFileNames = FlatLiveryFiles.PreviewParts,
         SaveLayout = GameSaveLayout.SaveItems,
         Features = new GameFeatures(),
+        ReadItemAuthor = header => SaveItemAuthors.ReadFile(header, format, ItemAuthorLog),
         ScanParts = _ =>
         {
             var parser = new Fh3To5LiveryParser(format, AppLog.LoggerFactory.CreateLogger<Fh3To5LiveryParser>());
