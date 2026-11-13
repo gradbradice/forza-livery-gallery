@@ -33,6 +33,9 @@ internal sealed class GamePaths
 
     public string Root { get; }
 
+    /// <summary>The 3D view's camera left on each car of the game (Services/ViewerCameraStore.cs)</summary>
+    public string ViewerCameras => Path.Combine(Root, Services.ViewerCameraStore.FileName);
+
     /// <summary>The previews of the game's liveries, those the game made and those drawn in 3D</summary>
     public string Thumbs => Path.Combine(Root, "thumbs");
 

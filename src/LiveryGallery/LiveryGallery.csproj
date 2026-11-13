@@ -1,5 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!--
+    Forza Livery Gallery, the program: composes the open gallery (LiveryGallery.Avalonia) with the closed side
+    (LiveryGallery.Render) and the games' profiles and starts it. Builds ForzaLiveryGallery.exe (up to 1.6.0
+    LiveryGallery.exe).
+  -->
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <AssemblyName>ForzaLiveryGallery</AssemblyName>
@@ -16,6 +21,7 @@
     <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
     <PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.1" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
+    <!-- The game: FH6's profile (GameProfiles.cs) is built here, the gallery itself does not know the game -->
   </ItemGroup>
 
   <ItemGroup>
@@ -23,8 +29,10 @@
     <ProjectReference Include="..\LiveryGallery.Render\LiveryGallery.Render.csproj" />
   </ItemGroup>
 
+  <!-- ForzaToolkit: its projects in source mode, its packages otherwise (UseToolkitSource, Directory.Build.props) -->
   <ItemGroup Condition="'$(UseToolkitSource)' == 'true'">
     <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games.FH6/ForzaToolkit.Games.FH6.csproj" />
+    <!-- The games that are ready but not shown yet (GameProfiles.Prepared) -->
     <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games.FH3/ForzaToolkit.Games.FH3.csproj" />
     <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games.FH4/ForzaToolkit.Games.FH4.csproj" />
     <ProjectReference Include="$(ForzaToolkitOpenRoot)src/ForzaToolkit.Games.FH5/ForzaToolkit.Games.FH5.csproj" />

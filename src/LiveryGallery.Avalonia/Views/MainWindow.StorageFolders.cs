@@ -51,7 +51,8 @@ internal partial class MainWindow
             if (e.DataTransfer.TryGetValue(StoredDragFormat) is not { Length: > 0 } keys) return;
             var set = keys.ToHashSet(StringComparer.OrdinalIgnoreCase);
             var entries = _mainViewModel.Gallery.AllEntries.Where(x => x.IsStored && set.Contains(x.FolderName)).ToList();
-            _mainViewModel.MoveToStorageFolder(entries, item.Id == MainViewModel.NoFolderView ? null : item.Id);
+            RunUiTask(() => _mainViewModel.MoveToStorageFolderAsync(entries, item.Id == MainViewModel.NoFolderView ? null : item.Id),
+                "move to a storage folder");
         };
     }
 
@@ -105,7 +106,7 @@ internal partial class MainWindow
         string? name = await NameDialog.AskAsync(this, Strings.StorageNewFolder, Strings.StorageFolderNameLabel, "",
             n => _mainViewModel.StorageFolderNameProblem(n), Strings.AlbumCreate);
         if (name is null || _mainViewModel.CreateStorageFolder(name) is not { } folder) return null;
-        if (liveries is { Count: > 0 }) _mainViewModel.MoveToStorageFolder(liveries, folder.Id);
+        if (liveries is { Count: > 0 }) await _mainViewModel.MoveToStorageFolderAsync(liveries, folder.Id);
         return folder;
     }
 
@@ -113,7 +114,7 @@ internal partial class MainWindow
     {
         string? name = await NameDialog.AskAsync(this, Strings.StorageFolderRenameTitle, Strings.StorageFolderNameLabel, current,
             n => _mainViewModel.StorageFolderNameProblem(n, id));
-        if (name is not null) _mainViewModel.RenameStorageFolder(id, name);
+        if (name is not null) await _mainViewModel.RenameStorageFolderAsync(id, name);
     }
 
     private async Task DeleteStorageFolderAsync(string id, string name)
@@ -159,7 +160,7 @@ internal partial class MainWindow
         MenuItem Item(string header, string? folderId)
         {
             var item = new MenuItem { Header = header, ToggleType = MenuItemToggleType.CheckBox, IsChecked = targets.Count > 0 && common == folderId };
-            item.Click += (_, _) => _mainViewModel.MoveToStorageFolder(targets, folderId);
+            item.Click += (_, _) => RunUiTask(() => _mainViewModel.MoveToStorageFolderAsync(targets, folderId), "move to a storage folder");
             return item;
         }
         menu.Items.Add(Item(Strings.StorageNoFolder, null));

@@ -174,6 +174,19 @@
                                              Command="{Binding SetThemeCommand}" CommandParameter="{x:Static ui:AppThemeMode.Dark}" />
                             </StackPanel>
 
+                            <!-- The cards: where their badges stand (applied when saved, no restart) -->
+                            <TextBlock x:Name="CardsSectionLabel" Classes="sectionLabel" />
+                            <ComboBox x:Name="BadgesPlaceCombo" Classes="modern" HorizontalAlignment="Stretch"
+                                      ItemsSource="{Binding BadgesPlaceOptions}"
+                                      SelectedItem="{Binding SelectedBadgesPlaceOption, Mode=TwoWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:BadgesPlaceOption">
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBlock x:Name="BadgesPlaceHint" Classes="hint" Margin="0,4,0,24" TextWrapping="Wrap" />
+
                             <TextBlock x:Name="LanguageSectionLabel" Classes="sectionLabel" />
                             <ComboBox x:Name="LanguageCombo" Classes="modern" HorizontalAlignment="Stretch" Margin="0,0,0,24"
                                       ItemsSource="{Binding LanguageOptions}"
@@ -339,6 +352,15 @@
                                 </ItemsControl>
                                 <Button x:Name="OpenStorageFolderButton" Classes="secondary" HorizontalAlignment="Left" Margin="0,10,0,0"
                                         Padding="12,6" Click="OpenStorageFolderButton_Click" />
+                                <!-- Flat (the default) or the folders as folders on disk: one choice for every storage, the files
+                                     moved at once (docs/storage.md, "Folders on disk") -->
+                                <CheckBox x:Name="StorageFoldersOnDiskCheckBox" Margin="0,16,0,2" IsVisible="False"
+                                          Click="StorageFoldersOnDiskCheckBox_Click">
+                                    <TextBlock x:Name="StorageFoldersOnDiskText" TextWrapping="Wrap" />
+                                </CheckBox>
+                                <TextBlock x:Name="StorageFoldersOnDiskHint" Classes="hint" TextWrapping="Wrap" Margin="28,0,0,0"
+                                           IsVisible="{Binding #StorageFoldersOnDiskCheckBox.IsVisible}" />
+                                <TextBlock x:Name="StorageFoldersOnDiskStatus" Classes="hint" TextWrapping="Wrap" Margin="28,4,0,0" IsVisible="False" />
                             </StackPanel>
                         </StackPanel>
 
@@ -350,6 +372,11 @@
                             <CheckBox x:Name="SearchByFolderNameCheckBox" Margin="0,0,0,10" IsChecked="{Binding SearchByFolderName}" />
                             <CheckBox x:Name="ShowChangesSinceLastLaunchCheckBox" Margin="0,0,0,10"
                                       IsChecked="{Binding ShowChangesSinceLastLaunch}" />
+                            <!-- Scrolling with the mouse wheel pressed, in the liveries and the screenshots -->
+                            <CheckBox x:Name="WheelClickScrollCheckBox" Margin="0,0,0,10" IsChecked="{Binding WheelClickScroll}" />
+                            <TextBlock Text="{Binding WheelScrollSpeedText}" FontSize="13" Margin="0,0,0,4" TextWrapping="Wrap" />
+                            <Slider x:Name="WheelScrollSpeedSlider" Margin="0,0,0,10" Minimum="50" Maximum="300" TickFrequency="25"
+                                    IsSnapToTickEnabled="True" Value="{Binding WheelScrollSpeed, Mode=TwoWay}" />
                             <CheckBox x:Name="WarnFewFreeSlotsCheckBox" Margin="0,0,0,24" IsChecked="{Binding WarnFewFreeSlots}">
                                 <!-- A long text in some languages: the plate goes to the next line instead of widening the page -->
                                 <WrapPanel>
@@ -399,6 +426,17 @@
                             <TextBlock x:Name="PossibleDuplicateThresholdHint" Classes="hint" Margin="0,2,0,24" />
 
                             <TextBlock x:Name="UpdatesSectionLabel" Classes="sectionLabel" />
+                            <TextBlock x:Name="UpdateInstallLabel" FontSize="13" Margin="0,0,0,4" TextWrapping="Wrap" />
+                            <ComboBox x:Name="UpdateInstallCombo" Classes="modern" HorizontalAlignment="Stretch"
+                                      ItemsSource="{Binding UpdateInstallOptions}"
+                                      SelectedItem="{Binding SelectedUpdateInstallOption, Mode=TwoWay}">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:UpdateInstallOption">
+                                        <TextBlock Text="{Binding DisplayName}" />
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+                            <TextBlock x:Name="UpdateInstallHint" Classes="hint" Margin="0,4,0,12" TextWrapping="Wrap" />
                             <CheckBox x:Name="BetaUpdatesCheckBox" IsChecked="{Binding BetaUpdates}" />
                             <TextBlock x:Name="BetaUpdatesHint" Classes="hint" Margin="0,6,0,0" />
                         </StackPanel>

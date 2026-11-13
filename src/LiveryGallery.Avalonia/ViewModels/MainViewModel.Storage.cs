@@ -116,10 +116,50 @@ internal sealed partial class MainViewModel
         // The storage has other liveries of their keys (put there by hand): they stayed in the game
         if (result.Conflicts.Count > 0)
             notes.Add(string.Format(Strings.StorageConflictsFormat, string.Join(Environment.NewLine, result.Conflicts)));
+        // The others failed (the game holds a file, the disk is full, the storage's folder went away): said, not kept quiet
+        var failed = NotMoved([.. toStore.Select(e => e.Data)], result);
+        if (failed.Count > 0 && !ShutdownToken.IsCancellationRequested)
+            notes.Add(string.Format(Strings.StoreFailedFormat, failed.Count, LiveryRestoreConflicts.FormatList(failed)));
         if (result.LeftoverPaths.Count > 0)
             notes.Add(string.Format(Strings.ArchiveLeftoverFoldersFormat, string.Join(Environment.NewLine, result.LeftoverPaths)));
         if (notes.Count > 0) ErrorMessageRequested?.Invoke(string.Join(Environment.NewLine + Environment.NewLine, notes));
-        if (result.Completed.Count > 0) Status.SetStatusText(string.Format(Strings.StatusMovedToStorageFormat, result.Completed.Count));
+        if (result.Completed.Count > 0)
+        {
+            Status.SetStatusText(string.Format(Strings.StatusMovedToStorageFormat, result.Completed.Count));
+            // Undone by bringing them back, with every check of "Return to the game"
+            string[] moved = [.. result.Completed];
+            RememberForUndo(UndoKind.ToStorage, moved.Length, () => ReturnKeysToGameAsync(moved));
+        }
         return result.Completed.Count > 0;
+    }
+
+    /// <summary>The liveries a move out of the save did not take, and not because their place has another livery of the key</summary>
+    private static List<LiveryData> NotMoved(IReadOnlyList<LiveryData> asked, ArchiveOperationResult result)
+    {
+        var settled = result.Completed.Concat(result.Conflicts).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return [.. asked.Where(d => !settled.Contains(d.FolderName))];
+    }
+
+    /// <summary>
+    /// Why liveries did not move between the archive and the storage: those whose key the other one has already, and
+    /// those whose files did not move (another disk full, a folder gone away). Null when all moved
+    /// </summary>
+    /// <param name="asked">The liveries asked for</param>
+    /// <param name="moved">The keys of those that moved</param>
+    /// <param name="takenKeys">The keys the destination had before</param>
+    /// <param name="keyTakenFormat">The message for a key the destination has ("{0}": how many)</param>
+    /// <param name="failedFormat">The message for the others ("{0}": how many, "{1}": which)</param>
+    internal static string? NotTakenReport(IReadOnlyList<LiveryData> asked, IReadOnlyCollection<string> moved,
+        IReadOnlySet<string> takenKeys, string keyTakenFormat, string failedFormat)
+    {
+        var done = moved.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var left = asked.Where(d => !done.Contains(d.FolderName)).ToList();
+        if (left.Count == 0) return null;
+        var parts = new List<string>(2);
+        int keyTaken = left.Count(d => takenKeys.Contains(d.FolderName));
+        if (keyTaken > 0) parts.Add(string.Format(keyTakenFormat, keyTaken));
+        var failed = left.Where(d => !takenKeys.Contains(d.FolderName)).ToList();
+        if (failed.Count > 0) parts.Add(string.Format(failedFormat, failed.Count, LiveryRestoreConflicts.FormatList(failed)));
+        return string.Join(Environment.NewLine + Environment.NewLine, parts);
     }
 }

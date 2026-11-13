@@ -23,6 +23,7 @@ internal static class AppSettingsService
         if (!Enum.IsDefined(data.GeneratedFilterMode)) { data.GeneratedFilterMode = GeneratedFilterMode.All; changed = true; }
         if (data.ThemeMode is { } theme && !Enum.IsDefined(theme)) { data.ThemeMode = AppThemeMode.System; changed = true; }
         if (!Enum.IsDefined(data.MyDesignsRowsMode)) { data.MyDesignsRowsMode = MyDesignsRowsMode.Auto; changed = true; }
+        if (!Enum.IsDefined(data.UpdateInstall)) { data.UpdateInstall = UpdateInstallMode.Ask; changed = true; }
         if (data.ServerLiveries is < 0 or > MyDesignsGrid.MaxServerLiveries)
         {
             data.ServerLiveries = Math.Clamp(data.ServerLiveries, 0, MyDesignsGrid.MaxServerLiveries);

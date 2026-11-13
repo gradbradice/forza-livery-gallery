@@ -131,6 +131,9 @@ internal partial class MainWindow
     /// the host opens the other game's window, and this one closes. Nothing happens while the save is being written:
     /// the shutdown waits for it
     /// </summary>
+    /// <summary>The window closes for another game's: the app goes on</summary>
+    internal bool IsSwitchingGame => _switchingGame;
+
     internal async Task SwitchGameAsync(string gameId)
     {
         if (_isClosing || _switchingGame || Games is not { } games || games.IsCurrent(gameId)) return;

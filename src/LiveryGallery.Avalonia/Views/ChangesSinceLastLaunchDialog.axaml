@@ -37,24 +37,27 @@
                                        Margin="8,0,0,0" VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextSecondaryBrush}" />
                         </Grid>
-                        <TextBlock Text="{Binding Author}" FontSize="11.5" Margin="0,2,0,0"
-                                   TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextSecondaryBrush}" />
-                        <TextBlock Text="{Binding CarText}" FontSize="11.5" Margin="0,2,0,0"
-                                   TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextSecondaryBrush}" />
-                        <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,5,0,0">
-                            <Border IsVisible="{Binding IsAuction}" Background="{DynamicResource AuctionBrush}"
-                                    CornerRadius="6" Padding="6,2" VerticalAlignment="Center">
-                                <TextBlock Text="{DynamicResource Loc_AuctionBadgeLabel}" FontSize="10"
-                                           FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <Border IsVisible="{Binding IsMine}" Background="{DynamicResource AccentBrush}"
-                                    CornerRadius="6" Padding="6,2" VerticalAlignment="Center">
-                                <TextBlock Text="{DynamicResource Loc_MyLiveryBadgeLabel}" FontSize="10"
-                                           FontWeight="SemiBold" Foreground="White" />
-                            </Border>
-                            <TextBlock Text="{Binding DateText}" FontSize="11" VerticalAlignment="Center"
-                                       Foreground="{DynamicResource TextSecondaryBrush}" />
-                        </StackPanel>
+                        <!-- Who and which car on one line, the date under it, the card's badges last -->
+                        <TextBlock FontSize="11.5" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"
+                                   Foreground="{DynamicResource TextSecondaryBrush}">
+                            <Run Text="{Binding Author}" /><Run Text=" · " /><Run Text="{Binding CarText}" />
+                        </TextBlock>
+                        <TextBlock Text="{Binding DateText}" FontSize="11.5" Margin="0,2,0,0"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <!-- The card's badges, 20 high as at the bottom of a card; a tooltip names each -->
+                        <ItemsControl ItemsSource="{Binding Badges}" IsVisible="{Binding HasBadges}" Margin="0,6,0,0">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel ItemSpacing="3" LineSpacing="3" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="views:LiveryBadge">
+                                    <views:BadgeChip Badge="{Binding Badge}" Number="{Binding Number}" ChipSize="20" Shadow="False"
+                                                     Surface="SurfaceBrush" ToolTip.Tip="{Binding Tooltip}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </Grid>
             </Border>

@@ -9,7 +9,9 @@ namespace LiveryGallery.Services;
 /// The previews the gallery draws from the 3D model for cards whose save has none (<see cref="ILiveryThumbnails"/>).
 /// A drawn preview is written into the shared preview folder under <see cref="LiveryDrawnPreviews.FileName"/>, and the
 /// next scan makes it the livery's preview: from then on it goes into the archive and the backups with the livery, and
-/// it is deleted with the livery or once the game writes a preview of its own. Nothing is written to the save.
+/// it is deleted with the livery or once the game writes a preview of its own. Nothing is written to the save. A stored
+/// livery (one of the storage, which no scan of the save sees) is drawn from its file in the storage, and its preview
+/// is given to it in the storage's index at once (<see cref="KeepStored"/>).
 /// One preview is drawn at a time, in the order the cards asked; a preview whose cards all left the screen before it
 /// started is not drawn. A livery that could not be drawn is not tried again until the game folder changes.
 /// Used from the UI thread.
@@ -25,7 +27,7 @@ internal sealed class RenderedThumbnails
     }
 
     private readonly ILiveryThumbnails _thumbnails;
-    private readonly Func<string, string?> _liveryFileOf;
+    private readonly Func<LiveryEntry, string?> _liveryFileOf;
     private readonly string _previewDirectory;
     private readonly ClosableAsyncLock _saveFolderLock;
     private readonly Dictionary<string, Job> _jobs = new(StringComparer.OrdinalIgnoreCase);
@@ -36,10 +38,10 @@ internal sealed class RenderedThumbnails
     private bool _shuttingDown;
 
     /// <param name="thumbnails">Draws the previews</param>
-    /// <param name="liveryFileOf">A livery folder's name → its livery file in the current save; null when there is no save</param>
+    /// <param name="liveryFileOf">A card → its livery file: in the current save, a stored livery's in the storage; null when it cannot be read</param>
     /// <param name="previewDirectory">The shared preview folder the scanner reads (<c>LiveryCacheStore.ThumbsDir</c>)</param>
     /// <param name="saveFolderLock">Held while a drawn preview is written, so a scan does not take it for an orphan</param>
-    public RenderedThumbnails(ILiveryThumbnails thumbnails, Func<string, string?> liveryFileOf, string previewDirectory, ClosableAsyncLock saveFolderLock)
+    public RenderedThumbnails(ILiveryThumbnails thumbnails, Func<LiveryEntry, string?> liveryFileOf, string previewDirectory, ClosableAsyncLock saveFolderLock)
     {
         _thumbnails = thumbnails;
         _liveryFileOf = liveryFileOf;
@@ -84,6 +86,12 @@ internal sealed class RenderedThumbnails
     /// <summary>A preview was drawn and written: a scan makes it the livery's preview</summary>
     public event Action? Drawn;
 
+    /// <summary>
+    /// Gives a stored livery its drawn preview in the storage's index (no scan does): kept from the preview cleanup, and
+    /// it goes back into the game with the livery. Called on the UI thread with each drawn preview a stored card gets
+    /// </summary>
+    public Action<LiveryEntry, string>? KeepStored { get; set; }
+
     /// <summary>The card needs a preview of the gallery's own and one can be drawn now</summary>
     public bool CanRender(LiveryEntry entry) =>
         !_shuttingDown && entry.CanRenderThumbnail && _thumbnails.IsAvailable
@@ -99,12 +107,12 @@ internal sealed class RenderedThumbnails
         if (!CanRender(entry) || FileNameOf(entry) is not { } name) return null;
 
         string path = Path.Combine(_previewDirectory, name);
-        if (File.Exists(path)) return path; // drawn before; the next scan attaches it
+        if (File.Exists(path)) return Kept(entry, path); // drawn before; the next scan attaches it
 
         bool queued = false;
         if (!_jobs.TryGetValue(name, out var job))
         {
-            if (_liveryFileOf(entry.FolderName) is not { } liveryFile) return null;
+            if (_liveryFileOf(entry) is not { } liveryFile) return null;
             job = new Job(name, new LiveryThumbnailRequest(entry.CarId, liveryFile));
             _jobs[name] = job;
             _queue.Enqueue(job);
@@ -116,7 +124,7 @@ internal sealed class RenderedThumbnails
         if (queued) _ = RunAsync();
         try
         {
-            return await job.Done.Task.WaitAsync(ct);
+            return Kept(entry, await job.Done.Task.WaitAsync(ct));
         }
         catch (OperationCanceledException) when (ct.IsCancellationRequested)
         {
@@ -214,6 +222,13 @@ internal sealed class RenderedThumbnails
     {
         if (_jobs.TryGetValue(job.FileName, out var current) && ReferenceEquals(current, job)) _jobs.Remove(job.FileName);
         job.Done.TrySetResult(path);
+    }
+
+    // A stored livery's preview is attached now: the scan that attaches the game's does not see the storage
+    private string? Kept(LiveryEntry entry, string? path)
+    {
+        if (path is not null && entry.IsStored) KeepStored?.Invoke(entry, path);
+        return path;
     }
 
     private static string? FileNameOf(LiveryEntry entry) => LiveryDrawnPreviews.FileName(entry.CarId, entry.CLiveryHash);

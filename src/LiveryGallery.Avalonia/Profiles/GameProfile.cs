@@ -125,6 +125,13 @@ internal sealed class GameProfile
     public required Func<GamePaths, LiveryScanParts> ScanParts { get; init; }
 
     /// <summary>
+    /// Who made a save item, from its <c>header</c> file (closed: ForzaToolkit.Liveries.Formats' <c>SaveItemAuthors</c>,
+    /// through fdata); null when the file is not a header. The account's name counts the vinyl groups and tunes with it
+    /// (<see cref="Services.Accounts.AccountItemAuthors"/>). None: they are not counted
+    /// </summary>
+    public Func<string, SaveItemAuthor?>? ReadItemAuthor { get; init; }
+
+    /// <summary>
     /// The settings of the game before the user changes any (its "Find in game" timings): what a game shown the
     /// first time starts with
     /// </summary>

@@ -115,11 +115,13 @@ internal sealed partial class MainViewModel
                 AppLog.LogWarning($"Liveries placed in the storage by hand: {report.Taken.Count()} taken in, {report.Skipped.Count()} left, {report.Gone.Count} gone (not an error)");
                 foreach (var item in report.Taken) _addedByHand.Add(item.Key!);
                 bool news = AddFound(report);
-                if (report.Taken.Any() || report.Gone.Count > 0)
+                if (report.Taken.Any() || report.Gone.Count > 0 || report.Refiled.Count > 0)
                 {
                     storage.RememberPreviews(accountKey);
                     await RefreshStorageAsync();
                 }
+                // Folders on disk: a folder made there by hand, a livery moved into another
+                if (report.FoldersChanged || report.Refiled.Count > 0) StorageFoldersChanged?.Invoke();
                 if (news) ShowFound();
             }
             while (_intakeAgain && !ShutdownToken.IsCancellationRequested);
@@ -349,7 +351,7 @@ internal sealed partial class MainViewModel
     /// <summary>For the settings: every account's storage, where it is and how big</summary>
     public Task<List<StorageRowInfo>> ListStoragesAsync()
     {
-        var accounts = Accounts.Select(a => (a.Info.Key, a.Title, a.Info.DisplayName)).ToList();
+        var accounts = Accounts.Select(a => (a.Info.Key, a.Title, DisplayName: a.Info.Name)).ToList();
         string? currentKey = CurrentAccountKey;
         if (currentKey is not null && accounts.All(a => !string.Equals(a.Key, currentKey, StringComparison.OrdinalIgnoreCase)))
             accounts.Insert(0, (currentKey, AccountLabels.Title(currentKey, null), null));

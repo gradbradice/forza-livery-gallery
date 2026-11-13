@@ -24,6 +24,13 @@ internal partial class ScreenshotViewerWindow : Window
     private readonly Action<string>? _openLivery;
     private int _index;
     private Bitmap? _bitmap;
+    // The file _bitmap was read from: null while the picture on screen is still the previous screenshot's
+    private string? _bitmapPath;
+    // Raised by every change of what is shown: a picture read for an earlier one is dropped, not shown
+    private int _showVersion;
+    // The reads, one after another: a screenshot is decoded off the UI thread (a 4K one takes a noticeable part of
+    // a second), and holding an arrow key reads only the screenshot the keys stopped at
+    private Task _load = Task.CompletedTask;
 
     public ScreenshotViewerWindow() : this(null!, [], 0, _ => "") { }
 
@@ -51,8 +58,11 @@ internal partial class ScreenshotViewerWindow : Window
         NotReadableText.Text = Strings.LiveryDetailsNoPreview;
         Closed += (_, _) =>
         {
+            _showVersion++; // a read still going is dropped when it ends
             ShotImage.Source = null;
             _bitmap?.Dispose();
+            _bitmap = null;
+            _bitmapPath = null;
         };
         Show(_index);
     }
@@ -69,27 +79,18 @@ internal partial class ScreenshotViewerWindow : Window
         TitleBarText.Text = Title;
         PositionText.Text = $"{string.Format(Strings.ScreenshotPositionFormat, _index + 1, _shots.Count)} · {livery}";
 
-        var old = _bitmap;
-        _bitmap = null;
-        try
+        // The same screenshot again (its cover or albums changed): the picture on screen is already its own
+        bool shown = _bitmap is not null && string.Equals(_bitmapPath, shot.Path, StringComparison.OrdinalIgnoreCase);
+        if (!shown)
         {
-            using var stream = File.OpenRead(shot.Path);
-            _bitmap = new Bitmap(stream);
+            // The previous picture stays on screen until this one is read, so going through them does not flicker
+            _bitmapPath = null;
+            CopyButton.IsEnabled = false;
+            NotReadableText.IsVisible = false;
+            int version = ++_showVersion;
+            _load = LoadAsync(_load, version, shot);
         }
-#pragma warning disable CA1031 // a broken file is shown as such, the others still go
-        catch (Exception ex)
-#pragma warning restore CA1031
-        {
-            AppLog.LogErrorThrottled(shot.Path, $"Failed to open the screenshot '{shot.Path}'", ex);
-        }
-        ShotImage.Source = _bitmap;
-        NotReadableText.IsVisible = _bitmap is null;
-        old?.Dispose();
-
-        var parts = new List<string> { shot.AddedUtc.ToLocalTime().ToString("g", AppLocalisationService.Culture) };
-        if (_bitmap is { } b) parts.Add($"{b.PixelSize.Width}×{b.PixelSize.Height}");
-        parts.Add($"{Path.GetExtension(shot.Path).TrimStart('.').ToUpperInvariant()} {ByteSizeFormatter.Format(shot.Bytes)}");
-        DetailsText.Text = string.Join("  ·  ", parts);
+        ShowDetails(shot, shown ? _bitmap : null);
 
         bool isCover = string.Equals(_store.CoverPath(shot.LiveryKey), shot.Path, StringComparison.OrdinalIgnoreCase);
         ShowAlbums(shot);
@@ -98,6 +99,60 @@ internal partial class ScreenshotViewerWindow : Window
         CoverButton.Classes.Set("secondary", isCover);
         PreviousButton.IsVisible = _index > 0;
         NextButton.IsVisible = _index < _shots.Count - 1;
+    }
+
+    private void ShowDetails(LiveryScreenshot shot, Bitmap? bitmap)
+    {
+        var parts = new List<string> { shot.AddedUtc.ToLocalTime().ToString("g", AppLocalisationService.Culture) };
+        if (bitmap is { } b) parts.Add($"{b.PixelSize.Width}×{b.PixelSize.Height}");
+        parts.Add($"{Path.GetExtension(shot.Path).TrimStart('.').ToUpperInvariant()} {ByteSizeFormatter.Format(shot.Bytes)}");
+        DetailsText.Text = string.Join("  ·  ", parts);
+    }
+
+    // Reads a screenshot after the reads before it, and shows it unless another one has been asked for meanwhile
+    private async Task LoadAsync(Task before, int version, LiveryScreenshot shot)
+    {
+        try
+        {
+            await before;
+            if (version != _showVersion) return; // the keys went on: this one is not read at all
+            var bitmap = await Task.Run(() => Decode(shot.Path));
+            if (version != _showVersion)
+            {
+                bitmap?.Dispose();
+                return;
+            }
+            var old = _bitmap;
+            _bitmap = bitmap;
+            _bitmapPath = bitmap is null ? null : shot.Path;
+            ShotImage.Source = bitmap;
+            NotReadableText.IsVisible = bitmap is null;
+            CopyButton.IsEnabled = bitmap is not null;
+            old?.Dispose();
+            ShowDetails(shot, bitmap);
+        }
+#pragma warning disable CA1031 // the viewer stays open whatever a read ends with
+        catch (Exception ex)
+#pragma warning restore CA1031
+        {
+            AppLog.LogError("Viewer: showing a screenshot failed", ex);
+        }
+    }
+
+    private static Bitmap? Decode(string path)
+    {
+        try
+        {
+            using var stream = File.OpenRead(path);
+            return new Bitmap(stream);
+        }
+#pragma warning disable CA1031 // a broken file is shown as such, the others still go
+        catch (Exception ex)
+#pragma warning restore CA1031
+        {
+            AppLog.LogErrorThrottled(path, $"Failed to open the screenshot '{path}'", ex);
+            return null;
+        }
     }
 
     protected override void OnKeyDown(KeyEventArgs e)
@@ -190,7 +245,8 @@ internal partial class ScreenshotViewerWindow : Window
     {
         try
         {
-            if (_bitmap is { } bitmap && Clipboard is { } clipboard) await clipboard.SetBitmapAsync(bitmap);
+            // Only the picture of the screenshot shown: while the next one is being read the old one is still on screen
+            if (_bitmap is { } bitmap && _bitmapPath is not null && Clipboard is { } clipboard) await clipboard.SetBitmapAsync(bitmap);
         }
         catch (Exception ex)
         {
@@ -206,9 +262,14 @@ internal partial class ScreenshotViewerWindow : Window
         {
             if (Current is not { } shot) return;
             if (!await ConfirmDialog.AskAsync(this, Strings.ScreenshotDeleteTitle, Strings.ScreenshotDeleteMessage)) return;
+            // A read still going holds the file open: it is dropped and waited for before the file is deleted
+            _showVersion++;
+            await _load;
+            if (!ReferenceEquals(Current, shot)) return; // the window went on to another one while waiting
             ShotImage.Source = null;
             _bitmap?.Dispose();
             _bitmap = null;
+            _bitmapPath = null;
             if (!_store.Delete(shot)) { Show(_index); return; }
             _shots.RemoveAt(_index);
             Show(Math.Min(_index, _shots.Count - 1));

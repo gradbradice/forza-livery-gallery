@@ -9,10 +9,10 @@ internal sealed class AccountRowViewModel(AccountListItem item)
     public AccountListItem Item { get; } = item;
 
     /// <summary>The player's name, or "Account" while it is not known</summary>
-    public string Name => AccountLabels.Name(Item.Info.DisplayName);
+    public string Name => AccountLabels.Name(Item.Info.Name);
 
     /// <summary>The name in one line, for the questions about this account ("Account ***E1FB" when unnamed)</summary>
-    public string Title => AccountLabels.Title(Item.Info.Key, Item.Info.DisplayName);
+    public string Title => AccountLabels.Title(Item.Info.Key, Item.Info.Name);
 
     /// <summary>The end of the XUID beside the name: "***E1FB", never the whole XUID</summary>
     public string Marker => AccountLabels.Marker(Item.Info.Key);

@@ -318,6 +318,9 @@
   <data name="ContactsGithubLabel" xml:space="preserve">
     <value>Repository su GitHub</value>
   </data>
+  <data name="ContactsDiscordLabel" xml:space="preserve">
+    <value>Server Discord</value>
+  </data>
   <data name="DuplicateBadgeLabel" xml:space="preserve">
     <value>Duplicato</value>
   </data>
@@ -1020,14 +1023,14 @@ Aggiornato alle {1}</value>
     <value>Usa il server per individuare le livree applicate alle auto</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Per sapere quali livree sono applicate alle Sue auto, la galleria invia al server il file di salvataggio C_ProfileData. Il server usa il file solo a questo scopo e non lo conserva.
+    <value>Per sapere quali livree sono applicate alle Sue auto e il nome del Suo account, la galleria invia al server il file di salvataggio C_ProfileData. Il server usa il file solo a questo scopo e non lo conserva.
 
 I dati del file non vengono conservati né usati per altro. Il server custodisce in modo sicuro le chiavi necessarie per decifrare il file di salvataggio.
 
 Il server non ha alcun legame con i server ufficiali di Forza Horizon, Xbox o Microsoft.</value>
   </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Per sapere quali livree sono applicate alle Sue auto, la galleria invia al server il file di salvataggio C_ProfileData. Il server usa il file solo a questo scopo e non lo conserva.
+    <value>Per sapere quali livree sono applicate alle Sue auto e il nome del Suo account, la galleria invia al server il file di salvataggio C_ProfileData. Il server usa il file solo a questo scopo e non lo conserva.
 
 I dati del file non vengono conservati né usati per altro. Il server custodisce in modo sicuro le chiavi necessarie per decifrare il file di salvataggio.
 
@@ -2387,11 +2390,23 @@ Controlli i file prima di inviarli. I valori che la galleria non conosce, ad ese
   <data name="UpdatesSectionLabel" xml:space="preserve">
     <value>Aggiornamenti</value>
   </data>
+  <data name="UpdateInstallLabel" xml:space="preserve">
+    <value>Installazione degli aggiornamenti</value>
+  </data>
+  <data name="UpdateInstallAsk" xml:space="preserve">
+    <value>Chiedi prima di installare</value>
+  </data>
+  <data name="UpdateInstallAutomatic" xml:space="preserve">
+    <value>Installa automaticamente</value>
+  </data>
+  <data name="UpdateInstallHint" xml:space="preserve">
+    <value>Chiedendo, la galleria segnala la nuova versione e la installa solo quando preme «Installa» nella sua finestra. In automatico, scarica la versione in background e la installa alla chiusura della galleria.</value>
+  </data>
   <data name="BetaUpdatesLabel" xml:space="preserve">
     <value>Ricevi le versioni beta</value>
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
-    <value>Le beta escono prima delle versioni stabili e possono contenere errori. Disattivando l’opzione la galleria non torna a una versione precedente: attende una versione stabile più recente della beta.</value>
+    <value>Le beta escono prima delle versioni stabili e possono contenere errori. Se disattivi l’opzione mentre usi una beta, la galleria propone di tornare all’ultima versione stabile.</value>
   </data>
   <data name="TagsDialogOneHint" xml:space="preserve">
     <value>Una spunta aggiunge il tag alla livrea, una casella vuota lo toglie.</value>
@@ -2458,12 +2473,6 @@ Controlli i file prima di inviarli. I valori che la galleria non conosce, ad ese
   </data>
   <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
     <value>Autore:</value>
-  </data>
-  <data name="LiveryDetailsChipLocked" xml:space="preserve">
-    <value>Bloccata</value>
-  </data>
-  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
-    <value>Preferita</value>
   </data>
   <data name="LiveryDetailsIdLabel" xml:space="preserve">
     <value>Numero della livrea</value>
@@ -2546,6 +2555,9 @@ Controlli i file prima di inviarli. I valori che la galleria non conosce, ad ese
   <data name="ContextMenuOpenDetails" xml:space="preserve">
     <value>Apri la livrea</value>
   </data>
+  <data name="ContextMenuView3DNewWindow" xml:space="preserve">
+    <value>Vedi in un’altra finestra 3D</value>
+  </data>
   <data name="NoteTooltipFormat" xml:space="preserve">
     <value>Nota: {0}</value>
   </data>
@@ -2570,17 +2582,8 @@ Controlli i file prima di inviarli. I valori che la galleria non conosce, ad ese
   <data name="GameSwitcherTooltip" xml:space="preserve">
     <value>Cambia gioco</value>
   </data>
-  <data name="GameStateFoundFormat" xml:space="preserve">
-    <value>Salvataggi trovati: {0}</value>
-  </data>
-  <data name="GameStateChosen" xml:space="preserve">
-    <value>Cartella di salvataggio scelta da Lei</value>
-  </data>
   <data name="GameStateNotFound" xml:space="preserve">
     <value>Salvataggio non trovato</value>
-  </data>
-  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
-    <value>Scegli la cartella di salvataggio…</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
     <value>Scegli cartella…</value>
@@ -2608,7 +2611,7 @@ Aggiornato il {1} alle {2}</value>
     <value>Account</value>
   </data>
   <data name="SettingsAccountsHint" xml:space="preserve">
-    <value>La galleria trova da sola i salvataggi di tutti gli account di questo PC. Se il salvataggio di un account è altrove (su un altro disco, una copia), aggiungilo qui. Si passa da un account all'altro nella finestra principale, accanto alla ricerca.</value>
+    <value>La galleria trova da sola i salvataggi di tutti gli account di questo PC. Se il salvataggio di un account è altrove (su un altro disco, una copia), aggiungilo qui. Si passa da un account all’altro nella finestra principale, accanto alla ricerca.</value>
   </data>
   <data name="SettingsAccountFound" xml:space="preserve">
     <value>Trovato su questo PC</value>
@@ -2620,16 +2623,16 @@ Aggiornato il {1} alle {2}</value>
     <value>Aggiungi account</value>
   </data>
   <data name="SettingsAccountNewLabel" xml:space="preserve">
-    <value>Cartella dei salvataggi dell'account</value>
+    <value>Cartella dei salvataggi dell’account</value>
   </data>
   <data name="SettingsAccountAddConfirm" xml:space="preserve">
     <value>Aggiungi</value>
   </data>
   <data name="SettingsAccountNoSave" xml:space="preserve">
-    <value>In questa cartella non c'è un salvataggio del gioco.</value>
+    <value>In questa cartella non c’è un salvataggio del gioco.</value>
   </data>
   <data name="SettingsAccountAlreadyListed" xml:space="preserve">
-    <value>Questo account è già nell'elenco.</value>
+    <value>Questo account è già nell’elenco.</value>
   </data>
   <data name="AccountUnnamedLabel" xml:space="preserve">
     <value>Account</value>
@@ -2641,10 +2644,10 @@ Aggiornato il {1} alle {2}</value>
     <value>Chiedere prima di archiviare se non si sa quali livree sono sulle auto</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>Chiedere prima di archiviare se l'elenco delle livree sulle auto può essere superato</value>
+    <value>Chiedere prima di archiviare se l’elenco delle livree sulle auto può essere superato</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>Non è sicuro spostare nell'archivio una livrea che è su un'auto del gioco. «Non mostrare più» in queste domande le disattiva, e qui si possono riattivare.</value>
+    <value>Non è sicuro spostare nell’archivio una livrea che è su un’auto del gioco. «Non mostrare più» in queste domande le disattiva, e qui si possono riattivare.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Home</value>
@@ -2677,7 +2680,7 @@ Aggiornato il {1} alle {2}</value>
     <value>Aggiungere alla selezione la livrea sotto il cursore o toglierla</value>
   </data>
   <data name="ShortcutView3DNewWindow" xml:space="preserve">
-    <value>Vedere in un’altra finestra 3D, per confrontare (fino a quattro)</value>
+    <value>Vedi in un’altra finestra 3D, per confrontare (fino a quattro). Più selezionate: ognuna nella sua finestra</value>
   </data>
   <data name="ScreenshotsLabel" xml:space="preserve">
     <value>Screenshot</value>
@@ -2686,11 +2689,11 @@ Aggiornato il {1} alle {2}</value>
     <value>Aggiungi</value>
   </data>
   <data name="ScreenshotsDropHint" xml:space="preserve">
-    <value>Trascina qui i file
+    <value>Trascini qui i file
 o Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>Conservati solo su questo PC. Vanno nell'archivio con la livrea e tornano con lei.</value>
+    <value>Conservati solo su questo PC. Vanno nell’archivio con la livrea e tornano con lei.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>Screenshot della livrea</value>
@@ -2699,7 +2702,7 @@ o Ctrl+V</value>
     <value>Immagini</value>
   </data>
   <data name="ScreenshotsSkippedFormat" xml:space="preserve">
-    <value>Non aggiunto, non è un'immagine: {0}</value>
+    <value>Non aggiunto, non è un’immagine: {0}</value>
   </data>
   <data name="ScreenshotPositionFormat" xml:space="preserve">
     <value>{0} di {1}</value>
@@ -2726,7 +2729,7 @@ o Ctrl+V</value>
     <value>Apri la livrea</value>
   </data>
   <data name="ScreenshotCoverTooltip" xml:space="preserve">
-    <value>Copertina: il tuo screenshot. L'anteprima del gioco si ripristina nella finestra della livrea</value>
+    <value>Copertina: il Suo screenshot. L’anteprima del gioco si ripristina nella finestra della livrea</value>
   </data>
   <data name="ScreenshotCountTooltipFormat" xml:space="preserve">
     <value>Screenshot: {0}</value>
@@ -2735,7 +2738,7 @@ o Ctrl+V</value>
     <value>Livree</value>
   </data>
   <data name="ScreenshotsEmptyView" xml:space="preserve">
-    <value>Nessuno screenshot. Aggiungili nella finestra della livrea: «Aggiungi», trascina i file o Ctrl+V.</value>
+    <value>Nessuno screenshot. Li aggiunga nella finestra della livrea: «Aggiungi», trascinando i file o Ctrl+V.</value>
   </data>
   <data name="ScreenshotsKeepOriginal" xml:space="preserve">
     <value>Conserva così come sono (originali)</value>
@@ -2771,7 +2774,7 @@ o Ctrl+V</value>
     <value>Includi gli screenshot nei backup</value>
   </data>
   <data name="ScreenshotRestorePreview" xml:space="preserve">
-    <value>Ripristina l'anteprima del gioco</value>
+    <value>Ripristina l’anteprima del gioco</value>
   </data>
   <data name="ScreenshotsGroupLabel" xml:space="preserve">
     <value>Raggruppa</value>
@@ -2822,13 +2825,13 @@ o Ctrl+V</value>
     <value>Nuovo album</value>
   </data>
   <data name="AlbumsHint" xml:space="preserve">
-    <value>Trascina gli screenshot su un album. Uno screenshot può stare in più album. Toglierlo da uno non lo elimina. Trascina un album per cambiare l'ordine.</value>
+    <value>Trascini gli screenshot su un album. Uno screenshot può stare in più album. Toglierlo da uno non lo elimina. Trascini un album per cambiare l’ordine.</value>
   </data>
   <data name="AlbumRenameTitle" xml:space="preserve">
-    <value>Rinomina l'album</value>
+    <value>Rinomina l’album</value>
   </data>
   <data name="AlbumNameLabel" xml:space="preserve">
-    <value>Nome dell'album</value>
+    <value>Nome dell’album</value>
   </data>
   <data name="AlbumCreate" xml:space="preserve">
     <value>Crea</value>
@@ -2840,13 +2843,13 @@ o Ctrl+V</value>
     <value>Esiste già un album con questo nome.</value>
   </data>
   <data name="AlbumDeleteTitle" xml:space="preserve">
-    <value>Eliminare l'album?</value>
+    <value>Eliminare l’album?</value>
   </data>
   <data name="AlbumDeleteMessageFormat" xml:space="preserve">
-    <value>L'album «{0}» verrà eliminato. Gli screenshot restano, solo fuori dall'album.</value>
+    <value>L’album «{0}» verrà eliminato. Gli screenshot restano, solo fuori dall’album.</value>
   </data>
   <data name="ScreenshotsAddToAlbum" xml:space="preserve">
-    <value>Aggiungi all'album</value>
+    <value>Aggiungi all’album</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
     <value>Nuovo album…</value>
@@ -2897,28 +2900,28 @@ o Ctrl+V</value>
     <value>Una livrea bloccata non lascia mai il gioco. Livree bloccate selezionate rimaste nel gioco: {0}.</value>
   </data>
   <data name="StorageInstalledSkippedFormat" xml:space="preserve">
-    <value>Una livrea montata su un'auto nel gioco non può andare nel deposito. Livree selezionate rimaste nel gioco: {0}.</value>
+    <value>Una livrea montata su un’auto nel gioco non può andare nel deposito. Livree selezionate rimaste nel gioco: {0}.</value>
   </data>
   <data name="StorageAuctionSkippedFormat" xml:space="preserve">
-    <value>Le livree d'asta non vanno mai nel deposito. Livree d'asta selezionate rimaste nel gioco: {0}.</value>
+    <value>Le livree d’asta non vanno mai nel deposito. Livree d’asta selezionate rimaste nel gioco: {0}.</value>
   </data>
   <data name="StorageInstalledUnknownMessage" xml:space="preserve">
-    <value>Non si sa quali livree siano montate sulle auto, quindi spostare questa livrea nel deposito non è sicuro: potrebbe essere su un'auto nel gioco.</value>
+    <value>Non si sa quali livree siano montate sulle auto, quindi spostare questa livrea nel deposito non è sicuro: potrebbe essere su un’auto nel gioco.</value>
   </data>
   <data name="StorageInstalledUnknownMessageMany" xml:space="preserve">
     <value>Non si sa quali livree siano montate sulle auto, quindi spostare queste livree nel deposito non è sicuro: alcune potrebbero essere su auto nel gioco.</value>
   </data>
   <data name="StorageInstalledOutdatedMessage" xml:space="preserve">
-    <value>Il salvataggio è cambiato dopo l'ultima sincronizzazione e i nuovi dati non sono ancora arrivati al server delle livree. L'elenco delle livree sulle auto potrebbe essere vecchio, quindi spostare questa livrea nel deposito non è sicuro: potrebbe essere su un'auto nel gioco.</value>
+    <value>Il salvataggio è cambiato dopo l’ultima sincronizzazione e i nuovi dati non sono ancora arrivati al server delle livree. L’elenco delle livree sulle auto potrebbe essere vecchio, quindi spostare questa livrea nel deposito non è sicuro: potrebbe essere su un’auto nel gioco.</value>
   </data>
   <data name="StorageInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>Il salvataggio è cambiato dopo l'ultima sincronizzazione e i nuovi dati non sono ancora arrivati al server delle livree. L'elenco delle livree sulle auto potrebbe essere vecchio, quindi spostare queste livree nel deposito non è sicuro: alcune potrebbero essere su auto nel gioco.</value>
+    <value>Il salvataggio è cambiato dopo l’ultima sincronizzazione e i nuovi dati non sono ancora arrivati al server delle livree. L’elenco delle livree sulle auto potrebbe essere vecchio, quindi spostare queste livree nel deposito non è sicuro: alcune potrebbero essere su auto nel gioco.</value>
   </data>
   <data name="ArchiveToStorageButton" xml:space="preserve">
     <value>Nel deposito</value>
   </data>
   <data name="ArchiveToStorageTooltip" xml:space="preserve">
-    <value>Tenere per sempre le livree selezionate nel deposito dell'account invece di eliminarle. Il salvataggio non cambia.</value>
+    <value>Tenere per sempre le livree selezionate nel deposito dell’account invece di eliminarle. Il salvataggio non cambia.</value>
   </data>
   <data name="ArchiveToStorageSkippedFormat" xml:space="preserve">
     <value>Non spostate nel deposito: {0}. Il deposito ha già una livrea con la stessa chiave.</value>
@@ -2939,7 +2942,7 @@ o Ctrl+V</value>
     <value>Ins</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>Dal deposito all'archivio</value>
+    <value>Dal deposito all’archivio</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Riporta nel gioco</value>
@@ -2972,16 +2975,16 @@ o Ctrl+V</value>
     <value>Nel deposito: {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0}: nel gioco · {1}: all'archivio</value>
+    <value>{0}: nel gioco · {1}: all’archivio</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>Riportate nel gioco: {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>Dal deposito all'archivio: {0}</value>
+    <value>Dal deposito all’archivio: {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Rimaste nel deposito: {0}. L'archivio ha già una livrea con la stessa chiave.</value>
+    <value>Rimaste nel deposito: {0}. L’archivio ha già una livrea con la stessa chiave.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>Riporto le livree nel gioco…</value>
@@ -2996,7 +2999,7 @@ o Ctrl+V</value>
     <value>Il deposito è vuoto. Canc nel gioco ci manda le livree scelte</value>
   </data>
   <data name="StorageNoAccountTooltip" xml:space="preserve">
-    <value>Il deposito appartiene a un account: scegli prima il salvataggio del gioco</value>
+    <value>Il deposito appartiene a un account: scelga prima il salvataggio del gioco</value>
   </data>
   <data name="ReturnRoomTitleFormat" xml:space="preserve">
     <value>Riporta nel gioco: {0}</value>
@@ -3011,13 +3014,13 @@ o Ctrl+V</value>
     <value>Tornano tutte, il contatore diventa {0} / {1}.</value>
   </data>
   <data name="ReturnRoomTooFewFormat" xml:space="preserve">
-    <value>Ne vanno bene solo {0}: le altre sono su un'auto, bloccate, preferite, tue o d'asta.</value>
+    <value>Ne vanno bene solo {0}: le altre sono su un’auto, bloccate, preferite, Sue o d’asta.</value>
   </data>
   <data name="ReturnRoomCheckedFormat" xml:space="preserve">
     <value>Spuntate {0} su {1} necessarie · ne vanno bene {2}</value>
   </data>
   <data name="ReturnRoomCandidatesNote" xml:space="preserve">
-    <value>Prima quelle entrate per prime nel gioco. Non proposte: su un'auto, bloccate, preferite, tue, d'asta</value>
+    <value>Prima quelle entrate per prime nel gioco. Non proposte: su un’auto, bloccate, preferite, Sue, d’asta</value>
   </data>
   <data name="ReturnRoomFolderLabel" xml:space="preserve">
     <value>nella cartella</value>
@@ -3041,7 +3044,7 @@ o Ctrl+V</value>
     <value>Riporta solo quelle che ci stanno ({0})</value>
   </data>
   <data name="ReturnRoomFitNoteFormat" xml:space="preserve">
-    <value>Le prime {0} nell'ordine della finestra, le altre {1} restano nel deposito.</value>
+    <value>Le prime {0} nell’ordine della finestra, le altre {1} restano nel deposito.</value>
   </data>
   <data name="ReturnRoomExchangeButton" xml:space="preserve">
     <value>Scambia e riporta</value>
@@ -3062,7 +3065,7 @@ o Ctrl+V</value>
     <value>Nuova cartella</value>
   </data>
   <data name="StorageFoldersHint" xml:space="preserve">
-    <value>Trascina le livree su una cartella, o su «Senza cartella» per toglierle. Trascina le cartelle per cambiarne l'ordine. Una cartella è solo un'etichetta: eliminarla tiene le livree.</value>
+    <value>Trascini le livree su una cartella, o su «Senza cartella» per toglierle. Trascini le cartelle per cambiarne l’ordine. Una cartella è solo un’etichetta: eliminarla tiene le livree.</value>
   </data>
   <data name="StorageSidebarRoomFormat" xml:space="preserve">
     <value>Nel gioco {0} / {1} · liberi {2}</value>
@@ -3089,7 +3092,7 @@ o Ctrl+V</value>
     <value>Eliminare la cartella vuota «{0}»?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>Manda le sue livree all'archivio</value>
+    <value>Manda le sue livree all’archivio</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>Riporta la cartella nel gioco</value>
@@ -3107,7 +3110,7 @@ o Ctrl+V</value>
     <value>Rinomina la cartella aperta</value>
   </data>
   <data name="StorageFolderEmptyHint" xml:space="preserve">
-    <value>Ancora nessuna livrea in questa cartella. Trascinale qui o usa «Sposta nella cartella» nel loro menu</value>
+    <value>Ancora nessuna livrea in questa cartella. Le trascini qui o usi «Sposta nella cartella» nel loro menu</value>
   </data>
   <data name="CopyInGameLabel" xml:space="preserve">
     <value>Nel gioco</value>
@@ -3149,7 +3152,7 @@ o Ctrl+V</value>
     <value>Deposito</value>
   </data>
   <data name="StatsHealthStorageNote" xml:space="preserve">
-    <value>Il deposito è spesso l'unica copia di una livrea: tienilo presente quando fai pulizia.</value>
+    <value>Il deposito è spesso l’unica copia di una livrea: tienilo presente quando fai pulizia.</value>
   </data>
   <data name="StatsHealthStorageSize" xml:space="preserve">
     <value>Su disco</value>
@@ -3170,7 +3173,7 @@ o Ctrl+V</value>
     <value>Copia del deposito</value>
   </data>
   <data name="BackupCreateStorageTooltip" xml:space="preserve">
-    <value>Il deposito è spesso l'unica copia delle sue livree: una copia le conserva, con le cartelle</value>
+    <value>Il deposito è spesso l’unica copia delle sue livree: una copia le conserva, con le cartelle</value>
   </data>
   <data name="BackupStorageChip" xml:space="preserve">
     <value>Deposito</value>
@@ -3206,7 +3209,7 @@ o Ctrl+V</value>
     <value>indica un percorso completo, ad esempio D:\Livree Forza.</value>
   </data>
   <data name="StoragePlaceDriveRoot" xml:space="preserve">
-    <value>è la radice di un disco. Scegli o crea una cartella al suo interno.</value>
+    <value>è la radice di un disco. Scelga o crei una cartella al suo interno.</value>
   </data>
   <data name="StoragePlaceIsFile" xml:space="preserve">
     <value>è un file, non una cartella.</value>
@@ -3248,7 +3251,7 @@ o Ctrl+V</value>
     <value>Cartella del programma</value>
   </data>
   <data name="StorageOptionCommon" xml:space="preserve">
-    <value>Una cartella comune tua, divisa per gioco e account</value>
+    <value>Una Sua cartella comune, divisa per gioco e account</value>
   </data>
   <data name="StorageOptionRecommended" xml:space="preserve">
     <value>consigliato</value>
@@ -3438,7 +3441,7 @@ o Ctrl+V</value>
     <value>La cartella del deposito non è disponibile</value>
   </data>
   <data name="StorageUnavailableText" xml:space="preserve">
-    <value>Collega il disco o scegli un’altra cartella. Finché manca, nessuna livrea va nel deposito.</value>
+    <value>Colleghi il disco o scelga un’altra cartella. Finché manca, nessuna livrea va nel deposito.</value>
   </data>
   <data name="StorageCheckAgainButton" xml:space="preserve">
     <value>Controlla di nuovo</value>
@@ -3458,5 +3461,176 @@ o Ctrl+V</value>
   </data>
   <data name="StoragePlaceAroundCurrent" xml:space="preserve">
     <value>al suo interno c’è il deposito attuale, oppure è essa stessa dentro di esso.</value>
+  </data>
+  <data name="StoreFailedFormat" xml:space="preserve">
+    <value>Impossibile spostare queste livree nel deposito ({0}). Forse il gioco sta usando i loro file, il disco è pieno o la cartella del deposito non è disponibile. I dettagli sono nel log:
+{1}</value>
+  </data>
+  <data name="ArchiveFailedFormat" xml:space="preserve">
+    <value>Impossibile spostare queste livree nell’archivio ({0}). Forse il gioco sta usando i loro file o il disco è pieno. I dettagli sono nel log:
+{1}</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
+    <value>Tenere le cartelle del deposito come cartelle sul disco</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDiskHint" xml:space="preserve">
+    <value>Disattivato (predefinito): tutte le livree stanno direttamente nella cartella del deposito e le cartelle della galleria sono solo etichette. Attivato: ogni cartella della galleria è una cartella sul disco con le sue livree, e una cartella che Lei crea lì a mano diventa una cartella della galleria. Vale per il deposito di tutti gli account. I file vengono spostati subito.</value>
+  </data>
+  <data name="StorageLayoutTitle" xml:space="preserve">
+    <value>Cartelle sul disco</value>
+  </data>
+  <data name="StorageLayoutOnConfirmFormat" xml:space="preserve">
+    <value>Sistemare le livree del deposito in cartelle sul disco? Livree da spostare nelle loro cartelle: {0}. Niente lascia il deposito e il gioco non viene toccato.</value>
+  </data>
+  <data name="StorageLayoutOffConfirmFormat" xml:space="preserve">
+    <value>Riportare tutte le livree del deposito direttamente nella cartella del deposito? Livree da togliere dalle loro cartelle: {0}. Le cartelle della galleria restano, come etichette.</value>
+  </data>
+  <data name="StorageLayoutOnButton" xml:space="preserve">
+    <value>Sistemare</value>
+  </data>
+  <data name="StorageLayoutOffButton" xml:space="preserve">
+    <value>Rendere piatto</value>
+  </data>
+  <data name="StorageLayoutProgressFormat" xml:space="preserve">
+    <value>Spostamento delle livree: {0} di {1}…</value>
+  </data>
+  <data name="StorageLayoutDoneFormat" xml:space="preserve">
+    <value>Deposito sistemato: livree spostate: {0}</value>
+  </data>
+  <data name="StorageLayoutFailedFormat" xml:space="preserve">
+    <value>Livree che non è stato possibile spostare: {0}. Forse un loro file è in uso (aperto in un altro programma). Restano dov’erano e la galleria le trova comunque. Riproverà alla prossima apertura del deposito. I dettagli sono nel log.</value>
+  </data>
+  <data name="StorageLayoutAwayFormat" xml:space="preserve">
+    <value>Depositi non disponibili ora (il loro disco non è collegato): {0}. Verranno sistemati quando torneranno disponibili.</value>
+  </data>
+  <data name="StorageFolderRenameOnDiskFailed" xml:space="preserve">
+    <value>Impossibile rinominare la cartella sul disco: forse un suo file è in uso (aperto in Esplora file o in un altro programma). Il nome non è cambiato. I dettagli sono nel log.</value>
+  </data>
+  <data name="StorageFolderMoveOnDiskFailedFormat" xml:space="preserve">
+    <value>Impossibile spostare queste livree nella cartella sul disco ({0}): forse un loro file è in uso. Restano dov’erano. I dettagli sono nel log:
+{1}</value>
+  </data>
+  <data name="StorageFolderDeleteOnDiskFailedFormat" xml:space="preserve">
+    <value>La cartella non è stata eliminata: alcune livree non sono state spostate fuori da essa sul disco ({0}). Forse un loro file è in uso. Restano nella cartella. I dettagli sono nel log.</value>
+  </data>
+  <data name="SettingsSectionCards" xml:space="preserve">
+    <value>Schede delle livree</value>
+  </data>
+  <data name="BadgesOnPictureLabel" xml:space="preserve">
+    <value>Icone sull’immagine</value>
+  </data>
+  <data name="BadgesAtBottomLabel" xml:space="preserve">
+    <value>Icone in fondo alla scheda</value>
+  </data>
+  <data name="BadgesPlaceHint" xml:space="preserve">
+    <value>Sull’immagine le schede restano basse, in fondo si vede tutta l’immagine. Il suggerimento di un’icona dice cosa significa.</value>
+  </data>
+  <data name="BadgesMoreOne" xml:space="preserve">
+    <value>Ancora {0} icona:</value>
+  </data>
+  <data name="BadgesMoreFew" xml:space="preserve">
+    <value>Ancora {0} icone:</value>
+  </data>
+  <data name="BadgesMoreMany" xml:space="preserve">
+    <value>Ancora {0} icone:</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInStorageFormat" xml:space="preserve">
+    <value>il disegno somiglia al {0}% a «{1}», nel deposito</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInGameFormat" xml:space="preserve">
+    <value>il disegno somiglia al {0}% a «{1}», nel gioco</value>
+  </data>
+  <data name="ContextMenuView3DSeveralFormat" xml:space="preserve">
+    <value>Vedi le selezionate in finestre 3D separate ({0})</value>
+  </data>
+  <data name="Status3DWindowsFull" xml:space="preserve">
+    <value>Sono già aperte quattro finestre 3D. Chiudine una per aprire un’altra livrea.</value>
+  </data>
+  <data name="Status3DWindowsNotAllFormat" xml:space="preserve">
+    <value>Aperte in 3D: {0} su {1}. Possono essere aperte al massimo {2} finestre 3D alla volta.</value>
+  </data>
+  <data name="FilterCopiesInStorageLabel" xml:space="preserve">
+    <value>Nel deposito</value>
+  </data>
+  <data name="FilterCopiesInGameLabel" xml:space="preserve">
+    <value>Nel gioco</value>
+  </data>
+  <data name="FilterCopiesSame" xml:space="preserve">
+    <value>C’è la stessa</value>
+  </data>
+  <data name="FilterCopiesSameOrSimilar" xml:space="preserve">
+    <value>La stessa o una simile</value>
+  </data>
+  <data name="FilterCopiesSimilar" xml:space="preserve">
+    <value>Solo una simile</value>
+  </data>
+  <data name="FilterCopiesNone" xml:space="preserve">
+    <value>Né la stessa né una simile</value>
+  </data>
+  <data name="FilterValueCopySame" xml:space="preserve">
+    <value>La stessa</value>
+  </data>
+  <data name="FilterValueCopySameOrSimilar" xml:space="preserve">
+    <value>Stessa o simile</value>
+  </data>
+  <data name="FilterValueCopySimilar" xml:space="preserve">
+    <value>Simile</value>
+  </data>
+  <data name="FilterValueCopyNone" xml:space="preserve">
+    <value>Nessuna</value>
+  </data>
+  <data name="ResetFiltersTooltip" xml:space="preserve">
+    <value>Reimposta filtri: cancella la ricerca e i filtri. L’ordine resta</value>
+  </data>
+  <data name="UndoLabel" xml:space="preserve">
+    <value>Annulla</value>
+  </data>
+  <data name="UndoTooltipFormat" xml:space="preserve">
+    <value>Annulla: {0}</value>
+  </data>
+  <data name="StatusUndoneFormat" xml:space="preserve">
+    <value>Annullato: {0}</value>
+  </data>
+  <data name="ShortcutUndo" xml:space="preserve">
+    <value>Annulla l’ultima azione</value>
+  </data>
+  <data name="UndoFavoritesFormat" xml:space="preserve">
+    <value>Preferiti modificati: {0}</value>
+  </data>
+  <data name="UndoLocksFormat" xml:space="preserve">
+    <value>Blocchi modificati: {0}</value>
+  </data>
+  <data name="UndoTagsFormat" xml:space="preserve">
+    <value>Tag modificati: {0}</value>
+  </data>
+  <data name="WheelClickScrollLabel" xml:space="preserve">
+    <value>Un clic della rotellina scorre senza tenerla premuta</value>
+  </data>
+  <data name="WheelScrollSpeedFormat" xml:space="preserve">
+    <value>Velocità di scorrimento con la rotellina premuta: {0}%</value>
+  </data>
+  <data name="FilterPresetsTooltip" xml:space="preserve">
+    <value>Set di filtri salvati</value>
+  </data>
+  <data name="FilterPresetSave" xml:space="preserve">
+    <value>Salva i filtri attuali…</value>
+  </data>
+  <data name="FilterPresetDelete" xml:space="preserve">
+    <value>Elimina un set</value>
+  </data>
+  <data name="FilterPresetNameLabel" xml:space="preserve">
+    <value>Nome del set</value>
+  </data>
+  <data name="FilterPresetsEmpty" xml:space="preserve">
+    <value>Nessun set salvato</value>
+  </data>
+  <data name="FilterPresetApply" xml:space="preserve">
+    <value>Applica il set</value>
+  </data>
+  <data name="FilterPresetHint" xml:space="preserve">
+    <value>Clic destro: applica o elimina</value>
+  </data>
+  <data name="ShortcutSaveFilterSet" xml:space="preserve">
+    <value>Salva i filtri attuali come set</value>
   </data>
 </root>

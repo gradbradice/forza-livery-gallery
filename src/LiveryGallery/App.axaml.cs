@@ -37,6 +37,8 @@ internal partial class App : Application
             LiveryGallery.Services.Diagnostics.ClosedWindowWatch.Start();
             // Esc closes every window but the gallery itself: previews, the 3D view, settings, statistics, the dialogs
             ForzaToolkit.UI.Dialogs.EscapeClosesWindows.Enable(window => window is not MainWindow);
+            // No window bigger than its screen: on 1920×1080 at 125 % the gallery opened with its title bar above it
+            ForzaToolkit.UI.WindowsFitScreen.Enable();
             var sessions = new GameSessions(settings, updates, GameProfiles.All, window =>
             {
                 desktop.MainWindow = window;

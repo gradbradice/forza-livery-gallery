@@ -45,6 +45,12 @@ internal sealed record AppIdentity
     /// <summary>How the X link reads (<c>@name</c>)</summary>
     public string? XLabel { get; init; }
 
+    /// <summary>
+    /// The invitation to the program's Discord server shown in Contacts (<c>https://discord.gg/…</c>; one that does
+    /// not expire), or null to hide the line
+    /// </summary>
+    public string? DiscordUrl { get; init; }
+
     /// <summary>The author's e-mail shown in Contacts, or null to hide the line</summary>
     public string? Email { get; init; }
 

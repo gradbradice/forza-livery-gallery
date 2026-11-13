@@ -18,12 +18,25 @@ internal static class AuthorInsights
         entry.AssignedCardId ?? (entry.AuthorIdentityTagHex is { } tag ? cards.FindCardForIdentityTag(tag)?.Id : null),
         entry.Sketch);
 
-    /// <summary>Sets <see cref="LiveryEntry.AuthorHints"/> of every entry</summary>
-    public static void Apply(IReadOnlyList<LiveryEntry> entries, AuthorCardService cards)
+    /// <summary>
+    /// The key of a livery of the other place (the storage while the game is shown, the game while the storage is): a
+    /// livery may be in both under the same key, and the hints tell them apart by it
+    /// </summary>
+    public const string OtherPlacePrefix = "other:";
+
+    /// <summary>
+    /// Sets <see cref="LiveryEntry.AuthorHints"/> of every entry. <paramref name="others"/>: the liveries of the other
+    /// place (the storage, or the game), which only give hints: a livery of an unknown author in the game is hinted by the
+    /// same artwork in the storage too. A copy of the same file never hints itself
+    /// </summary>
+    public static void Apply(IReadOnlyList<LiveryEntry> entries, AuthorCardService cards, IReadOnlyList<LiveryEntry>? others = null)
     {
-        var inputs = entries.Select(e => ToInput(e, cards)).ToList();
-        var byKey = ByKey(entries);
-        var names = new AuthorNames(entries, cards);
+        others ??= [];
+        var inputs = entries.Select(e => ToInput(e, cards))
+            .Concat(others.Select(e => ToInput(e, cards) with { Key = OtherPlacePrefix + e.FolderName }))
+            .ToList();
+        var byKey = ByKey(entries, others);
+        var names = new AuthorNames([.. entries, .. others], cards);
         var hints = AuthorHints.ForLiveries(inputs, cards.GetRememberedTags(), cards.GetDismissedHints());
 
         foreach (var entry in entries)
@@ -34,10 +47,13 @@ internal static class AuthorInsights
         }
     }
 
-    public static Dictionary<string, LiveryEntry> ByKey(IReadOnlyList<LiveryEntry> entries)
+    /// <param name="entries">The liveries shown</param>
+    /// <param name="others">Those of the other place, under <see cref="OtherPlacePrefix"/></param>
+    public static Dictionary<string, LiveryEntry> ByKey(IReadOnlyList<LiveryEntry> entries, IReadOnlyList<LiveryEntry>? others = null)
     {
         var byKey = new Dictionary<string, LiveryEntry>(StringComparer.OrdinalIgnoreCase);
         foreach (var entry in entries) byKey[entry.FolderName] = entry;
+        foreach (var entry in others ?? []) byKey[OtherPlacePrefix + entry.FolderName] = entry;
         return byKey;
     }
 
@@ -52,10 +68,20 @@ internal static class AuthorInsights
     {
         AuthorHintReason.SameInvalidId => Strings.AuthorHintReasonSameId,
         AuthorHintReason.SameName => Strings.AuthorHintReasonSameName,
-        _ => string.Format(Strings.AuthorHintReasonArtworkFormat,
-            ((int)(hint.Score * 100)).ToString(CultureInfo.InvariantCulture),
-            hint.EvidenceKey is { } key && byKey.TryGetValue(key, out var evidence) ? Label(evidence) : hint.EvidenceKey),
+        _ => Artwork(hint, byKey),
     };
+
+    // "the artwork is 92% similar to “Rising Sun”"; a livery of the other place says where it is ("… in the storage")
+    private static string Artwork(AuthorHint hint, IReadOnlyDictionary<string, LiveryEntry> byKey)
+    {
+        string percent = ((int)(hint.Score * 100)).ToString(CultureInfo.InvariantCulture);
+        if (hint.EvidenceKey is not { } key || !byKey.TryGetValue(key, out var evidence))
+            return string.Format(Strings.AuthorHintReasonArtworkFormat, percent, hint.EvidenceKey);
+        string format = !key.StartsWith(OtherPlacePrefix, StringComparison.Ordinal) ? Strings.AuthorHintReasonArtworkFormat
+            : evidence.IsStored ? Strings.AuthorHintReasonArtworkInStorageFormat
+            : Strings.AuthorHintReasonArtworkInGameFormat;
+        return string.Format(format, percent, Label(evidence));
+    }
 
     /// <summary>A livery as a list names it: its name, else its number, else its key</summary>
     public static string Label(LiveryEntry entry) =>

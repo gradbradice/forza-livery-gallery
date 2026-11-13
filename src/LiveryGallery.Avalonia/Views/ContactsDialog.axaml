@@ -52,6 +52,7 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
 			<TextBlock x:Name="TitleText" Grid.Row="0" FontSize="16" FontWeight="Bold" Margin="0,0,0,16" />
@@ -70,15 +71,22 @@
 				<Button x:Name="TwitterLinkButton" Classes="linkText" Click="TwitterLink_Click" />
 			</StackPanel>
 
+			<!-- Discord: the invitation to the program's server -->
+			<StackPanel x:Name="DiscordRow" Grid.Row="3" Orientation="Horizontal" Margin="0,0,0,10" VerticalAlignment="Center">
+				<Path Data="{StaticResource IconDiscord}" Width="18" Height="18" Stretch="Uniform"
+                      Fill="{DynamicResource TextPrimaryBrush}" Margin="0,0,10,0" />
+				<Button x:Name="DiscordLinkButton" Classes="linkText" Click="DiscordLink_Click" />
+			</StackPanel>
+
 			<!-- Email -->
-			<StackPanel x:Name="EmailRow" Grid.Row="3" Orientation="Horizontal" VerticalAlignment="Center">
+			<StackPanel x:Name="EmailRow" Grid.Row="4" Orientation="Horizontal" VerticalAlignment="Center">
 				<Path Data="{StaticResource IconEnvelope}" Width="18" Height="18" Stretch="Uniform"
                       Fill="{DynamicResource TextPrimaryBrush}" Margin="0,0,10,0" />
 				<TextBlock x:Name="EmailText" FontSize="13" VerticalAlignment="Center"
                            Foreground="{DynamicResource TextPrimaryBrush}" />
 			</StackPanel>
 
-			<Button Grid.Row="4" x:Name="CloseDialogButton" Classes="primary"
+			<Button Grid.Row="5" x:Name="CloseDialogButton" Classes="primary"
                     Width="120" HorizontalAlignment="Right" Margin="0,20,0,0" Click="CloseButton_Click" />
 		</Grid>
 	</Grid>

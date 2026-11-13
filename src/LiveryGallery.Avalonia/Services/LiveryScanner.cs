@@ -148,13 +148,11 @@ internal sealed class LiveryScanner
     /// The storage's duplicates, among its own liveries and with the game's (<see cref="StorageCopies"/>), by the game's
     /// duplicate check. A stored livery's file is read from the storage, laid out as the save keeps a livery folder
     /// </summary>
-    /// <param name="storageRoot">The storage's folder</param>
+    /// <param name="storedFile">A stored livery's key → its livery file in the storage, wherever that is (<see cref="AccountStorage.StoredLiveryFileOf"/>); null when it cannot be read</param>
     /// <param name="savePath">The save's data folder; null: the game's liveries are compared by their files only</param>
     public Task<StorageCopiesResult> FindStorageCopiesAsync(IReadOnlyList<LiveryEntry> stored, IReadOnlyList<LiveryEntry> game,
-        string storageRoot, string? savePath, int thresholdPercent) => Task.Run(() => StorageCopies.Find(stored, game, _duplicates,
-            e => e.IsStored
-                ? _store.GetLiveryFolder(storageRoot, e.FolderName) is not null ? _store.GetFiles(storageRoot, e.FolderName).LiveryPath : null
-                : savePath is null ? null : _store.GetFiles(savePath, e.FolderName).LiveryPath,
+        Func<string, string?> storedFile, string? savePath, int thresholdPercent) => Task.Run(() => StorageCopies.Find(stored, game, _duplicates,
+            e => e.IsStored ? storedFile(e.FolderName) : savePath is null ? null : _store.GetFiles(savePath, e.FolderName).LiveryPath,
             thresholdPercent));
 
     /// <summary>The next scan cleans up orphaned previews even if its cache did not change (after an account was forgotten)</summary>

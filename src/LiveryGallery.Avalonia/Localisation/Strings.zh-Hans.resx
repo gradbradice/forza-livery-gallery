@@ -318,6 +318,9 @@
   <data name="ContactsGithubLabel" xml:space="preserve">
     <value>GitHub 仓库</value>
   </data>
+  <data name="ContactsDiscordLabel" xml:space="preserve">
+    <value>Discord 服务器</value>
+  </data>
   <data name="DuplicateBadgeLabel" xml:space="preserve">
     <value>重复</value>
   </data>
@@ -1020,14 +1023,14 @@
     <value>使用服务器确定已应用到车辆的涂装</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>为了确定哪些涂装已应用到车辆，图库会将存档文件 C_ProfileData 发送到服务器。服务器仅将该文件用于此目的，不会保存它。
+    <value>为了确定哪些涂装已应用到车辆以及您的账户名称，图库会将存档文件 C_ProfileData 发送到服务器。服务器仅将该文件用于此目的，不会保存它。
 
 文件中的数据不会被保留，也不会用于其他任何用途。服务器会安全保管解密存档文件所需的密钥。
 
 该服务器与 Forza Horizon、Xbox 或 Microsoft 的官方服务器无关。</value>
   </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>为了确定哪些涂装已应用到车辆，图库会将存档文件 C_ProfileData 发送到服务器。服务器仅将该文件用于此目的，不会保存它。
+    <value>为了确定哪些涂装已应用到车辆以及您的账户名称，图库会将存档文件 C_ProfileData 发送到服务器。服务器仅将该文件用于此目的，不会保存它。
 
 文件中的数据不会被保留，也不会用于其他任何用途。服务器会安全保管解密存档文件所需的密钥。
 
@@ -2387,11 +2390,23 @@ logs：最近几天的日志。已知文件夹和玩家 ID 已替换为 &lt;save
   <data name="UpdatesSectionLabel" xml:space="preserve">
     <value>更新</value>
   </data>
+  <data name="UpdateInstallLabel" xml:space="preserve">
+    <value>安装更新</value>
+  </data>
+  <data name="UpdateInstallAsk" xml:space="preserve">
+    <value>安装前询问</value>
+  </data>
+  <data name="UpdateInstallAutomatic" xml:space="preserve">
+    <value>自动安装</value>
+  </data>
+  <data name="UpdateInstallHint" xml:space="preserve">
+    <value>选择询问时，图库会提示有新版本，只有在其窗口中点击“安装”后才安装。选择自动时，图库会在后台下载新版本，并在关闭时安装。</value>
+  </data>
   <data name="BetaUpdatesLabel" xml:space="preserve">
     <value>接收测试版</value>
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
-    <value>测试版先于正式版发布，可能存在错误。关闭此选项不会退回旧版本：图库会等待比测试版更新的正式版。</value>
+    <value>测试版先于正式版发布，可能存在错误。在使用测试版时关闭此选项，图库会提示返回最新的正式版。</value>
   </data>
   <data name="TagsDialogOneHint" xml:space="preserve">
     <value>勾选会为此涂装添加标签，留空则移除。</value>
@@ -2458,12 +2473,6 @@ logs：最近几天的日志。已知文件夹和玩家 ID 已替换为 &lt;save
   </data>
   <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
     <value>作者：</value>
-  </data>
-  <data name="LiveryDetailsChipLocked" xml:space="preserve">
-    <value>已锁定</value>
-  </data>
-  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
-    <value>已收藏</value>
   </data>
   <data name="LiveryDetailsIdLabel" xml:space="preserve">
     <value>涂装编号</value>
@@ -2546,6 +2555,9 @@ logs：最近几天的日志。已知文件夹和玩家 ID 已替换为 &lt;save
   <data name="ContextMenuOpenDetails" xml:space="preserve">
     <value>打开涂装</value>
   </data>
+  <data name="ContextMenuView3DNewWindow" xml:space="preserve">
+    <value>在另一个 3D 窗口中查看</value>
+  </data>
   <data name="NoteTooltipFormat" xml:space="preserve">
     <value>备注：{0}</value>
   </data>
@@ -2570,17 +2582,8 @@ logs：最近几天的日志。已知文件夹和玩家 ID 已替换为 &lt;save
   <data name="GameSwitcherTooltip" xml:space="preserve">
     <value>切换游戏</value>
   </data>
-  <data name="GameStateFoundFormat" xml:space="preserve">
-    <value>找到的存档：{0}</value>
-  </data>
-  <data name="GameStateChosen" xml:space="preserve">
-    <value>已手动选择存档文件夹</value>
-  </data>
   <data name="GameStateNotFound" xml:space="preserve">
     <value>未找到存档</value>
-  </data>
-  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
-    <value>选择存档文件夹…</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
     <value>选择文件夹…</value>
@@ -2677,7 +2680,7 @@ logs：最近几天的日志。已知文件夹和玩家 ID 已替换为 &lt;save
     <value>把光标处的涂装加入选择或移出</value>
   </data>
   <data name="ShortcutView3DNewWindow" xml:space="preserve">
-    <value>在另一个 3D 窗口中查看以便比较（最多四个）</value>
+    <value>在另一个 3D 窗口中查看以便比较（最多四个）。选择多个时：各自在自己的窗口中</value>
   </data>
   <data name="ScreenshotsLabel" xml:space="preserve">
     <value>截图</value>
@@ -3458,5 +3461,176 @@ logs：最近几天的日志。已知文件夹和玩家 ID 已替换为 &lt;save
   </data>
   <data name="StoragePlaceAroundCurrent" xml:space="preserve">
     <value>当前仓库在其中，或它本身位于当前仓库之内。</value>
+  </data>
+  <data name="StoreFailedFormat" xml:space="preserve">
+    <value>无法将以下涂装移到仓库（{0}）。可能是游戏正在使用其文件、磁盘已满或仓库文件夹不可用。详细信息见日志：
+{1}</value>
+  </data>
+  <data name="ArchiveFailedFormat" xml:space="preserve">
+    <value>无法将以下涂装移至归档（{0}）。可能是游戏正在使用其文件或磁盘已满。详细信息见日志：
+{1}</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
+    <value>将仓库的文件夹保存为磁盘上的文件夹</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDiskHint" xml:space="preserve">
+    <value>关闭（默认）：所有涂装都直接放在仓库文件夹中，图库的文件夹只是标签。开启：图库的每个文件夹都是磁盘上的一个文件夹，存放其中的涂装。在那里手动创建的文件夹会成为图库的文件夹。适用于所有账户的仓库。文件会立即移动。</value>
+  </data>
+  <data name="StorageLayoutTitle" xml:space="preserve">
+    <value>磁盘上的文件夹</value>
+  </data>
+  <data name="StorageLayoutOnConfirmFormat" xml:space="preserve">
+    <value>将仓库中的涂装分到磁盘上的文件夹中吗？将移入各自文件夹的涂装：{0}。不会有任何涂装离开仓库，也不会影响游戏。</value>
+  </data>
+  <data name="StorageLayoutOffConfirmFormat" xml:space="preserve">
+    <value>将仓库中的所有涂装放回仓库文件夹的顶层吗？将移出各自文件夹的涂装：{0}。图库的文件夹会作为标签保留。</value>
+  </data>
+  <data name="StorageLayoutOnButton" xml:space="preserve">
+    <value>分到文件夹</value>
+  </data>
+  <data name="StorageLayoutOffButton" xml:space="preserve">
+    <value>全部放回顶层</value>
+  </data>
+  <data name="StorageLayoutProgressFormat" xml:space="preserve">
+    <value>正在移动涂装：{0} / {1}…</value>
+  </data>
+  <data name="StorageLayoutDoneFormat" xml:space="preserve">
+    <value>仓库已整理：移动的涂装：{0}</value>
+  </data>
+  <data name="StorageLayoutFailedFormat" xml:space="preserve">
+    <value>无法移动的涂装：{0}。可能是其中某个文件正在使用（在其他程序中打开）。它们留在原处，图库仍能找到它们。下次打开仓库时会再试。详细信息见日志。</value>
+  </data>
+  <data name="StorageLayoutAwayFormat" xml:space="preserve">
+    <value>当前不可用的仓库（其磁盘未连接）：{0}。重新连接后会进行整理。</value>
+  </data>
+  <data name="StorageFolderRenameOnDiskFailed" xml:space="preserve">
+    <value>无法在磁盘上重命名该文件夹：其中某个文件可能正在使用（在资源管理器或其他程序中打开）。名称未更改。详细信息见日志。</value>
+  </data>
+  <data name="StorageFolderMoveOnDiskFailedFormat" xml:space="preserve">
+    <value>无法将以下涂装移入磁盘上的文件夹（{0}）：其中某个文件可能正在使用。它们留在原处。详细信息见日志：
+{1}</value>
+  </data>
+  <data name="StorageFolderDeleteOnDiskFailedFormat" xml:space="preserve">
+    <value>文件夹未删除：有些涂装无法在磁盘上移出该文件夹（{0}）。可能是其中某个文件正在使用。它们留在文件夹中。详细信息见日志。</value>
+  </data>
+  <data name="SettingsSectionCards" xml:space="preserve">
+    <value>涂装卡片</value>
+  </data>
+  <data name="BadgesOnPictureLabel" xml:space="preserve">
+    <value>图标显示在图片上</value>
+  </data>
+  <data name="BadgesAtBottomLabel" xml:space="preserve">
+    <value>图标显示在卡片底部</value>
+  </data>
+  <data name="BadgesPlaceHint" xml:space="preserve">
+    <value>显示在图片上时卡片更矮，显示在底部时可看到整张图片。图标的含义见其提示。</value>
+  </data>
+  <data name="BadgesMoreOne" xml:space="preserve">
+    <value>另外 {0} 个图标：</value>
+  </data>
+  <data name="BadgesMoreFew" xml:space="preserve">
+    <value>另外 {0} 个图标：</value>
+  </data>
+  <data name="BadgesMoreMany" xml:space="preserve">
+    <value>另外 {0} 个图标：</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInStorageFormat" xml:space="preserve">
+    <value>图案与仓库中的“{1}”相似度为 {0}%</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInGameFormat" xml:space="preserve">
+    <value>图案与游戏中的“{1}”相似度为 {0}%</value>
+  </data>
+  <data name="ContextMenuView3DSeveralFormat" xml:space="preserve">
+    <value>在各自的 3D 窗口中查看所选项（{0}）</value>
+  </data>
+  <data name="Status3DWindowsFull" xml:space="preserve">
+    <value>已打开四个 3D 窗口。请关闭一个后再打开其他涂装。</value>
+  </data>
+  <data name="Status3DWindowsNotAllFormat" xml:space="preserve">
+    <value>已在 3D 中打开 {1} 个中的 {0} 个。最多可同时打开 {2} 个 3D 窗口。</value>
+  </data>
+  <data name="FilterCopiesInStorageLabel" xml:space="preserve">
+    <value>仓库</value>
+  </data>
+  <data name="FilterCopiesInGameLabel" xml:space="preserve">
+    <value>游戏</value>
+  </data>
+  <data name="FilterCopiesSame" xml:space="preserve">
+    <value>有相同的</value>
+  </data>
+  <data name="FilterCopiesSameOrSimilar" xml:space="preserve">
+    <value>相同或相似</value>
+  </data>
+  <data name="FilterCopiesSimilar" xml:space="preserve">
+    <value>仅相似</value>
+  </data>
+  <data name="FilterCopiesNone" xml:space="preserve">
+    <value>既无相同也无相似</value>
+  </data>
+  <data name="FilterValueCopySame" xml:space="preserve">
+    <value>相同</value>
+  </data>
+  <data name="FilterValueCopySameOrSimilar" xml:space="preserve">
+    <value>相同或相似</value>
+  </data>
+  <data name="FilterValueCopySimilar" xml:space="preserve">
+    <value>相似</value>
+  </data>
+  <data name="FilterValueCopyNone" xml:space="preserve">
+    <value>无</value>
+  </data>
+  <data name="ResetFiltersTooltip" xml:space="preserve">
+    <value>重置筛选：清除搜索和筛选。排序保持不变</value>
+  </data>
+  <data name="UndoLabel" xml:space="preserve">
+    <value>撤销</value>
+  </data>
+  <data name="UndoTooltipFormat" xml:space="preserve">
+    <value>撤销：{0}</value>
+  </data>
+  <data name="StatusUndoneFormat" xml:space="preserve">
+    <value>已撤销：{0}</value>
+  </data>
+  <data name="ShortcutUndo" xml:space="preserve">
+    <value>撤销上一步操作</value>
+  </data>
+  <data name="UndoFavoritesFormat" xml:space="preserve">
+    <value>已更改收藏：{0}</value>
+  </data>
+  <data name="UndoLocksFormat" xml:space="preserve">
+    <value>已更改锁定：{0}</value>
+  </data>
+  <data name="UndoTagsFormat" xml:space="preserve">
+    <value>已更改标签：{0}</value>
+  </data>
+  <data name="WheelClickScrollLabel" xml:space="preserve">
+    <value>单击鼠标滚轮后无需按住即可滚动</value>
+  </data>
+  <data name="WheelScrollSpeedFormat" xml:space="preserve">
+    <value>按下滚轮时的滚动速度：{0}%</value>
+  </data>
+  <data name="FilterPresetsTooltip" xml:space="preserve">
+    <value>已保存的筛选组合</value>
+  </data>
+  <data name="FilterPresetSave" xml:space="preserve">
+    <value>保存当前筛选…</value>
+  </data>
+  <data name="FilterPresetDelete" xml:space="preserve">
+    <value>删除组合</value>
+  </data>
+  <data name="FilterPresetNameLabel" xml:space="preserve">
+    <value>组合名称</value>
+  </data>
+  <data name="FilterPresetsEmpty" xml:space="preserve">
+    <value>还没有已保存的组合</value>
+  </data>
+  <data name="FilterPresetApply" xml:space="preserve">
+    <value>应用组合</value>
+  </data>
+  <data name="FilterPresetHint" xml:space="preserve">
+    <value>右键单击：应用或删除</value>
+  </data>
+  <data name="ShortcutSaveFilterSet" xml:space="preserve">
+    <value>将当前筛选保存为组合</value>
   </data>
 </root>

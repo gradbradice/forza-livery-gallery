@@ -775,18 +775,24 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
 
     public string PossibleDuplicateBadgeText => _possibleDuplicateBadgeText ??= BuildPossibleDuplicateBadgeText();
 
-    private string BuildPossibleDuplicateBadgeText()
+    private string BuildPossibleDuplicateBadgeText() => PossibleDuplicatePercentText is { } percent
+        ? string.Format(Strings.PossibleDuplicateBadgeWithScoreFormat, percent)
+        : Strings.PossibleDuplicateBadgeLabel;
+
+    /// <summary>
+    /// The badge's number: how alike the closest of the similar liveries is ("87%", never 100: a duplicate is another
+    /// badge); null when none of them has a score
+    /// </summary>
+    public string? PossibleDuplicatePercentText
     {
-        double? max = null;
-        if (VisiblePossibleRelations is { Count: > 0 } relations)
-            foreach (var r in relations)
-                if (r.Score is { } s && (max is null || s > max)) max = s;
-
-        if (max is not { } m) return Strings.PossibleDuplicateBadgeLabel;
-
-        int truncated = (int)(m * 100);
-        int capped = Math.Min(truncated, 99);
-        return string.Format(Strings.PossibleDuplicateBadgeWithScoreFormat, capped.ToString(CultureInfo.InvariantCulture) + "%");
+        get
+        {
+            double? max = null;
+            if (VisiblePossibleRelations is { Count: > 0 } relations)
+                foreach (var r in relations)
+                    if (r.Score is { } s && (max is null || s > max)) max = s;
+            return max is { } m ? Math.Min((int)(m * 100), 99).ToString(CultureInfo.InvariantCulture) + "%" : null;
+        }
     }
 
     private string FormatRelationLabel(string folderName)

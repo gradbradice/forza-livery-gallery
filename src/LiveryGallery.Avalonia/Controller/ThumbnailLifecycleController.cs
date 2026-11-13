@@ -18,6 +18,20 @@ internal static class ThumbnailLifecycleController
     /// <summary>Draws a preview for a card whose save has none; null: such cards show the placeholder</summary>
     public static RenderedThumbnails? Rendered { get; set; }
 
+    /// <summary>
+    /// A main window starts showing previews, drawing the missing ones with <paramref name="rendered"/>. After another
+    /// game's window shut them down (a switch of games: the app goes on) they load again: else the new window's cards
+    /// stayed without pictures
+    /// </summary>
+    public static void Start(RenderedThumbnails? rendered)
+    {
+        Dispatcher.UIThread.VerifyAccess();
+        Rendered = rendered;
+        _shuttingDown = false;
+        ThumbnailCacheService.Resume();
+    }
+
+    /// <summary>The window closes: no preview is loaded or drawn from now on, until a window <see cref="Start"/>s again</summary>
     public static void BeginShutdown()
     {
         Dispatcher.UIThread.VerifyAccess();

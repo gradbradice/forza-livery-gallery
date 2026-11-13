@@ -2,6 +2,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiveryGallery.Localisation;
 using LiveryGallery.Services;
+using LiveryGallery.Views;
 using System.Collections.ObjectModel;
 
 namespace LiveryGallery.ViewModels;
@@ -25,6 +26,7 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         _serverEnabled = settings.ServerConnectionEnabled;
         _duplicatesFilterMode = settings.DuplicatesFilterMode;
         _generatedFilterMode = settings.GeneratedFilterMode;
+        _copiesFilterMode = settings.CopiesFilterMode;
         _paintFilterMode = settings.PaintFilterMode;
         _auctionFilterMode = settings.AuctionFilterMode;
         _groupingEnabled = settings.GroupingEnabled;
@@ -216,6 +218,7 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         DuplicatesFilterMode = DuplicatesFilterMode.All;
         GeneratedFilterMode = GeneratedFilterMode.All;
         PaintFilterMode = PaintFilterMode.All;
+        CopiesFilterMode = CopiesFilterMode.All;
         ClearQuickFilters();
     }
 
@@ -267,7 +270,78 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     {
         if (_restoring) return;
         OnPropertyChanged(nameof(HasQuickFilters));
+        OnPropertyChanged(nameof(HasActiveFilters));
         FiltersChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Something hides liveries now: a search, a quick filter or an "only …" filter. Exactly what
+    /// <see cref="ShowEverything"/> undoes, so the "Reset filters" button shows while there is something to reset.
+    /// The order, and what is put first or apart, is not a filter
+    /// </summary>
+    public bool HasActiveFilters =>
+        !string.IsNullOrEmpty(SearchText)
+        || QuickFilters.Count > 0
+        || FavoriteMode == FavoriteMode.OnlyFavorites
+        || MineMode == MineMode.OnlyMine
+        || EffectiveInstalledMode is InstalledMode.OnlyInstalled or InstalledMode.OnlyNotInstalled
+        || EffectiveAuctionFilterMode is AuctionFilterMode.OnlyAuction or AuctionFilterMode.HideAuction
+        || DuplicatesFilterMode != DuplicatesFilterMode.All
+        || GeneratedFilterMode != GeneratedFilterMode.All
+        || PaintFilterMode != PaintFilterMode.All
+        || CopiesFilterMode != CopiesFilterMode.All;
+
+    /// <summary>
+    /// The chips under the filter bar: each "only …" filter that hides liveries now, named as the filter menu names it
+    /// ("Favorites: Only"), and after them the quick filters (a car, an author…). A chip's cross takes that one filter
+    /// off; "Reset filters" takes them all. The search is not a chip: its field shows it and has its own cross
+    /// </summary>
+    public IReadOnlyList<object> FilterChips => [.. ModeChips(), .. QuickFilters];
+
+
+    /// <summary>There is a chip to show</summary>
+    public bool HasFilterChips => QuickFilters.Count > 0 || ModeChips().Count > 0;
+
+    private List<ModeFilterChipViewModel> ModeChips()
+    {
+        var chips = new List<ModeFilterChipViewModel>(4);
+        void Add(bool on, string label, string value, Action off)
+        {
+            if (on) chips.Add(new ModeFilterChipViewModel($"{label}: {value}", off));
+        }
+        Add(FavoriteMode == FavoriteMode.OnlyFavorites, Strings.FilterFavoritesLabel, FavoriteValueText, () => FavoriteMode = FavoriteMode.None);
+        Add(MineMode == MineMode.OnlyMine, Strings.FilterMineLabel, MineValueText, () => MineMode = MineMode.None);
+        Add(EffectiveInstalledMode is InstalledMode.OnlyInstalled or InstalledMode.OnlyNotInstalled, Strings.FilterInstalledLabel,
+            InstalledValueText, () => InstalledMode = InstalledMode.None);
+        Add(EffectiveAuctionFilterMode is AuctionFilterMode.OnlyAuction or AuctionFilterMode.HideAuction, Strings.FilterAuctionLabel,
+            AuctionValueText, () => AuctionFilterMode = AuctionFilterMode.All);
+        Add(DuplicatesFilterMode != DuplicatesFilterMode.All, Strings.FilterDuplicatesLabel, DuplicatesValueText,
+            () => DuplicatesFilterMode = DuplicatesFilterMode.All);
+        Add(GeneratedFilterMode != GeneratedFilterMode.All, Strings.FilterGeneratedLabel, GeneratedValueText,
+            () => GeneratedFilterMode = GeneratedFilterMode.All);
+        Add(PaintFilterMode != PaintFilterMode.All, Strings.FilterPaintLabel, PaintValueText, () => PaintFilterMode = PaintFilterMode.All);
+        Add(CopiesFilterMode != CopiesFilterMode.All, CopiesLabel, CopiesValueText, () => CopiesFilterMode = CopiesFilterMode.All);
+        return chips;
+    }
+
+    /// <summary>The "Reset filters" button: every livery shows again, as <see cref="ShowEverything"/> does</summary>
+    [RelayCommand]
+    private void ResetFilters() => ShowEverything();
+
+    // HasActiveFilters follows every property it reads
+    protected override void OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        base.OnPropertyChanged(e);
+        if (e.PropertyName is nameof(SearchText) or nameof(FavoriteMode) or nameof(MineMode) or nameof(InstalledMode)
+            or nameof(AuctionFilterMode) or nameof(DuplicatesFilterMode) or nameof(GeneratedFilterMode)
+            or nameof(PaintFilterMode) or nameof(CopiesFilterMode) or nameof(IsStorageMode) or nameof(IsInstalledFilterAvailable) or nameof(IsAuctionAvailable))
+            OnPropertyChanged(nameof(HasActiveFilters));
+        // The chips follow what HasActiveFilters follows, the quick filters, and the language of the value texts
+        if (e.PropertyName is nameof(HasActiveFilters) or nameof(HasQuickFilters) or nameof(FavoriteValueText))
+        {
+            OnPropertyChanged(nameof(FilterChips));
+            OnPropertyChanged(nameof(HasFilterChips));
+        }
     }
 
     public bool IsSortManufacturer => SortMode == SortMode.Manufacture;
@@ -348,7 +422,46 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ShowAuctionFilter), nameof(ShowGameOrderSort), nameof(ShowInstalledFilter))]
+    [NotifyPropertyChangedFor(nameof(CopyBadge), nameof(SimilarBadge), nameof(CopiesLabel))]
     private bool _isStorageMode;
+
+    /// <summary>
+    /// The filter of copies (<see cref="CopiesFilterMode"/>): the game shown, "In the storage"; the storage shown, "In
+    /// the game"
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsCopiesAll), nameof(IsCopiesSame), nameof(IsCopiesSameOrSimilar), nameof(IsCopiesSimilar))]
+    [NotifyPropertyChangedFor(nameof(IsCopiesNone), nameof(CopiesValueText))]
+    private CopiesFilterMode _copiesFilterMode;
+
+    public bool IsCopiesAll => CopiesFilterMode == CopiesFilterMode.All;
+    public bool IsCopiesSame => CopiesFilterMode == CopiesFilterMode.Same;
+    public bool IsCopiesSameOrSimilar => CopiesFilterMode == CopiesFilterMode.SameOrSimilar;
+    public bool IsCopiesSimilar => CopiesFilterMode == CopiesFilterMode.Similar;
+    public bool IsCopiesNone => CopiesFilterMode == CopiesFilterMode.None;
+
+    [RelayCommand]
+    private void SetCopiesFilterMode(CopiesFilterMode mode) => CopiesFilterMode = mode;
+
+    /// <summary>The badge of the same livery in the other place, as the cards show it</summary>
+    public CardBadge CopyBadge => IsStorageMode ? CardBadge.CopyInGame : CardBadge.CopyInStorage;
+
+    /// <summary>The badge of a similar one in the other place</summary>
+    public CardBadge SimilarBadge => IsStorageMode ? CardBadge.SimilarInGame : CardBadge.SimilarInStorage;
+
+    /// <summary>The filter's name: the other place</summary>
+    public string CopiesLabel => IsStorageMode ? Strings.FilterCopiesInGameLabel : Strings.FilterCopiesInStorageLabel;
+
+    public string CopiesValueText => CopiesValueTextOf(CopiesFilterMode);
+
+    internal static string CopiesValueTextOf(CopiesFilterMode mode) => mode switch
+    {
+        CopiesFilterMode.Same => Strings.FilterValueCopySame,
+        CopiesFilterMode.SameOrSimilar => Strings.FilterValueCopySameOrSimilar,
+        CopiesFilterMode.Similar => Strings.FilterValueCopySimilar,
+        CopiesFilterMode.None => Strings.FilterValueCopyNone,
+        _ => Strings.FilterValueAll,
+    };
 
     /// <summary>The auction filter is in the menu: the game has an auction house and the game is shown</summary>
     public bool ShowAuctionFilter => IsAuctionAvailable && !IsStorageMode;
@@ -359,12 +472,124 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     /// <summary>"Installed" is in the menu: only the game's liveries can be on a car</summary>
     public bool ShowInstalledFilter => !IsStorageMode;
 
+    /// <summary>The sets of filters saved for this game (<see cref="FilterPresetData"/>)</summary>
+    public IReadOnlyList<FilterPresetData> Presets => _settings.Game.FilterPresets;
+
+    /// <summary>A set was saved or deleted: the menu that lists them is built again</summary>
+    public event Action? PresetsChanged;
+
+    /// <summary>Why <paramref name="name"/> cannot name a set; null when it can (a name already taken is replaced)</summary>
+    public static string? PresetNameProblem(string name) => string.IsNullOrWhiteSpace(name) ? "" : null;
+
+    /// <summary>
+    /// Saves what the bar shows now, but the search, under <paramref name="name"/>; a set of that name is replaced, in
+    /// its place in the list
+    /// </summary>
+    public void SavePreset(string name)
+    {
+        name = name.Trim();
+        if (name.Length == 0) return;
+        var preset = new FilterPresetData
+        {
+            Name = name, SortMode = SortMode, GroupingEnabled = GroupingEnabled, FavoriteMode = FavoriteMode, MineMode = MineMode,
+            InstalledMode = InstalledMode, DuplicatesFilterMode = DuplicatesFilterMode, GeneratedFilterMode = GeneratedFilterMode,
+            PaintFilterMode = PaintFilterMode, AuctionFilterMode = AuctionFilterMode, CopiesFilterMode = CopiesFilterMode,
+            QuickFilters = [.. ActiveQuickFilters.Select(QuickFilterData.From).OfType<QuickFilterData>()],
+        };
+        var presets = _settings.Game.FilterPresets;
+        int same = presets.FindIndex(p => string.Equals(p.Name, name, StringComparison.CurrentCultureIgnoreCase));
+        if (same >= 0) presets[same] = preset;
+        else presets.Add(preset);
+        AppSettingsService.Save(_settings);
+        PresetsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// What a saved set holds, a line for each thing, as the filter menu names them: the order, the grouping, every
+    /// filter that is not at "All", and the quick filters. For the tooltip of the set in the menu, for one who forgot
+    /// what the set was
+    /// </summary>
+    public static IReadOnlyList<string> DescribePreset(FilterPresetData preset)
+    {
+        ArgumentNullException.ThrowIfNull(preset);
+        var lines = new List<string>
+        {
+            $"{Strings.FilterSortLabel}: {SortValueTextOf(preset.SortMode)}",
+            $"{Strings.FilterGroupingLabel}: {(preset.GroupingEnabled ? GroupingByKeyTextOf(preset.SortMode) : Strings.GroupingOptionNone)}",
+        };
+        void Add(bool set, string label, string value)
+        {
+            if (set) lines.Add($"{label}: {value}");
+        }
+        Add(preset.FavoriteMode != FavoriteMode.None, Strings.FilterFavoritesLabel, FavoriteValueTextOf(preset.FavoriteMode));
+        Add(preset.MineMode != MineMode.None, Strings.FilterMineLabel, MineValueTextOf(preset.MineMode));
+        Add(preset.InstalledMode != InstalledMode.None, Strings.FilterInstalledLabel, InstalledValueTextOf(preset.InstalledMode));
+        Add(preset.AuctionFilterMode != AuctionFilterMode.All, Strings.FilterAuctionLabel, AuctionValueTextOf(preset.AuctionFilterMode));
+        Add(preset.DuplicatesFilterMode != DuplicatesFilterMode.All, Strings.FilterDuplicatesLabel, DuplicatesValueTextOf(preset.DuplicatesFilterMode));
+        Add(preset.GeneratedFilterMode != GeneratedFilterMode.All, Strings.FilterGeneratedLabel, GeneratedValueTextOf(preset.GeneratedFilterMode));
+        Add(preset.PaintFilterMode != PaintFilterMode.All, Strings.FilterPaintLabel, PaintValueTextOf(preset.PaintFilterMode));
+        Add(preset.CopiesFilterMode != CopiesFilterMode.All, Strings.FilterCopiesInStorageLabel, CopiesValueTextOf(preset.CopiesFilterMode));
+        foreach (var filter in preset.QuickFilters) lines.Add(new QuickFilterChipViewModel(filter.ToFilter()).Text);
+        return lines;
+    }
+
+    public void DeletePreset(FilterPresetData preset)
+    {
+        if (!_settings.Game.FilterPresets.Remove(preset)) return;
+        AppSettingsService.Save(_settings);
+        PresetsChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// Shows a saved set: its order, grouping, filters and quick filters, in one step (the gallery is shown again once).
+    /// The search stays as it is
+    /// </summary>
+    public void ApplyPreset(FilterPresetData preset)
+    {
+        ArgumentNullException.ThrowIfNull(preset);
+        _restoring = true; // no saving and no FiltersChanged for each property: once, below
+        try
+        {
+            SortMode = preset.SortMode;
+            GroupingEnabled = preset.GroupingEnabled;
+            FavoriteMode = preset.FavoriteMode;
+            MineMode = preset.MineMode;
+            InstalledMode = preset.InstalledMode;
+            DuplicatesFilterMode = preset.DuplicatesFilterMode;
+            GeneratedFilterMode = preset.GeneratedFilterMode;
+            PaintFilterMode = preset.PaintFilterMode;
+            AuctionFilterMode = preset.AuctionFilterMode;
+            CopiesFilterMode = preset.CopiesFilterMode;
+            QuickFilters.Clear();
+            foreach (var filter in preset.QuickFilters) QuickFilters.Add(new QuickFilterChipViewModel(filter.ToFilter()));
+        }
+        finally
+        {
+            _restoring = false;
+        }
+        OnPropertyChanged(nameof(HasQuickFilters));
+        OnPropertyChanged(nameof(HasActiveFilters));
+        Persist(s =>
+        {
+            s.SortMode = SortMode;
+            s.GroupingEnabled = GroupingEnabled;
+            s.FavoriteMode = FavoriteMode;
+            s.MineMode = MineMode;
+            s.InstalledMode = InstalledMode;
+            s.DuplicatesFilterMode = DuplicatesFilterMode;
+            s.GeneratedFilterMode = GeneratedFilterMode;
+            s.PaintFilterMode = PaintFilterMode;
+            s.AuctionFilterMode = AuctionFilterMode;
+            s.CopiesFilterMode = CopiesFilterMode;
+        });
+    }
+
     private bool _restoring;
 
     /// <summary>What the bar shows now, to bring back when its mode is shown again</summary>
     public FilterBarState Capture() => new(
         SearchText, SortMode, FavoriteMode, MineMode, InstalledMode, DuplicatesFilterMode, GeneratedFilterMode,
-        PaintFilterMode, AuctionFilterMode, GroupingEnabled, ActiveQuickFilters);
+        PaintFilterMode, AuctionFilterMode, GroupingEnabled, ActiveQuickFilters, CopiesFilterMode);
 
     /// <summary>
     /// Shows <paramref name="state"/> (another mode's) without saving it and without <see cref="FiltersChanged"/>: the
@@ -386,6 +611,7 @@ internal sealed partial class FilterBarViewModel : ObservableObject
             GeneratedFilterMode = state.GeneratedFilterMode;
             PaintFilterMode = state.PaintFilterMode;
             AuctionFilterMode = state.AuctionFilterMode;
+            CopiesFilterMode = state.CopiesFilterMode;
             GroupingEnabled = state.GroupingEnabled;
             QuickFilters.Clear();
             foreach (var filter in state.QuickFilters) QuickFilters.Add(new QuickFilterChipViewModel(filter));
@@ -395,6 +621,7 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         {
             _restoring = false;
         }
+        OnPropertyChanged(nameof(HasActiveFilters)); // the quick filters were put back without their notice
     }
 
     public bool IsAuctionAll => AuctionFilterMode == AuctionFilterMode.All;
@@ -417,7 +644,9 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     [RelayCommand]
     private void EnableGrouping() => GroupingEnabled = true;
 
-    public string SortValueText => SortMode switch
+    public string SortValueText => SortValueTextOf(SortMode);
+
+    internal static string SortValueTextOf(SortMode mode) => mode switch
     {
         SortMode.Author => Strings.SortOptionAuthor,
         SortMode.DownloadTime => Strings.SortOptionDownloadDate,
@@ -427,7 +656,9 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         _ => Strings.SortOptionManufacturer
     };
 
-    public string GroupingByKeyText => SortMode switch
+    public string GroupingByKeyText => GroupingByKeyTextOf(SortMode);
+
+    internal static string GroupingByKeyTextOf(SortMode mode) => mode switch
     {
         SortMode.Author => Strings.GroupingOptionByAuthor,
         SortMode.DownloadTime => Strings.GroupingOptionByMonth,
@@ -439,7 +670,9 @@ internal sealed partial class FilterBarViewModel : ObservableObject
 
     public string GroupingValueText => GroupingEnabled ? GroupingByKeyText : Strings.GroupingOptionNone;
 
-    public string FavoriteValueText => FavoriteMode switch
+    public string FavoriteValueText => FavoriteValueTextOf(FavoriteMode);
+
+    internal static string FavoriteValueTextOf(FavoriteMode mode) => mode switch
     {
         FavoriteMode.FavoritesFirst => Strings.FilterValueFirst,
         FavoriteMode.OnlyFavorites => Strings.FilterValueOnly,
@@ -447,9 +680,9 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         _ => Strings.FilterValueAll
     };
 
-    public string InstalledValueText => !IsInstalledFilterAvailable
-        ? Strings.FilterValueUnavailable
-        : InstalledMode switch
+    public string InstalledValueText => !IsInstalledFilterAvailable ? Strings.FilterValueUnavailable : InstalledValueTextOf(InstalledMode);
+
+    internal static string InstalledValueTextOf(InstalledMode mode) => mode switch
         {
             InstalledMode.InstalledFirst => Strings.FilterValueFirst,
             InstalledMode.OnlyInstalled => Strings.FilterValueOnly,
@@ -458,7 +691,9 @@ internal sealed partial class FilterBarViewModel : ObservableObject
             _ => Strings.FilterValueAll
         };
 
-    public string MineValueText => MineMode switch
+    public string MineValueText => MineValueTextOf(MineMode);
+
+    internal static string MineValueTextOf(MineMode mode) => mode switch
     {
         MineMode.MineFirst => Strings.FilterValueFirst,
         MineMode.OnlyMine => Strings.FilterValueOnly,
@@ -466,27 +701,35 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         _ => Strings.FilterValueAll
     };
 
-    public string DuplicatesValueText => DuplicatesFilterMode switch
+    public string DuplicatesValueText => DuplicatesValueTextOf(DuplicatesFilterMode);
+
+    internal static string DuplicatesValueTextOf(DuplicatesFilterMode mode) => mode switch
     {
         DuplicatesFilterMode.DuplicatesAndPossible => Strings.FilterValueWithPossible,
         DuplicatesFilterMode.DuplicatesOnly => Strings.FilterValueOnly,
         _ => Strings.FilterValueAll
     };
 
-    public string GeneratedValueText => GeneratedFilterMode switch
+    public string GeneratedValueText => GeneratedValueTextOf(GeneratedFilterMode);
+
+    internal static string GeneratedValueTextOf(GeneratedFilterMode mode) => mode switch
     {
         GeneratedFilterMode.GeneratedOnly => Strings.FilterValueOnly,
         _ => Strings.FilterValueAll
     };
 
-    public string PaintValueText => PaintFilterMode switch
+    public string PaintValueText => PaintValueTextOf(PaintFilterMode);
+
+    internal static string PaintValueTextOf(PaintFilterMode mode) => mode switch
     {
         PaintFilterMode.HidePaint => Strings.FilterValueHide,
         PaintFilterMode.PaintOnly => Strings.FilterValueOnly,
         _ => Strings.FilterValueAll
     };
 
-    public string AuctionValueText => AuctionFilterMode switch
+    public string AuctionValueText => AuctionValueTextOf(AuctionFilterMode);
+
+    internal static string AuctionValueTextOf(AuctionFilterMode mode) => mode switch
     {
         AuctionFilterMode.AuctionSeparately => Strings.FilterValueSeparately,
         AuctionFilterMode.OnlyAuction => Strings.FilterValueOnly,
@@ -507,6 +750,8 @@ internal sealed partial class FilterBarViewModel : ObservableObject
         OnPropertyChanged(nameof(GeneratedValueText));
         OnPropertyChanged(nameof(PaintValueText));
         OnPropertyChanged(nameof(AuctionValueText));
+        OnPropertyChanged(nameof(CopiesLabel));
+        OnPropertyChanged(nameof(CopiesValueText));
         foreach (var chip in QuickFilters) chip.RefreshLocalizedText();
     }
 
@@ -519,6 +764,7 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     partial void OnPaintFilterModeChanged(PaintFilterMode value) => Persist(s => s.PaintFilterMode = value);
     partial void OnAuctionFilterModeChanged(AuctionFilterMode value) => Persist(s => s.AuctionFilterMode = value);
     partial void OnGroupingEnabledChanged(bool value) => Persist(s => s.GroupingEnabled = value);
+    partial void OnCopiesFilterModeChanged(CopiesFilterMode value) => Persist(s => s.CopiesFilterMode = value);
 
     private void Persist(Action<AppSettingsData> apply)
     {
@@ -545,7 +791,8 @@ internal sealed record FilterBarState(
     PaintFilterMode PaintFilterMode,
     AuctionFilterMode AuctionFilterMode,
     bool GroupingEnabled,
-    IReadOnlyList<QuickFilter> QuickFilters)
+    IReadOnlyList<QuickFilter> QuickFilters,
+    CopiesFilterMode CopiesFilterMode = CopiesFilterMode.All)
 {
     /// <summary>
     /// The storage the first time it is shown: ordered and grouped as the game, but with no search, no quick
@@ -562,6 +809,7 @@ internal sealed record FilterBarState(
         GeneratedFilterMode = GeneratedFilterMode.All,
         PaintFilterMode = PaintFilterMode.All,
         AuctionFilterMode = AuctionFilterMode.All,
+        CopiesFilterMode = CopiesFilterMode.All,
         SortMode = SortMode == SortMode.GameOrder ? SortMode.DownloadTime : SortMode,
     };
 }

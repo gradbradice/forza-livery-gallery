@@ -210,6 +210,18 @@ internal sealed partial class MainViewModel
             RefreshCopiesLater(); // the game's marks "In the storage"
             return;
         }
+        // Laid out on disk as the storages are (folders there or flat), once a session: its disk may have been away
+        if (CurrentAccountKey is { } accountKey)
+        {
+            try
+            {
+                await storage.EnsureArrangedAsync(accountKey);
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                AppLog.LogError("Failed to lay out the storage", ex);
+            }
+        }
         var fresh = await _scanService.StoredEntriesAsync(store.GetAll(), savePathService.CurrentUserId, CurrentAccountKey);
         if (!IsStorageMode || !ReferenceEquals(store, CurrentStorage)) return;
         MarkAddedByHand(fresh);
@@ -226,6 +238,24 @@ internal sealed partial class MainViewModel
         Gallery.ReplaceEntries(merged);
         OnEntriesChanged();
         RefreshCopiesLater();
+    }
+
+    /// <summary>
+    /// A stored card without a preview got one drawn from its 3D model (<see cref="RenderedThumbnails.KeepStored"/>): the
+    /// storage's index keeps it, as a scan gives one to a livery of the save. Kept from the preview cleanup (remembered
+    /// for a storage whose folder may go away), and back in the game with the livery
+    /// </summary>
+    public void KeepDrawnPreview(LiveryEntry entry, string previewPath)
+    {
+        if (!entry.IsStored || CurrentAccountKey is not { } key || CurrentStorage is not { } store) return;
+        try
+        {
+            if (store.SetDrawnPreview(entry.FolderName, previewPath)) storage.RememberPreviews(key);
+        }
+        catch (Exception ex)
+        {
+            AppLog.LogError("Failed to keep the drawn preview of a stored livery", ex);
+        }
     }
 
     private bool CanReturnSelectedToGame() => IsStorageMode && Gallery.HasSelection;
@@ -255,12 +285,19 @@ internal sealed partial class MainViewModel
     /// </summary>
     /// <param name="entries">The stored liveries, in the window's order</param>
     /// <returns>True when liveries went back</returns>
-    public async Task<bool> ReturnToGameAsync(IReadOnlyList<LiveryEntry> entries)
+    public Task<bool> ReturnToGameAsync(IReadOnlyList<LiveryEntry> entries) =>
+        ReturnKeysToGameAsync([.. entries.Select(e => e.FolderName)]);
+
+    /// <summary><see cref="ReturnToGameAsync"/> for stored liveries known by their keys (the undo of a move to the storage)</summary>
+    private async Task<bool> ReturnKeysToGameAsync(IReadOnlyList<string> keys)
     {
-        if (entries.Count == 0 || CurrentStorage is not { } store) return false;
+        if (keys.Count == 0 || CurrentStorage is not { } store) return false;
         var index = store.GetAll().ToDictionary(e => e.Data.FolderName, StringComparer.OrdinalIgnoreCase);
-        var chosen = entries.Select(e => index.GetValueOrDefault(e.FolderName)).OfType<ArchivedLiveryEntry>().ToList();
+        var chosen = keys.Select(k => index.GetValueOrDefault(k)).OfType<ArchivedLiveryEntry>().ToList();
         if (chosen.Count == 0) return false;
+        // Where each was in the storage, and the step a swap for room leaves: both are for the undo of this return
+        var foldersBefore = chosen.ToDictionary(c => c.Data.FolderName, c => c.FolderId, StringComparer.OrdinalIgnoreCase);
+        var undoBefore = _undo;
 
         if (await LiveryRestoreConflicts.PrepareAsync(savePathService, GetAccountContext(), chosen.Select(c => c.SourceAccount),
                 ConfirmRestoreIntoCurrentAccountAsync, ConfirmWhileGameRunningAsync, ErrorMessageRequested) is not { } savePath)
@@ -333,23 +370,38 @@ internal sealed partial class MainViewModel
         if (result.LeftoverPaths.Count > 0)
             notes.Add(string.Format(Strings.ArchiveLeftoverFoldersFormat, string.Join(Environment.NewLine, result.LeftoverPaths)));
         if (notes.Count > 0) ErrorMessageRequested?.Invoke(string.Join(Environment.NewLine + Environment.NewLine, notes));
-        if (restored.Count > 0) Status.SetStatusText(string.Format(Strings.StatusReturnedToGameFormat, restored.Count));
+        if (restored.Count > 0)
+        {
+            Status.SetStatusText(string.Format(Strings.StatusReturnedToGameFormat, restored.Count));
+            // Undone by storing them again, each in the folder it had; a swap for room made on the way is undone after
+            // it (the liveries that went to the storage to make the room come back)
+            var swap = ReferenceEquals(_undo, undoBefore) ? null : _undo;
+            RememberForUndo(UndoKind.ToGame, restored.Count, async () =>
+            {
+                bool back = await StoreAgainAsync([.. restored], foldersBefore);
+                if (back && swap is not null) await swap.Revert();
+                return back;
+            });
+        }
         return restored.Count > 0;
     }
 
     /// <summary>
     /// Del (and Shift+Del) in the storage: the liveries go to the archive, to be deleted from there. Nothing leaves the
-    /// save, so there is no question; the files move on one disk
+    /// save, so there is no question; the files are renamed on one disk, copied when the storage is on another
     /// </summary>
     /// <returns>True when liveries went</returns>
     public async Task<bool> MoveStoredToArchiveAsync(IReadOnlyList<LiveryEntry> entries)
     {
         if (entries.Count == 0 || CurrentStorage is not { } store || CurrentAccountKey is not { } accountKey) return false;
         IReadOnlyList<string> moved;
+        var archive = storage.ArchiveOf(accountKey);
+        // The keys the archive has already: those stay in the storage for that, the others only when their files did not move
+        var inArchive = archive.GetAll().Select(e => e.Data.FolderName).ToHashSet(StringComparer.OrdinalIgnoreCase);
         Status.SetLoading(true, Strings.LoadingMovingToArchive);
         try
         {
-            moved = await storage.ArchiveOf(accountKey).TakeFromAsync(store, [.. entries.Select(e => e.FolderName)], GetAccountContext().Current);
+            moved = await archive.TakeFromAsync(store, [.. entries.Select(e => e.FolderName)], GetAccountContext().Current);
             Gallery.ClearSelectionCommand.Execute(null);
             await RefreshStorageAsync();
         }
@@ -363,9 +415,16 @@ internal sealed partial class MainViewModel
         {
             Status.SetLoading(false);
         }
-        if (moved.Count < entries.Count)
-            ErrorMessageRequested?.Invoke(string.Format(Strings.ArchiveToStorageSkippedFormat, entries.Count - moved.Count));
-        if (moved.Count > 0) Status.SetStatusText(string.Format(Strings.StatusStoredToArchiveFormat, moved.Count));
+        if (NotTakenReport([.. entries.Select(e => e.Data)], moved, inArchive, Strings.StoredToArchiveSkippedFormat, Strings.ArchiveFailedFormat) is { } report
+            && !ShutdownToken.IsCancellationRequested)
+            ErrorMessageRequested?.Invoke(report);
+        if (moved.Count > 0)
+        {
+            Status.SetStatusText(string.Format(Strings.StatusStoredToArchiveFormat, moved.Count));
+            var folders = entries.ToDictionary(e => e.FolderName, e => e.StorageFolderId, StringComparer.OrdinalIgnoreCase);
+            string[] keys = [.. moved];
+            RememberForUndo(UndoKind.ToArchive, keys.Length, () => TakeBackFromArchiveAsync(keys, folders));
+        }
         return moved.Count > 0;
     }
 }

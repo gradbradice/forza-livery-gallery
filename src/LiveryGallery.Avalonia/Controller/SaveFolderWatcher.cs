@@ -34,7 +34,11 @@ internal sealed class SaveFolderWatcher : IDisposable
             _debounceTimer.Stop();
             if (!_refreshRunning) _currentRefresh = RunRefreshAsync(_lifetimeCts.Token);
         };
-        _fallbackTimer.Tick += (_, __) => RequestRefresh();
+        _fallbackTimer.Tick += (_, __) =>
+        {
+            WatchIfAppeared();
+            RequestRefresh();
+        };
     }
 
     public void Configure(string? savePath, bool enabled)
@@ -57,6 +61,31 @@ internal sealed class SaveFolderWatcher : IDisposable
 
         if (_saveWatcher is null) _fallbackTimer.Start();
     }
+
+    /// <summary>
+    /// The save folder was missing, or could not be watched, when the watching began (the game not run yet, OneDrive not
+    /// synced, a drive not plugged in): tried again on each poll, and once it is watched, the poll stops. Before, the
+    /// gallery polled every 30 seconds until it was started again (code review, finding 16). The game's preview cache,
+    /// when missing, is tried again on each poll and refresh. True when the save folder is watched now
+    /// </summary>
+    internal bool WatchIfAppeared()
+    {
+        if (_disposed || !_enabled) return false;
+        if (_thumbnailCacheWatcher is null && _profile.ListingPreviews is { } cache)
+            _thumbnailCacheWatcher = TryCreateWatcher(cache.FindDirectory(), cache.IndexFileName,
+                includeSubdirectories: false, OnThumbnailCacheEvent);
+        if (_saveWatcher is not null) return true;
+        _saveWatcher = TryCreateWatcher(_savePath, filter: null, includeSubdirectories: true, OnSaveFolderEvent);
+        if (_saveWatcher is null) return false;
+        _fallbackTimer.Stop();
+        return true;
+    }
+
+    /// <summary>The save folder is watched (tests)</summary>
+    internal bool IsWatching => _saveWatcher is not null;
+
+    /// <summary>The save folder is polled instead (tests)</summary>
+    internal bool IsPolling => _fallbackTimer.IsEnabled;
 
     private FileSystemWatcher? TryCreateWatcher(
         string? directory, string? filter, bool includeSubdirectories, FileSystemEventHandler onEvent)
@@ -176,6 +205,7 @@ internal sealed class SaveFolderWatcher : IDisposable
 
         _refreshRunning = true;
         _changedWhileRefreshing = false;
+        if (_thumbnailCacheWatcher is null) WatchIfAppeared();
         bool completed;
         try
         {

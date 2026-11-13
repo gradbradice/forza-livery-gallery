@@ -14,7 +14,10 @@ internal static class TrustedUrlLauncher
 
     public static readonly IReadOnlyList<string> GitHubHosts = ["github.com", "www.github.com"];
 
-    private static readonly string[] AllowedHosts = [.. TwitterHosts, .. YouTubeHosts, .. TwitchHosts, .. GitHubHosts];
+    // Invitations (discord.gg/code, discord.com/invite/code) and the servers themselves
+    public static readonly IReadOnlyList<string> DiscordHosts = ["discord.gg", "discord.com", "www.discord.com"];
+
+    private static readonly string[] AllowedHosts = [.. TwitterHosts, .. YouTubeHosts, .. TwitchHosts, .. GitHubHosts, .. DiscordHosts];
 
     public static void TryOpen(string url)
     {

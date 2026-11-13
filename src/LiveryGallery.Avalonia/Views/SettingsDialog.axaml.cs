@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using LiveryGallery.Enums;
 using LiveryGallery.Localisation;
+using LiveryGallery.Services;
 using LiveryGallery.Services.Accounts;
 using LiveryGallery.Services.Diagnostics;
 using LiveryGallery.ViewModels;
@@ -91,6 +92,8 @@ internal partial class SettingsDialog : Window
         TitleBarText.Text = Strings.SettingsDialogTitle;
         TitleText.Text = Strings.SettingsDialogTitle;
         ThemeSectionLabel.Text = Strings.SettingsSectionTheme;
+        CardsSectionLabel.Text = Strings.SettingsSectionCards;
+        BadgesPlaceHint.Text = Strings.BadgesPlaceHint;
         LanguageSectionLabel.Text = Strings.SettingsSectionLanguage;
         CarTextLanguageSectionLabel.Text = Strings.SettingsSectionCarTextLanguage;
         CarTextLanguageHintText.Text = _viewModel.HasGameCarTexts ? Strings.CarTextLanguageHint : Strings.CarTextLanguageNoGameTexts;
@@ -109,6 +112,8 @@ internal partial class SettingsDialog : Window
         StorageSectionLabel.Text = Strings.SettingsStorageSectionLabel;
         StorageHint.Text = Strings.SettingsStorageHint;
         OpenStorageFolderButton.Content = Strings.SettingsStorageOpenButton;
+        StorageFoldersOnDiskText.Text = Strings.SettingsStorageFoldersOnDisk;
+        StorageFoldersOnDiskHint.Text = Strings.SettingsStorageFoldersOnDiskHint;
         ScanningSectionLabel.Text = Strings.SettingsSectionScanning;
         AutoRefreshLiveriesCheckBox.Content = Strings.AutoRefreshLiveriesLabel;
         RefreshOnButtonClickCheckBox.Content = Strings.RefreshOnButtonClickLabel;
@@ -119,6 +124,7 @@ internal partial class SettingsDialog : Window
         DiagnosticsHint.Text = Strings.DiagnosticsHint;
         ExportDiagnosticsButton.Content = Strings.ExportDiagnosticsButton;
         ShowChangesSinceLastLaunchCheckBox.Content = Strings.ShowChangesSinceLastLaunchLabel;
+        WheelClickScrollCheckBox.Content = Strings.WheelClickScrollLabel;
         WarnFewFreeSlotsText.Text = Strings.WarnFewFreeSlotsLabel;
         ScreenshotsSectionLabel.Text = Strings.ScreenshotsLabel;
         ScreenshotsOriginalRadio.Content = Strings.ScreenshotsKeepOriginal;
@@ -129,6 +135,8 @@ internal partial class SettingsDialog : Window
         ScreenshotsConvertButton.Content = Strings.ScreenshotsConvertButton;
         ScreenshotsFolderButton.Content = Strings.ScreenshotsOpenFolder;
         UpdatesSectionLabel.Text = Strings.UpdatesSectionLabel;
+        UpdateInstallLabel.Text = Strings.UpdateInstallLabel;
+        UpdateInstallHint.Text = Strings.UpdateInstallHint;
         BetaUpdatesCheckBox.Content = Strings.BetaUpdatesLabel;
         BetaUpdatesHint.Text = Strings.BetaUpdatesHint;
         ServerConnectionCheckBox.Content = Strings.ServerConnectionLabel;
@@ -320,6 +328,41 @@ internal partial class SettingsDialog : Window
         if (chosen is not null) chosen.IsSelected = true;
         StorageList.ItemsSource = rows;
         StorageSection.IsVisible = rows.Count > 0;
+        StorageFoldersOnDiskCheckBox.IsVisible = _storages.SetFoldersOnDisk is not null;
+        if (StorageFoldersOnDiskCheckBox.IsEnabled) StorageFoldersOnDiskCheckBox.IsChecked = _storages.FoldersOnDisk?.Invoke() ?? false;
+    }
+
+    // Moves files: asked first, and the box shows what is, not what was clicked, until it is done
+    private void StorageFoldersOnDiskCheckBox_Click(object? sender, RoutedEventArgs e)
+    {
+        if (_storages?.SetFoldersOnDisk is not { } set) return;
+        bool wanted = StorageFoldersOnDiskCheckBox.IsChecked == true;
+        StorageFoldersOnDiskCheckBox.IsChecked = !wanted;
+        StorageFoldersOnDiskCheckBox.IsEnabled = false;
+        var culture = AppLocalisationService.Culture;
+        var progress = new Progress<(int Done, int Total)>(p =>
+        {
+            if (_closed || p.Total == 0) return;
+            StorageFoldersOnDiskStatus.IsVisible = true;
+            StorageFoldersOnDiskStatus.Text = string.Format(Strings.StorageLayoutProgressFormat, p.Done.ToString("N0", culture), p.Total.ToString("N0", culture));
+        });
+        _ = _tasks.Run(async () =>
+        {
+            try
+            {
+                await set(this, wanted, progress);
+            }
+            finally
+            {
+                if (!_closed)
+                {
+                    StorageFoldersOnDiskCheckBox.IsEnabled = true;
+                    StorageFoldersOnDiskCheckBox.IsChecked = _storages.FoldersOnDisk?.Invoke() ?? false;
+                    StorageFoldersOnDiskStatus.IsVisible = false;
+                }
+            }
+            if (!_closed) await LoadStoragesAsync();
+        }, "settings: storage folders on disk");
     }
 
     private void ChangeStorageFolderButton_Click(object? sender, RoutedEventArgs e)

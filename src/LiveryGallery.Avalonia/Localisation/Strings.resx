@@ -318,6 +318,9 @@
   <data name="ContactsGithubLabel" xml:space="preserve">
     <value>GitHub repository</value>
   </data>
+  <data name="ContactsDiscordLabel" xml:space="preserve">
+    <value>Discord server</value>
+  </data>
   <data name="DuplicateBadgeLabel" xml:space="preserve">
     <value>Duplicate</value>
   </data>
@@ -1020,14 +1023,14 @@ Updated at {1}</value>
     <value>Use the server to find the liveries on cars</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>To find out which liveries are on your cars, the gallery sends the save file C_ProfileData to the server. The server uses the file only for this and does not store it.
+    <value>To find out which liveries are on your cars and the name of your account, the gallery sends the save file C_ProfileData to the server. The server uses the file only for this and does not store it.
 
 The data from the file is not kept and is not used for anything else. The server keeps the keys needed to decrypt the save file in a safe place.
 
 The server has no connection to the official servers of Forza Horizon, Xbox or Microsoft.</value>
   </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>To find out which liveries are on your cars, the gallery sends the save file C_ProfileData to the server. The server uses the file only for this and does not store it.
+    <value>To find out which liveries are on your cars and the name of your account, the gallery sends the save file C_ProfileData to the server. The server uses the file only for this and does not store it.
 
 The data from the file is not kept and is not used for anything else. The server keeps the keys needed to decrypt the save file in a safe place.
 
@@ -2151,7 +2154,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Tags of the selected liveries: {0}</value>
   </data>
   <data name="TagsDialogManyHint" xml:space="preserve">
-    <value>A tick adds the tag to every selected livery, an empty box removes it from all of them. A filled square means only some of them have the tag. It stays as it is.</value>
+    <value>A check mark adds the tag to every selected livery, an empty box removes it from all of them. A filled square means only some of them have the tag. It stays as it is.</value>
   </data>
   <data name="TagsDialogNewTagsLabel" xml:space="preserve">
     <value>New tags, separated by commas. They are added to every selected livery.</value>
@@ -2271,7 +2274,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Free up room</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>One copy of each duplicated livery stays: one with tags or your own first, else the first downloaded. Locked liveries, liveries on a car, auction liveries and favorites stay as well. Untick a copy to keep it. Everything that goes can be brought back from the archive.</value>
+    <value>One copy of each duplicated livery stays: one with tags or your own first, else the first downloaded. Locked liveries, liveries on a car, auction liveries and favorites stay as well. Uncheck a copy to keep it. Everything that goes can be brought back from the archive.</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>Downloaded: {0}</value>
@@ -2387,14 +2390,26 @@ Look through the files before sending them. A value the gallery does not know ab
   <data name="UpdatesSectionLabel" xml:space="preserve">
     <value>Updates</value>
   </data>
+  <data name="UpdateInstallLabel" xml:space="preserve">
+    <value>Installing updates</value>
+  </data>
+  <data name="UpdateInstallAsk" xml:space="preserve">
+    <value>Ask before installing</value>
+  </data>
+  <data name="UpdateInstallAutomatic" xml:space="preserve">
+    <value>Install automatically</value>
+  </data>
+  <data name="UpdateInstallHint" xml:space="preserve">
+    <value>Asking first, the gallery says a new version is out and installs it only when you press Install in its window. Automatically, it downloads the version in the background and installs it when you close the gallery.</value>
+  </data>
   <data name="BetaUpdatesLabel" xml:space="preserve">
     <value>Get beta versions</value>
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
-    <value>Betas come out before releases and may have bugs. Turning this off does not go back to an older version: the gallery waits for a release newer than the beta.</value>
+    <value>Betas come out before releases and may have bugs. Turn this off while on a beta, and the gallery offers to go back to the latest stable version.</value>
   </data>
   <data name="TagsDialogOneHint" xml:space="preserve">
-    <value>A tick puts the tag on the livery, an empty box takes it off.</value>
+    <value>A check mark puts the tag on the livery, an empty box takes it off.</value>
   </data>
   <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
     <value>New tags, separated by commas.</value>
@@ -2458,12 +2473,6 @@ Look through the files before sending them. A value the gallery does not know ab
   </data>
   <data name="LiveryDetailsAuthorLabel" xml:space="preserve">
     <value>Author:</value>
-  </data>
-  <data name="LiveryDetailsChipLocked" xml:space="preserve">
-    <value>Locked</value>
-  </data>
-  <data name="LiveryDetailsChipFavorite" xml:space="preserve">
-    <value>Favorite</value>
   </data>
   <data name="LiveryDetailsIdLabel" xml:space="preserve">
     <value>Livery number</value>
@@ -2541,10 +2550,13 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Moved to another folder of the save</value>
   </data>
   <data name="LiveryDetailsFooterHint" xml:space="preserve">
-    <value>← → neighbouring liveries · Esc closes</value>
+    <value>← → neighboring liveries · Esc closes</value>
   </data>
   <data name="ContextMenuOpenDetails" xml:space="preserve">
     <value>Open the livery</value>
+  </data>
+  <data name="ContextMenuView3DNewWindow" xml:space="preserve">
+    <value>View in one more 3D window</value>
   </data>
   <data name="NoteTooltipFormat" xml:space="preserve">
     <value>Note: {0}</value>
@@ -2570,17 +2582,8 @@ Look through the files before sending them. A value the gallery does not know ab
   <data name="GameSwitcherTooltip" xml:space="preserve">
     <value>Switch game</value>
   </data>
-  <data name="GameStateFoundFormat" xml:space="preserve">
-    <value>Saves found: {0}</value>
-  </data>
-  <data name="GameStateChosen" xml:space="preserve">
-    <value>Save folder chosen by you</value>
-  </data>
   <data name="GameStateNotFound" xml:space="preserve">
     <value>Save not found</value>
-  </data>
-  <data name="GameChooseSaveFolderMenuItem" xml:space="preserve">
-    <value>Choose the save folder…</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
     <value>Choose folder…</value>
@@ -2592,7 +2595,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>No {0} save was found</value>
   </data>
   <data name="ServerRejectedHeaderFormat" xml:space="preserve">
-    <value>The server did not recognise the gallery by its name and version. The server is probably not yet set up for this version of the gallery ({0}).</value>
+    <value>The server did not recognize the gallery by its name and version. The server is probably not yet set up for this version of the gallery ({0}).</value>
   </data>
   <data name="ServerRejectedFingerprintFormat" xml:space="preserve">
     <value>The gallery did not send its build fingerprint, or the server could not read it. Use the official release ({0}).</value>
@@ -2677,7 +2680,7 @@ Updated on {1} at {2}</value>
     <value>Add the livery under the cursor to the selection or take it out</value>
   </data>
   <data name="ShortcutView3DNewWindow" xml:space="preserve">
-    <value>View in one more 3D window, to compare (up to four)</value>
+    <value>View in one more 3D window, to compare (up to four). Several selected: each in its own window</value>
   </data>
   <data name="ScreenshotsLabel" xml:space="preserve">
     <value>Screenshots</value>
@@ -3014,7 +3017,7 @@ or Ctrl+V</value>
     <value>Only {0} may go: the others are on a car, locked, favorites, your own or auction liveries.</value>
   </data>
   <data name="ReturnRoomCheckedFormat" xml:space="preserve">
-    <value>Ticked {0} of {1} needed · {2} may go</value>
+    <value>Checked {0} of {1} needed · {2} may go</value>
   </data>
   <data name="ReturnRoomCandidatesNote" xml:space="preserve">
     <value>Those added to the game first come first. Not offered: on a car, locked, favorites, your own, auction liveries</value>
@@ -3050,7 +3053,7 @@ or Ctrl+V</value>
     <value>Return {0}</value>
   </data>
   <data name="ReturnRoomNeedMoreFormat" xml:space="preserve">
-    <value>Tick {0} more</value>
+    <value>Check {0} more</value>
   </data>
   <data name="StorageFoldersHeading" xml:space="preserve">
     <value>Folders</value>
@@ -3458,5 +3461,176 @@ or Ctrl+V</value>
   </data>
   <data name="StoragePlaceAroundCurrent" xml:space="preserve">
     <value>the current storage is inside it, or it is inside the current storage.</value>
+  </data>
+  <data name="StoreFailedFormat" xml:space="preserve">
+    <value>These liveries could not be moved to the storage ({0}). The game may be using their files, the disk may be full, or the storage folder may be unavailable. The details are in the log:
+{1}</value>
+  </data>
+  <data name="ArchiveFailedFormat" xml:space="preserve">
+    <value>These liveries could not be moved to the archive ({0}). The game may be using their files, or the disk may be full. The details are in the log:
+{1}</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
+    <value>Keep the storage's folders as folders on disk</value>
+  </data>
+  <data name="SettingsStorageFoldersOnDiskHint" xml:space="preserve">
+    <value>Off (the default): every livery lies at the top of the storage folder, and the gallery's folders are only labels. On: each folder of the gallery is a folder on disk holding its liveries, and a folder you make there by hand becomes one of the gallery's. One choice for every account's storage. The files are moved at once.</value>
+  </data>
+  <data name="StorageLayoutTitle" xml:space="preserve">
+    <value>Folders on disk</value>
+  </data>
+  <data name="StorageLayoutOnConfirmFormat" xml:space="preserve">
+    <value>Lay the stored liveries out into folders on disk? Liveries to move into their folders: {0}. Nothing leaves the storage, and the game is not touched.</value>
+  </data>
+  <data name="StorageLayoutOffConfirmFormat" xml:space="preserve">
+    <value>Put every stored livery back at the top of the storage folder? Liveries to move out of their folders: {0}. The gallery's folders stay, as labels.</value>
+  </data>
+  <data name="StorageLayoutOnButton" xml:space="preserve">
+    <value>Lay out</value>
+  </data>
+  <data name="StorageLayoutOffButton" xml:space="preserve">
+    <value>Make flat</value>
+  </data>
+  <data name="StorageLayoutProgressFormat" xml:space="preserve">
+    <value>Moving liveries: {0} of {1}…</value>
+  </data>
+  <data name="StorageLayoutDoneFormat" xml:space="preserve">
+    <value>Storage laid out: liveries moved: {0}</value>
+  </data>
+  <data name="StorageLayoutFailedFormat" xml:space="preserve">
+    <value>Liveries that could not be moved: {0}. A file of theirs may be in use (open in another program). They stay where they were, and the gallery still finds them. It tries again the next time it opens the storage. The details are in the log.</value>
+  </data>
+  <data name="StorageLayoutAwayFormat" xml:space="preserve">
+    <value>Storages not available now (their disk is away): {0}. They are laid out when they are back.</value>
+  </data>
+  <data name="StorageFolderRenameOnDiskFailed" xml:space="preserve">
+    <value>The folder could not be renamed on disk: a file in it may be in use (open in Explorer or another program). Its name has not changed. The details are in the log.</value>
+  </data>
+  <data name="StorageFolderMoveOnDiskFailedFormat" xml:space="preserve">
+    <value>These liveries could not be moved into the folder on disk ({0}): a file of theirs may be in use. They stay where they were. The details are in the log:
+{1}</value>
+  </data>
+  <data name="StorageFolderDeleteOnDiskFailedFormat" xml:space="preserve">
+    <value>The folder was not deleted: liveries of it could not be moved out of it on disk ({0}). A file of theirs may be in use. They stay in it. The details are in the log.</value>
+  </data>
+  <data name="SettingsSectionCards" xml:space="preserve">
+    <value>Livery cards</value>
+  </data>
+  <data name="BadgesOnPictureLabel" xml:space="preserve">
+    <value>Badges on the picture</value>
+  </data>
+  <data name="BadgesAtBottomLabel" xml:space="preserve">
+    <value>Badges at the bottom of the card</value>
+  </data>
+  <data name="BadgesPlaceHint" xml:space="preserve">
+    <value>On the picture the cards stay short, at the bottom the whole picture shows. A badge’s tooltip says what it means.</value>
+  </data>
+  <data name="BadgesMoreOne" xml:space="preserve">
+    <value>{0} more badge:</value>
+  </data>
+  <data name="BadgesMoreFew" xml:space="preserve">
+    <value>{0} more badges:</value>
+  </data>
+  <data name="BadgesMoreMany" xml:space="preserve">
+    <value>{0} more badges:</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInStorageFormat" xml:space="preserve">
+    <value>the artwork is {0}% similar to “{1}” in the storage</value>
+  </data>
+  <data name="AuthorHintReasonArtworkInGameFormat" xml:space="preserve">
+    <value>the artwork is {0}% similar to “{1}” in the game</value>
+  </data>
+  <data name="ContextMenuView3DSeveralFormat" xml:space="preserve">
+    <value>View the selected in separate 3D windows ({0})</value>
+  </data>
+  <data name="Status3DWindowsFull" xml:space="preserve">
+    <value>Four 3D windows are already open. Close one to open another livery.</value>
+  </data>
+  <data name="Status3DWindowsNotAllFormat" xml:space="preserve">
+    <value>Opened in 3D: {0} of {1}. At most {2} 3D windows can be open at once.</value>
+  </data>
+  <data name="FilterCopiesInStorageLabel" xml:space="preserve">
+    <value>In the storage</value>
+  </data>
+  <data name="FilterCopiesInGameLabel" xml:space="preserve">
+    <value>In the game</value>
+  </data>
+  <data name="FilterCopiesSame" xml:space="preserve">
+    <value>The same one is there</value>
+  </data>
+  <data name="FilterCopiesSameOrSimilar" xml:space="preserve">
+    <value>The same or a similar one</value>
+  </data>
+  <data name="FilterCopiesSimilar" xml:space="preserve">
+    <value>Only a similar one</value>
+  </data>
+  <data name="FilterCopiesNone" xml:space="preserve">
+    <value>Neither the same nor a similar one</value>
+  </data>
+  <data name="FilterValueCopySame" xml:space="preserve">
+    <value>Same</value>
+  </data>
+  <data name="FilterValueCopySameOrSimilar" xml:space="preserve">
+    <value>Same or similar</value>
+  </data>
+  <data name="FilterValueCopySimilar" xml:space="preserve">
+    <value>Similar</value>
+  </data>
+  <data name="FilterValueCopyNone" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="ResetFiltersTooltip" xml:space="preserve">
+    <value>Reset filters: clears the search and the filters. The order stays</value>
+  </data>
+  <data name="UndoLabel" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="UndoTooltipFormat" xml:space="preserve">
+    <value>Undo: {0}</value>
+  </data>
+  <data name="StatusUndoneFormat" xml:space="preserve">
+    <value>Undone: {0}</value>
+  </data>
+  <data name="ShortcutUndo" xml:space="preserve">
+    <value>Undo the last action</value>
+  </data>
+  <data name="UndoFavoritesFormat" xml:space="preserve">
+    <value>Favorites changed: {0}</value>
+  </data>
+  <data name="UndoLocksFormat" xml:space="preserve">
+    <value>Locks changed: {0}</value>
+  </data>
+  <data name="UndoTagsFormat" xml:space="preserve">
+    <value>Tags changed: {0}</value>
+  </data>
+  <data name="WheelClickScrollLabel" xml:space="preserve">
+    <value>A click of the mouse wheel scrolls without holding it</value>
+  </data>
+  <data name="WheelScrollSpeedFormat" xml:space="preserve">
+    <value>Scrolling speed with the wheel pressed: {0}%</value>
+  </data>
+  <data name="FilterPresetsTooltip" xml:space="preserve">
+    <value>Saved filter sets</value>
+  </data>
+  <data name="FilterPresetSave" xml:space="preserve">
+    <value>Save the current filters…</value>
+  </data>
+  <data name="FilterPresetDelete" xml:space="preserve">
+    <value>Delete a set</value>
+  </data>
+  <data name="FilterPresetNameLabel" xml:space="preserve">
+    <value>Name of the set</value>
+  </data>
+  <data name="FilterPresetsEmpty" xml:space="preserve">
+    <value>No saved sets yet</value>
+  </data>
+  <data name="FilterPresetApply" xml:space="preserve">
+    <value>Apply the set</value>
+  </data>
+  <data name="FilterPresetHint" xml:space="preserve">
+    <value>Right-click: apply or delete</value>
+  </data>
+  <data name="ShortcutSaveFilterSet" xml:space="preserve">
+    <value>Save the current filters as a set</value>
   </data>
 </root>

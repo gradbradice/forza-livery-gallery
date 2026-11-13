@@ -32,6 +32,17 @@ internal sealed class RowsModeOption(MyDesignsRowsMode mode, string displayName)
     public MyDesignsRowsMode Mode { get; } = mode;
 }
 
+internal sealed class UpdateInstallOption(UpdateInstallMode mode, string displayName) : LocalizedOption(displayName)
+{
+    public UpdateInstallMode Mode { get; } = mode;
+}
+
+/// <summary>Where a card's badges stand: on its picture (false) or at its bottom (true)</summary>
+internal sealed class BadgesPlaceOption(bool atBottom, string displayName) : LocalizedOption(displayName)
+{
+    public bool AtBottom { get; } = atBottom;
+}
+
 /// <summary>A language of car names: a game language code, or null for "as in the interface"</summary>
 internal sealed class CarTextLanguageOption(string? code, string displayName) : LocalizedOption(displayName)
 {
@@ -58,10 +69,14 @@ internal sealed partial class SettingsViewModel : ObservableObject
     private int _savedServerLiveries;
     private int _savedKeyInterval;
     private bool _savedShowChangesSinceLastLaunch;
+    private bool _savedWheelClickScroll;
+    private int _savedWheelScrollSpeed;
+    private bool _savedBadgesAtBottom;
     private bool _savedWarnFewFreeSlots;
     private bool _savedWarnArchiveWithoutInstalledData;
     private bool _savedWarnArchiveWithOutdatedInstalledData;
     private bool _savedBetaUpdates;
+    private UpdateInstallMode _savedUpdateInstall;
     private bool _savedScreenshotsWebP;
     private int _savedScreenshotsWebPQuality;
     private bool _savedScreenshotsInBackups;
@@ -97,10 +112,14 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _savedServerLiveries = Math.Clamp(settings.ServerLiveries, 0, MyDesignsGrid.MaxServerLiveries);
         _savedKeyInterval = NavigationTiming.ClampKeyInterval(settings.NavigationKeyIntervalMs);
         _savedShowChangesSinceLastLaunch = settings.ShowChangesSinceLastLaunch;
+        _savedWheelClickScroll = settings.WheelClickScroll;
+        _savedWheelScrollSpeed = ClampWheelSpeed(settings.WheelScrollSpeedPercent);
+        _savedBadgesAtBottom = settings.BadgesAtBottom;
         _savedWarnFewFreeSlots = settings.WarnFewFreeSlots;
         _savedWarnArchiveWithoutInstalledData = settings.WarnArchiveWithoutInstalledData;
         _savedWarnArchiveWithOutdatedInstalledData = settings.WarnArchiveWithOutdatedInstalledData;
         _savedBetaUpdates = settings.BetaUpdates;
+        _savedUpdateInstall = Enum.IsDefined(settings.UpdateInstall) ? settings.UpdateInstall : UpdateInstallMode.Ask;
         _savedScreenshotsWebP = settings.ScreenshotsWebP;
         _savedScreenshotsWebPQuality = Math.Clamp(settings.ScreenshotsWebPQuality, MinScreenshotsQuality, MaxScreenshotsQuality);
         _savedScreenshotsInBackups = settings.ScreenshotsInBackups;
@@ -124,10 +143,14 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _serverLiveries = _savedServerLiveries;
         _keyInterval = _savedKeyInterval;
         _showChangesSinceLastLaunch = _savedShowChangesSinceLastLaunch;
+        _wheelClickScroll = _savedWheelClickScroll;
+        _wheelScrollSpeed = _savedWheelScrollSpeed;
+        _badgesAtBottom = _savedBadgesAtBottom;
         _warnFewFreeSlots = _savedWarnFewFreeSlots;
         _warnArchiveWithoutInstalledData = _savedWarnArchiveWithoutInstalledData;
         _warnArchiveWithOutdatedInstalledData = _savedWarnArchiveWithOutdatedInstalledData;
         _betaUpdates = _savedBetaUpdates;
+        _updateInstall = _savedUpdateInstall;
         _screenshotsWebP = _savedScreenshotsWebP;
         _screenshotsWebPQuality = _savedScreenshotsWebPQuality;
         _screenshotsInBackups = _savedScreenshotsInBackups;
@@ -194,6 +217,8 @@ internal sealed partial class SettingsViewModel : ObservableObject
         // Only the names change; the options are the same objects, so the combo boxes keep what is selected
         CarTextLanguageOptions[0].DisplayName = Strings.CarTextLanguageAsInterface;
         foreach (var option in RowsModeOptions) option.DisplayName = RowsModeName(option.Mode);
+        foreach (var option in UpdateInstallOptions) option.DisplayName = UpdateInstallName(option.Mode);
+        foreach (var option in BadgesPlaceOptions) option.DisplayName = BadgesPlaceName(option.AtBottom);
 
         if (_shownGameFolderCheck is { } shown) ApplyGameFolderCheck(shown); // also the rows status
         else
@@ -397,6 +422,26 @@ internal sealed partial class SettingsViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsDirty))]
     private bool _showChangesSinceLastLaunch;
 
+    /// <summary>A card's badges at its bottom; else (the default) on its picture</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty), nameof(SelectedBadgesPlaceOption))]
+    private bool _badgesAtBottom;
+
+    /// <summary>On the picture (first, the default), at the bottom of the card</summary>
+    public IReadOnlyList<BadgesPlaceOption> BadgesPlaceOptions { get; } =
+        [.. new[] { false, true }.Select(atBottom => new BadgesPlaceOption(atBottom, BadgesPlaceName(atBottom)))];
+
+    private static string BadgesPlaceName(bool atBottom) => atBottom ? Strings.BadgesAtBottomLabel : Strings.BadgesOnPictureLabel;
+
+    public BadgesPlaceOption SelectedBadgesPlaceOption
+    {
+        get => BadgesPlaceOptions[BadgesAtBottom ? 1 : 0];
+        set
+        {
+            if (value is not null) BadgesAtBottom = value.AtBottom;
+        }
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDirty))]
     private bool _warnFewFreeSlots;
@@ -414,6 +459,27 @@ internal sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDirty))]
     private bool _betaUpdates;
+
+    /// <summary>Ask before installing (first), or install automatically</summary>
+    public IReadOnlyList<UpdateInstallOption> UpdateInstallOptions { get; } =
+        [.. new[] { UpdateInstallMode.Ask, UpdateInstallMode.Automatic }.Select(mode => new UpdateInstallOption(mode, UpdateInstallName(mode)))];
+
+    private static string UpdateInstallName(UpdateInstallMode mode) =>
+        mode == UpdateInstallMode.Automatic ? Strings.UpdateInstallAutomatic : Strings.UpdateInstallAsk;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedUpdateInstallOption))]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    private UpdateInstallMode _updateInstall;
+
+    public UpdateInstallOption SelectedUpdateInstallOption
+    {
+        get => UpdateInstallOptions.FirstOrDefault(o => o.Mode == UpdateInstall) ?? UpdateInstallOptions[0];
+        set
+        {
+            if (value is not null) UpdateInstall = value.Mode;
+        }
+    }
 
     public const int MinScreenshotsQuality = 50;
     public const int MaxScreenshotsQuality = 100;
@@ -485,6 +551,34 @@ internal sealed partial class SettingsViewModel : ObservableObject
     }
 
     public string PossibleDuplicateThresholdText => $"{_possibleDuplicateThreshold} %";
+
+    // Scrolling with the mouse wheel pressed (ForzaToolkit's MiddleButtonScroll): whether a click keeps it going, and how fast
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty))]
+    private bool _wheelClickScroll;
+
+    public const int MinWheelSpeed = 50, MaxWheelSpeed = 300, WheelSpeedStep = 25;
+
+    internal static int ClampWheelSpeed(int percent) =>
+        Math.Clamp((int)Math.Round(percent / (double)WheelSpeedStep) * WheelSpeedStep, MinWheelSpeed, MaxWheelSpeed);
+
+    private int _wheelScrollSpeed;
+
+    public double WheelScrollSpeed
+    {
+        get => _wheelScrollSpeed;
+        set
+        {
+            int percent = ClampWheelSpeed((int)Math.Round(value));
+            if (percent == _wheelScrollSpeed) return;
+            _wheelScrollSpeed = percent;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(WheelScrollSpeedText));
+            OnPropertyChanged(nameof(IsDirty));
+        }
+    }
+
+    public string WheelScrollSpeedText => string.Format(Strings.WheelScrollSpeedFormat, _wheelScrollSpeed);
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDirty))]
@@ -631,10 +725,14 @@ internal sealed partial class SettingsViewModel : ObservableObject
         || ServerLiveries != _savedServerLiveries
         || _keyInterval != _savedKeyInterval
         || ShowChangesSinceLastLaunch != _savedShowChangesSinceLastLaunch
+        || WheelClickScroll != _savedWheelClickScroll
+        || _wheelScrollSpeed != _savedWheelScrollSpeed
+        || BadgesAtBottom != _savedBadgesAtBottom
         || WarnFewFreeSlots != _savedWarnFewFreeSlots
         || WarnArchiveWithoutInstalledData != _savedWarnArchiveWithoutInstalledData
         || WarnArchiveWithOutdatedInstalledData != _savedWarnArchiveWithOutdatedInstalledData
         || BetaUpdates != _savedBetaUpdates
+        || UpdateInstall != _savedUpdateInstall
         || ScreenshotsWebP != _savedScreenshotsWebP
         || ScreenshotsWebPQuality != _savedScreenshotsWebPQuality
         || ScreenshotsInBackups != _savedScreenshotsInBackups
@@ -673,10 +771,14 @@ internal sealed partial class SettingsViewModel : ObservableObject
         candidate.ServerLiveries = ServerLiveries;
         candidate.NavigationKeyIntervalMs = _keyInterval;
         candidate.ShowChangesSinceLastLaunch = ShowChangesSinceLastLaunch;
+        candidate.WheelClickScroll = WheelClickScroll;
+        candidate.WheelScrollSpeedPercent = _wheelScrollSpeed;
+        candidate.BadgesAtBottom = BadgesAtBottom;
         candidate.WarnFewFreeSlots = WarnFewFreeSlots;
         candidate.WarnArchiveWithoutInstalledData = WarnArchiveWithoutInstalledData;
         candidate.WarnArchiveWithOutdatedInstalledData = WarnArchiveWithOutdatedInstalledData;
         candidate.BetaUpdates = BetaUpdates;
+        candidate.UpdateInstall = UpdateInstall;
         candidate.ScreenshotsWebP = ScreenshotsWebP;
         candidate.ScreenshotsWebPQuality = ScreenshotsWebPQuality;
         candidate.ScreenshotsInBackups = ScreenshotsInBackups;
@@ -716,10 +818,14 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _savedServerLiveries = ServerLiveries;
         _savedKeyInterval = _keyInterval;
         _savedShowChangesSinceLastLaunch = ShowChangesSinceLastLaunch;
+        _savedWheelClickScroll = WheelClickScroll;
+        _savedWheelScrollSpeed = _wheelScrollSpeed;
+        _savedBadgesAtBottom = BadgesAtBottom;
         _savedWarnFewFreeSlots = WarnFewFreeSlots;
         _savedWarnArchiveWithoutInstalledData = WarnArchiveWithoutInstalledData;
         _savedWarnArchiveWithOutdatedInstalledData = WarnArchiveWithOutdatedInstalledData;
         _savedBetaUpdates = BetaUpdates;
+        _savedUpdateInstall = UpdateInstall;
         _savedScreenshotsWebP = ScreenshotsWebP;
         _savedScreenshotsWebPQuality = ScreenshotsWebPQuality;
         _savedScreenshotsInBackups = ScreenshotsInBackups;

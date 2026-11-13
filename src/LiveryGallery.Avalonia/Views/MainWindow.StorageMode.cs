@@ -83,6 +83,33 @@ internal partial class MainWindow
             (target, common, progress, ct) => _mainViewModel.MoveStorageAsync(accountKey, target, common, progress, ct));
     }
 
+    /// <summary>
+    /// "Keep the storage's folders as folders on disk" in the settings: how many liveries move, asked over the settings
+    /// window; then every storage laid out, and what could not be said
+    /// </summary>
+    private async Task<bool> SetStorageFoldersOnDiskAsync(Window owner, bool on, IProgress<(int Done, int Total)> progress)
+    {
+        if (_isClosing || on == _storage.FoldersOnDisk) return false;
+        var culture = AppLocalisationService.Culture;
+        int count = await Task.Run(() => _storage.CountToArrange(on));
+        string question = string.Format(on ? Strings.StorageLayoutOnConfirmFormat : Strings.StorageLayoutOffConfirmFormat, count.ToString("N0", culture));
+        if (!await ConfirmDialog.AskAsync(owner, Strings.StorageLayoutTitle, question,
+                on ? Strings.StorageLayoutOnButton : Strings.StorageLayoutOffButton, Strings.ButtonCancel))
+            return false;
+
+        var (moved, failed, away) = await _storage.SetFoldersOnDiskAsync(on, progress);
+        AppLog.LogWarning($"The storages keep their folders {(on ? "on disk" : "as names only")}: {moved} liveries moved, {failed} could not, {away.Count} storages away (not an error)");
+        if (_isClosing) return true;
+        await _mainViewModel.RefreshStorageAsync();
+        FillStorageSidebar();
+        var notes = new List<string>(2);
+        if (failed > 0) notes.Add(string.Format(Strings.StorageLayoutFailedFormat, failed.ToString("N0", culture)));
+        if (away.Count > 0) notes.Add(string.Format(Strings.StorageLayoutAwayFormat, away.Count.ToString("N0", culture)));
+        if (notes.Count > 0) await InfoDialog.ShowAsync(owner, Strings.StorageLayoutTitle, string.Join(Environment.NewLine + Environment.NewLine, notes));
+        _mainViewModel.Status.SetStatusText(string.Format(Strings.StorageLayoutDoneFormat, moved.ToString("N0", culture)));
+        return true;
+    }
+
     private void ApplyModeTooltips()
     {
         GameModeButton.SetValue(ToolTip.TipProperty, new ShortcutTip(Strings.ModeGameTooltip, GalleryShortcut.ShowGame));
@@ -98,6 +125,8 @@ internal partial class MainWindow
         _collapsedGroupKeys.Clear();
         _collapsedGroupKeys.UnionWith(_hiddenModeCollapsed);
         _hiddenModeCollapsed = collapsed;
+        (_placeBeforeFilters, _hiddenModePlaceBeforeFilters) = (_hiddenModePlaceBeforeFilters, _placeBeforeFilters);
+        (_wasFiltered, _hiddenModeWasFiltered) = (_hiddenModeWasFiltered, _wasFiltered);
         (_hiddenModeOffset, var offset) = (GalleryScroll.Offset, _hiddenModeOffset);
         _comingModeOffset = offset;
     }

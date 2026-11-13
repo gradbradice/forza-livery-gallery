@@ -20,17 +20,6 @@ internal sealed record LiveryDetailsSource(
     Services.Screenshots.ScreenshotStore? Screenshots = null,
     Func<(Services.Screenshots.ScreenshotFormat Format, int Quality)>? ScreenshotFormat = null);
 
-/// <summary>A label under the livery's name: on a car, locked, a duplicate…</summary>
-internal enum LiveryChipKind { Good, Accent, Warning, Neutral }
-
-internal sealed record LiveryChip(string Text, LiveryChipKind Kind)
-{
-    public bool IsGood => Kind == LiveryChipKind.Good;
-    public bool IsAccent => Kind == LiveryChipKind.Accent;
-    public bool IsWarning => Kind == LiveryChipKind.Warning;
-    public bool IsNeutral => Kind == LiveryChipKind.Neutral;
-}
-
 /// <summary>A small card of another livery (the author's, a similar one): a click opens it in the same window</summary>
 internal sealed partial class LiveryThumbItem(LiveryEntry entry, string detail, bool isExact) : ObservableObject
 {
@@ -81,7 +70,12 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
     [ObservableProperty] private bool _canGoNext;
     [ObservableProperty] private string _carLine = "";
     [ObservableProperty] private string _authorText = "";
-    [ObservableProperty] private IReadOnlyList<LiveryChip> _chips = [];
+    /// <summary>The livery's badges, the card's (Views/LiveryBadges.cs): each with its name and what it means here</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HasBadges))]
+    private IReadOnlyList<Views.LiveryBadge> _badges = [];
+
+    public bool HasBadges => Badges.Count > 0;
     [ObservableProperty] private string _idText = "";
     [ObservableProperty] private bool _hasId;
     [ObservableProperty] private string _datesText = "";
@@ -162,13 +156,11 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
     public void ToggleFavorite()
     {
         _source.ToggleFavorite(Entry);
-        Chips = BuildChips(Entry);
     }
 
     public void ToggleLock()
     {
         _source.ToggleLock(Entry);
-        Chips = BuildChips(Entry);
     }
 
 
@@ -208,7 +200,7 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
             entry.CarCountry, entry.CarType,
         }.Where(s => !string.IsNullOrWhiteSpace(s)));
         AuthorText = entry.Author;
-        Chips = BuildChips(entry);
+        Badges = Views.LiveryBadges.Of(entry);
 
         HasId = entry.LiveryId > 0;
         IdText = HasId ? entry.LiveryId.ToString("N0", AppLocalisationService.Culture) : Strings.LiveryDetailsUnknown;
@@ -282,20 +274,6 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
             foreach (var item in oldOther.Concat(oldSimilar))
                 if (item.Thumbnail is { } thumb && !kept.Contains(thumb)) thumb.Dispose();
         }
-    }
-
-    private static IReadOnlyList<LiveryChip> BuildChips(LiveryEntry e)
-    {
-        var chips = new List<LiveryChip>();
-        if (e.IsInstalled) chips.Add(new(Strings.InstalledBadgeLabel, LiveryChipKind.Good));
-        if (e.IsLocked) chips.Add(new(Strings.LiveryDetailsChipLocked, LiveryChipKind.Accent));
-        if (e.IsFavorite) chips.Add(new(Strings.LiveryDetailsChipFavorite, LiveryChipKind.Accent));
-        if (e.IsMine) chips.Add(new(Strings.MyLiveryBadgeLabel, LiveryChipKind.Accent));
-        if (e.IsAuction) chips.Add(new(Strings.AuctionBadgeLabel, LiveryChipKind.Neutral));
-        if (e.IsDuplicate) chips.Add(new(Strings.DuplicateBadgeLabel, LiveryChipKind.Warning));
-        else if (e.IsPossibleDuplicate) chips.Add(new(Strings.PossibleDuplicateBadgeLabel, LiveryChipKind.Warning));
-        if (e.IsPossiblyGenerated) chips.Add(new(Strings.PossiblyGeneratedBadgeLabel, LiveryChipKind.Neutral));
-        return chips;
     }
 
     private void ShowBackups(LiveryEntry entry)

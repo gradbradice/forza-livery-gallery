@@ -177,6 +177,9 @@ internal static class ThumbnailCacheService
 
     public static void BeginShutdown() => _shuttingDown = true;
 
+    /// <summary>Previews load again after <see cref="BeginShutdown"/>: another game's window opened</summary>
+    public static void Resume() => _shuttingDown = false;
+
     private static void Publish(string thumbnailPath, PendingLoad pending, Bitmap? loaded)
     {
         if (pending.Published) return;

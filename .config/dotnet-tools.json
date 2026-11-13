@@ -3,7 +3,7 @@
   "isRoot": true,
   "tools": {
     "forzatoolkit.apprelease": {
-      "version": "0.39.0",
+      "version": "0.41.0",
       "commands": [
         "forza-release"
       ],

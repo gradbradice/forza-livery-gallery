@@ -43,6 +43,8 @@ internal sealed partial class GalleryViewModel : ObservableObject
     public event Action<IReadOnlyList<LiveryEntry>>? EditTagsRequested;
     public event Action<LiveryEntry>? ViewPreviewRequested;
     public event Action<LiveryEntry>? View3DRequested;
+    /// <summary>One more 3D window, to compare (Shift+3, the context menu)</summary>
+    public event Action<LiveryEntry>? View3DNewWindowRequested;
 
     /// <summary>The livery window: a double click on a card, Enter, the context menu, the note's mark</summary>
     public event Action<LiveryEntry>? OpenDetailsRequested;
@@ -103,6 +105,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
         OnPropertyChanged(nameof(LockMenuRemoves));
         OnPropertyChanged(nameof(LockMenuHeader));
         OnPropertyChanged(nameof(EditTagsMenuHeader));
+        OnPropertyChanged(nameof(View3DNewWindowMenuHeader));
         OnPropertyChanged(nameof(AssignAuthorMenuVisible));
         OnPropertyChanged(nameof(AssignAuthorMenuHeader));
         OnPropertyChanged(nameof(UnassignAuthorMenuVisible));
@@ -123,7 +126,18 @@ internal sealed partial class GalleryViewModel : ObservableObject
             _filter.SearchByFolderName, _filter.QuickFilters,
             auctionFilterMode: _filter.AuctionFilterMode,
             onlyInstalled: _filter.InstalledMode == InstalledMode.OnlyInstalled,
-            onlyNotInstalled: _filter.InstalledMode == InstalledMode.OnlyNotInstalled);
+            onlyNotInstalled: _filter.InstalledMode == InstalledMode.OnlyNotInstalled)
+        .Where(e => MatchesCopies(e, _filter.CopiesFilterMode)).ToList();
+
+    /// <summary>The filter of copies: the mark of the other place (<see cref="LiveryEntry.CopyKind"/>) the livery has</summary>
+    internal static bool MatchesCopies(LiveryEntry entry, CopiesFilterMode mode) => mode switch
+    {
+        CopiesFilterMode.Same => entry.CopyKind == CopyKind.Same,
+        CopiesFilterMode.SameOrSimilar => entry.CopyKind != CopyKind.None,
+        CopiesFilterMode.Similar => entry.CopyKind == CopyKind.Similar,
+        CopiesFilterMode.None => entry.CopyKind == CopyKind.None,
+        _ => true,
+    };
 
     /// <summary>The star on a card: that livery alone</summary>
     [RelayCommand]
@@ -140,17 +154,54 @@ internal sealed partial class GalleryViewModel : ObservableObject
         SetFavorites(targets, targets.Any(e => !e.IsFavorite));
     }
 
+    /// <summary>
+    /// Stars or locks were changed by the user: which liveries (their keys) and what each had before, so the change
+    /// can be undone (<see cref="RestoreFlags"/>). True: locks
+    /// </summary>
+    public event Action<bool, IReadOnlyList<(string Key, bool Was)>>? FlagsChanged;
+
+    /// <summary>
+    /// Puts stars or locks back as they were (undo). The liveries are found by their keys among the ones shown and
+    /// <paramref name="others"/> (the game's, while the storage is shown); one that is nowhere now still gets its value
+    /// kept, for when it is back
+    /// </summary>
+    public void RestoreFlags(bool locks, IReadOnlyList<(string Key, bool Value)> values, IEnumerable<LiveryEntry> others)
+    {
+        var byKey = new Dictionary<string, List<LiveryEntry>>(StringComparer.OrdinalIgnoreCase);
+        foreach (var entry in _allEntries.Concat(others))
+        {
+            if (!byKey.TryGetValue(entry.FolderName, out var same)) byKey[entry.FolderName] = same = [];
+            if (!same.Contains(entry)) same.Add(entry);
+        }
+        foreach (var (key, value) in values)
+        {
+            if (locks) lockService.SetLocked(key, value);
+            else favoriteService.SetFavorite(key, value);
+            foreach (var entry in byKey.GetValueOrDefault(key) ?? [])
+            {
+                if (locks) entry.IsLocked = value;
+                else entry.IsFavorite = value;
+            }
+        }
+        OnSelectionMenuChanged();
+        if (locks) LocksChanged?.Invoke();
+        else if (_filter.FavoriteMode != FavoriteMode.None) Refresh(_filter);
+        else RefreshCountsOnly();
+    }
+
     private void SetFavorites(IReadOnlyList<LiveryEntry> entries, bool favorite)
     {
-        bool changed = false;
+        var was = new List<(string, bool)>();
         foreach (var entry in entries)
         {
             if (entry.IsFavorite == favorite) continue;
+            was.Add((entry.FolderName, entry.IsFavorite));
             entry.IsFavorite = favorite;
             favoriteService.SetFavorite(entry.FolderName, favorite);
-            changed = true;
         }
+        bool changed = was.Count > 0;
         if (!changed) return;
+        FlagsChanged?.Invoke(false, was);
         OnSelectionMenuChanged();
 
         if (_filter.FavoriteMode != FavoriteMode.None)
@@ -174,15 +225,16 @@ internal sealed partial class GalleryViewModel : ObservableObject
 
     private void SetLocks(IReadOnlyList<LiveryEntry> entries, bool locked)
     {
-        bool changed = false;
+        var was = new List<(string, bool)>();
         foreach (var entry in entries)
         {
             if (entry.IsLocked == locked) continue;
+            was.Add((entry.FolderName, entry.IsLocked));
             entry.IsLocked = locked;
             lockService.SetLocked(entry.FolderName, locked);
-            changed = true;
         }
-        if (!changed) return;
+        if (was.Count == 0) return;
+        FlagsChanged?.Invoke(true, was);
         OnSelectionMenuChanged();
         LocksChanged?.Invoke();
     }
@@ -258,6 +310,26 @@ internal sealed partial class GalleryViewModel : ObservableObject
     {
         if (entry.CanView3D) View3DRequested?.Invoke(entry);
     }
+
+    /// <summary>
+    /// One more 3D window for the card, or, when it is one of several selected, a window for each selected livery that
+    /// can be seen in 3D (<see cref="View3DSeveralRequested"/>)
+    /// </summary>
+    [RelayCommand]
+    private void View3DNewWindow(LiveryEntry entry)
+    {
+        var targets = TargetsOf(entry).Where(e => e.CanView3D).ToList();
+        if (targets.Count > 1) View3DSeveralRequested?.Invoke(targets);
+        else if (targets.Count == 1) View3DNewWindowRequested?.Invoke(targets[0]);
+    }
+
+    /// <summary>Several liveries, each in a 3D window of its own (Shift+3 or the context menu on a selection)</summary>
+    public event Action<IReadOnlyList<LiveryEntry>>? View3DSeveralRequested;
+
+    /// <summary>The context menu's «one more 3D window»: with several selected, how many open each in its own</summary>
+    public string View3DNewWindowMenuHeader => SelectedEntries.Count(e => e.CanView3D) is var n and > 1
+        ? string.Format(AppLocalisationService.Culture, Strings.ContextMenuView3DSeveralFormat, n)
+        : Strings.ContextMenuView3DNewWindow;
 
     public void RefreshView3DAvailability()
     {
@@ -634,6 +706,19 @@ internal sealed partial class GalleryViewModel : ObservableObject
     /// The selection becomes <paramref name="entries"/> (with <paramref name="add"/>, gets them too), as one change of
     /// <see cref="SelectedEntries"/>: a card stays selected without going out and in again
     /// </summary>
+    /// <summary>
+    /// The selection while a rectangle is dragged over the cards: what was selected when it started (kept with Ctrl or
+    /// Shift, empty without) and the cards it touches now. Nothing happens while the rectangle touches the same cards
+    /// </summary>
+    public void SelectBand(IReadOnlyCollection<LiveryEntry> before, IReadOnlyCollection<LiveryEntry> touched)
+    {
+        var wanted = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var entry in before) wanted.Add(entry.FolderName);
+        foreach (var entry in touched) wanted.Add(entry.FolderName);
+        if (wanted.SetEquals(_selectedFolderNames)) return;
+        SelectMany(before.Concat(touched), add: false);
+    }
+
     private void SelectMany(IEnumerable<LiveryEntry> entries, bool add)
     {
         var names = add ? _selectedFolderNames : new HashSet<string>(StringComparer.Ordinal);

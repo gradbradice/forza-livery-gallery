@@ -15,8 +15,7 @@ internal sealed partial class ChangedLiveryRowViewModel : ObservableObject, IThu
             ? $"{entry.CarManufacturer} {entry.CarModelName} ({year})"
             : $"{entry.CarManufacturer} {entry.CarModelName}";
         DateText = entry.DateDisplay;
-        IsAuction = entry.IsAuction;
-        IsMine = entry.IsMine;
+        Badges = Views.LiveryBadges.Of(entry);
         IsRemoved = isRemoved;
         ThumbnailPath = thumbnailPath;
     }
@@ -26,8 +25,9 @@ internal sealed partial class ChangedLiveryRowViewModel : ObservableObject, IThu
     public string Author { get; }
     public string CarText { get; }
     public string DateText { get; }
-    public bool IsAuction { get; }
-    public bool IsMine { get; }
+    /// <summary>The card's badges as they were when the dialog opened, 20 high before the date</summary>
+    public IReadOnlyList<Views.LiveryBadge> Badges { get; }
+    public bool HasBadges => Badges.Count > 0;
     public bool IsRemoved { get; }
 
     /// <summary>Removed liveries are dimmed: they are no longer in the save folder</summary>

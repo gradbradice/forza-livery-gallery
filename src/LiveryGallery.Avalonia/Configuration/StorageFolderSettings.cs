@@ -6,8 +6,9 @@ namespace LiveryGallery.Configuration;
 /// Where each account keeps its storage when the user chose a folder of their own (docs/storage.md, "Own folder"):
 /// <c>storage-folders.json</c> in the program's folder, by game and account. An account not listed keeps it in the
 /// program's folder (<see cref="GamePaths.StorageOf"/>). Also the common folder chosen last, which the window offers
-/// the next account and game. Its own file, not settings.json: a move of the storage is written at once, whatever the
-/// settings window does with its copy of the settings. Thread-safe
+/// the next account and game, and whether the storages keep their folders as folders on disk (one choice for all).
+/// Its own file, not settings.json: a move of the storage is written at once, whatever the settings window does with
+/// its copy of the settings. Thread-safe
 /// </summary>
 internal sealed class StorageFolderSettings
 {
@@ -19,6 +20,8 @@ internal sealed class StorageFolderSettings
     private sealed class Data
     {
         public string? CommonFolder { get; set; }
+
+        public bool FoldersOnDisk { get; set; }
 
 #pragma warning disable CA2227 // set by the JSON serializer
         public Dictionary<string, Dictionary<string, string>> Games { get; set; } = new(StringComparer.OrdinalIgnoreCase);
@@ -47,6 +50,30 @@ internal sealed class StorageFolderSettings
         {
             lock (_lock) return _data.CommonFolder;
         }
+    }
+
+    /// <summary>
+    /// Every storage keeps its folders as folders on disk, each livery in its folder's (LiveryArchive.FoldersOnDisk);
+    /// false (the default): flat, the folders only names
+    /// </summary>
+    public bool FoldersOnDisk
+    {
+        get
+        {
+            lock (_lock) return _data.FoldersOnDisk;
+        }
+    }
+
+    /// <summary>Whether the storages keep their folders on disk from now on (<see cref="FoldersOnDisk"/>). Written at once</summary>
+    public void SetFoldersOnDisk(bool on)
+    {
+        string json;
+        lock (_lock)
+        {
+            _data.FoldersOnDisk = on;
+            json = JsonSerializer.Serialize(_data, JsonOptions);
+        }
+        Write(json);
     }
 
     /// <summary>The folder the user chose for the account's storage; null: the program's folder</summary>
@@ -91,6 +118,11 @@ internal sealed class StorageFolderSettings
             if (commonFolder is not null) _data.CommonFolder = Path.GetFullPath(commonFolder);
             json = JsonSerializer.Serialize(_data, JsonOptions);
         }
+        Write(json);
+    }
+
+    private void Write(string json)
+    {
         try
         {
             Directory.CreateDirectory(Path.GetDirectoryName(_path)!);

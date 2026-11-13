@@ -1,3 +1,5 @@
+using LiveryGallery.Services;
+
 
 namespace LiveryGallery.ViewModels;
 
@@ -13,4 +15,5 @@ internal readonly record struct GalleryFilterState(
     AuctionFilterMode AuctionFilterMode,
     bool GroupingEnabled,
     bool SearchByFolderName,
-    IReadOnlyList<QuickFilter>? QuickFilters);
+    IReadOnlyList<QuickFilter>? QuickFilters,
+    CopiesFilterMode CopiesFilterMode = CopiesFilterMode.All);

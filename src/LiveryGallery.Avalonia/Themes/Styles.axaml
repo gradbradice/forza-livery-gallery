@@ -1,6 +1,8 @@
 <!-- The gallery's own styles; the general ones (buttons, inputs, title bar, tooltips) come from ForzaToolkit.UI.Avalonia -->
 <Styles xmlns="https://github.com/avaloniaui"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
+        xmlns:views="clr-namespace:LiveryGallery.Views">
 
 	<Style Selector="Path.menuIcon.installed">
 		<Setter Property="Fill" Value="{DynamicResource SuccessBrush}" />
@@ -15,12 +17,42 @@
 		<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
 	</Style>
 
+	<!-- A badge in the filter menu: the card's look, 18 on the menu's surface -->
+	<Style Selector="views|BadgeChip.menuBadge">
+		<Setter Property="ChipSize" Value="18" />
+		<Setter Property="Shadow" Value="False" />
+		<Setter Property="Surface" Value="MenuFlyoutPresenterBackground" />
+		<Setter Property="Margin" Value="0,0,8,0" />
+	</Style>
+	<Style Selector="views|BadgePair.menuBadge">
+		<Setter Property="Margin" Value="0,0,8,0" />
+	</Style>
+	<!-- The favourites' star in a choice of the menu: in a badge's place, as big as one, the texts after it in one column -->
+	<Style Selector="Panel.menuStar">
+		<Setter Property="Width" Value="18" />
+		<Setter Property="Height" Value="18" />
+		<Setter Property="Margin" Value="0,0,8,0" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+	<Style Selector="Panel.menuStar > ui|FavoriteStar">
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+	<!-- The place of a badge in a menu row without one: the texts stay in one column -->
+	<Style Selector="Border.menuBadgeSpace">
+		<Setter Property="Width" Value="18" />
+		<Setter Property="Margin" Value="0,0,8,0" />
+	</Style>
+
 	<Style Selector="MenuItem.separateOption:disabled">
 		<Style Selector="^ TextBlock">
 			<Setter Property="Foreground" Value="{DynamicResource MenuFlyoutItemForegroundDisabled}" />
 		</Style>
 		<Style Selector="^ Path.menuIcon">
 			<Setter Property="Fill" Value="{DynamicResource MenuFlyoutItemForegroundDisabled}" />
+		</Style>
+		<Style Selector="^ views|BadgeChip">
+			<Setter Property="Opacity" Value="0.4" />
 		</Style>
 		<Style Selector="^ PathIcon.menuIcon">
 			<Setter Property="Foreground" Value="{DynamicResource MenuFlyoutItemForegroundDisabled}" />
@@ -72,17 +104,30 @@
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
-	<!-- The icon of a round card button, centred by the shape itself. A path with a fixed Width and Height draws a
-	     Uniform shape from the top-left corner of that box, so a narrow icon (the bookmark) sat to the left and a flat
-	     one high. With only a maximum the path takes the size of the shape scaled into 14 x 14, and that box is what
-	     the button centres. Without layout rounding of the path the centre is exact, not half a pixel aside -->
-	<Style Selector="Button.cardIconButton Path">
+	<!-- The icon of a round card button: an icon of the toolkit's 24 grid (ui:GridIcon), 18 x 18 in the 26 inside the ring, 4
+	     on each side. The grid scales to the box and every icon is drawn in its middle, so the icons are one size and in
+	     the button's middle, with no margin and no rounding of their own. A line icon (.line) has the grid's pen of 2 -->
+	<Style Selector="Button.cardIconButton ui|GridIcon">
+		<Setter Property="Width" Value="18" />
+		<Setter Property="Height" Value="18" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+	</Style>
+	<Style Selector="Button.cardIconButton ui|GridIcon.line">
+		<Setter Property="StrokeThickness" Value="2" />
+	</Style>
+	<!-- The note's mark: in the accent colour, so a card with a note is seen from afar -->
+	<Style Selector="Button.cardIconButton ui|GridIcon.note">
+		<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+	</Style>
+	<!-- The hidden preview button's older icon, fitted into 14 x 14 -->
+	<Style Selector="Button.cardIconButton > Path">
 		<Setter Property="MaxWidth" Value="14" />
 		<Setter Property="MaxHeight" Value="14" />
 		<Setter Property="Stretch" Value="Uniform" />
 		<Setter Property="HorizontalAlignment" Value="Center" />
 		<Setter Property="VerticalAlignment" Value="Center" />
-		<Setter Property="UseLayoutRounding" Value="False" />
 	</Style>
 	<Style Selector="Button.cardIconButton.view3d:disabled">
 		<Setter Property="Opacity" Value="0.4" />
@@ -141,12 +186,6 @@
 		<Setter Property="VerticalAlignment" Value="Center" />
 		<Setter Property="UseLayoutRounding" Value="False" />
 		<Setter Property="Fill" Value="{DynamicResource TextSecondaryBrush}" />
-	</Style>
-
-	<Style Selector="Border.carChip">
-		<Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
-		<Setter Property="CornerRadius" Value="6" />
-		<Setter Property="Padding" Value="7,2" />
 	</Style>
 
 	<!-- A chip: the quick filter kinds (toggle buttons) and the tags row (buttons: shown, hidden or off) -->
@@ -253,7 +292,7 @@
 		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
 	</Style>
 
-	<Style Selector="Button.quickFilterChip">
+	<Style Selector="Button.filterChipFilled">
 		<Setter Property="Padding" Value="10,5" />
 		<Setter Property="FontSize" Value="11.5" />
 		<Setter Property="Cursor" Value="Hand" />
@@ -273,8 +312,67 @@
 			</ControlTemplate>
 		</Setter>
 	</Style>
-	<Style Selector="Button.quickFilterChip:pointerover">
+	<Style Selector="Button.filterChipFilled:pointerover">
 		<Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
+	</Style>
+
+	<!-- A chip of a quick filter (a car, an author), after the filled chips of the filter menu's filters: the same
+	     shape, outlined, so the two kinds are told apart at a glance -->
+	<Style Selector="Button.filterChipOutlined">
+		<Setter Property="Padding" Value="9,4" />
+		<Setter Property="FontSize" Value="11.5" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="14" />
+		<Setter Property="Template">
+			<ControlTemplate TargetType="Button">
+				<Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+					<ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      VerticalAlignment="Center" />
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	<Style Selector="Button.filterChipOutlined:pointerover">
+		<Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
+	</Style>
+
+	<!-- "Reset filters" at the end of the chips: of their height, with no fill and no outline, so it reads as an action
+	     and not as one more filter -->
+	<Style Selector="Button.filterChipReset">
+		<Setter Property="Padding" Value="9,4" />
+		<Setter Property="FontSize" Value="11.5" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="14" />
+		<Setter Property="Template">
+			<ControlTemplate TargetType="Button">
+				<Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+					<ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      VerticalAlignment="Center" />
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	<Style Selector="Button.filterChipReset:pointerover">
+		<Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
 	</Style>
 
 	<Style Selector="Button.tagChipCard">

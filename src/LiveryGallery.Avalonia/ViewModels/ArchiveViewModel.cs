@@ -178,10 +178,13 @@ internal sealed partial class ArchiveViewModel : ObservableObject
         if (_storage is null || selected.Count == 0) return;
         try
         {
+            // The keys the storage has already: those stay in the archive for that, the others only when their files did not move
+            var inStorage = _storage.GetAll().Select(e => e.Data.FolderName).ToHashSet(StringComparer.OrdinalIgnoreCase);
             var moved = await _storage.TakeFromAsync(_archiveService, [.. selected.Select(r => r.Entry.Data.FolderName)], _accounts.Current);
             Reload();
-            if (moved.Count < selected.Count)
-                ErrorMessageRequested?.Invoke(string.Format(Strings.ArchiveToStorageSkippedFormat, selected.Count - moved.Count));
+            if (MainViewModel.NotTakenReport([.. selected.Select(r => r.Entry.Data)], moved, inStorage,
+                    Strings.ArchiveToStorageSkippedFormat, Strings.StoreFailedFormat) is { } report)
+                ErrorMessageRequested?.Invoke(report);
         }
         catch (Exception ex)
         {

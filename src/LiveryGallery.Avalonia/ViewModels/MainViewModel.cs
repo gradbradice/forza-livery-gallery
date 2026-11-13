@@ -23,6 +23,7 @@ internal sealed partial class MainViewModel : ObservableObject
     private readonly ScanController scanController;
     private readonly AppSettingsData settings;
     private readonly AccountRegistry _accountRegistry;
+    private Services.Accounts.AccountItemAuthors? _itemAuthors; // made on first use, with the game's header reader
     private bool _changesSinceLastLaunchChecked;
     public LiveryScanEntry? LastScanResult => scanController.LastScanResult;
     public FilterBarViewModel FilterBar { get; }
@@ -58,9 +59,13 @@ internal sealed partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool _isInitialized;
     public bool ShowFolderNames => settings.SearchByFolderName;
+
+    /// <summary>The cards' badges at their bottom (the setting); every card follows it (Views/CardBadges.cs)</summary>
+    public bool BadgesAtBottom => settings.BadgesAtBottom;
     public void RefreshDisplaySettings()
     {
         OnPropertyChanged(nameof(ShowFolderNames));
+        OnPropertyChanged(nameof(BadgesAtBottom));
         if (LiveryEntry.ShowFolderNamesInTooltips != settings.SearchByFolderName)
         {
             LiveryEntry.ShowFolderNamesInTooltips = settings.SearchByFolderName;
@@ -151,7 +156,8 @@ internal sealed partial class MainViewModel : ObservableObject
         Gallery = new GalleryViewModel(favoriteService, lockService);
         TagsBar = new TagsBarViewModel(Gallery.TagState, Gallery.SetTagState);
         Gallery.SelectedTagsChanged += TagsBar.SyncSelection;
-        Update = new AppUpdateFlow(updateService);
+        // Downloaded at once only when the user chose so; otherwise it waits for Install in "What's new"
+        Update = new AppUpdateFlow(updateService, () => settings.UpdateInstall == Enums.UpdateInstallMode.Automatic);
         UpdateBanner = new AppUpdateBanner(Update);
         Gallery.CountsUpdated += snapshot =>
         {
@@ -162,6 +168,7 @@ internal sealed partial class MainViewModel : ObservableObject
         Gallery.SelectedEntries.CollectionChanged += (_, __) => RefreshArchiveAvailability();
         Gallery.InstalledCountsChanged += RefreshArchiveAvailability;
         Gallery.LocksChanged += RefreshArchiveAvailability;
+        Gallery.FlagsChanged += RememberFlagsForUndo;
         FilterBar.FiltersChanged += RefreshGallery;
         RefreshCommand = new AsyncRelayCommand(RefreshButtonClickedAsync);
         InitializeNavigation();
@@ -171,7 +178,8 @@ internal sealed partial class MainViewModel : ObservableObject
     private GalleryFilterState CurrentFilterState() => new(
         FilterBar.SearchText, FilterBar.EffectiveSortMode, FilterBar.FavoriteMode, FilterBar.MineMode, FilterBar.EffectiveInstalledMode,
         FilterBar.DuplicatesFilterMode, FilterBar.GeneratedFilterMode, FilterBar.PaintFilterMode,
-        FilterBar.EffectiveAuctionFilterMode, FilterBar.GroupingEnabled, settings.SearchByFolderName, FilterBar.ActiveQuickFilters);
+        FilterBar.EffectiveAuctionFilterMode, FilterBar.GroupingEnabled, settings.SearchByFolderName, FilterBar.ActiveQuickFilters,
+        FilterBar.CopiesFilterMode);
 
     public void RefreshGallery() => Gallery.Refresh(CurrentFilterState());
 
@@ -192,16 +200,17 @@ internal sealed partial class MainViewModel : ObservableObject
     /// <summary>One or several liveries: <paramref name="add"/> goes onto each, <paramref name="remove"/> off each</summary>
     public void ApplyTagsChange(IReadOnlyList<LiveryEntry> entries, IReadOnlyCollection<string> add, IReadOnlyCollection<string> remove)
     {
-        bool changed = false;
+        var was = new List<(string Key, IReadOnlyList<string> Tags)>();
         foreach (var entry in entries)
         {
             var tags = TagEdits.Change(entry.Tags, add, remove);
             if (tags.SequenceEqual(entry.Tags, StringComparer.Ordinal)) continue;
+            was.Add((entry.FolderName, [.. entry.Tags]));
             entry.Tags = tags;
             tagService.SetTags(entry.FolderName, tags);
-            changed = true;
         }
-        if (!changed) return;
+        if (was.Count == 0) return;
+        RememberTagsForUndo(was);
         if (!RebuildTagsBar() && Gallery.HasTagFilter) RefreshGallery();
     }
 
@@ -213,12 +222,32 @@ internal sealed partial class MainViewModel : ObservableObject
     {
         if (entry.AssignedCardId is { } assigned && authorCardService.FindCard(assigned) is { } card) return card;
         if (!AuthorAccounts.IsAccount(entry.AuthorIdentityTagHex)) return null;
-        var names = new AuthorInsights.AuthorNames(Gallery.AllEntries, authorCardService);
+        var names = AuthorNames();
         return authorCardService.GetCardForAccount(entry.AuthorIdentityTagHex!, names.NamesOf(entry.AuthorIdentityTagHex!));
     }
 
-    /// <summary>The names authors are shown under, for the author dialogs</summary>
-    public AuthorInsights.AuthorNames AuthorNames() => new(Gallery.AllEntries, authorCardService);
+    /// <summary>The names authors are shown under, for the author dialogs: of the game's liveries and the storage's</summary>
+    public AuthorInsights.AuthorNames AuthorNames() => new([.. Gallery.AllEntries, .. OtherPlaceEntries], authorCardService);
+
+    // The liveries of the place not shown: the storage's (as the last search of copies built them) while the game is shown,
+    // the game's while the storage is
+    private IReadOnlyList<LiveryEntry> OtherPlaceEntries => IsStorageMode ? _gameEntriesAside ?? [] : _storedForHints;
+
+    // The storage's cards built for the search of copies while the game is shown: they give the hints of the game's
+    // liveries whose author is not known, and the authors to choose from
+    private IReadOnlyList<LiveryEntry> _storedForHints = [];
+
+    /// <summary>
+    /// The hints "may be by" of the liveries whose author is not known, in the game and in the storage alike: each
+    /// place's are found among the liveries of both (AuthorInsights.Apply)
+    /// </summary>
+    private void ApplyAuthorHints()
+    {
+        var game = GameEntries;
+        var stored = IsStorageMode ? Gallery.AllEntries : _storedForHints;
+        AuthorInsights.Apply(game, authorCardService, stored);
+        if (IsStorageMode) AuthorInsights.Apply(stored, authorCardService, game);
+    }
 
     /// <summary>
     /// Every author a livery can be assigned to: the cards of this game's authors and those without an account, and
@@ -227,9 +256,11 @@ internal sealed partial class MainViewModel : ObservableObject
     public List<AuthorCard> AuthorChoices()
     {
         var names = AuthorNames();
-        var tagsHere = Gallery.AllEntries.Select(e => e.AuthorIdentityTagHex).Where(AuthorAccounts.IsAccount)
+        // The authors of the game's liveries and of the storage's
+        IReadOnlyList<LiveryEntry> known = [.. Gallery.AllEntries, .. OtherPlaceEntries];
+        var tagsHere = known.Select(e => e.AuthorIdentityTagHex).Where(AuthorAccounts.IsAccount)
             .OfType<string>().ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var assignedHere = Gallery.AllEntries.Select(e => e.AssignedCardId).OfType<string>().ToHashSet(StringComparer.Ordinal);
+        var assignedHere = known.Select(e => e.AssignedCardId).OfType<string>().ToHashSet(StringComparer.Ordinal);
         var cards = authorCardService.GetAll()
             .Where(c => c.IdentityTags.Count == 0 || c.IdentityTags.Any(tagsHere.Contains) || assignedHere.Contains(c.Id))
             .ToList();
@@ -287,7 +318,7 @@ internal sealed partial class MainViewModel : ObservableObject
     public async Task DismissAuthorHintAsync(AuthorHint hint)
     {
         await authorCardService.DismissHintAsync(hint.Key);
-        AuthorInsights.Apply(Gallery.AllEntries, authorCardService);
+        ApplyAuthorHints();
     }
 
     /// <summary>The hints for a card without an account: accounts that may be its author's</summary>
@@ -538,6 +569,7 @@ internal sealed partial class MainViewModel : ObservableObject
             if (isUserInitiated) Status.RenderScanStatus(result);
             else if (result.Added > 0 || result.Removed > 0)
                 Status.SetStatusText(string.Format(Strings.StatusAutoRefreshedFormat, result.Added, result.Removed));
+            RefreshUndo(); // another account or game may be shown now
             ScanCompleted?.Invoke();
             RecordCurrentAccount();
             CheckRoomOnce();
@@ -589,14 +621,14 @@ internal sealed partial class MainViewModel : ObservableObject
         {
             // The storage is shown: the game's cards are updated aside, the grid stays as it is
             _gameEntriesAside = Gallery.MergeWithLocalState(entries, _gameEntriesAside);
-            AuthorInsights.Apply(_gameEntriesAside, authorCardService);
+            ApplyAuthorHints();
             RefreshGamePositions(refreshGallery: false);
             UpdateSlots();
             RefreshCopiesLater();
             return;
         }
         Gallery.ReplaceEntries(Gallery.MergeWithLocalState(entries));
-        AuthorInsights.Apply(Gallery.AllEntries, authorCardService);
+        ApplyAuthorHints();
         RefreshGamePositions(refreshGallery: false); // OnEntriesChanged rebuilds the gallery
         OnEntriesChanged();
         RefreshCopiesLater();
@@ -887,6 +919,10 @@ internal sealed partial class MainViewModel : ObservableObject
         if (skippedLocked > 0) notes.Add(string.Format(Strings.ArchiveLockedSkippedFormat, skippedLocked));
         if (skippedAuction > 0) notes.Add(string.Format(Strings.ArchiveAuctionSkippedFormat, skippedAuction));
         if (skippedInstalled > 0) notes.Add(string.Format(Strings.ArchiveInstalledSkippedFormat, skippedInstalled));
+        // The others failed (the game holds a file, the disk is full; the archive has another livery of the key): said
+        var failed = toArchive.Where(d => !result.Completed.Contains(d.FolderName, StringComparer.OrdinalIgnoreCase)).ToList();
+        if (failed.Count > 0 && !ShutdownToken.IsCancellationRequested)
+            notes.Add(string.Format(Strings.ArchiveFailedFormat, failed.Count, LiveryRestoreConflicts.FormatList(failed)));
         if (result.LeftoverPaths.Count > 0)
             notes.Add(string.Format(Strings.ArchiveLeftoverFoldersFormat, string.Join(Environment.NewLine, result.LeftoverPaths)));
         if (notes.Count > 0) ErrorMessageRequested?.Invoke(string.Join(Environment.NewLine + Environment.NewLine, notes));
@@ -985,6 +1021,19 @@ internal sealed partial class MainViewModel : ObservableObject
 
     private Task? _carDatabaseRefreshTask;
     private Task? _carTextsUpdateTask;
+
+    /// <summary>
+    /// After the settings: betas turned on or off look again from scratch (the version found on one channel may not be
+    /// on the other; turned off on a beta, the latest release to go back to); "install automatically" chosen downloads
+    /// the version found (never the way back: that is the user's word only)
+    /// </summary>
+    public void ApplyUpdateSettings(bool betaChanged)
+    {
+        if (betaChanged)
+            _updateCheckTask = RunSafelyAsync(() => Update.CheckAgainAsync(ShutdownToken), nameof(Update.CheckAgainAsync));
+        else if (settings.UpdateInstall == Enums.UpdateInstallMode.Automatic && !Update.IsReturnToStable)
+            Update.StartDownload();
+    }
 
     /// <summary>After the settings: the game folder may have changed (its archives are read when they are new)</summary>
     public void StartCarTextsUpdate() =>
