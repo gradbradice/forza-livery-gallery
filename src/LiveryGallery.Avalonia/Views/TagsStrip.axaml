@@ -1,0 +1,73 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
+             x:Class="LiveryGallery.Views.TagsStrip"
+             x:DataType="vm:TagsBarViewModel">
+    <UserControl.Styles>
+        <!-- The bar only when the tags outgrow the strip, laid over room kept for it on the right: the rows wrap the
+             same with the bar or without it, nothing moves when it comes or goes -->
+        <Style Selector="ScrollViewer.steady /template/ ScrollContentPresenter#PART_ContentPresenter">
+            <Setter Property="Grid.ColumnSpan" Value="2" />
+        </Style>
+        <!-- The search among the tags: the first in their flow, a chip's height (rows stay even) -->
+        <Style Selector="TextBox.tagSearch">
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="FontSize" Value="11.5" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="CornerRadius" Value="14" />
+        </Style>
+        <!-- The divider: a line the width of the strip, a handle in its middle; brighter under the pointer -->
+        <Style Selector="Border#Grip:pointerover Border#GripHandle">
+            <Setter Property="Opacity" Value="0.9" />
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="Auto,*">
+        <TextBlock Grid.Column="0" x:Name="LabelText" FontSize="12" Margin="0,5,10,0" VerticalAlignment="Top"
+                   Foreground="{DynamicResource TextSecondaryBrush}" />
+
+        <ScrollViewer Grid.Column="1" x:Name="Scroll" Classes="steady"
+                      HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <Panel>
+                <!-- Right margin: the room the bar is laid over -->
+                <!-- The search (from 30 tags on) first, then the tags: one flow, no column of its own beside every row -->
+                <ItemsControl x:Name="Items" Margin="0,0,16,0">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.DataTemplates>
+                        <DataTemplate x:DataType="vm:TagsSearchItem">
+                            <TextBox x:Name="SearchBox" Classes="tagSearch" Width="150" Margin="0,0,8,8"
+                                     PlaceholderText="{DynamicResource Loc_TagsSearchWatermark}"
+                                     Text="{Binding Bar.SearchText, Mode=TwoWay}" KeyDown="SearchBox_KeyDown" />
+                        </DataTemplate>
+                        <DataTemplate x:DataType="vm:TagChipViewModel">
+                            <!-- A click shows only the tag's liveries, a right click hides them -->
+                            <Button Classes="tagChip" Classes.shown="{Binding IsShown}" Classes.hidden="{Binding IsHidden}" Margin="0,0,8,8"
+                                    IsVisible="{Binding Matches}"
+                                    Command="{Binding ToggleShowCommand}" PointerReleased="Chip_PointerReleased"
+                                    ToolTip.Tip="{DynamicResource Loc_TagChipTooltip}">
+                                <TextBlock Text="{Binding Tag}" Foreground="{Binding $parent[Button].Foreground}" />
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.DataTemplates>
+                </ItemsControl>
+                <TextBlock x:Name="NothingFoundText" IsVisible="{Binding NothingFound}" FontSize="12" Margin="0,5,0,8"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+            </Panel>
+        </ScrollViewer>
+
+        <!-- Dragged up or down: how many rows of tags show; a double click: every tag or one row -->
+        <Border Grid.Row="1" Grid.ColumnSpan="2" x:Name="Grip" Height="10" Background="Transparent" Cursor="SizeNorthSouth"
+                IsVisible="False" PointerPressed="Grip_PointerPressed" PointerMoved="Grip_PointerMoved"
+                PointerReleased="Grip_PointerReleased" PointerCaptureLost="Grip_PointerCaptureLost"
+                DoubleTapped="Grip_DoubleTapped">
+            <Border x:Name="GripHandle" Width="44" Height="3" CornerRadius="1.5" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Background="{DynamicResource TextSecondaryBrush}" Opacity="0.45" />
+        </Border>
+    </Grid>
+</UserControl>

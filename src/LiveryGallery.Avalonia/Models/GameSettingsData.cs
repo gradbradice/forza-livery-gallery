@@ -34,6 +34,11 @@ internal sealed class GameSettingsData
 
     /// <summary>The sets of filters the user saved for this game, in the order they were saved</summary>
     public List<FilterPresetData> FilterPresets { get; set; } = [];
+    /// <summary>
+    /// How many rows of tags the strip shows (its divider dragged; a user's request after 1.7.1); null: every tag (the default). Rows,
+    /// not pixels: never a row cut in half, the same at another scale
+    /// </summary>
+    public int? TagsBarRows { get; set; }
     public bool ServerConnectionEnabled { get; set; }
     public bool WarnArchiveWithoutInstalledData { get; set; } = true;
     public bool WarnArchiveWithOutdatedInstalledData { get; set; } = true;

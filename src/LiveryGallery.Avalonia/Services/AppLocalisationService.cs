@@ -74,6 +74,7 @@ internal static class AppLocalisationService
         app.Resources["Loc_DateLabel"] = Strings.DateLabel;
         app.Resources["Loc_EditTagsTooltip"] = new ShortcutTip(Strings.EditTagsTooltip, GalleryShortcut.Tags);
         app.Resources["Loc_TagChipTooltip"] = Strings.TagChipTooltip;
+        app.Resources["Loc_TagsSearchWatermark"] = Strings.TagsSearchWatermark;
         app.Resources["Loc_ViewPreviewTooltip"] = Strings.ViewPreviewTooltip;
         app.Resources["Loc_ClearSelectionLabel"] = Strings.ClearSelectionLabel;
         app.Resources["Loc_UndoLabel"] = Strings.UndoLabel;

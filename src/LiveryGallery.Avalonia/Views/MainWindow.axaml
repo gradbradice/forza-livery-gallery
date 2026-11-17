@@ -527,14 +527,6 @@
             </ToggleButton>
         </DataTemplate>
 
-        <DataTemplate x:Key="TagChipTemplate" x:DataType="vm:TagChipViewModel">
-            <!-- A click shows only the tag's liveries, a right click hides them -->
-            <Button Classes="tagChip" Classes.shown="{Binding IsShown}" Classes.hidden="{Binding IsHidden}" Margin="0,0,8,8"
-                    Command="{Binding ToggleShowCommand}" PointerReleased="TagChip_PointerReleased"
-                    ToolTip.Tip="{DynamicResource Loc_TagChipTooltip}">
-                <TextBlock Text="{Binding Tag}" Foreground="{Binding $parent[Button].Foreground}" />
-            </Button>
-        </DataTemplate>
     </Window.Resources>
 
     <Grid Background="{DynamicResource BgBrush}">
@@ -1241,18 +1233,9 @@
 						</Button.Flyout>
                     </Button>
                 </Grid>
-                <Grid x:Name="TagsFilterRow" Margin="0,12,0,0" ColumnDefinitions="Auto,*" x:DataType="vm:TagsBarViewModel"
-                      DataContext="{Binding TagsBar}" IsVisible="{Binding HasTags}">
-                    <TextBlock Grid.Column="0" x:Name="TagsFilterLabel" FontSize="12" Margin="0,5,10,0"
-                               VerticalAlignment="Top" Foreground="{DynamicResource TextSecondaryBrush}" />
-                    <ItemsControl Grid.Column="1" x:Name="TagsBar" ItemsSource="{Binding AllTags}" ItemTemplate="{StaticResource TagChipTemplate}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
-                </Grid>
+                <!-- The tags: their height the user's (the line under them dragged), a search from 30 tags on -->
+                <views:TagsStrip x:Name="TagsFilterRow" Margin="0,12,0,0" x:DataType="vm:TagsBarViewModel"
+                                 DataContext="{Binding TagsBar}" IsVisible="{Binding HasTags}" />
                 <Grid x:Name="QuickFiltersRow" Margin="0,12,0,0" ColumnDefinitions="Auto,*,Auto" x:DataType="vm:FilterBarViewModel"
                       DataContext="{Binding FilterBar}" IsVisible="{Binding HasFilterChips}">
                     <TextBlock Grid.Column="0" x:Name="QuickFiltersLabel" FontSize="12" Margin="0,5,10,0"

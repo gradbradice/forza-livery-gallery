@@ -85,7 +85,7 @@ internal partial class MainWindow
         AuctionSeparateItemText.Text = Strings.AuctionFilterSeparately;
         AuctionHideItemText.Text = Strings.AuctionFilterHide;
 
-        TagsFilterLabel.Text = Strings.TagsFilterLabel;
+        TagsFilterRow.ShowTexts();
         QuickFiltersLabel.Text = Strings.QuickFiltersLabel;
         AddQuickFilterLabel.Text = Strings.QuickFilterAddButton;
     }
