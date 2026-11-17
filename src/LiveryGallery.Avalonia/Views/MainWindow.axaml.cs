@@ -68,6 +68,13 @@ internal partial class MainWindow : Window
 
         _settings = settings;
         ApplyWheelScrollSettings();
+        // The rows of tags shown, the game's own; the user's drag of the line under them is kept
+        TagsFilterRow.Rows = settings.Game.TagsBarRows;
+        TagsFilterRow.RowsChanged += rows =>
+        {
+            _settings.Game.TagsBarRows = rows;
+            AppSettingsService.Save(_settings);
+        };
         _profile = profile;
         _authorCardService = authorCardService;
         _storage = storage;
@@ -211,6 +218,9 @@ internal partial class MainWindow : Window
     }
 
     private bool _isClosing;
+
+    /// <summary>The window is closing (writing what is left): a second start waits for it to end rather than showing it</summary>
+    internal bool IsClosing => _isClosing;
     // The game folder the drawn previews on screen were drawn with (ThumbnailLifecycleController.Rendered)
     private string? _renderedThumbnailsGameDirectory;
     // Drawn previews become the liveries' previews with a scan, one for a run of them
@@ -753,14 +763,6 @@ internal partial class MainWindow : Window
     }
 
     /// <summary>A right click on a tag in the tags row hides its liveries (or shows them again)</summary>
-    private void TagChip_PointerReleased(object? sender, PointerReleasedEventArgs e)
-    {
-        if (e.InitialPressMouseButton != MouseButton.Right) return;
-        if (sender is not StyledElement { DataContext: TagChipViewModel chip }) return;
-        chip.ToggleHideCommand.Execute(null);
-        e.Handled = true;
-    }
-
     /// <summary>The livery's full preview: the game's, else an external one, else the one the gallery drew; null when none</summary>
     private string? PreviewPathOf(LiveryEntry entry)
     {

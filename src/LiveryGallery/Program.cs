@@ -9,19 +9,34 @@ namespace LiveryGallery;
 
 internal static class Program
 {
+    /// <summary>This gallery's hold as the only one: App tells it how to show the window to a second start</summary>
+    internal static SingleInstance? Instance { get; private set; }
+
     [STAThread]
     public static void Main(string[] args)
     {
+        // Each step of the start is timed; a slow start is told in the log once the gallery's window opens (App)
+        var timeline = StartupTimeline.Current;
+        timeline.Mark("Main");
         // First of all: Velopack's own steps (installed, updated, about to be removed) run here and end the process, and
         // an update downloaded in the last run and not installed yet is installed now (ForzaToolkit.AppHost.Updates)
         AppUpdateStartup.Run(args);
+        timeline.Mark("updates");
         // Who the program is (name, folders, User-Agent, repository): the gallery itself has no name of its own
         AppSettings.Initialize(ProgramIdentity.ForzaLiveryGallery);
+        // One gallery per user: a second start brings the first one's window forward and ends here, before it reads or
+        // writes anything (a user who saw nothing after a double-click clicked again and got two). One closing just
+        // then is waited for, and this one opens in its place
+        using var instance = SingleInstance.Acquire(SingleInstance.NameFor(AppSettings.Identity.FolderName), TimeSpan.FromMinutes(1));
+        if (instance is null) return;
+        Instance = instance;
+        timeline.Mark("single copy");
         // The first start after the rename: FH6 Livery Gallery's data copied in, before anything is written here
         var migration = AppSettings.PreviousBaseCachePath is { } previous
             ? DataMigration.Run(previous, AppSettings.BaseCachePath, Fh6Game.Definition.Id, AppSettings.Version)
             : DataMigrationReport.Nothing;
         AppSettings.CheckPaths();
+        timeline.Mark("data");
         // The log (also of the ForzaToolkit packages and of what nothing caught), the User-Agent of every request, the
         // app, and the log closed at the end: ForzaToolkit.AppHost, the same as every ForzaToolkit app
         AppStartup.Run(AppSettings.LogsPath, AppSettings.UserAgent, () =>
@@ -30,6 +45,7 @@ internal static class Program
             BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }, afterLogStarted: () =>
         {
+            timeline.Mark("log");
             // The render caches are shared with the other ForzaToolkit apps: the gallery's own old ones go
             LiveryGallery.Render.LiveryRenderService.RemoveOldCaches();
             foreach (string note in migration.Notes) AppLog.LogWarning("Data from 1.6.0: " + note);

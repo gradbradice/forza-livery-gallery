@@ -3633,4 +3633,13 @@ logs: 최근 며칠간의 로그. 알려진 폴더와 플레이어 ID는 &lt;sav
   <data name="ShortcutSaveFilterSet" xml:space="preserve">
     <value>현재 필터를 세트로 저장</value>
   </data>
+  <data name="StartupStarting" xml:space="preserve">
+    <value>시작하는 중…</value>
+  </data>
+  <data name="TagsSearchWatermark" xml:space="preserve">
+    <value>태그 검색</value>
+  </data>
+  <data name="TagsGripTooltip" xml:space="preserve">
+    <value>위아래로 끌면 표시할 태그 줄 수를 바꿀 수 있습니다. 두 번 클릭하면 모든 태그와 한 줄 사이를 전환합니다.</value>
+  </data>
 </root>

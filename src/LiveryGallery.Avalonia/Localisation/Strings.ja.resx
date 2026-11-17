@@ -3633,4 +3633,13 @@ logs: 直近数日分のログ。既知のフォルダーとプレイヤー ID �
   <data name="ShortcutSaveFilterSet" xml:space="preserve">
     <value>現在のフィルターをセットとして保存</value>
   </data>
+  <data name="StartupStarting" xml:space="preserve">
+    <value>起動中…</value>
+  </data>
+  <data name="TagsSearchWatermark" xml:space="preserve">
+    <value>タグを検索</value>
+  </data>
+  <data name="TagsGripTooltip" xml:space="preserve">
+    <value>上下にドラッグすると、表示するタグの行数を変えられます。ダブルクリックで「すべて表示」と「1行」を切り替えます。</value>
+  </data>
 </root>

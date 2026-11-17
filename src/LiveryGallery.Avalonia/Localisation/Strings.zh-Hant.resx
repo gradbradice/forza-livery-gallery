@@ -3633,4 +3633,13 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   <data name="ShortcutSaveFilterSet" xml:space="preserve">
     <value>將目前的篩選儲存為組合</value>
   </data>
+  <data name="StartupStarting" xml:space="preserve">
+    <value>正在啟動…</value>
+  </data>
+  <data name="TagsSearchWatermark" xml:space="preserve">
+    <value>搜尋標籤</value>
+  </data>
+  <data name="TagsGripTooltip" xml:space="preserve">
+    <value>上下拖曳可顯示更多或更少行標籤。按兩下：顯示全部標籤或只顯示一行。</value>
+  </data>
 </root>

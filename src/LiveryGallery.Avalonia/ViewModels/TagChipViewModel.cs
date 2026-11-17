@@ -27,6 +27,10 @@ internal sealed partial class TagChipViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsShown), nameof(IsHidden))]
     private TagFilterState _state;
 
+    /// <summary>The tag matches the strip's search (<see cref="TagsBarViewModel.SearchText"/>): shown</summary>
+    [ObservableProperty]
+    private bool _matches = true;
+
     public bool IsShown => State == TagFilterState.Show;
     public bool IsHidden => State == TagFilterState.Hide;
 

@@ -3633,4 +3633,13 @@ ou Ctrl+V</value>
   <data name="ShortcutSaveFilterSet" xml:space="preserve">
     <value>Enregistrer les filtres actuels comme jeu</value>
   </data>
+  <data name="StartupStarting" xml:space="preserve">
+    <value>Démarrage…</value>
+  </data>
+  <data name="TagsSearchWatermark" xml:space="preserve">
+    <value>Chercher un tag</value>
+  </data>
+  <data name="TagsGripTooltip" xml:space="preserve">
+    <value>Faites glisser vers le haut ou le bas pour afficher plus ou moins de rangées de tags. Double-clic : tous les tags ou une rangée.</value>
+  </data>
 </root>
