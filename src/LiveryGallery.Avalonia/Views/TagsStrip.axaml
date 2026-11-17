@@ -56,8 +56,8 @@
                         </DataTemplate>
                     </ItemsControl.DataTemplates>
                 </ItemsControl>
-                <TextBlock x:Name="NothingFoundText" IsVisible="{Binding NothingFound}" FontSize="12" Margin="0,5,0,8"
-                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                <TextBlock x:Name="NothingFoundText" IsVisible="{Binding NothingFound}" FontSize="12" Margin="158,5,0,8"
+                           VerticalAlignment="Top" Foreground="{DynamicResource TextSecondaryBrush}" />
             </Panel>
         </ScrollViewer>
 
