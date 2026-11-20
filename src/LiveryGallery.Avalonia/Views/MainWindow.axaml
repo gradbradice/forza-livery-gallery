@@ -36,161 +36,19 @@
     </Window.DataTemplates>
 
     <Window.Resources>
+        <!-- What the cards bind their commands and the window's settings to (Views/CardScope.cs) -->
+        <views:CardScope x:Key="CardScope" />
         <!-- The context menu of the cards: one for all of them, given to the card it is asked on (Card_ContextRequested).
              In each card it was 28 items with their icons and theme styles: most of a card's weight in memory, and
              every livery a card showed while scrolling went through all of their bindings -->
-        <ContextMenu x:Key="LiveryCardMenu" x:DataType="vm:LiveryEntry">
-            <MenuItem Header="{DynamicResource Loc_ContextMenuOpenDetails}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.OpenDetailsCommand}"
-                      CommandParameter="{Binding}"
-                      views:ShortcutHint.Action="OpenDetails">
-                <MenuItem.Icon>
-                    <Path Data="{StaticResource IconPreview}" Width="13" Height="13" Stretch="Uniform"
-                          Fill="{DynamicResource TextPrimaryBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <!-- The card's 3D button shows the livery in the window used last; this one opens one more, to compare (a window
-                 for each selected livery when there are several) -->
-            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.View3DNewWindowMenuHeader}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.View3DNewWindowCommand}"
-                      CommandParameter="{Binding}"
-                      IsEnabled="{Binding CanView3D}"
-                      views:ShortcutHint.Action="View3DNewWindow"
-                      ToolTip.ShowOnDisabled="True"
-                      ToolTip.Tip="{Binding View3DTooltip}">
-                <MenuItem.Icon>
-                    <ui:GridIcon Data="{StaticResource Icon3D}" Foreground="{DynamicResource TextPrimaryBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <Separator />
-            <!-- The context menu selects its card first: these three work on every selected livery -->
-            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuHeader}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleFavoritesCommand}"
-                      CommandParameter="{Binding}"
-                      views:ShortcutHint.Action="Favorite">
-                <MenuItem.Icon>
-                    <ui:FavoriteStar Width="16" Height="16" StrokeThickness="1.4"
-                                     IsOn="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.FavoriteMenuRemoves}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuHeader}"
-                      IsVisible="{Binding ShowLockButton}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleLocksCommand}"
-                      CommandParameter="{Binding}"
-                      views:ShortcutHint.Action="Lock">
-                <MenuItem.Icon>
-                    <Panel>
-                        <ui:GridIcon Data="{StaticResource IconLock}" StrokeThickness="2" Foreground="{DynamicResource TextPrimaryBrush}"
-                                     IsVisible="{Binding !$parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
-                        <ui:GridIcon Data="{StaticResource IconLockOpen}" StrokeThickness="2" Foreground="{DynamicResource TextPrimaryBrush}"
-                                     IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.LockMenuRemoves}" />
-                    </Panel>
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsMenuHeader}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsCommand}"
-                      CommandParameter="{Binding}"
-                      views:ShortcutHint.Action="Tags">
-                <MenuItem.Icon>
-                    <ui:GridIcon Data="{StaticResource IconBookmark}" Foreground="{DynamicResource TextPrimaryBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <Separator />
-            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCar}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCarCommand}"
-                      CommandParameter="{Binding}" />
-            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisManufacturer}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyManufacturerCommand}"
-                      CommandParameter="{Binding}" />
-            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisAuthor}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyAuthorCommand}"
-                      CommandParameter="{Binding}" />
-            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCountry}"
-                      IsVisible="{Binding HasCarCountry}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCountryCommand}"
-                      CommandParameter="{Binding}">
-                <MenuItem.Icon>
-                    <Path Data="{StaticResource IconFlag}" Width="12" Height="12" Stretch="Uniform"
-                          Fill="{DynamicResource TextPrimaryBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{DynamicResource Loc_ContextMenuOnlyThisCarType}"
-                      IsVisible="{Binding HasCarType}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ShowOnlyCarTypeCommand}"
-                      CommandParameter="{Binding}">
-                <MenuItem.Icon>
-                    <Path Data="{StaticResource IconCarSide}" Width="13" Height="12" Stretch="Uniform"
-                          Fill="{DynamicResource TextPrimaryBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{DynamicResource Loc_ContextMenuClearQuickFilters}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.ClearQuickFiltersCommand}"
-                      IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).FilterBar.HasQuickFilters}" />
-            <Separator IsVisible="{Binding ShowFindInGame}" />
-            <MenuItem Header="{DynamicResource Loc_ContextMenuNavigateInGame}"
-                      IsVisible="{Binding ShowFindInGame}"
-                      views:ShortcutHint.Action="FindInGame"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameCommand}"
-                      CommandParameter="{Binding}"
-                      ToolTip.ShowOnDisabled="True"
-                      ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameMenuBlockedTooltip}">
-                <MenuItem.Icon>
-                    <ui:GridIcon Data="{StaticResource IconLocate}" Foreground="{DynamicResource TextPrimaryBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <Separator IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuVisible}" />
-            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuHeader}"
-                      IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorMenuVisible}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.AssignAuthorCommand}"
-                      CommandParameter="{Binding}">
-                <MenuItem.Icon>
-                    <Path Data="{StaticResource IconUser}" Width="12" Height="12" Stretch="Uniform"
-                          Fill="{DynamicResource TextPrimaryBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorMenuHeader}"
-                      IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorMenuVisible}"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.UnassignAuthorCommand}"
-                      CommandParameter="{Binding}" />
-            <Separator />
-            <!-- In the storage: Ins back into the game, Del to the archive -->
-            <MenuItem Header="{DynamicResource Loc_ContextMenuReturnToGame}"
-                      IsVisible="{Binding IsStored}"
-                      views:ShortcutHint.Action="ReturnToGame"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).ReturnSelectedToGameCommand}">
-                <MenuItem.Icon>
-                    <ui:GridIcon Data="{StaticResource IconToGame}" StrokeThickness="2" Foreground="{DynamicResource StorageTextBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <!-- Filled when the menu opens: no folder, the storage's folders, "New folder…" -->
-            <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToFolder}" Tag="moveToFolder"
-                      IsVisible="{Binding IsStored}">
-                <MenuItem.Icon>
-                    <Path Data="{StaticResource IconFolder}" Width="13" Height="12" Stretch="Uniform"
-                          Fill="{DynamicResource TextPrimaryBrush}" />
-                </MenuItem.Icon>
-            </MenuItem>
-            <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToArchive}"
-                      IsVisible="{Binding IsStored}"
-                      views:ShortcutHint.Action="StoredToArchive"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).MoveSelectedToArchiveCommand}" />
-            <!-- In the game. Del: kept beyond the game's limit; Shift+Del: to the archive, to delete -->
-            <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToStorage}"
-                      IsVisible="{Binding !IsStored}"
-                      views:ShortcutHint.Action="MoveToStorage"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).MoveSelectedToStorageCommand}"
-                      ToolTip.ShowOnDisabled="True"
-                      ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).StorageBlockedTooltip}" />
-            <MenuItem Header="{DynamicResource Loc_ContextMenuMoveToArchive}"
-                      IsVisible="{Binding !IsStored}"
-                      views:ShortcutHint.Action="MoveToArchive"
-                      Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).MoveSelectedToArchiveCommand}"
-                      ToolTip.ShowOnDisabled="True"
-                      ToolTip.Tip="{Binding $parent[Window].((vm:MainViewModel)DataContext).ArchiveBlockedTooltip}" />
-        </ContextMenu>
+        <!-- The cards' menu: filled each time it opens from the gallery's actions (MainWindow.CardMenu.cs) -->
+        <ContextMenu x:Key="LiveryCardMenu" />
 
         <DataTemplate x:Key="LiveryCardTemplate" x:DataType="vm:LiveryEntry">
-            <Border Classes="liveryCard" Width="270" Margin="8"
+            <views:CardBorder Classes="liveryCard" Theme="{StaticResource CardFrameTheme}" Margin="8"
+                    Width="{Binding Main.Gallery.CardWidth, Source={StaticResource CardScope}}"
+                    Classes.small="{Binding Main.Gallery.IsSmallCards, Source={StaticResource CardScope}}"
+                    Classes.storage="{Binding IsStored}"
                     Classes.selected="{Binding IsSelected}"
                     Classes.current="{Binding IsCurrent}"
                     views:ThumbnailRows.Track="True"
@@ -200,180 +58,180 @@
                     DoubleTapped="Card_DoubleTapped"
                     ContextRequested="Card_ContextRequested">
                 <StackPanel>
-                    <Border Height="26" Padding="14,0">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBlock Grid.Column="0" Text="{Binding LiveryIdText}" FontSize="11" FontWeight="SemiBold"
-                                       VerticalAlignment="Center"
-                                       Foreground="{DynamicResource TextSecondaryBrush}" />
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" VerticalAlignment="Center"
-                                        IsVisible="{Binding HasGamePosition}"
-                                        Background="Transparent"
-                                        ToolTip.Tip="{Binding GamePositionTooltip}">
-                                <Path Data="{StaticResource IconLocate}" Width="10" Height="10" Stretch="Uniform"
-                                      VerticalAlignment="Center"
-                                      Fill="{DynamicResource TextSecondaryBrush}" />
-                                <TextBlock Text="{Binding GamePositionText}" FontSize="11" FontWeight="SemiBold"
-                                           VerticalAlignment="Center"
-                                           Foreground="{DynamicResource TextSecondaryBrush}" />
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-                    <Grid Height="150" ClipToBounds="True">
-                        <Border CornerRadius="0" ClipToBounds="True">
+                    <!-- The picture and the round buttons under it; on a small card the buttons lie over the picture's
+                         bottom, under the pointer only (Themes/Styles.axaml, CardActions) -->
+                    <Grid RowDefinitions="Auto,Auto">
+                    <Grid Height="{Binding Main.Gallery.CardPictureHeight, Source={StaticResource CardScope}}" ClipToBounds="True">
+                        <!-- The picture is the card's top since the number went onto it: its top corners follow the card's
+                             (14, inside its border of 1), else they stood out square over the rounded frame -->
+                        <views:CardBorder CornerRadius="13,13,0,0" ClipToBounds="True" Background="{DynamicResource ThumbnailPlaceholderBrush}">
                             <Grid>
                                 <Image Source="{Binding Thumbnail}" Stretch="UniformToFill"
                                        IsVisible="{Binding ShowThumbnailImage}"
                                        ToolTip.Tip="{Binding ThumbnailTooltip}" />
-                                <Border Background="{DynamicResource ThumbnailPlaceholderBrush}"
+                                <!-- While the picture loads: its average colour when known (PreviewColors), else the grey with
+                                     the car -->
+                                <views:CardBorder Background="{Binding PlaceholderTint}"
                                         IsVisible="{Binding !ShowThumbnailImage}">
-                                    <Path Data="{StaticResource IconCarSide}" Width="34" Height="34" Stretch="Uniform"
+                                    <views:CardPath Data="{StaticResource IconCarSide}" Width="34" Height="34" Stretch="Uniform"
                                           HorizontalAlignment="Center" VerticalAlignment="Center"
+                                          IsVisible="{Binding PlaceholderTint, Converter={x:Static ObjectConverters.IsNull}}"
                                           Fill="{DynamicResource ThumbnailPlaceholderTextBrush}" />
-                                </Border>
+                                </views:CardBorder>
                             </Grid>
-                        </Border>
+                        </views:CardBorder>
                         <!-- On the picture (the setting's default): what the livery is over its top, where else it is and how its
                              file was read over its bottom, as far as the cover's way back to the game's preview and the
                              screenshots' count; badges that do not fit go into "+N". Under the selection's shade like the
                              picture. All of them are 24 high, their icons 16 in the middle (the toolkit's 24 grid) -->
-                        <views:CardBadges Group="Top" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="8" />
+                        <!-- Over the picture's top: the badges of what the livery is on the left, its number in the game's
+                             list and its place in the game on the right (they had a strip of their own above the picture) -->
+                        <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Top" Margin="8">
+                            <views:CardBadges Group="Top" HorizontalAlignment="Left" />
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="6,0,0,0" VerticalAlignment="Top">
+                                <views:CardBorder Background="#A0000000" CornerRadius="6" Padding="7,2" IsVisible="{Binding HasGamePosition}"
+                                                  ToolTip.Tip="{Binding GamePositionTooltip}">
+                                    <StackPanel Orientation="Horizontal" Spacing="4">
+                                        <views:CardPath Data="{StaticResource IconLocate}" Width="10" Height="10" Stretch="Uniform"
+                                                        VerticalAlignment="Center" Fill="#E5E7EB" />
+                                        <views:CardText Text="{Binding GamePositionText}" FontSize="11" FontWeight="SemiBold"
+                                                        VerticalAlignment="Center" Foreground="#E5E7EB" />
+                                    </StackPanel>
+                                </views:CardBorder>
+                                <views:CardBorder Background="#A0000000" CornerRadius="6" Padding="7,2">
+                                    <views:CardText Text="{Binding LiveryIdText}" FontSize="11" FontWeight="SemiBold" Foreground="#E5E7EB" />
+                                </views:CardBorder>
+                            </StackPanel>
+                        </Grid>
                         <Grid ColumnDefinitions="*,Auto" VerticalAlignment="Bottom" Margin="8">
                             <views:CardBadges Group="Bottom" HorizontalAlignment="Left" />
                             <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4" Margin="8,0,0,0">
                                 <!-- A screenshot is the cover: one click puts the game's preview back -->
-                                <Button Classes="coverReset" IsVisible="{Binding HasCover}"
-                                        Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).RestorePreviewCommand}"
+                                <views:CardButton Classes="coverReset" Theme="{StaticResource CardCoverResetTheme}" IsVisible="{Binding HasCover}"
+                                        Command="{Binding Main.RestorePreviewCommand, Source={StaticResource CardScope}}"
                                         CommandParameter="{Binding}"
                                         ToolTip.Tip="{x:Static loc:Strings.ScreenshotRestorePreview}">
-                                    <Border>
-                                        <ui:GridIcon Data="{StaticResource IconReset}" Width="16" Height="16" StrokeThickness="2.5"
-                                                     HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
-                                    </Border>
-                                </Button>
+                                    <ui:GridIcon Data="{StaticResource IconReset}" Width="16" Height="16" StrokeThickness="2.5"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
+                                </views:CardButton>
                                 <!-- The user's screenshots of the livery: a pill of 24, the camera in its first circle, the count -->
-                                <Border IsVisible="{Binding HasScreenshots}" Background="#B0000000"
+                                <views:CardBorder IsVisible="{Binding HasScreenshots}" Background="#B0000000"
                                         Height="24" MinWidth="24" CornerRadius="12"
                                         ToolTip.Tip="{Binding ScreenshotCountTooltip}">
                                     <Grid ColumnDefinitions="24,Auto" Height="24">
                                         <ui:GridIcon Data="{StaticResource IconCamera}" Width="16" Height="16"
                                                      HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
-                                        <TextBlock Grid.Column="1" Text="{Binding ScreenshotCountText}" FontSize="11.5" FontWeight="Bold"
+                                        <views:CardText Grid.Column="1" Text="{Binding ScreenshotCountText}" FontSize="11.5" FontWeight="Bold"
                                                    Foreground="White" VerticalAlignment="Center" Margin="0,0,8,0" />
                                     </Grid>
-                                </Border>
+                                </views:CardBorder>
                             </StackPanel>
                         </Grid>
-                        <Border CornerRadius="0" Background="#4D000000"
+                        <views:CardBorder CornerRadius="13,13,0,0" Background="#4D000000"
                                 IsVisible="{Binding IsSelected}" IsHitTestVisible="False" />
-                        <Border Classes="selectMark" Width="40" Height="40" CornerRadius="20"
+                        <views:CardBorder Classes="selectMark" Theme="{StaticResource CardSelectMarkTheme}" Classes.storage="{Binding IsStored}" Width="40" Height="40" CornerRadius="20"
                                 HorizontalAlignment="Center" VerticalAlignment="Center"
                                 IsVisible="{Binding IsSelected}" IsHitTestVisible="False">
-                            <Path Data="{StaticResource IconCheck}" Width="18" Height="18" Stretch="Uniform"
+                            <views:CardPath Data="{StaticResource IconCheck}" Width="18" Height="18" Stretch="Uniform"
                                   HorizontalAlignment="Center" VerticalAlignment="Center"
                                   Fill="White" />
-                        </Border>
+                        </views:CardBorder>
                     </Grid>
-                    <!-- The round buttons. The icons (the toolkit's 24 grid) take their size, 18 in the middle of the button of 28,
-                         and their pen from the style of Button.cardIconButton.
-                         Seven fit in a row without touching (28 + 6 each: 232 of the card's 238), so one more can come -->
-                    <Grid ColumnDefinitions="*,Auto" Margin="14,10,14,0">
+                    <!-- The round buttons. The icons (the toolkit's 24 grid) are 18 in the middle of the button of 28.
+                         Seven fit in a row of a normal card without touching (28 + 6 each: 232 of its 238) -->
+                    <views:CardActions Small="{Binding Main.Gallery.IsSmallCards, Source={StaticResource CardScope}}">
+                    <Grid ColumnDefinitions="*,Auto">
                         <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
-                            <Button Classes="cardIconButton"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.EditTagsCommand}"
+                            <views:CardButton Classes="cardIconButton" Theme="{StaticResource CardIconButtonTheme}"
+                                    Command="{Binding Main.Gallery.EditCardTagsCommand, Source={StaticResource CardScope}}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{DynamicResource Loc_EditTagsTooltip}">
-                                <ui:GridIcon Data="{StaticResource IconBookmark}" />
-                            </Button>
+                                <ui:GridIcon Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}" Data="{StaticResource IconBookmark}" />
+                            </views:CardButton>
 
-                            <!-- The big preview: hidden for now (the livery window shows the picture), kept for a while -->
-                            <Button Classes="cardIconButton" IsVisible="False"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ViewPreviewCommand}"
-                                    CommandParameter="{Binding}"
-                                    ToolTip.Tip="{DynamicResource Loc_ViewPreviewTooltip}">
-                                <Path Data="{StaticResource IconPreview}" Fill="{DynamicResource TextPrimaryBrush}" />
-                            </Button>
-
-                            <Button Classes="cardIconButton view3d"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.View3DCommand}"
+                            <views:CardButton Classes="cardIconButton view3d" Theme="{StaticResource CardIconButtonTheme}"
+                                    Command="{Binding Main.Gallery.View3DCommand, Source={StaticResource CardScope}}"
                                     CommandParameter="{Binding}"
                                     IsEnabled="{Binding CanView3D}"
                                     ToolTip.ShowOnDisabled="True"
                                     ToolTip.Tip="{Binding View3DTooltip, Converter={x:Static views:ShortcutTipConverter.Instance}, ConverterParameter={x:Static services:GalleryShortcut.View3D}}">
-                                <ui:GridIcon Data="{StaticResource Icon3D}" />
-                            </Button>
+                                <ui:GridIcon Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}" Data="{StaticResource Icon3D}" />
+                            </views:CardButton>
 
                             <!-- A stored livery: back into the game, in the storage's colour -->
-                            <Button Classes="cardIconButton toGame"
+                            <views:CardButton Classes="cardIconButton toGame" Theme="{StaticResource CardIconButtonTheme}"
                                     IsVisible="{Binding IsStored}"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).ReturnToGameOneCommand}"
+                                    Command="{Binding Main.ReturnToGameOneCommand, Source={StaticResource CardScope}}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{DynamicResource Loc_ReturnToGameTooltip}">
-                                <ui:GridIcon Classes="line" Data="{StaticResource IconToGame}" Foreground="White" />
-                            </Button>
+                                <ui:GridIcon Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="2" Data="{StaticResource IconToGame}" Foreground="White" />
+                            </views:CardButton>
 
-                            <Button Classes="cardIconButton"
+                            <views:CardButton Classes="cardIconButton" Theme="{StaticResource CardIconButtonTheme}"
                                     IsVisible="{Binding HasFindInGameButton}"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).NavigateInGameCommand}"
+                                    Command="{Binding Main.NavigateInGameCommand, Source={StaticResource CardScope}}"
                                     CommandParameter="{Binding}"
                                     IsEnabled="{Binding CanNavigateInGame}"
                                     ToolTip.ShowOnDisabled="True"
                                     ToolTip.Tip="{Binding NavigateInGameTooltip, Converter={x:Static views:ShortcutTipConverter.Instance}, ConverterParameter={x:Static services:GalleryShortcut.FindInGame}}">
-                                <ui:GridIcon Data="{StaticResource IconLocate}" />
-                            </Button>
+                                <ui:GridIcon Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}" Data="{StaticResource IconLocate}" />
+                            </views:CardButton>
                         </StackPanel>
 
                         <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" Margin="6,0,0,0">
                             <!-- The note's mark: its text in the tooltip, a click opens the livery window -->
-                            <Button Classes="cardIconButton"
+                            <views:CardButton Classes="cardIconButton" Theme="{StaticResource CardIconButtonTheme}"
                                     IsVisible="{Binding HasNote}"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.OpenDetailsCommand}"
+                                    Command="{Binding Main.Gallery.OpenDetailsCommand, Source={StaticResource CardScope}}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{Binding NoteTooltip}">
-                                <ui:GridIcon Classes="line note" Data="{StaticResource IconNote}" />
-                            </Button>
+                                <ui:GridIcon Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource AccentBrush}" StrokeThickness="2" Data="{StaticResource IconNote}" />
+                            </views:CardButton>
 
                             <!-- The lock: open and outlined while the livery may go to the archive, closed and in the
                                  accent colour (the button too) while it is locked -->
-                            <Button Classes="cardIconButton"
+                            <views:CardButton Classes="cardIconButton" Theme="{StaticResource CardIconButtonTheme}"
                                     Classes.locked="{Binding IsLocked}"
                                     IsVisible="{Binding ShowLockButton}"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleLockCommand}"
+                                    Command="{Binding Main.Gallery.ToggleLockCommand, Source={StaticResource CardScope}}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{Binding LockTooltip, Converter={x:Static views:ShortcutTipConverter.Instance}, ConverterParameter={x:Static services:GalleryShortcut.Lock}}">
                                 <Panel>
-                                    <ui:GridIcon Classes="line" Data="{StaticResource IconLockOpen}" IsVisible="{Binding !IsLocked}" />
-                                    <ui:GridIcon Classes="line" Data="{StaticResource IconLock}" Foreground="White" IsVisible="{Binding IsLocked}" />
+                                    <ui:GridIcon Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}" StrokeThickness="2" Data="{StaticResource IconLockOpen}" IsVisible="{Binding !IsLocked}" />
+                                    <ui:GridIcon Width="18" Height="18" HorizontalAlignment="Center" VerticalAlignment="Center" StrokeThickness="2" Data="{StaticResource IconLock}" Foreground="White" IsVisible="{Binding IsLocked}" />
                                 </Panel>
-                            </Button>
+                            </views:CardButton>
 
                             <!-- The toolkit's star of a favourite: an outline, gold when on (the same in every app) -->
-                            <Button Classes="cardIconButton"
-                                    Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleFavoriteCommand}"
+                            <views:CardButton Classes="cardIconButton" Theme="{StaticResource CardIconButtonTheme}"
+                                    Command="{Binding Main.Gallery.ToggleFavoriteCommand, Source={StaticResource CardScope}}"
                                     CommandParameter="{Binding}"
                                     ToolTip.Tip="{DynamicResource Loc_FavoriteToggleTooltip}">
                                 <ui:FavoriteStar IsOn="{Binding IsFavorite}" Width="18" Height="18" />
-                            </Button>
+                            </views:CardButton>
                         </StackPanel>
+                    </Grid>
+                    </views:CardActions>
                     </Grid>
 
                     <!-- The lines under the buttons: one gap between any two of them (the panel's spacing, no margins of
                          their own), and the icons of the lines in one column (Border.cardMetaIcon) -->
                     <StackPanel Margin="14,10,14,14" Spacing="6">
-                        <TextBlock Text="{Binding LiveryName}" FontSize="14.5" FontWeight="SemiBold"
+                        <views:CardText Foreground="{DynamicResource TextPrimaryBrush}" Text="{Binding LiveryName}" FontSize="14.5" FontWeight="SemiBold"
                                    TextTrimming="CharacterEllipsis"
                                    ToolTip.Tip="{Binding LiveryName}" />
                         <!-- A left-aligned grid: the model column hugs its text and gives way (with an ellipsis) only when the
                              row does not fit the card, so the year stays right after the model and never leaves the card -->
                         <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Left">
                             <!-- The make in plain text, a step quieter than the model: a plate is the user's tag or a badge -->
-                            <TextBlock Text="{Binding CarManufacturer}" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"
+                            <views:CardText Text="{Binding CarManufacturer}" FontSize="12" FontWeight="Medium" VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextSecondaryBrush}"
                                        TextTrimming="CharacterEllipsis" MaxWidth="110"
                                        ToolTip.Tip="{Binding CarManufacturer}" />
-                            <TextBlock Grid.Column="1" Text="{Binding CarModelName}" FontSize="12" FontWeight="Medium" Margin="6,0,0,0"
+                            <views:CardText Foreground="{DynamicResource TextPrimaryBrush}" Grid.Column="1" Text="{Binding CarModelName}" FontSize="12" FontWeight="Medium" Margin="6,0,0,0"
                                        TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
                                        ToolTip.Tip="{Binding CarModelName}" />
-                            <TextBlock Grid.Column="2" Text="{Binding CarYear, StringFormat=({0})}" FontSize="11.5" Margin="4,0,0,0"
+                            <views:CardText Grid.Column="2" Text="{Binding CarYear, StringFormat=({0})}" FontSize="11.5" Margin="4,0,0,0"
                                        Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
                         </Grid>
 
@@ -381,49 +239,52 @@
                         <!-- The row is narrower than both texts at their longest ("Великобритания" + "Героические кроссоверы"):
                              the country keeps up to 110 px, the car type takes what is left and ends with an ellipsis
                              instead of running past the card's edge (the full text is in the tooltip) -->
+                        <Panel IsVisible="{Binding !Main.Gallery.IsSmallCards, Source={StaticResource CardScope}}">
                         <Grid ColumnDefinitions="Auto,*" HorizontalAlignment="Left" IsVisible="{Binding HasCarDetails}">
                             <DockPanel IsVisible="{Binding HasCarCountry}" Margin="0,0,12,0"
                                        Background="Transparent" ToolTip.Tip="{Binding CarCountryTooltip}">
-                                <Border Classes="cardMetaIcon" DockPanel.Dock="Left"><Path Data="{StaticResource IconFlag}" /></Border>
-                                <TextBlock Text="{Binding CarCountry}" FontSize="12" MaxWidth="110"
+                                <views:CardBorder Classes="cardMetaIcon" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center" DockPanel.Dock="Left"><views:CardPath Data="{StaticResource IconFlag}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" Fill="{DynamicResource TextSecondaryBrush}" /></views:CardBorder>
+                                <views:CardText Text="{Binding CarCountry}" FontSize="12" MaxWidth="110"
                                            TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                             </DockPanel>
                             <DockPanel Grid.Column="1" IsVisible="{Binding HasCarType}"
                                        Background="Transparent" ToolTip.Tip="{Binding CarTypeTooltip}">
-                                <Border Classes="cardMetaIcon" DockPanel.Dock="Left"><Path Data="{StaticResource IconCarSide}" /></Border>
-                                <TextBlock Text="{Binding CarType}" FontSize="12"
+                                <views:CardBorder Classes="cardMetaIcon" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center" DockPanel.Dock="Left"><views:CardPath Data="{StaticResource IconCarSide}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" Fill="{DynamicResource TextSecondaryBrush}" /></views:CardBorder>
+                                <views:CardText Text="{Binding CarType}" FontSize="12"
                                            TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
                                            Foreground="{DynamicResource TextSecondaryBrush}" />
                             </DockPanel>
                         </Grid>
+                        </Panel>
 
                         <!-- The hover highlight: square, from the icon to 3 px past the end of the line (so its edge does
                              not touch the round warning mark) and 2 px above
                              and below the text. The negative margin keeps the row where it was -->
-                        <Button Classes="rowLink" Padding="0,2,3,2" Margin="0,-2,-3,-2" CornerRadius="0"
-                                Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ShowAuthorRowCommand}"
+                        <views:CardButton Classes="rowLink" Theme="{StaticResource CardRowLinkTheme}" Padding="0,2,3,2" Margin="0,-2,-3,-2" CornerRadius="0"
+                                Command="{Binding Main.Gallery.ShowAuthorRowCommand, Source={StaticResource CardScope}}"
                                 CommandParameter="{Binding}"
                                 ToolTip.Tip="{Binding AuthorTooltip}">
-                            <StackPanel Orientation="Horizontal">
-                                <Border Classes="cardMetaIcon"><Path Data="{StaticResource IconUser}" /></Border>
-                                <TextBlock Text="{Binding AuthorDisplayText}" FontSize="12" VerticalAlignment="Center"
+                            <Grid ColumnDefinitions="Auto,*,Auto" HorizontalAlignment="Left">
+                                <views:CardBorder Classes="cardMetaIcon" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"><views:CardPath Data="{StaticResource IconUser}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" Fill="{DynamicResource TextSecondaryBrush}" /></views:CardBorder>
+                                <views:CardText Grid.Column="1" Text="{Binding AuthorDisplayText}" FontSize="12" VerticalAlignment="Center"
                                            Foreground="{DynamicResource TextSecondaryBrush}"
-                                           TextTrimming="CharacterEllipsis" MaxWidth="184" />
+                                           TextTrimming="CharacterEllipsis" />
                                 <!-- An edited header's id, or hints nobody answered yet: the tooltip says which -->
-                                <Border IsVisible="{Binding ShowAuthorWarning}"
+                                <views:CardBorder Grid.Column="2" IsVisible="{Binding ShowAuthorWarning}"
                                         Width="14" Height="14" CornerRadius="7" Margin="5,0,0,0"
                                         VerticalAlignment="Center"
                                         Background="{DynamicResource WarningBrush}">
-                                    <TextBlock Text="!" FontSize="10" FontWeight="Bold" Foreground="White"
+                                    <views:CardText Text="!" FontSize="10" FontWeight="Bold" Foreground="White"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
-                                </Border>
-                            </StackPanel>
-                        </Button>
+                                </views:CardBorder>
+                            </Grid>
+                        </views:CardButton>
 
-                        <StackPanel Orientation="Horizontal" Background="Transparent" ToolTip.Tip="{Binding DateTooltip}">
-                            <Border Classes="cardMetaIcon"><Path Data="{StaticResource IconCalendarDay}" /></Border>
-                            <TextBlock Text="{Binding DateDisplay}" FontSize="12" VerticalAlignment="Center"
+                        <StackPanel Orientation="Horizontal" Background="Transparent" ToolTip.Tip="{Binding DateTooltip}"
+                                    IsVisible="{Binding !Main.Gallery.IsSmallCards, Source={StaticResource CardScope}}">
+                            <views:CardBorder Classes="cardMetaIcon" Width="12" Height="12" Margin="0,0,6,0" VerticalAlignment="Center"><views:CardPath Data="{StaticResource IconCalendarDay}" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center" UseLayoutRounding="False" Fill="{DynamicResource TextSecondaryBrush}" /></views:CardBorder>
+                            <views:CardText Text="{Binding DateDisplay}" FontSize="12" VerticalAlignment="Center"
                                        Foreground="{DynamicResource TextSecondaryBrush}" />
                         </StackPanel>
 
@@ -432,35 +293,16 @@
                         <views:CardBadges Group="All" Below="True" />
 
                         <!-- Hidden without tags: an empty row would still take the gap above it -->
-                        <ItemsControl ItemsSource="{Binding Tags}" IsVisible="{Binding HasTags}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal" ItemSpacing="5" LineSpacing="5" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="x:String">
-                                    <Button Classes="tagChipCard"
-                                            Command="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.ToggleTagCommand}"
-                                            CommandParameter="{Binding}">
-                                        <TextBlock Text="{Binding}" FontSize="10.5"
-                                                   Foreground="{DynamicResource ChipTextBrush}" />
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <views:CardTags Tags="{Binding Tags}" Collapsed="{Binding Main.Gallery.IsSmallCards, Source={StaticResource CardScope}}" />
                         <!-- The folder's name can be selected with the mouse and copied with Ctrl+C (GalleryClicks.FolderNameClass):
                              a press on it selects text, not the card, and a double click takes the word, not the livery
                              window. No menu of its own: a right click gives the card's, as anywhere on the card. The
                              transparent background makes all of its rectangle take the pointer, between the letters too -->
-                        <SelectableTextBlock Classes="cardFolderName" Text="{Binding FolderName}" FontSize="10"
-                                   Foreground="{DynamicResource TextTertiaryBrush}"
-                                   TextTrimming="CharacterEllipsis" HorizontalAlignment="Left"
-                                   ContextFlyout="{x:Null}" Background="Transparent"
-                                   IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).ShowFolderNames}" />
+                        <views:CardFolderName Text="{Binding FolderName}"
+                                              Show="{Binding Main.ShowFolderNames, Source={StaticResource CardScope}}" />
                     </StackPanel>
                 </StackPanel>
-            </Border>
+            </views:CardBorder>
         </DataTemplate>
         <DataTemplate x:Key="GalleryRowTemplate" x:DataType="models:GalleryRow">
             <Border Classes="galleryRow" Classes.last="{Binding IsLastInGroup}"
@@ -535,6 +377,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <Border Grid.Row="0" x:Name="CustomTitleBar" Background="{DynamicResource ToolbarBrush}"
                 Height="36" PointerPressed="TitleBar_PointerPressed">
@@ -543,6 +386,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="12,0,0,0" VerticalAlignment="Center"
@@ -593,9 +437,104 @@
                 </Border>
                 </StackPanel>
                 <!-- The storage is shown: a line of its colour along the title bar -->
-                <Border Grid.ColumnSpan="4" Height="2" VerticalAlignment="Bottom" Background="{DynamicResource StorageBrush}"
+                <Border Grid.ColumnSpan="5" Height="2" VerticalAlignment="Bottom" Background="{DynamicResource StorageBrush}"
                         IsVisible="{Binding IsStorageMode}" IsHitTestVisible="False" />
-                <StackPanel Grid.Column="3" Orientation="Horizontal">
+                <!-- Windows of their own: authors, statistics, and the menu (settings, archive, backups, keys, about) -->
+                <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="2" Margin="0,0,6,0" VerticalAlignment="Center">
+                    <!-- This launch's notices (NoticesViewModel): the bell, with the number not closed yet -->
+                    <Button x:Name="NoticesButton" Classes="titleText" Padding="0" Width="32" HorizontalContentAlignment="Center"
+                            IsVisible="{Binding Notices.HasAny}" ToolTip.Tip="{x:Static loc:Strings.NoticesTitle}"
+                            AutomationProperties.Name="{x:Static loc:Strings.NoticesTitle}">
+                        <Panel>
+                            <Path Data="{StaticResource IconBell}" Width="16" Height="16" Stretch="Uniform"
+                                  Stroke="{DynamicResource TextPrimaryBrush}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                            <Border Background="{DynamicResource WarningBrush}" CornerRadius="7" MinWidth="14" Height="14" Padding="3,0"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,-5,-7,0"
+                                    IsVisible="{Binding Notices.OpenCount}">
+                                <TextBlock Text="{Binding Notices.OpenCount}" FontSize="9.5" FontWeight="Bold" Foreground="White"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                        </Panel>
+                        <Button.Flyout>
+                            <Flyout Placement="BottomEdgeAlignedRight">
+                                <StackPanel Width="380" Spacing="2" Margin="4">
+                                    <TextBlock Text="{x:Static loc:Strings.NoticesTitle}" FontWeight="SemiBold" FontSize="13" Margin="10,6,10,6" />
+                                    <TextBlock Text="{x:Static loc:Strings.NoticesNone}" Margin="10,0,10,8" IsVisible="{Binding !Notices.HasAny}"
+                                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <ItemsControl ItemsSource="{Binding Notices.All}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:Notice">
+                                                <Grid ColumnDefinitions="Auto,*" Margin="10,6">
+                                                    <Path Data="{StaticResource IconWarning}" Width="15" Height="15" Stretch="Uniform" Margin="0,2,10,0"
+                                                          VerticalAlignment="Top" IsVisible="{Binding IsWarning}"
+                                                          Stroke="{DynamicResource WarningTextBrush}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                                                    <Path Data="{StaticResource IconInfo}" Width="15" Height="15" Stretch="Uniform" Margin="0,2,10,0"
+                                                          VerticalAlignment="Top" IsVisible="{Binding !IsWarning}" Fill="{DynamicResource AccentHoverBrush}" />
+                                                    <StackPanel Grid.Column="1" Spacing="3">
+                                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" FontSize="12.5" TextWrapping="Wrap" />
+                                                        <TextBlock Text="{Binding Text}" FontSize="12" TextWrapping="Wrap" MaxLines="4"
+                                                                   TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                        <ItemsControl ItemsSource="{Binding Actions}">
+                                                            <ItemsControl.ItemsPanel>
+                                                                <ItemsPanelTemplate><WrapPanel /></ItemsPanelTemplate>
+                                                            </ItemsControl.ItemsPanel>
+                                                            <ItemsControl.ItemTemplate>
+                                                                <DataTemplate x:DataType="vm:NoticeAction">
+                                                                    <Button Classes="rowLink" Content="{Binding Label}" Command="{Binding Command}" Margin="0,0,12,0" />
+                                                                </DataTemplate>
+                                                            </ItemsControl.ItemTemplate>
+                                                        </ItemsControl>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Flyout>
+                        </Button.Flyout>
+                    </Button>
+                    <!-- The properties panel on the right (Ctrl+I) -->
+                    <Button x:Name="PropertiesButton" AutomationProperties.Name="{x:Static loc:Strings.PropertiesTitle}" Classes="titleText" Classes.on="{Binding IsPropertiesOpen}" Command="{Binding TogglePropertiesCommand}"
+                            ToolTip.Tip="{x:Static loc:Strings.PropertiesToggleTooltip}">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <Path Data="{StaticResource IconInfo}" Width="13" Height="13" Stretch="Uniform" VerticalAlignment="Center"
+                                  Fill="{DynamicResource TextPrimaryBrush}" />
+                            <TextBlock Text="{x:Static loc:Strings.PropertiesTitle}" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="AuthorsButton" Classes="titleText" Click="AuthorsButton_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="{StaticResource IconUser}" Width="13" Height="13" VerticalAlignment="Center"
+                                      Foreground="{DynamicResource TextPrimaryBrush}" />
+                            <TextBlock x:Name="AuthorsButtonLabel" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="StatsButton" Classes="titleText" Click="StatsButton_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <PathIcon Data="{StaticResource IconStats}" Width="13" Height="13" VerticalAlignment="Center"
+                                      Foreground="{DynamicResource TextPrimaryBrush}" />
+                            <TextBlock x:Name="StatsButtonLabel" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Button x:Name="SettingsButton" Classes="titleText" Padding="0" Width="32" HorizontalContentAlignment="Center">
+                        <PathIcon Data="{StaticResource IconSettings}" Width="16" Height="16"
+                              Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <Button.Flyout>
+                            <MenuFlyout Placement="BottomEdgeAlignedRight">
+                                <MenuItem x:Name="RefreshMenuItem" Click="RefreshMenuItem_Click" views:ShortcutHint.Action="Refresh" />
+                                <MenuItem x:Name="FreeSpaceMenuItem" Click="FreeSpaceMenuItem_Click" />
+                                <MenuItem x:Name="OpenArchiveMenuItem" Click="OpenArchiveMenuItem_Click" views:ShortcutHint.Action="Archive" />
+                                <MenuItem x:Name="OpenBackupsMenuItem" Click="OpenBackupsMenuItem_Click" views:ShortcutHint.Action="Backups" />
+                                <MenuItem x:Name="OpenSettingsMenuItem" Click="OpenSettingsMenuItem_Click" views:ShortcutHint.Action="Settings" />
+                                <Separator />
+                                <MenuItem x:Name="ShortcutsMenuItem" Click="ShortcutsMenuItem_Click" views:ShortcutHint.Action="ShortcutList" />
+                                <MenuItem x:Name="ContactsMenuItem" Click="ContactsMenuItem_Click" />
+                                <MenuItem x:Name="AboutMenuItem" Click="AboutMenuItem_Click" />
+                            </MenuFlyout>
+                        </Button.Flyout>
+                    </Button>
+                </StackPanel>
+                <StackPanel Grid.Column="4" Orientation="Horizontal">
                     <Button x:Name="MinimizeButtonEl" Classes="titlebar" Click="MinimizeButton_Click">
                         <TextBlock Text="&#xE921;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
                     </Button>
@@ -611,15 +550,7 @@
         <Border Grid.Row="1" Background="{DynamicResource ToolbarBrush}" BorderBrush="{DynamicResource BorderBrush2}"
                 BorderThickness="0,0,0,1" Padding="20,16">
             <StackPanel>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                <Grid ColumnDefinitions="*,Auto">
                     <TextBox x:Name="SearchBox" Grid.Column="0" Classes="search" x:DataType="vm:FilterBarViewModel"
                              DataContext="{Binding FilterBar}"
                              Margin="0,0,10,0" Text="{Binding SearchText, Mode=TwoWay}"
@@ -657,20 +588,14 @@
                                   Fill="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
-                    <!-- The sets of filters saved for this game: its menu is kept built (MainWindow.FilterPresets.cs) -->
-                    <Button x:Name="FilterPresetsButton" Classes="icon" Margin="0,0,8,0"
-                            ToolTip.Tip="{x:Static loc:Strings.FilterPresetsTooltip}">
-                        <ui:GridIcon Data="{StaticResource IconLayers}" Width="20" Height="20" StrokeThickness="2"
-                                     Foreground="{DynamicResource TextPrimaryBrush}" />
-                        <Button.Flyout>
-                            <MenuFlyout Placement="BottomEdgeAlignedLeft" />
-                        </Button.Flyout>
-                    </Button>
-					<Button x:Name="DisplayFilterButton" Classes="icon" Margin="0,0,8,0"
+					<Button x:Name="DisplayFilterButton" Classes="toolbarText" Padding="12,0" Margin="0,0,8,0"
                             DataContext="{Binding FilterBar}"
                             ToolTip.Tip="{x:Static loc:Strings.DisplayFilterTooltip}">
-						    <PathIcon Data="{StaticResource IconFilter}" Width="16" Height="16"
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+						    <PathIcon Data="{StaticResource IconFilter}" Width="14" Height="14" VerticalAlignment="Center"
 								      Foreground="{DynamicResource TextPrimaryBrush}" />
+                            <TextBlock x:Name="DisplayFilterLabel" FontSize="13" VerticalAlignment="Center" />
+                        </StackPanel>
                         <Button.Flyout>
                             <MenuFlyout Placement="BottomEdgeAlignedLeft" x:DataType="vm:FilterBarViewModel">
                                 <MenuItem IsHitTestVisible="False" Focusable="False">
@@ -1144,6 +1069,19 @@
                         </Button.Flyout>
                     </Button>
 
+                    <!-- The sets of filters saved for this game: its menu is kept built (MainWindow.FilterPresets.cs) -->
+                    <Button x:Name="FilterPresetsButton" Classes="toolbarText" Padding="12,0" Margin="0,0,8,0"
+                            ToolTip.Tip="{x:Static loc:Strings.FilterPresetsTooltip}">
+                        <StackPanel Orientation="Horizontal" Spacing="7">
+                            <ui:GridIcon Data="{StaticResource IconLayers}" Width="17" Height="17" StrokeThickness="2"
+                                         Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                            <TextBlock x:Name="FilterPresetsLabel" FontSize="13" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <Button.Flyout>
+                            <MenuFlyout Placement="BottomEdgeAlignedLeft" />
+                        </Button.Flyout>
+                    </Button>
+
                     <Button x:Name="AddQuickFilterButton" Classes="toolbarText" Margin="0,0,8,0"
                             x:DataType="vm:QuickFilterPickerViewModel" DataContext="{Binding QuickFilterPicker}"
                             ToolTip.Tip="{DynamicResource Loc_QuickFilterAddTooltip}">
@@ -1198,40 +1136,7 @@
                     </Button>
 					</StackPanel>
 
-					<Button x:Name="RefreshButton" Grid.Column="2" Classes="icon" Margin="0,0,8,0" x:DataType="vm:MainViewModel"
-                            IsEnabled="{Binding Status.CanRefresh}" Command="{Binding RefreshCommand}">
-						<PathIcon Data="{StaticResource IconRefresh}" Width="16" Height="16"
-								  Foreground="{DynamicResource TextPrimaryBrush}" />
-					</Button>
 
-					<Button x:Name="AuthorsButton" Grid.Column="3" Classes="icon" Margin="0,0,8,0"
-                            Click="AuthorsButton_Click">
-						<PathIcon Data="{StaticResource IconUser}" Width="16" Height="16"
-								  Foreground="{DynamicResource TextPrimaryBrush}" />
-					</Button>
-
-					<Button x:Name="StatsButton" Grid.Column="4" Classes="icon" Margin="0,0,8,0"
-							Click="StatsButton_Click">
-						<PathIcon Data="{StaticResource IconStats}" Width="16" Height="16"
-								  Foreground="{DynamicResource TextPrimaryBrush}" />
-					</Button>
-
-					<Button x:Name="SettingsButton" Grid.Column="5" Classes="icon">
-						<PathIcon Data="{StaticResource IconSettings}" Width="16" Height="16"
-								  Foreground="{DynamicResource TextPrimaryBrush}" />
-						<Button.Flyout>
-							<MenuFlyout Placement="BottomEdgeAlignedRight">
-								<MenuItem x:Name="FreeSpaceMenuItem" Click="FreeSpaceMenuItem_Click" />
-								<MenuItem x:Name="OpenArchiveMenuItem" Click="OpenArchiveMenuItem_Click" views:ShortcutHint.Action="Archive" />
-								<MenuItem x:Name="OpenBackupsMenuItem" Click="OpenBackupsMenuItem_Click" views:ShortcutHint.Action="Backups" />
-								<MenuItem x:Name="OpenSettingsMenuItem" Click="OpenSettingsMenuItem_Click" views:ShortcutHint.Action="Settings" />
-								<Separator />
-								<MenuItem x:Name="ShortcutsMenuItem" Click="ShortcutsMenuItem_Click" views:ShortcutHint.Action="ShortcutList" />
-								<MenuItem x:Name="ContactsMenuItem" Click="ContactsMenuItem_Click" />
-								<MenuItem x:Name="AboutMenuItem" Click="AboutMenuItem_Click" />
-							</MenuFlyout>
-						</Button.Flyout>
-                    </Button>
                 </Grid>
                 <!-- The tags: their height the user's (the line under them dragged), a search from 30 tags on -->
                 <views:TagsStrip x:Name="TagsFilterRow" Margin="0,12,0,0" x:DataType="vm:TagsBarViewModel"
@@ -1251,7 +1156,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.DataTemplates>
                             <DataTemplate x:DataType="vm:ModeFilterChipViewModel">
-                                <Button Classes="filterChipFilled" Margin="0,0,8,8" Command="{Binding RemoveCommand}"
+                                <Button Classes="filterChip filled" Margin="0,0,8,8" Command="{Binding RemoveCommand}"
                                         ToolTip.Tip="{DynamicResource Loc_QuickFilterRemoveTooltip}">
                                     <StackPanel Orientation="Horizontal" Spacing="7">
                                         <TextBlock Text="{Binding Text}" VerticalAlignment="Center"
@@ -1262,7 +1167,7 @@
                                 </Button>
                             </DataTemplate>
                             <DataTemplate x:DataType="vm:QuickFilterChipViewModel">
-                                <Button Classes="filterChipOutlined" Margin="0,0,8,8"
+                                <Button Classes="filterChip outlined" Margin="0,0,8,8"
                                         Command="{Binding $parent[ItemsControl].((vm:FilterBarViewModel)DataContext).RemoveQuickFilterCommand}"
                                         CommandParameter="{Binding}"
                                         ToolTip.Tip="{DynamicResource Loc_QuickFilterRemoveTooltip}">
@@ -1278,7 +1183,7 @@
                     </ItemsControl>
                     <!-- Every filter off at once (the search too). Always at the row's right end, on its first line: it
                          does not move as chips come and go or wrap -->
-                    <Button Grid.Column="2" x:Name="ResetFiltersButton" Classes="filterChipReset" Margin="8,0,0,8"
+                    <Button Grid.Column="2" x:Name="ResetFiltersButton" Classes="filterChip reset" Margin="8,0,0,8"
                             VerticalAlignment="Top" Command="{Binding ResetFiltersCommand}">
                         <StackPanel Orientation="Horizontal" Spacing="6">
                             <ui:GridIcon Data="{StaticResource IconReset}" Width="14" Height="14" StrokeThickness="2"
@@ -1289,7 +1194,53 @@
                 </Grid>
             </StackPanel>
         </Border>
-        <Border x:Name="StatusBar" Grid.Row="2" Background="{DynamicResource BgBrush}" Padding="20,10" x:DataType="vm:GalleryStatusViewModel"
+        <!-- The notices' bar (NoticesViewModel): what needs telling at start, one at a time, over the gallery; it works
+             meanwhile. Closed, a notice stays under the bell -->
+        <Border x:Name="NoticeBanner" Grid.Row="2" Classes="noticeBanner" Classes.warning="{Binding Notices.Banner.IsWarning, FallbackValue=False}"
+                IsVisible="{Binding Notices.HasBanner}" Margin="16,0,16,10" Padding="14,10,8,10" CornerRadius="10" BorderThickness="1">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <Panel Margin="0,1,12,0" VerticalAlignment="Top">
+                    <Path Classes="noticeIcon" Data="{StaticResource IconWarning}" Width="17" Height="17" Stretch="Uniform"
+                          IsVisible="{Binding Notices.Banner.IsWarning, FallbackValue=False}"
+                          StrokeThickness="1.7" StrokeLineCap="Round" StrokeJoin="Round" />
+                    <Path Classes="noticeIcon" Data="{StaticResource IconInfo}" Width="17" Height="17" Stretch="Uniform"
+                          IsVisible="{Binding !Notices.Banner.IsWarning, FallbackValue=False}" />
+                </Panel>
+                <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
+                    <TextBlock Classes="noticeTitle" Text="{Binding Notices.Banner.Title, FallbackValue=''}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding Notices.Banner.Text, FallbackValue=''}" FontSize="12.5" TextWrapping="Wrap" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="4" Margin="12,0,0,0" VerticalAlignment="Top">
+                    <ItemsControl ItemsSource="{Binding Notices.Banner.Actions, FallbackValue={x:Null}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><StackPanel Orientation="Horizontal" Spacing="4" /></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:NoticeAction">
+                                <Button Classes="noticeAction" Content="{Binding Label}" Command="{Binding Command}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="{Binding Notices.BannerCounter}" VerticalAlignment="Center" FontSize="12" Margin="6,0,2,0"
+                               IsVisible="{Binding Notices.HasMoreThanOne}" />
+                    <Button Classes="noticeIconButton" Command="{Binding Notices.NextCommand}" IsVisible="{Binding Notices.HasMoreThanOne}"
+                            ToolTip.Tip="{x:Static loc:Strings.NoticeNextTooltip}" AutomationProperties.Name="{x:Static loc:Strings.NoticeNextTooltip}">
+                        <Path Data="{StaticResource IconChevronRight}" Width="8" Height="12" Stretch="Uniform" StrokeThickness="1.6"
+                              StrokeLineCap="Round" StrokeJoin="Round" Stroke="{Binding $parent[Button].Foreground}" />
+                    </Button>
+                    <Button Classes="noticeIconButton" Command="{Binding Notices.DismissCommand}"
+                            ToolTip.Tip="{x:Static loc:Strings.NoticeCloseTooltip}" AutomationProperties.Name="{x:Static loc:Strings.NoticeCloseTooltip}">
+                        <Path Data="{StaticResource IconCross}" Width="10" Height="10" Stretch="Uniform" StrokeThickness="1.6"
+                              StrokeLineCap="Round" Stroke="{Binding $parent[Button].Foreground}" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- The status bar, at the window's bottom: on the left the save and its room (or the storage), the last action to undo
+             and the selection; on the right what is shown, the server, the newer version and the cards' size -->
+        <Border x:Name="StatusBar" Grid.Row="4" Background="{DynamicResource ToolbarBrush}" BorderBrush="{DynamicResource BorderBrush2}"
+                BorderThickness="0,1,0,0" Padding="16,5,12,5" MinHeight="32" x:DataType="vm:GalleryStatusViewModel"
                 DataContext="{Binding Status}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -1299,41 +1250,39 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <!-- The room in the save, "238 / 1000": yellow from 90 %, red at the limit; a click opens "free up room" -->
-                <Button x:Name="SlotsCounter" Grid.Column="4" Classes="rowLink slots" Margin="14,0,0,0" VerticalAlignment="Center"
-                        x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
-                        IsVisible="{Binding ShowSlotsCounter}" ToolTip.Tip="{Binding SlotsTooltip}"
-                        Classes.warning="{Binding IsSlotsWarning}" Classes.full="{Binding IsSlotsFull}"
-                        Click="SlotsCounter_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="6">
-                        <TextBlock Text="·" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
-                        <Ellipse Classes="slotsDot" Width="8" Height="8" VerticalAlignment="Center" />
-                        <TextBlock Classes="slotsText" Text="{Binding SlotsText}" FontSize="12" VerticalAlignment="Center" />
-                    </StackPanel>
-                </Button>
-                <!-- The storage instead of the room: how many it holds, and its keys -->
-                <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="6" Margin="14,0,0,0" VerticalAlignment="Center"
-                            x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
-                            IsVisible="{Binding IsStorageMode}">
-                    <TextBlock Text="·" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
-                    <Path Data="{StaticResource IconStorage}" Width="12" Height="12" Stretch="Uniform" VerticalAlignment="Center"
-                          Stroke="{DynamicResource StorageTextBrush}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
-                    <TextBlock Text="{Binding StorageStatusText}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"
-                               Foreground="{DynamicResource StorageTextBrush}" />
-                    <TextBlock Text="·" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
-                    <TextBlock Text="{Binding StorageKeysHint}" FontSize="12" VerticalAlignment="Center"
-                               Foreground="{DynamicResource TextSecondaryBrush}" />
-                </StackPanel>
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock x:Name="StatusText" Text="{Binding StatusText}" FontSize="12"
                                Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
-                    <!-- The last action can be undone (MainViewModel.Undo.cs): shown until the next one. Ctrl+Z does the same -->
-                    <Button x:Name="UndoButton" Classes="rowLink" Margin="10,0,0,0" VerticalAlignment="Center"
+                    <!-- The room in the save, "238 / 1000": yellow from 90 %, red at the limit; a click opens "free up room" -->
+                    <Button x:Name="SlotsCounter" Classes="rowLink slots" Margin="14,0,0,0" VerticalAlignment="Center"
                             x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
-                            IsVisible="{Binding CanUndo}" Command="{Binding UndoCommand}" ToolTip.Tip="{Binding UndoTooltip}">
-                        <TextBlock Text="{DynamicResource Loc_UndoLabel}" FontSize="12"
-                                   Foreground="{DynamicResource AccentBrush}" />
+                            IsVisible="{Binding ShowSlotsCounter}" ToolTip.Tip="{Binding SlotsTooltip}"
+                            Classes.warning="{Binding IsSlotsWarning}" Classes.full="{Binding IsSlotsFull}"
+                            Click="SlotsCounter_Click">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                            <TextBlock Text="·" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <Ellipse Classes="slotsDot" Width="8" Height="8" VerticalAlignment="Center" />
+                            <TextBlock Classes="slotsText" Text="{Binding SlotsText}" FontSize="12" VerticalAlignment="Center" />
+                        </StackPanel>
                     </Button>
+                    <!-- The storage instead of the room: how many it holds, and its keys -->
+                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="14,0,0,0" VerticalAlignment="Center"
+                                x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
+                                IsVisible="{Binding IsStorageMode}">
+                        <TextBlock Text="·" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <Path Data="{StaticResource IconStorage}" Width="12" Height="12" Stretch="Uniform" VerticalAlignment="Center"
+                              Stroke="{DynamicResource StorageTextBrush}" StrokeThickness="1.6" StrokeLineCap="Round" StrokeJoin="Round" />
+                        <TextBlock Text="{Binding StorageStatusText}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource StorageTextBrush}" />
+                        <TextBlock Text="·" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <TextBlock Text="{Binding StorageKeysHint}" FontSize="12" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                    </StackPanel>
+                    <!-- A save only shown (FH3 to FH5 in this version): nothing moves into the archive or the storage; the tooltip says why -->
+                    <TextBlock x:Name="ReadOnlySaveLabel" Margin="14,0,0,0" VerticalAlignment="Center" FontSize="12"
+                               Foreground="{DynamicResource TextSecondaryBrush}" Background="Transparent"
+                               x:DataType="vm:MainViewModel" DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext)}"
+                               IsVisible="{Binding IsSaveReadOnly}" ToolTip.Tip="{Binding ReadOnlySaveText}" />
                     <StackPanel x:Name="SelectionPanel" Orientation="Horizontal" Margin="10,0,0,0"
                                 VerticalAlignment="Center"
                                 IsVisible="{Binding $parent[Window].((vm:MainViewModel)DataContext).Gallery.HasSelection}">
@@ -1350,26 +1299,7 @@
                         </Button>
                     </StackPanel>
                 </StackPanel>
-                <Button x:Name="ServerStatusIndicator" Grid.Column="1" Classes="rowLink" Margin="0,0,14,0"
-                        x:DataType="vm:ServerStatusViewModel"
-                        DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext).ServerStatus}"
-                        IsVisible="{Binding IsVisible}" VerticalAlignment="Center"
-                        ToolTip.Tip="{Binding Tooltip}" Click="ServerStatusIndicator_Click">
-                    <StackPanel Orientation="Horizontal" Spacing="6">
-                        <Ellipse Classes="serverDot" Width="8" Height="8" VerticalAlignment="Center"
-                                 Classes.green="{Binding IsGreen}" Classes.yellow="{Binding IsYellow}"
-                                 Classes.blue="{Binding IsBlue}" Classes.red="{Binding IsRed}" Classes.gray="{Binding IsGray}" />
-                        <TextBlock Text="{Binding Text}" FontSize="12" VerticalAlignment="Center"
-                                   Foreground="{DynamicResource TextSecondaryBrush}" />
-                    </StackPanel>
-                </Button>
-                <Button x:Name="UpdateBanner" Grid.Column="2" Classes="pill" x:DataType="updates:AppUpdateBanner"
-                        DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext).UpdateBanner}"
-                        Margin="0,0,12,0" Padding="10,4" FontSize="11.5" IsVisible="{Binding IsVisible}"
-                        Click="UpdateBanner_Click">
-                    <TextBlock x:Name="UpdateBannerText" Text="{Binding Text}" />
-                </Button>
-                <StackPanel x:Name="CountPanel" Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel x:Name="CountPanel" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
                     <TextBlock x:Name="CountBaseText" Text="{Binding CountText}" FontSize="12"
                                Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" />
 
@@ -1402,10 +1332,43 @@
                                    Foreground="{DynamicResource TextSecondaryBrush}" />
                     </StackPanel>
                 </StackPanel>
+                <Button x:Name="ServerStatusIndicator" Grid.Column="2" Classes="rowLink" Margin="14,0,0,0"
+                        x:DataType="vm:ServerStatusViewModel"
+                        DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext).ServerStatus}"
+                        IsVisible="{Binding IsVisible}" VerticalAlignment="Center"
+                        ToolTip.Tip="{Binding Tooltip}" Click="ServerStatusIndicator_Click">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Ellipse Classes="serverDot" Width="8" Height="8" VerticalAlignment="Center"
+                                 Classes.green="{Binding IsGreen}" Classes.yellow="{Binding IsYellow}"
+                                 Classes.blue="{Binding IsBlue}" Classes.red="{Binding IsRed}" Classes.gray="{Binding IsGray}" />
+                        <TextBlock Text="{Binding Text}" FontSize="12" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource TextSecondaryBrush}" />
+                    </StackPanel>
+                </Button>
+                <!-- The newer version, after the server's status -->
+                <Button x:Name="UpdateBanner" Grid.Column="3" Classes="pill" x:DataType="updates:AppUpdateBanner"
+                        DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext).UpdateBanner}"
+                        Margin="14,0,0,0" Padding="10,3" FontSize="11.5" IsVisible="{Binding IsVisible}"
+                        Click="UpdateBanner_Click">
+                    <TextBlock x:Name="UpdateBannerText" Text="{Binding Text}" />
+                </Button>
+                <!-- The cards' size: small, normal, large (Ctrl+"-", Ctrl+0, Ctrl+"+", Ctrl with the wheel). Kept for the next launch -->
+                <StackPanel x:Name="CardSizeSwitch" Grid.Column="4" Orientation="Horizontal" Spacing="2" Margin="14,0,0,0"
+                            VerticalAlignment="Center">
+                    <Button x:Name="SmallCardsButton" Classes="cardSize" Click="CardSizeButton_Click">
+                        <Border Width="6" Height="6" />
+                    </Button>
+                    <Button x:Name="NormalCardsButton" Classes="cardSize" Click="CardSizeButton_Click">
+                        <Border Width="9" Height="9" />
+                    </Button>
+                    <Button x:Name="LargeCardsButton" Classes="cardSize" Click="CardSizeButton_Click">
+                        <Border Width="12" Height="12" />
+                    </Button>
+                </StackPanel>
             </Grid>
         </Border>
         <Grid x:Name="GalleryHost" Grid.Row="3" Background="{DynamicResource BgBrush}" x:DataType="vm:GalleryStatusViewModel"
-              DataContext="{Binding Status}" ColumnDefinitions="Auto,*" RowDefinitions="Auto,*">
+              DataContext="{Binding Status}" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,*">
             <!-- The storage's folders (docs/storage.md, stage 4): shown with the storage's liveries -->
             <coll:CollectionSidebar x:Name="StorageSidebar" Grid.RowSpan="2" Classes="storage" IsVisible="False" />
             <!-- Liveries put into the storage's folder by hand were found (docs/storage.md, "Own folder") -->
@@ -1446,12 +1409,25 @@
                       HorizontalAlignment="Center" Fill="{DynamicResource TextSecondaryBrush}" />
                 <TextBlock x:Name="EmptyStateText" Text="{Binding EmptyStateText}" FontSize="14" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"
                            Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
-                <!-- The game's save was not found: the user may choose its folder, or let the gallery look again -->
-                <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,16,0,0" HorizontalAlignment="Center"
-                            IsVisible="{Binding IsSaveMissing}">
-                    <Button x:Name="ChooseSaveFolderButton" Classes="accent" Click="ChooseSaveFolderButton_Click" />
-                    <Button x:Name="SearchSaveAgainButton" Click="SearchSaveAgainButton_Click" />
-                </StackPanel>
+                <!-- The way out of the empty gallery (MainWindow.EmptyState.cs): the save not found — choose its folder or look
+                     again; the save empty — another folder; nothing found — clear the search, reset the filters; the storage
+                     empty — back to the game -->
+                <WrapPanel x:Name="EmptyActions" ItemSpacing="10" LineSpacing="10" Margin="0,16,0,0" HorizontalAlignment="Center"
+                           IsVisible="{Binding HasEmptyActions}">
+                    <Button x:Name="ChooseSaveFolderButton" Classes="primary" Click="ChooseSaveFolderButton_Click"
+                            IsVisible="{Binding IsSaveMissing}" />
+                    <Button x:Name="SearchSaveAgainButton" Classes="secondary" Click="SearchSaveAgainButton_Click" IsVisible="{Binding IsSaveMissing}" />
+                    <Button x:Name="EmptyChooseFolderButton" Classes="primary" Click="ChooseSaveFolderButton_Click"
+                            Content="{x:Static loc:Strings.ChooseSaveFolderButton}" IsVisible="{Binding IsGameEmpty}" />
+                    <Button x:Name="EmptyLookAgainButton" Classes="secondary" Click="EmptyLookAgain_Click"
+                            Content="{x:Static loc:Strings.EmptyLookAgain}" IsVisible="{Binding IsGameEmpty}" />
+                    <Button x:Name="EmptyClearSearchButton" Classes="primary" Click="EmptyClearSearch_Click"
+                            Content="{x:Static loc:Strings.EmptyClearSearch}" IsVisible="{Binding CanClearSearch}" />
+                    <Button x:Name="EmptyResetFiltersButton" Classes="secondary" Click="EmptyResetFilters_Click"
+                            Content="{x:Static loc:Strings.EmptyResetFilters}" IsVisible="{Binding CanResetFilters}" />
+                    <Button x:Name="EmptyShowGameButton" Classes="secondary" Click="EmptyShowGame_Click"
+                            Content="{x:Static loc:Strings.EmptyShowGame}" IsVisible="{Binding IsStorageEmpty}" />
+                </WrapPanel>
             </StackPanel>
 
             <!-- "Screenshots": every screenshot of the liveries the filters and the search show, the newest first -->
@@ -1474,6 +1450,14 @@
                                     <Button x:Name="GroupByDateButton" Classes="viewHalf compact" Tag="ByDate" Click="ScreenshotsGroup_Click" />
                                 </StackPanel>
                             </Border>
+                            <!-- With the line under each picture, or tiles: the pictures alone, a small gap between them -->
+                            <Border Height="34" Padding="3" CornerRadius="9" BorderThickness="1" VerticalAlignment="Center" Margin="8,0,0,0"
+                                    Background="{DynamicResource InputBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush2}">
+                                <StackPanel Orientation="Horizontal" Spacing="2">
+                                    <Button x:Name="ShotsCaptionedButton" Classes="viewHalf compact" Click="ScreenshotsLayout_Click" />
+                                    <Button x:Name="ShotsTilesButton" Classes="viewHalf compact" Click="ScreenshotsLayout_Click" />
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
                     </DockPanel>
                     <ScrollViewer x:Name="ScreenshotsScroll" Grid.Row="1" Padding="20,4,20,20" HorizontalScrollBarVisibility="Disabled"
@@ -1483,33 +1467,37 @@
                                 <DataTemplate x:DataType="vm:ScreenshotGroupViewModel">
                                     <StackPanel Margin="0,0,0,12">
                                         <coll:CollectionGroupHeader Folded="ScreenshotGroup_Folded" LinkClicked="ScreenshotGroup_LinkClicked" />
+                                        <!-- The tiles fill the row (TilePanel): the size and the gap the window sets on ScreenshotGroups -->
                                         <ItemsControl ItemsSource="{Binding Tiles}" IsVisible="{Binding IsExpanded}">
                                             <ItemsControl.ItemsPanel>
                                                 <ItemsPanelTemplate>
-                                                    <WrapPanel />
+                                                    <views:TilePanel />
                                                 </ItemsPanelTemplate>
                                             </ItemsControl.ItemsPanel>
                                             <ItemsControl.ItemTemplate>
                                                 <DataTemplate x:DataType="vm:ScreenshotTile">
-                                                    <Border Classes="shotTile" Classes.selected="{Binding IsSelected}" Classes.current="{Binding IsCurrent}" Width="300" Margin="0,0,14,14"
-                                                            Background="Transparent" Cursor="Hand" ToolTip.Tip="{Binding Screenshot.FileName}"
+                                                    <Border Classes="shotTile" Classes.selected="{Binding IsSelected}" Classes.current="{Binding IsCurrent}"
+                                                            Background="Transparent" Cursor="Hand" ToolTip.Tip="{Binding Tooltip}"
                                                             PointerPressed="ShotTile_PointerPressed" PointerMoved="ShotTile_PointerMoved"
                                                             PointerReleased="ShotTile_PointerReleased" DoubleTapped="ShotTile_DoubleTapped"
                                                             ContextRequested="ShotTile_ContextRequested">
                                                         <StackPanel Spacing="5">
-                                                            <Panel>
-                                                                <Border x:Name="Picture" Height="169" CornerRadius="8" ClipToBounds="True"
-                                                                        Background="{DynamicResource ThumbnailPlaceholderBrush}">
-                                                                    <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
-                                                                </Border>
-                                                                <Border Classes="shotFrame" CornerRadius="8" />
-                                                                <Border IsVisible="{Binding IsCover}" Background="#B0000000" CornerRadius="6" Padding="7,2"
-                                                                        Margin="8" HorizontalAlignment="Left" VerticalAlignment="Top">
-                                                                    <TextBlock Text="{x:Static loc:Strings.ScreenshotCoverBadge}" FontSize="10.5"
-                                                                               FontWeight="SemiBold" Foreground="White" />
-                                                                </Border>
-                                                            </Panel>
-                                                            <TextBlock Text="{Binding Caption}" FontSize="12" TextTrimming="CharacterEllipsis"
+                                                            <views:AspectBox>
+                                                                <Panel>
+                                                                    <Border x:Name="Picture" Classes="shotPicture" ClipToBounds="True"
+                                                                            Background="{DynamicResource ThumbnailPlaceholderBrush}">
+                                                                        <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+                                                                    </Border>
+                                                                    <Border Classes="shotFrame" />
+                                                                    <Border IsVisible="{Binding IsCover}" Background="#B0000000" CornerRadius="6" Padding="7,2"
+                                                                            Margin="8" HorizontalAlignment="Left" VerticalAlignment="Top">
+                                                                        <TextBlock Text="{x:Static loc:Strings.ScreenshotCoverBadge}" FontSize="10.5"
+                                                                                   FontWeight="SemiBold" Foreground="White" />
+                                                                    </Border>
+                                                                </Panel>
+                                                            </views:AspectBox>
+                                                            <!-- The line under the picture; none in the tiles (its words in the tooltip there) -->
+                                                            <TextBlock Classes="shotCaption" Text="{Binding Caption}" FontSize="12" TextTrimming="CharacterEllipsis"
                                                                        Foreground="{DynamicResource TextSecondaryBrush}" />
                                                         </StackPanel>
                                                     </Border>
@@ -1527,6 +1515,12 @@
                               HorizontalAlignment="Center" Fill="{DynamicResource TextSecondaryBrush}" />
                         <TextBlock x:Name="ScreenshotsEmptyText" FontSize="14" Margin="0,10,0,0" TextWrapping="Wrap" TextAlignment="Center"
                                    Foreground="{DynamicResource TextSecondaryBrush}" HorizontalAlignment="Center" />
+                        <WrapPanel ItemSpacing="10" LineSpacing="10" Margin="0,16,0,0" HorizontalAlignment="Center">
+                            <Button x:Name="ScreenshotsAllAlbumsButton" Classes="secondary" Click="ScreenshotsAllAlbums_Click"
+                                    Content="{x:Static loc:Strings.ScreenshotsShowAllAlbums}" IsVisible="False" />
+                            <Button x:Name="ScreenshotsResetFiltersButton" Classes="secondary" Click="EmptyResetFilters_Click"
+                                    Content="{x:Static loc:Strings.EmptyResetFilters}" IsVisible="False" />
+                        </WrapPanel>
                     </StackPanel>
                 </Grid>
             </Grid>
@@ -1550,6 +1544,14 @@
                 </StackPanel>
             </Border>
 
+            <!-- The properties panel (Ctrl+I, the title bar's «Properties»): the selected livery, or what the selected share.
+                 Over the list, not beside it: the list keeps its width, so its cards keep their size and rows when the panel
+                 opens or closes (beside it, the room changed and every row was laid out again with cards of another
+                 size). Left of the list's scroll bar, which stays in reach (MainWindow.SelectionBar.cs) -->
+            <views:PropertiesPanel x:Name="PropertiesPanel" Classes="keepsSelection" Grid.Column="1" Grid.RowSpan="2" Width="340" HorizontalAlignment="Right"
+                                   ZIndex="5" Margin="0,8,20,8"
+                                   DataContext="{Binding $parent[Window].((vm:MainViewModel)DataContext).Properties}" IsVisible="False" />
+
             <Border x:Name="LoadingOverlay" Grid.ColumnSpan="2" Grid.RowSpan="2" Background="{DynamicResource BgBrush}" Opacity="0.85" IsVisible="{Binding IsLoading}">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <Path Data="{StaticResource IconRefresh}" Width="30" Height="30" Stretch="Uniform"
@@ -1559,5 +1561,76 @@
                 </StackPanel>
             </Border>
         </Grid>
+        <!-- Several liveries selected and the panel closed: what can be done with all of them (MainWindow.SelectionBar.cs) -->
+        <Border x:Name="SelectionBar" Grid.Row="3" Classes="selectionBar" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                Margin="0,0,0,20" ZIndex="19" IsVisible="False">
+            <StackPanel Orientation="Horizontal" Spacing="2">
+                <TextBlock x:Name="SelectionBarCount" Text="{Binding Gallery.SelectionSummaryText}" FontSize="12.5" FontWeight="SemiBold"
+                           VerticalAlignment="Center" Margin="0,0,10,0" />
+                <Border Width="1" Height="20" Background="{DynamicResource BorderBrush2}" Margin="0,0,6,0" VerticalAlignment="Center" />
+                <!-- The gallery's actions offered here (GalleryActions.Bar): the same words, checks and reasons as the menu -->
+                <ItemsControl x:Name="SelectionActions" ItemsSource="{Binding Actions.Bar}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" Spacing="2" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:GalleryAction">
+                            <Button Classes="selectionAction" Command="{Binding Command}" IsVisible="{Binding IsVisible}"
+                                    ToolTip.Tip="{Binding Tooltip}" ToolTip.ShowOnDisabled="True"
+                                    AutomationProperties.Name="{Binding ShortLabel}">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <views:ActionGlyph Action="{Binding}" Size="15" VerticalAlignment="Center" />
+                                    <TextBlock Text="{Binding ShortLabel}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button x:Name="SelectionPropertiesButton" AutomationProperties.Name="{x:Static loc:Strings.PropertiesTitle}" Classes="selectionAction" Command="{Binding TogglePropertiesCommand}">
+                    <StackPanel Orientation="Horizontal" Spacing="6">
+                        <Path Data="{StaticResource IconInfo}" Fill="{DynamicResource TextSecondaryBrush}" StrokeThickness="0" />
+                        <TextBlock Text="{x:Static loc:Strings.PropertiesTitle}" VerticalAlignment="Center" />
+                    </StackPanel>
+                </Button>
+                <Button x:Name="SelectionMoreButton" Classes="selectionAction" Width="32" Padding="0" HorizontalContentAlignment="Center"
+                        Click="SelectionMore_Click" ToolTip.Tip="{x:Static loc:Strings.SelectionBarMore}"
+                        AutomationProperties.Name="{x:Static loc:Strings.SelectionBarMore}">
+                    <!-- The dots are five times as wide as high: a box of their own shape, or they sit at the top of a square one -->
+                    <Path Data="{StaticResource IconMore}" Fill="{DynamicResource TextSecondaryBrush}" StrokeThickness="0" Width="16" Height="3.2" />
+                </Button>
+                <Button x:Name="SelectionClearButton" Classes="selectionAction" Width="32" Padding="0" HorizontalContentAlignment="Center"
+                        Command="{Binding Gallery.ClearSelectionCommand}" ToolTip.Tip="{x:Static loc:Strings.SelectionBarClear}"
+                        AutomationProperties.Name="{x:Static loc:Strings.SelectionBarClear}">
+                    <Path Data="{StaticResource IconCross}" Width="10" Height="10" />
+                </Button>
+            </StackPanel>
+        </Border>
+        <!-- A short message after an action on liveries, with "Undo" while it shows (NoticesViewModel.Toast) -->
+        <Border x:Name="ToastHost" Grid.Row="3" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,24,20" ZIndex="20"
+                IsVisible="{Binding Notices.HasToast}" Width="360" CornerRadius="12" BorderThickness="1" ClipToBounds="True"
+                Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource BorderBrush2}" BoxShadow="0 12 32 0 #66000000"
+                PointerEntered="Toast_PointerEntered" PointerExited="Toast_PointerExited">
+            <StackPanel>
+                <Grid ColumnDefinitions="*,Auto,Auto" Margin="14,10,8,10">
+                    <StackPanel Spacing="2" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding Notices.Toast.Text, FallbackValue=''}" FontSize="13" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding Notices.Toast.Detail, FallbackValue=''}" FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}"
+                                   IsVisible="{Binding Notices.Toast.CanUndo, FallbackValue=False}" />
+                    </StackPanel>
+                    <Button Grid.Column="1" Classes="toastUndo" Content="{x:Static loc:Strings.ToastUndo}" Command="{Binding Notices.UndoToastCommand}"
+                            IsVisible="{Binding Notices.Toast.CanUndo, FallbackValue=False}" Margin="10,0,4,0" VerticalAlignment="Center" />
+                    <Button Grid.Column="2" Classes="noticeIconButton" Command="{Binding Notices.CloseToastCommand}" VerticalAlignment="Center"
+                            ToolTip.Tip="{x:Static loc:Strings.ToastClose}" AutomationProperties.Name="{x:Static loc:Strings.ToastClose}">
+                        <Path Data="{StaticResource IconCross}" Width="9" Height="9" Stretch="Uniform" StrokeThickness="1.6"
+                              StrokeLineCap="Round" Stroke="{DynamicResource TextSecondaryBrush}" />
+                    </Button>
+                </Grid>
+                <ProgressBar Classes="toastTime" Minimum="0" Maximum="1" Value="{Binding Notices.Toast.TimeLeft, FallbackValue=0}" Height="3" MinHeight="3"
+                             CornerRadius="0" />
+            </StackPanel>
+        </Border>
+
     </Grid>
 </Window>

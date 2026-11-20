@@ -1,0 +1,68 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:loc="clr-namespace:LiveryGallery.Localisation"
+             xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
+             xmlns:views="clr-namespace:LiveryGallery.Views"
+             x:Class="LiveryGallery.Views.TagEditor"
+             x:DataType="vm:TagEditorViewModel">
+    <!-- The tags of one livery or of several (TagEditorViewModel): the properties panel's and the livery window's -->
+    <StackPanel Spacing="8">
+        <StackPanel Orientation="Horizontal" Spacing="8">
+            <TextBlock Text="{x:Static loc:Strings.PropertiesTags}" Classes="propHeader" />
+            <TextBlock Text="{x:Static loc:Strings.PropertiesTagsPartHint}" Classes="propPart" IsVisible="{Binding IsMulti}"
+                       TextWrapping="Wrap" VerticalAlignment="Center" />
+        </StackPanel>
+        <ItemsControl x:Name="TagList" ItemsSource="{Binding Tags}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel ItemSpacing="6" LineSpacing="6" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:PropertyTag">
+                    <Panel>
+                        <Rectangle IsVisible="{Binding !OnAll}" RadiusX="13" RadiusY="13" StrokeDashArray="3,2" StrokeThickness="1"
+                                   Stroke="{DynamicResource TextTertiaryBrush}" IsHitTestVisible="False" ZIndex="1" />
+                        <Border Classes="propTag" Classes.part="{Binding !OnAll}">
+                            <StackPanel Orientation="Horizontal" Spacing="4">
+                                <Button Classes="propTagText" Content="{Binding Tag}" Click="PartTag_Click" IsHitTestVisible="{Binding !OnAll}"
+                                        Focusable="{Binding !OnAll}" />
+                                <TextBlock Text="{Binding Part}" Classes="propPart" VerticalAlignment="Center"
+                                           IsVisible="{Binding !OnAll}" />
+                                <Button Classes="propTagRemove" Click="RemoveTag_Click"
+                                        AutomationProperties.Name="{Binding Tag, Converter={x:Static views:TagEditor.RemoveTagName}}"
+                                        ToolTip.Tip="{Binding Tag, Converter={x:Static views:TagEditor.RemoveTagName}}">
+                                    <Path Data="{StaticResource IconCross}" Width="7" Height="7" Stretch="Uniform" StrokeThickness="1.6"
+                                          StrokeLineCap="Round" Stroke="{DynamicResource TextSecondaryBrush}" />
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Panel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <TextBox x:Name="TagInputBox" Text="{Binding TagInput}" PlaceholderText="{x:Static loc:Strings.PropertiesAddTagPlaceholder}"
+                 AutomationProperties.Name="{x:Static loc:Strings.PropertiesAddTagPlaceholder}" KeyDown="TagInput_KeyDown" GotFocus="TagInput_GotFocus" LostFocus="TagInput_LostFocus" />
+        <!-- The gallery's tags under the field, over what follows (the note) rather than pushing it down: a popup as wide
+             as the field, open while there are suggestions (the field or a suggestion has the focus). In the window's own
+             overlay layer, not a window of its own: it cannot stay over other programs when the gallery loses the focus -->
+        <Popup x:Name="SuggestionPopup" PlacementTarget="{Binding #TagInputBox}" Placement="BottomEdgeAlignedLeft" VerticalOffset="4"
+               IsOpen="{Binding ShowSuggestions}" IsLightDismissEnabled="False" ShouldUseOverlayLayer="True"
+               Width="{Binding #TagInputBox.Bounds.Width}">
+        <Border Classes="propSuggestions">
+            <ItemsControl x:Name="SuggestionList" ItemsSource="{Binding Suggestions}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:TagSuggestion">
+                        <Button Classes="propSuggestion" Click="Suggestion_Click" AutomationProperties.Name="{Binding Text}">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="{Binding Text}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Grid.Column="1" Text="{Binding CountText}" Classes="propPart" Margin="8,0,0,0" />
+                            </Grid>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+        </Popup>
+    </StackPanel>
+</UserControl>

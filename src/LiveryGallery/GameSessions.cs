@@ -97,6 +97,8 @@ internal sealed class GameSessions
         var carTexts = new CarTextProvider(carDatabase,
             new CarLocalizationService(CarLocalizationOptions.ForGame(profile.Game), AppLog.LoggerFactory.CreateLogger<CarLocalizationService>()),
             settings);
+        // The previews' colours, shown while they load
+        LiveryGallery.Services.PreviewColors.Load(gamePaths.Root);
         var tagService = new TagService(gamePaths.Root);
         // The user's notes per livery, beside the tags (notes.json); backups take them along
         var noteService = new NoteService(gamePaths.Root);
@@ -158,10 +160,17 @@ internal sealed class GameSessions
         // The names of the tuning parts in the 3D window, in the language of the car texts: the list shared with the other
         // ForzaToolkit apps, checked once per start
         var carUpgrades = new CarUpgradesService(_http(), CarUpgradesOptions.ForGame(profile.Game), AppLog.LoggerFactory.CreateLogger<CarUpgradesService>());
-        _ = PublishedLists.Start([carUpgrades]);
-        // The camera left on each car: the game's own file, games\<id>\viewer-cameras.json
-        var viewer3D = new Livery3DViewer(settings, carDatabase, profile.Game.Id, carUpgrades, () => carTexts.LanguageCode,
-            new ViewerCameraStore(gamePaths.Root));
+        // The game's logo numbers → files (livery-shapes.json, the list shared with the other ForzaToolkit apps): FH3 to
+        // FH5 differ from FH6's table, which the renderer has built in, in a few logos
+        LiveryShapesService? liveryShapes = profile.Game == ForzaToolkit.Games.ForzaGames.FH6 ? null
+            : new LiveryShapesService(_http(), LiveryShapesOptions.ForGame(profile.Game), AppLog.LoggerFactory.CreateLogger<LiveryShapesService>());
+        IPublishedList[] publishedLists = liveryShapes is null ? [carUpgrades] : [carUpgrades, liveryShapes];
+        _ = PublishedLists.Start(publishedLists);
+        // The camera left on each car: the game's own file, games\<id>\viewer-cameras.json. FH3 to FH5, whose own files
+        // cannot be read when encrypted or not installed, are drawn with another game's: its folder as its settings have it, or found
+        var viewer3D = new Livery3DViewer(settings, carDatabase, profile.Game, GameProfiles.FormatOf(profile.Game), carUpgrades, () => carTexts.LanguageCode,
+            new ViewerCameraStore(gamePaths.Root), other => DrawingFolderOf(settings, other),
+            liveryShapes is null ? null : () => LogoTable(liveryShapes));
         var diagnosticsService = new DiagnosticsExportService(cacheService);
         var accountRegistry = new AccountRegistry(cacheService, profile.Saves, AccountLabels.Title);
         var window = new MainWindow(
@@ -170,6 +179,12 @@ internal sealed class GameSessions
             saveFolderLock, diagnosticsService, accountRegistry, _prompter?.Invoke(profile))
         {
             Games = new GameSwitcher(profile.Game.Id, () => GameChoices.Of(_profiles, settings), SwitchAsync),
+            // A file of the user's own data that did not read at start: the window tells it once
+            UserDataProblems = new[]
+            {
+                tagService.LoadProblem, noteService.LoadProblem, favoriteService.LoadProblem, lockService.LoadProblem,
+                liveryIdService.LoadProblem,
+            }.OfType<ForzaToolkit.Liveries.UserData.UserDataLoadProblem>().ToList(),
         };
         // The renderer is the game's: it goes with the window
         window.Closed += (_, _) => viewer3D.Dispose();
@@ -187,6 +202,20 @@ internal sealed class GameSessions
         _show(Open(profile));
         return Task.CompletedTask;
     }
+
+    /// <summary>
+    /// The folder of another game to draw with (FH3's liveries with FH4's files…): the one set in that game's settings,
+    /// else the readable one found on this PC (Steam before a locked UWP package)
+    /// </summary>
+    private static string? DrawingFolderOf(AppSettingsData settings, ForzaToolkit.Games.ForzaGame game)
+    {
+        if (settings.Games.GetValueOrDefault(game.Id)?.GameInstallPath is { } set && !string.IsNullOrWhiteSpace(set)) return set;
+        return ForzaToolkit.LiveryRender.Assets.GameDrawing.FindOnThisPc(game);
+    }
+
+    /// <summary>The game's logo numbers → files from its published list; null before the list is there (the renderer's own then)</summary>
+    private static ForzaToolkit.LiveryRender.Livery.DecalIdMap? LogoTable(LiveryShapesService shapes) =>
+        shapes.HasLocalData ? ForzaToolkit.LiveryRender.Livery.DecalIdMap.FromLogos(shapes.Catalog.Logos.Select(l => (l.Id, l.File))) : null;
 
     /// <summary>A folder in the archive that its index lost: the key as the name, the rest unknown</summary>
     private static LiveryData RecoveredArchiveEntry(string key) => new()

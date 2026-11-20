@@ -42,7 +42,8 @@ internal partial class SettingsDialog : Window
         AccountDataActions? accountData = null,
         IReadOnlyList<ForzaToolkit.StringTables.GameLanguage>? carTextLanguages = null,
         Services.Screenshots.ScreenshotStore? screenshots = null,
-        StorageActions? storages = null)
+        StorageActions? storages = null,
+        Func<string?>? drawnWithNote = null)
     {
         InitializeComponent();
         _storages = storages;
@@ -51,7 +52,7 @@ internal partial class SettingsDialog : Window
         _accountData = accountData;
         _screenshots = screenshots;
         DiagnosticsSection.IsVisible = exportDiagnostics is not null;
-        _viewModel = new SettingsViewModel(settings, resolvedSavePath, gameFolderCheck, profile, carTextLanguages);
+        _viewModel = new SettingsViewModel(settings, resolvedSavePath, gameFolderCheck, profile, carTextLanguages, drawnWithNote);
         DataContext = _viewModel;
 
         ApplyLocalizedTexts();
@@ -89,10 +90,12 @@ internal partial class SettingsDialog : Window
     private void ApplyLocalizedTexts()
     {
         Title = Strings.SettingsDialogTitle;
-        TitleBarText.Text = Strings.SettingsDialogTitle;
+        Bar.Title = Strings.SettingsDialogTitle;
         TitleText.Text = Strings.SettingsDialogTitle;
         ThemeSectionLabel.Text = Strings.SettingsSectionTheme;
         CardsSectionLabel.Text = Strings.SettingsSectionCards;
+        UiScaleSectionLabel.Text = ForzaToolkit.UI.Localisation.UiStrings.UiScaleLabel;
+        UiScaleHint.Text = ForzaToolkit.UI.Localisation.UiStrings.UiScaleTooltip;
         BadgesPlaceHint.Text = Strings.BadgesPlaceHint;
         LanguageSectionLabel.Text = Strings.SettingsSectionLanguage;
         CarTextLanguageSectionLabel.Text = Strings.SettingsSectionCarTextLanguage;
@@ -140,7 +143,8 @@ internal partial class SettingsDialog : Window
         BetaUpdatesCheckBox.Content = Strings.BetaUpdatesLabel;
         BetaUpdatesHint.Text = Strings.BetaUpdatesHint;
         ServerConnectionCheckBox.Content = Strings.ServerConnectionLabel;
-        ServerConnectionDescription.Text = Strings.ServerConnectionDescription;
+        // One switch for every game (AppSettingsData.ServerConnectionEnabled): said under it and in the consent
+        ServerConnectionDescription.Text = Strings.ServerConnectionDescription + "\n\n" + Strings.ServerConnectionAllGames;
         DuplicatesSectionLabel.Text = Strings.SettingsSectionDuplicates;
         AutoBackupSectionLabel.Text = Strings.AutoBackupSectionLabel;
         AutoBackupBeforeArchiveCheckBox.Content = Strings.AutoBackupBeforeArchiveLabel;
@@ -159,6 +163,8 @@ internal partial class SettingsDialog : Window
         ServerLiveriesHint.Text = Strings.ServerLiveriesHint;
         NavigationKeyIntervalLabel.Text = Strings.NavigationKeyIntervalLabel;
         NavigationKeyIntervalHint.Text = Strings.NavigationKeyIntervalHint;
+        NavigationMenuOpenDelayLabel.Text = Strings.NavigationMenuOpenDelayLabel;
+        NavigationMenuOpenDelayHint.Text = Strings.NavigationMenuOpenDelayHint;
         SystemThemeRadio.Content = Strings.ThemeSystemLabel;
         LightThemeRadio.Content = Strings.ThemeLightLabel;
         DarkThemeRadio.Content = Strings.ThemeDarkLabel;
@@ -223,8 +229,9 @@ internal partial class SettingsDialog : Window
         bool changed = item.Page != _page;
         _page = _lastPage = item.Page;
         PageTitleText.Text = item.Title;
-        // Pages whose every setting is the open game's own; on the others the plate stands beside each such setting
-        PageGameChip.IsVisible = item.Page is SettingsPage.Folders or SettingsPage.FindInGame or SettingsPage.Server;
+        // Pages whose every setting is the open game's own; on the others the plate stands beside each such setting.
+        // Not the server's: its switch is every game's
+        PageGameChip.IsVisible = item.Page is SettingsPage.Folders or SettingsPage.FindInGame;
         AppearancePage.IsVisible = item.Page == SettingsPage.Appearance;
         FoldersPage.IsVisible = item.Page == SettingsPage.Folders;
         GalleryPage.IsVisible = item.Page == SettingsPage.Gallery;
@@ -252,8 +259,6 @@ internal partial class SettingsDialog : Window
         }
     }
 
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
-
     private bool _askingServerConsent;
 
     private void ServerConnectionCheckBox_IsCheckedChanged(object? sender, RoutedEventArgs e)
@@ -262,13 +267,23 @@ internal partial class SettingsDialog : Window
         _ = _tasks.Run(AskServerConsentAsync, "server consent");
     }
 
+    /// <summary>The consent's text with the line that it is for every game, before its question (its last paragraph)</summary>
+    internal static string ConsentMessage()
+    {
+        string message = Strings.ServerConsentMessage.ReplaceLineEndings("\n");
+        int question = message.LastIndexOf("\n\n", StringComparison.Ordinal);
+        return question < 0
+            ? message + "\n\n" + Strings.ServerConnectionAllGames
+            : message[..question] + "\n\n" + Strings.ServerConnectionAllGames + message[question..];
+    }
+
     private async Task AskServerConsentAsync()
     {
         _askingServerConsent = true;
         bool agreed = false;
         try
         {
-            agreed = await ConfirmDialog.AskAsync(this, Strings.ServerConsentTitle, Strings.ServerConsentMessage,
+            agreed = await ConfirmDialog.AskAsync(this, Strings.ServerConsentTitle, ConsentMessage(),
                 Strings.ServerConsentAccept, Strings.ButtonCancel, "IconGlobe");
         }
         catch (Exception ex)

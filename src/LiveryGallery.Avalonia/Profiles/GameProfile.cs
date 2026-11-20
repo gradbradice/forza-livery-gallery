@@ -8,7 +8,10 @@ namespace LiveryGallery.Profiles;
 /// <summary>What the gallery can do in a game; a feature the game does not have is not shown</summary>
 internal sealed record GameFeatures
 {
-    /// <summary>The auction house: liveries the game only lists, their filter and group, and the archive rule for them</summary>
+    /// <summary>
+    /// The auction house: the liveries of cars bought at the auction (<see cref="GameProfile.AuctionKeys"/>), their badge,
+    /// filter and group, the archive rule for them; they are not counted against <see cref="GameProfile.MaxLiveries"/>
+    /// </summary>
     public bool Auction { get; init; }
 
     /// <summary>The livery server that tells which liveries are installed on cars</summary>
@@ -61,8 +64,8 @@ internal sealed record GridRows(int? Rows, GridRowsSource Source, DateTime? ModW
 /// The grid of a save folder for a number of rows, after the liveries the game keeps on its servers (the third number,
 /// Settings › Find in game: they are not in the save and come first)
 /// </param>
-/// <param name="DefaultRows">The rows of the game's own menu, used while the game folder is not known</param>
-/// <param name="RowChoices">The rows the menu can have, which Settings offers besides "find out" (FH6: 2 and 3)</param>
+/// <param name="DefaultRows">The rows of the game's own menu (FH3 1, FH4 3, FH5 and FH6 2), used while the game folder is not known</param>
+/// <param name="RowChoices">The rows the menu can have, which Settings offers besides "find out" (FH6: 2 and 3; FH3–FH5: 1 to 3)</param>
 internal sealed record MyDesignsGrid(
     Func<string?, GridRows> DetectRows,
     Func<string, int, int, GridLayout> Layout,
@@ -152,8 +155,31 @@ internal sealed class GameProfile
     /// <summary>Asks before the save is changed while the game runs</summary>
     public GameRunningGuard RunningGuard { get; }
 
-    /// <summary>True for a livery the game only lists (an auction livery), when the game has an auction house</summary>
-    public bool IsAuction(string key) => Features.Auction && Liveries.IsExternalListing(key);
+    /// <summary>
+    /// Which livery keys are the liveries of cars bought at the auction. Null: those the game only lists, without files of
+    /// their own (<see cref="ILiveryStore.IsExternalListing"/>: FH6's <c>SoulBoundLivery_…</c> folders). FH3 to FH5 keep
+    /// such a livery's files: their <c>SoulBoundLivery_…</c> keys (<c>SaveKeys.IsSoulBound</c>)
+    /// </summary>
+    public Func<string, bool>? AuctionKeys { get; init; }
+
+    /// <summary>
+    /// A type of the game's open package (ForzaToolkit.Games.FH6 for FH6…), whose version "About" lists; null — the
+    /// package of <see cref="Liveries"/>
+    /// </summary>
+    public Type? GamePackageType { get; init; }
+
+    /// <summary>The type whose assembly is the game's package in "About"</summary>
+    public Type GamePackage => GamePackageType ?? Liveries.GetType();
+
+    /// <summary>True for the livery of a car bought at the auction, when the game has an auction house</summary>
+    public bool IsAuction(string key) => Features.Auction && (AuctionKeys?.Invoke(key) ?? Liveries.IsExternalListing(key));
+
+    /// <summary>
+    /// The save's liveries are only shown: nothing moves out of it into the archive or the storage, nothing is
+    /// restored into it (<see cref="ILiveryStore.IsReadOnly"/>; FH3 to FH5 in 1.8.0-beta.1, a Microsoft Store save of
+    /// FH4 or FH5 anyway). False without a save
+    /// </summary>
+    public bool IsSaveReadOnly(string? saveDataPath) => saveDataPath is not null && Liveries.IsReadOnly(saveDataPath);
 
     /// <summary>The game's preview of a livery in the save, the better one first; null when there is none</summary>
     public string? FindPreview(string saveDataPath, string key) => FindPreviewAmong(Liveries.ListFiles(saveDataPath, key), key);

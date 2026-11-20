@@ -64,7 +64,15 @@ internal sealed partial class MainViewModel
     private void RememberForUndo(UndoKind kind, int count, Func<Task<bool>> revert)
     {
         if (_undoing) return; // what an undo does is not an action of the user's
-        SetUndo(new UndoStep(kind, count, CurrentAccountKey, savePathService.Profile, revert));
+        var step = new UndoStep(kind, count, CurrentAccountKey, savePathService.Profile, revert);
+        SetUndo(step);
+        // A short message with "Undo" after a move, or after stars, locks or tags given to several at once (one star
+        // clicked needs no message: it shows on its card)
+        if (kind is UndoKind.ToStorage or UndoKind.ToArchive or UndoKind.ToGame || count > 1)
+            Notices.ShowToast(Describe(step), Strings.ToastUndoDetail, () =>
+            {
+                if (ReferenceEquals(_undo, step) && UndoCommand.CanExecute(null)) UndoCommand.Execute(null);
+            });
     }
 
     private void SetUndo(UndoStep? step)

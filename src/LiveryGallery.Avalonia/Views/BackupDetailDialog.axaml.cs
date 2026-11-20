@@ -22,22 +22,13 @@ internal partial class BackupDetailDialog : Window
 
         _viewModel.ErrorMessageRequested += message => _work.Run(
             () => InfoDialog.ShowAsync(this, Strings.BackupsDialogTitle, message), "backup detail: error message");
-        _viewModel.ConfirmRestoreDuplicatesAsync = message => ConfirmDialog.AskAsync(
-            this, Strings.RestoreDuplicateTitle, message, Strings.RestoreAnywayButton, Strings.RestoreSkipDuplicatesButton);
-        _viewModel.ConfirmRestoreIntoCurrentAccountAsync = message => ConfirmDialog.AskAsync(
-            this, Strings.RestoreFromOtherAccountTitle, message, Strings.RestoreIntoCurrentAccountButton, Strings.ButtonCancel);
-        _viewModel.ConfirmWhileGameRunningAsync = () => ConfirmDialog.AskAsync(
-            this, string.Format(Strings.GameRunningTitleFormat, savePathService.Profile.Game.Name), Strings.GameRunningFileChangeMessage, Strings.GameRunningContinueButton, Strings.ButtonCancel);
+        _viewModel.Ask.AskOver(this, savePathService.Profile.Game.Name);
 
         string title = string.Format(Strings.BackupDetailTitleFormat, backup.DateText);
         Title = title;
-        TitleBarText.Text = title;
+        Bar.Title = title;
         RestoreButton.Content = Strings.ArchiveRestoreButton;
     }
-
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
-
-    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 
     protected override void OnClosed(EventArgs e)
     {

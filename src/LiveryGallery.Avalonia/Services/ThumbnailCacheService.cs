@@ -42,16 +42,37 @@ internal static class ThumbnailCacheService
     private static bool _disposalScheduled;
     private const int MaxDecodeWidth = 400;
 
-    // The width of a card's picture (the card template in MainWindow.axaml)
-    private const double CardPictureWidth = 270;
+    // The widest a card's picture gets: a large card (Models/CardSize.cs). Previews are decoded for it whatever the size
+    // shown, so a switch to large cards needs no decoding again. It costs only for pictures wider than that: the game's
+    // previews are 360 px and are decoded as they are; a cover from a screenshot or a drawn preview is made smaller
+    private static readonly double CardPictureWidth = Models.CardLayout.TargetWidth(Models.CardSize.Large);
 
     /// <summary>
-    /// The scale of the main window's screen (its RenderScaling): previews wider than the card is on the screen are
-    /// decoded smaller, but not below <see cref="MaxDecodeWidth"/>, so a 4K cover stays sharp at 150 %
+    /// The scale of the main window's screen (its RenderScaling): previews wider than the largest card is on the screen
+    /// are decoded smaller, but not below <see cref="MaxDecodeWidth"/>. A larger scale (the window moved to another
+    /// screen) lets go of the previews kept for later, decoded for the smaller one
     /// </summary>
-    public static double DisplayScaling { get; set; } = 1;
+    public static double DisplayScaling
+    {
+        get => _displayScaling;
+        set
+        {
+            if (value == _displayScaling) return;
+            bool larger = value > _displayScaling;
+            _displayScaling = value;
+            if (larger) DropRecentlyReleased();
+        }
+    }
+
+    private static double _displayScaling = 1;
 
     private static int DecodeWidth => Math.Max(MaxDecodeWidth, Screenshots.ScreenshotStore.PixelWidth(CardPictureWidth, DisplayScaling));
+
+    private static void DropRecentlyReleased()
+    {
+        if (!Dispatcher.UIThread.CheckAccess()) return;
+        while (_recentlyReleased.First is { } node) RemoveRecent(node, dispose: true);
+    }
 
     private static readonly Dictionary<string, CacheEntry> _cache = [];
     private static readonly LinkedList<RecentBitmap> _recentlyReleased = new();
@@ -346,13 +367,20 @@ internal static class ThumbnailCacheService
         try
         {
             // The size from the file's header: a large picture is decoded straight to the card's width, never whole
+            Bitmap bitmap;
             if (Screenshots.ScreenshotStore.SizeOf(path) is { } size && size.Width > DecodeWidth)
             {
                 using var resizeStream = File.OpenRead(path);
-                return Bitmap.DecodeToWidth(resizeStream, DecodeWidth, BitmapInterpolationMode.HighQuality);
+                bitmap = Bitmap.DecodeToWidth(resizeStream, DecodeWidth, BitmapInterpolationMode.HighQuality);
             }
-            using var stream = File.OpenRead(path);
-            return new Bitmap(stream);
+            else
+            {
+                using var stream = File.OpenRead(path);
+                bitmap = new Bitmap(stream);
+            }
+            // The card's colour while the picture loads, next time (made before 1.8.0, or a cover)
+            PreviewColors.Learn(path, bitmap);
+            return bitmap;
         }
         catch (Exception ex)
         {

@@ -37,6 +37,12 @@ internal static class GalleryClicks
             text.ClearSelection();
     }
 
+    /// <summary>
+    /// The class of what lies over the gallery and is not its empty space (the properties panel): a click there, on its
+    /// text or between its buttons, keeps the selection it shows
+    /// </summary>
+    public const string KeepsSelectionClass = "keepsSelection";
+
     /// <summary>Whether a click on <paramref name="source"/> (the element under the pointer) is on the empty space</summary>
     public static bool IsEmptySpace(Visual? source)
     {
@@ -45,6 +51,7 @@ internal static class GalleryClicks
         {
             if (visual is Border border && border.Classes.Contains(CardClass)) return false;
             if (visual is Button or ToggleButton or ScrollBar or TextBox or MenuItem) return false;
+            if (visual is StyledElement { Classes: var classes } && classes.Contains(KeepsSelectionClass)) return false;
         }
         return true;
     }

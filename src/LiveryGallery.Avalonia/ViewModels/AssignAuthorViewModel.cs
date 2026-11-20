@@ -77,7 +77,7 @@ internal sealed partial class AssignAuthorViewModel : ObservableObject
         if (entries.Count == 1)
         {
             var entry = entries[0];
-            string car = $"{entry.CarManufacturer} {entry.CarModelName}".Trim();
+            string car = entry.CarName;
             LiveryText = string.IsNullOrWhiteSpace(entry.Data.LiveryName) ? car : $"{entry.Data.LiveryName} — {car}";
             NoteText = entry.Data.AuthorIdKind == AuthorIdKind.Invalid ? Strings.AssignAuthorInvalidIdNote : Strings.AssignAuthorNoIdNote;
             TitleText = Strings.AssignAuthorDialogTitle;

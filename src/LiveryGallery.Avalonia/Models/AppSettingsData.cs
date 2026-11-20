@@ -89,6 +89,10 @@ internal class AppSettingsData
     public string ScreenshotsGrouping { get; set; } = nameof(Services.Screenshots.ScreenshotGroupMode.ByLivery);
     /// <summary>The "Screenshots" view shows the newest first; off: the oldest</summary>
     public bool ScreenshotsNewestFirst { get; set; } = true;
+    /// <summary>The "Screenshots" view as tiles: the pictures alone, close together; off: each with its line under it</summary>
+    public bool ScreenshotsTiles { get; set; }
+    /// <summary>How big the "Screenshots" view's pictures are (the cards' three sizes, a size of their own)</summary>
+    public CardSize ScreenshotsSize { get; set; }
     public bool AutoRefreshLiveries { get; set; } = true;
     public bool RefreshLiveriesOnButtonClick { get; set; } = false;
     public bool SearchByFolderName { get; set; } = false;
@@ -101,6 +105,21 @@ internal class AppSettingsData
     public int WheelScrollSpeedPercent { get; set; } = 100;
     /// <summary>A card's badges at its bottom, under its lines; else (the default) on its picture</summary>
     public bool BadgesAtBottom { get; set; }
+    /// <summary>How big the gallery's cards are (Ctrl+wheel, Ctrl+«+»/«−», the status bar's switch)</summary>
+    public CardSize CardSize { get; set; }
+    /// <summary>The properties panel on the right of the gallery is open (Ctrl+I, the title bar's button)</summary>
+    public bool PropertiesPanelOpen { get; set; }
+
+    /// <summary>
+    /// The gallery sends the save's profile to the livery server ("On cars", the account's name), in every game: one
+    /// consent, asked when the switch is turned on (Settings › Livery server). Up to 1.8.0-beta.1 each game had its own
+    /// (<see cref="GameSettingsData.ServerConnectionOfGame"/>), so FH3 to FH5 started without it: AppSettingsMigration
+    /// turns this on when any game's was
+    /// </summary>
+    public bool ServerConnectionEnabled { get; set; }
+
+    /// <summary>The scale of the whole interface on top of the screen's, in percent (ForzaToolkit's UiScale): 100 to 200</summary>
+    public int UiScalePercent { get; set; } = 100;
     /// <summary>Take betas as well as releases when the gallery updates itself (the beta channel)</summary>
     public bool BetaUpdates { get; set; }
     /// <summary>Install a newer version only when the user says so (the default), or at once when the gallery closes</summary>
@@ -124,7 +143,6 @@ internal class AppSettingsData
     [JsonIgnore] public CopiesFilterMode CopiesFilterMode { get => Game.CopiesFilterMode; set => Game.CopiesFilterMode = value; }
     [JsonIgnore] public PaintFilterMode PaintFilterMode { get => Game.PaintFilterMode; set => Game.PaintFilterMode = value; }
     [JsonIgnore] public AuctionFilterMode AuctionFilterMode { get => Game.AuctionFilterMode; set => Game.AuctionFilterMode = value; }
-    [JsonIgnore] public bool ServerConnectionEnabled { get => Game.ServerConnectionEnabled; set => Game.ServerConnectionEnabled = value; }
     [JsonIgnore] public bool WarnArchiveWithoutInstalledData { get => Game.WarnArchiveWithoutInstalledData; set => Game.WarnArchiveWithoutInstalledData = value; }
     [JsonIgnore] public bool WarnArchiveWithOutdatedInstalledData { get => Game.WarnArchiveWithOutdatedInstalledData; set => Game.WarnArchiveWithOutdatedInstalledData = value; }
     [JsonIgnore] public string? GameInstallPath { get => Game.GameInstallPath; set => Game.GameInstallPath = value; }
@@ -169,6 +187,8 @@ internal class AppSettingsData
         ScreenshotsInBackups = other.ScreenshotsInBackups;
         ScreenshotsGrouping = other.ScreenshotsGrouping;
         ScreenshotsNewestFirst = other.ScreenshotsNewestFirst;
+        ScreenshotsTiles = other.ScreenshotsTiles;
+        ScreenshotsSize = other.ScreenshotsSize;
         AutoRefreshLiveries = other.AutoRefreshLiveries;
         RefreshLiveriesOnButtonClick = other.RefreshLiveriesOnButtonClick;
         SearchByFolderName = other.SearchByFolderName;
@@ -176,6 +196,10 @@ internal class AppSettingsData
         WheelClickScroll = other.WheelClickScroll;
         WheelScrollSpeedPercent = other.WheelScrollSpeedPercent;
         BadgesAtBottom = other.BadgesAtBottom;
+        CardSize = other.CardSize;
+        PropertiesPanelOpen = other.PropertiesPanelOpen;
+        UiScalePercent = other.UiScalePercent;
+        ServerConnectionEnabled = other.ServerConnectionEnabled;
         BetaUpdates = other.BetaUpdates;
         UpdateInstall = other.UpdateInstall;
         AutoBackupBeforeArchive = other.AutoBackupBeforeArchive;

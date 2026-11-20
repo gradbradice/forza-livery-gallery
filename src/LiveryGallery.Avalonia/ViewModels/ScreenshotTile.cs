@@ -16,7 +16,11 @@ internal sealed partial class ScreenshotTile(LiveryScreenshot screenshot, Livery
 
     /// <summary>The line under the picture; the grouping sets it</summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Tooltip))]
     private string _caption = "";
+
+    /// <summary>The line and the file's name: the tiles show no line, the tooltip has it</summary>
+    public string Tooltip => Caption.Length > 0 ? $"{Caption}\n{Screenshot.FileName}" : Screenshot.FileName;
 
     [ObservableProperty]
     private Bitmap? _thumbnail;

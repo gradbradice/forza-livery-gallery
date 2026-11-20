@@ -29,7 +29,9 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
     private readonly LiveryRenderService _service;
     private readonly LiveryThumbnails _thumbnails;
     private readonly AppSettingsData _settings;
-    private readonly string _gameId;
+    private readonly ForzaToolkit.Games.ForzaGame _game;
+    // The format the livery files are read in: the game's
+    private readonly ForzaToolkit.Formats.ForzaGame _format;
     private readonly LiveryGallery.Services.ViewerCameraStore? _cameraStore;
     private readonly LiveryUpgradeNames? _upgradeNames;
     private readonly ViewerCameraMemory _cameras;
@@ -54,17 +56,25 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
 
     /// <param name="settings">The viewer windows remember their quality setting there</param>
     /// <param name="cars">The car list: the stock wheels of each car (sizes and stance from the game database)</param>
-    /// <param name="gameId">The game whose cars and shapes are drawn (ForzaToolkit.Games id): its game folder, its caches</param>
+    /// <param name="game">The game of the liveries: drawn with its files (FH3 to FH5 with another game's when their own cannot be read)</param>
+    /// <param name="format">The format of the game's livery files (the profile's)</param>
+    /// <param name="otherFolder">Another game's folder, for FH3 to FH5 drawn with it: its setting, or found</param>
+    /// <param name="decalIds">The game's logo numbers → files; null — the renderer's own (FH6's)</param>
     /// <param name="upgrades">The game's names of the cars' tuning parts (car-upgrades.json); null — the window's own</param>
     /// <param name="language">The game language the car texts are shown in (<c>CarTextProvider.LanguageCode</c>), asked each time</param>
     /// <param name="cameraStore">The game's file of the camera left on each car; null: they are not kept</param>
-    public Livery3DViewer(AppSettingsData settings, CarDatabaseService cars, string gameId, CarUpgradesService? upgrades = null,
-        Func<string>? language = null, LiveryGallery.Services.ViewerCameraStore? cameraStore = null)
+    public Livery3DViewer(AppSettingsData settings, CarDatabaseService cars, ForzaToolkit.Games.ForzaGame game,
+        ForzaToolkit.Formats.ForzaGame format, CarUpgradesService? upgrades = null,
+        Func<string>? language = null, LiveryGallery.Services.ViewerCameraStore? cameraStore = null,
+        Func<ForzaToolkit.Games.ForzaGame, string?>? otherFolder = null, Func<DecalIdMap?>? decalIds = null)
     {
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentNullException.ThrowIfNull(cars);
+        ArgumentNullException.ThrowIfNull(game);
         _settings = settings;
-        _gameId = gameId;
+        _game = game;
+        _format = format;
+        string gameId = game.Id;
         if (upgrades is not null)
             _upgradeNames = new LiveryUpgradeNames(
                 part => upgrades.Catalog.PartName(part, language?.Invoke()),
@@ -78,14 +88,17 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
         var kept = cameraStore?.Load(settings.Games.GetValueOrDefault(gameId), () => LiveryGallery.Services.AppSettingsService.Save(settings));
         _cameras = new ViewerCameraMemory(kept?.Select(c => new ViewerCameraEntry(c.Car, new ViewerCamera(c.Yaw, c.Pitch, c.Zoom, c.PanX, c.PanY))));
         _cameras.Changed += (_, _) => _camerasChanged = true;
-        _service = new LiveryRenderService(gameId, carId => cars.Get(carId)?.Wheels);
-        _thumbnails = new LiveryThumbnails(_service);
+        _service = new LiveryRenderService(game, carId => cars.Get(carId)?.Wheels, otherFolder, decalIds);
+        _thumbnails = new LiveryThumbnails(_service, _format, LiveryFileDrawing.PreviewOptions(game));
         _service.StateChanged += OnServiceStateChanged;
     }
 
     public bool IsChecking => _service.IsChecking;
     public bool IsAvailable => _service.IsAvailable;
     public string? GameDirectory => _service.GameDirectory;
+
+    /// <summary>"Drawn with FH4 car models and paints: …" when another game's files draw; null with the game's own</summary>
+    public string? DrawnWithNote => LiveryFileDrawing.BorrowedNote(_game, _service.DrawnWith?.Game);
     public GameFolderReport? FolderReport => _report;
     public ILiveryThumbnails Thumbnails => _thumbnails;
 
@@ -131,7 +144,7 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
         try
         {
             byte[] bytes = await File.ReadAllBytesAsync(request.LiveryFilePath);
-            drawing = await Task.Run(() => LiveryDrawings.FromCLivery((uint)Math.Max(0, request.CarId), bytes));
+            drawing = await Task.Run(() => LiveryFileDrawing.Read(_format, (uint)Math.Max(0, request.CarId), bytes));
         }
         catch (Exception ex)
         {
@@ -170,7 +183,8 @@ internal sealed class Livery3DViewer : ILivery3DViewer, IDisposable
         }
 
         slot.Key = request.Key;
-        var shown = slot.Window.ShowLiveryAsync(request.LiveryName, request.CarText, request.GameName, drawing.Value!);
+        // Drawn with another game's files (FH4 encrypted with FH5's…): the window says so under the car, every time
+        var shown = slot.Window.ShowLiveryAsync(request.LiveryName, request.CarText, request.GameName, drawing.Value!, DrawnWithNote);
         // A window opened beside others that turn together starts at their camera
         if (beside is not null && slot.Window.SyncCamera && beside.Window.SyncCamera) slot.Window.SetView(beside.Window.View);
         await shown;

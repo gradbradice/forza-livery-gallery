@@ -148,8 +148,11 @@ internal sealed partial class MainViewModel
     }
 
     /// <summary>
-    /// Once per launch, after the first scan: says in the status bar that accounts gone for a while still take
-    /// space. Only a hint; nothing is deleted without the user (a folder may be on a drive that is just unplugged).
+    /// Once per launch, after the first scan: accounts whose save folder has been gone for a while
+    /// (<see cref="AccountRegistry.ForgetSuggestionAge"/>) give up their scan cache, which a scan builds again if the
+    /// folder comes back (a drive unplugged a long time), and with it the previews only they kept. Their storage,
+    /// archive, backups, journal and the user's tags stay: those go only when the user forgets the account. The status
+    /// bar then says that such accounts still take space
     /// </summary>
     private async Task PointOutGoneAccountsAsync()
     {
@@ -164,14 +167,47 @@ internal sealed partial class MainViewModel
             return;
         }
 
-        var longGone = stored
+        static List<StoredAccount> LongGone(List<StoredAccount> stored) => stored
             .Where(a => !a.IsCurrent && !a.SaveFolderExists
                 && (a.GoneSinceUtc is not { } since || DateTime.UtcNow - since > AccountRegistry.ForgetSuggestionAge))
             .ToList();
+        var longGone = LongGone(stored);
         if (longGone.Count == 0) return;
+
+        if (await DropGoneCachesAsync(longGone) > 0)
+        {
+            // The previews only those caches kept go with the cleanup of this scan
+            scanController.RequestOrphanCleanup();
+            await RunScanAsyncTracked(isUserInitiated: false);
+            try
+            {
+                longGone = LongGone(await ListStoredAccountsAsync());
+            }
+            catch (Exception ex)
+            {
+                AppLog.LogError("Failed to list the stored accounts", ex);
+                return;
+            }
+            if (longGone.Count == 0) return;
+        }
 
         Status.SetStatusText(string.Format(
             Strings.StatusGoneAccountsFormat, longGone.Count, ByteSizeFormatter.Format(longGone.Sum(a => a.Bytes))));
+    }
+
+    /// <summary>Drops the scan caches of <paramref name="longGone"/> (never the open account's); how many were dropped</summary>
+    private async Task<int> DropGoneCachesAsync(IReadOnlyList<StoredAccount> longGone)
+    {
+        int dropped = 0;
+        string? current = CurrentAccountKey;
+        foreach (var account in longGone)
+        {
+            if (account.IsCurrent || string.Equals(account.Key, current, StringComparison.OrdinalIgnoreCase)) continue;
+            if (!_scanService.HasCache(account.Key)) continue;
+            if (await _scanService.DropCacheAsync(account.Key)) dropped++;
+        }
+        if (dropped > 0) AppLog.LogWarning($"Scan caches of {dropped} accounts gone over {AccountRegistry.ForgetSuggestionAge.TotalDays:0} days dropped (not an error)");
+        return dropped;
     }
 
     partial void OnSelectedAccountChanged(AccountOption? value)
@@ -207,6 +243,9 @@ internal sealed partial class MainViewModel
         LeaveStorageMode(); // the other account has a storage of its own
         Gallery.ClearSelectionCommand.Execute(null);
         SavePathChanged?.Invoke();
+        OnPropertyChanged(nameof(IsSaveReadOnly));
+        OnPropertyChanged(nameof(ReadOnlySaveText));
+        RefreshArchiveAvailability();
 
         if (savePathService.ResolveSaveDataPath() is not null)
         {

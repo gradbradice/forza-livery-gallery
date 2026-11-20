@@ -19,7 +19,7 @@ internal sealed partial class ReturnSwapRowViewModel : ObservableObject, IThumbn
 
     public LiveryEntry Entry { get; }
     public string LiveryName => Entry.LiveryName;
-    public string CarText => Entry.CarYear is { } year ? $"{Entry.CarManufacturer} {Entry.CarModelName} ({year})".Trim() : $"{Entry.CarManufacturer} {Entry.CarModelName}".Trim();
+    public string CarText => Entry.CarTitle;
     public string? ThumbnailPath => Entry.Data.ThumbnailPath;
 
     public string SinceText => Entry.DownloadDate is { } date

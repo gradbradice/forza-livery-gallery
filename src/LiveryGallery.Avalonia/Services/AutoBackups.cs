@@ -126,13 +126,21 @@ internal sealed class AutoBackups(AccountStorage storage, AppSettingsData settin
                 AppLog.LogError($"Failed to make an automatic backup ({kind})", ex);
                 return AutoBackupOutcome.Failed;
             }
-            await Task.Run(() => backups.PruneAutomatic(config.Keep, Mine)).ConfigureAwait(true);
+            await Task.Run(() => PruneWithPreviews(backups, config.Keep, Mine, account.Key)).ConfigureAwait(true);
             return AutoBackupOutcome.Made;
         }
         finally
         {
             _one.Release();
         }
+    }
+
+    // The oldest automatic backups beyond the kept number go, and with them the PNGs made from them for the backups
+    // window (games\<game>\backup-thumbs\<account>): before, those stayed until the window was opened
+    private void PruneWithPreviews(LiveryBackups backups, int keep, Func<LiveryBackupManifest, bool> among, string accountKey)
+    {
+        if (backups.PruneAutomatic(keep, among).Count == 0) return;
+        new BackupPreviews(storage.Paths.Thumbs, storage.BackupThumbsOf(accountKey)).Prune(backups.GetAll());
     }
 
     /// <summary>
@@ -175,7 +183,7 @@ internal sealed class AutoBackups(AccountStorage storage, AppSettingsData settin
                 AppLog.LogError($"Failed to make an automatic backup of the storage ({kind})", ex);
                 return AutoBackupOutcome.Failed;
             }
-            await Task.Run(() => backups.PruneAutomatic(config.Keep, OfStorage)).ConfigureAwait(true);
+            await Task.Run(() => PruneWithPreviews(backups, config.Keep, OfStorage, account.Key)).ConfigureAwait(true);
             return AutoBackupOutcome.Made;
         }
         finally

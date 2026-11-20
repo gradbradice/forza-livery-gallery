@@ -4,6 +4,15 @@
         xmlns:ui="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
         xmlns:views="clr-namespace:LiveryGallery.Views">
 
+	<!-- The looks of a livery card's own buttons and frames (Views/CardParts.cs) -->
+	<Styles.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceInclude Source="avares://LiveryGallery.Avalonia/Themes/CardThemes.axaml" />
+			</ResourceDictionary.MergedDictionaries>
+		</ResourceDictionary>
+	</Styles.Resources>
+
 	<Style Selector="Path.menuIcon.installed">
 		<Setter Property="Fill" Value="{DynamicResource SuccessBrush}" />
 	</Style>
@@ -71,6 +80,275 @@
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
+	<!-- The notices' bar over the gallery (MainWindow.axaml, NoticeBanner): news in the accent's soft colour, a warning
+	     in amber; its buttons framed in the bar's colour -->
+	<Style Selector="Border.noticeBanner">
+		<Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="TextElement.Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+	</Style>
+	<Style Selector="Border.noticeBanner.warning">
+		<Setter Property="Background" Value="{DynamicResource WarningSoftBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource WarningBorderBrush}" />
+	</Style>
+	<Style Selector="Border.noticeBanner Path.noticeIcon">
+		<Setter Property="Fill" Value="{DynamicResource AccentHoverBrush}" />
+	</Style>
+	<Style Selector="Border.noticeBanner.warning Path.noticeIcon">
+		<Setter Property="Fill" Value="{x:Null}" />
+		<Setter Property="Stroke" Value="{DynamicResource WarningTextBrush}" />
+	</Style>
+	<Style Selector="Border.noticeBanner.warning TextBlock.noticeTitle">
+		<Setter Property="Foreground" Value="{DynamicResource WarningTextBrush}" />
+	</Style>
+	<Style Selector="Button.noticeAction">
+		<Setter Property="Height" Value="30" />
+		<Setter Property="Padding" Value="10,0" />
+		<Setter Property="CornerRadius" Value="8" />
+		<Setter Property="FontSize" Value="12.5" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="Border.noticeBanner.warning Button.noticeAction">
+		<Setter Property="BorderBrush" Value="{DynamicResource WarningBorderBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource WarningTextBrush}" />
+	</Style>
+	<Style Selector="Button.noticeIconButton">
+		<Setter Property="Width" Value="30" />
+		<Setter Property="Height" Value="30" />
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="CornerRadius" Value="8" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="Button.noticeIconButton:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+	<Style Selector="Button.toastUndo">
+		<Setter Property="Height" Value="30" />
+		<Setter Property="Padding" Value="12,0" />
+		<Setter Property="CornerRadius" Value="8" />
+		<Setter Property="FontSize" Value="12.5" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource ChipTextBrush}" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="ProgressBar.toastTime">
+		<Setter Property="Background" Value="{DynamicResource BorderBrush2}" />
+		<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
+	</Style>
+
+	<!-- The properties panel on the right of the gallery (Views/PropertiesPanel.axaml) -->
+	<!-- Over the list: a sheet with its own edge and a shadow to set it off from the cards under it -->
+	<Style Selector="Border.propertiesPanel">
+		<Setter Property="Background" Value="{DynamicResource ToolbarBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="10" />
+		<Setter Property="BoxShadow" Value="0 8 28 0 #59000000" />
+	</Style>
+	<Style Selector="TextBlock.propHeader">
+		<Setter Property="FontSize" Value="12.5" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+	</Style>
+	<Style Selector="TextBlock.propPart">
+		<Setter Property="FontSize" Value="11.5" />
+		<Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+	</Style>
+	<!-- The panel's round buttons, as a card's (CardIconButtonTheme) and the livery window's -->
+	<Style Selector="Button.roundIcon">
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="CornerRadius" Value="16" />
+		<Setter Property="Background" Value="{DynamicResource BgBrush}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="Button.roundIcon:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+	<Style Selector="Button.roundIcon:disabled">
+		<Setter Property="Opacity" Value="0.45" />
+	</Style>
+	<Style Selector="Button.roundIcon.locked /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+	</Style>
+	<Style Selector="Button.roundIcon.locked:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}" />
+	</Style>
+	<Style Selector="Button.roundIcon.toGame /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource StorageBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource StorageBrush}" />
+	</Style>
+	<Style Selector="Button.roundIcon.toGame views|ActionGlyph">
+		<Setter Property="IconBrush" Value="White" />
+	</Style>
+	<Style Selector="Border.propTag">
+		<Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
+		<Setter Property="CornerRadius" Value="13" />
+		<Setter Property="Padding" Value="10,0,4,0" />
+		<Setter Property="Height" Value="26" />
+	</Style>
+	<Style Selector="Border.propTag.part">
+		<Setter Property="Background" Value="Transparent" />
+	</Style>
+	<Style Selector="Button.propTagText">
+		<Setter Property="Foreground" Value="{DynamicResource ChipTextBrush}" />
+	</Style>
+	<Style Selector="Border.propTag.part Button.propTagText">
+		<Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="Button.propTagText">
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="FontSize" Value="11.5" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+	<Style Selector="Button.propTagText:pointerover /template/ ContentPresenter, Button.propTagText:pressed /template/ ContentPresenter">
+		<Setter Property="Background" Value="Transparent" />
+	</Style>
+	<Style Selector="Border.propTag.part Button.propTagText:pointerover /template/ ContentPresenter">
+		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+	</Style>
+	<Style Selector="Button.propTagRemove">
+		<Setter Property="Width" Value="20" />
+		<Setter Property="Height" Value="20" />
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="CornerRadius" Value="10" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="Button.propTagRemove:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+	<Style Selector="Border.propSuggestions">
+		<Setter Property="Background" Value="{DynamicResource CardBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="9" />
+		<Setter Property="Padding" Value="4" />
+		<!-- In a popup over what follows the field (TagEditor): a shadow sets it off from it -->
+		<Setter Property="BoxShadow" Value="0 4 14 0 #50000000" />
+		<Setter Property="Margin" Value="0,0,0,10" />
+	</Style>
+	<Style Selector="Button.propSuggestion">
+		<Setter Property="Padding" Value="8,5" />
+		<Setter Property="CornerRadius" Value="6" />
+		<Setter Property="FontSize" Value="12.5" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="Button.propSuggestion:pointerover /template/ ContentPresenter, Button.propSuggestion:focus-visible /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+
+	<!-- The bar over the gallery when several liveries are selected (MainWindow.SelectionBar.cs) -->
+	<Style Selector="Border.selectionBar">
+		<Setter Property="Background" Value="{DynamicResource CardBrush}" />
+		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="14" />
+		<Setter Property="Padding" Value="14,6,6,6" />
+		<Setter Property="BoxShadow" Value="0 12 32 0 #55000000" />
+	</Style>
+	<Style Selector="Button.selectionAction">
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Padding" Value="10,0" />
+		<Setter Property="CornerRadius" Value="8" />
+		<Setter Property="FontSize" Value="12.5" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="Cursor" Value="Hand" />
+	</Style>
+	<Style Selector="Button.selectionAction:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+	<Style Selector="Button.titleText.on /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+	<!-- Greyed out when it cannot be done (FH3 to FH5: liveries only shown), its tooltip saying why -->
+	<Style Selector="Button.selectionAction:disabled">
+		<Setter Property="Opacity" Value="0.4" />
+	</Style>
+	<Style Selector="Button.selectionAction Path">
+		<Setter Property="Width" Value="14" />
+		<Setter Property="Height" Value="14" />
+		<Setter Property="Stretch" Value="Uniform" />
+		<Setter Property="Stroke" Value="{DynamicResource TextSecondaryBrush}" />
+		<Setter Property="StrokeThickness" Value="1.6" />
+		<Setter Property="StrokeLineCap" Value="Round" />
+		<Setter Property="StrokeJoin" Value="Round" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
+
+	<!-- The cards' size in the status bar: three squares, the one of the size shown lit (MainWindow.CardSize.cs) -->
+	<Style Selector="Button.cardSize">
+		<Setter Property="Width" Value="22" />
+		<Setter Property="Height" Value="22" />
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="CornerRadius" Value="6" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+	</Style>
+	<Style Selector="Button.cardSize > Border">
+		<Setter Property="CornerRadius" Value="2" />
+		<Setter Property="Background" Value="{DynamicResource TextTertiaryBrush}" />
+	</Style>
+	<Style Selector="Button.cardSize:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+	<Style Selector="Button.cardSize.on /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+	<Style Selector="Button.cardSize.on > Border">
+		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+	</Style>
+
+	<!-- "Authors" and "Statistics" in the title bar: an icon and a word, no frame -->
+	<Style Selector="Button.titleText">
+		<Setter Property="Height" Value="28" />
+		<Setter Property="Padding" Value="10,0" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="CornerRadius" Value="7" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+		<Setter Property="FontSize" Value="12.5" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+	</Style>
+	<Style Selector="Button.titleText:pointerover /template/ ContentPresenter">
+		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+	</Style>
+
 	<Style Selector="Button.rowLink">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Padding" Value="0" />
@@ -92,101 +370,8 @@
 		<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
 	</Style>
 
-	<Style Selector="Button.cardIconButton">
-		<Setter Property="Background" Value="{DynamicResource BgBrush}" />
-		<Setter Property="Width" Value="28" />
-		<Setter Property="Height" Value="28" />
-		<Setter Property="Padding" Value="0" />
-		<Setter Property="Cursor" Value="Hand" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
-		<Setter Property="CornerRadius" Value="14" />
-		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
-	</Style>
-	<!-- The icon of a round card button: an icon of the toolkit's 24 grid (ui:GridIcon), 18 x 18 in the 26 inside the ring, 4
-	     on each side. The grid scales to the box and every icon is drawn in its middle, so the icons are one size and in
-	     the button's middle, with no margin and no rounding of their own. A line icon (.line) has the grid's pen of 2 -->
-	<Style Selector="Button.cardIconButton ui|GridIcon">
-		<Setter Property="Width" Value="18" />
-		<Setter Property="Height" Value="18" />
-		<Setter Property="HorizontalAlignment" Value="Center" />
-		<Setter Property="VerticalAlignment" Value="Center" />
-		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
-	</Style>
-	<Style Selector="Button.cardIconButton ui|GridIcon.line">
-		<Setter Property="StrokeThickness" Value="2" />
-	</Style>
-	<!-- The note's mark: in the accent colour, so a card with a note is seen from afar -->
-	<Style Selector="Button.cardIconButton ui|GridIcon.note">
-		<Setter Property="Foreground" Value="{DynamicResource AccentBrush}" />
-	</Style>
-	<!-- The hidden preview button's older icon, fitted into 14 x 14 -->
-	<Style Selector="Button.cardIconButton > Path">
-		<Setter Property="MaxWidth" Value="14" />
-		<Setter Property="MaxHeight" Value="14" />
-		<Setter Property="Stretch" Value="Uniform" />
-		<Setter Property="HorizontalAlignment" Value="Center" />
-		<Setter Property="VerticalAlignment" Value="Center" />
-	</Style>
-	<Style Selector="Button.cardIconButton.view3d:disabled">
-		<Setter Property="Opacity" Value="0.4" />
-		<Setter Property="Cursor" Value="Arrow" />
-	</Style>
-	<Style Selector="Button.cardIconButton:pointerover /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
-	</Style>
-	<!-- A locked livery: the lock button filled with the accent colour, seen from afar like the gold star -->
-	<Style Selector="Button.cardIconButton.locked /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-	</Style>
-	<Style Selector="Button.cardIconButton.locked:pointerover /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}" />
-	</Style>
 
-	<Style Selector="Border.liveryCard">
-		<Setter Property="Background" Value="{DynamicResource CardBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="CornerRadius" Value="14" />
-		<Setter Property="Cursor" Value="Hand" />
-	</Style>
-	<Style Selector="Border.liveryCard:pointerover">
-		<Setter Property="Background" Value="{DynamicResource CardHoverBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-	</Style>
-	<Style Selector="Border.liveryCard.selected">
-		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-		<Setter Property="BoxShadow" Value="0 0 0 2 #6366F1" />
-	</Style>
-	<!-- The cursor of the keys (the arrows): a ring outside the card, grey round a card not selected, a second ring
-	     round a selected one -->
-	<Style Selector="Border.liveryCard.current">
-		<Setter Property="BoxShadow" Value="0 0 0 2 #94A3B8" />
-	</Style>
-	<Style Selector="Border.liveryCard.current.selected">
-		<Setter Property="BoxShadow" Value="0 0 0 2 #6366F1, 0 0 0 4 #94A3B8" />
-	</Style>
 
-	<!-- The icon at the start of a line of the card (country, car type, author, date): a 12 px square at the same
-	     place on every line, with the same gap to the text, so the texts start at one line. The shape inside is
-	     scaled to fit the square and centred in it both ways (see the round buttons above for why the path itself has
-	     no Width and Height): the narrow person and the flat car share their centre with the flag and the calendar -->
-	<Style Selector="Border.cardMetaIcon">
-		<Setter Property="Width" Value="12" />
-		<Setter Property="Height" Value="12" />
-		<Setter Property="Margin" Value="0,0,6,0" />
-		<Setter Property="VerticalAlignment" Value="Center" />
-	</Style>
-	<Style Selector="Border.cardMetaIcon > Path">
-		<Setter Property="Stretch" Value="Uniform" />
-		<Setter Property="HorizontalAlignment" Value="Center" />
-		<Setter Property="VerticalAlignment" Value="Center" />
-		<Setter Property="UseLayoutRounding" Value="False" />
-		<Setter Property="Fill" Value="{DynamicResource TextSecondaryBrush}" />
-	</Style>
 
 	<!-- A chip: the quick filter kinds (toggle buttons) and the tags row (buttons: shown, hidden or off) -->
 	<Style Selector=":is(Button).tagChip">
@@ -292,135 +477,86 @@
 		<Setter Property="Background" Value="{DynamicResource HoverBrush}" />
 	</Style>
 
-	<Style Selector="Button.filterChipFilled">
-		<Setter Property="Padding" Value="10,5" />
+	<!-- A long list of rows (the archive, the backups, the changes): only the rows in view are made -->
+	<Style Selector="ItemsControl.rowList">
+		<Setter Property="ItemsPanel">
+			<ItemsPanelTemplate>
+				<VirtualizingStackPanel Orientation="Vertical" />
+			</ItemsPanelTemplate>
+		</Setter>
+	</Style>
+
+	<!-- The chips of the filters: one shape (filterChip), the kinds by their colours. Filled: a filter of the filter
+	     menu; outlined: a quick filter (a car, an author), so the two are told apart at a glance; "reset": "Reset
+	     filters" at the end, with no fill and no outline, so it reads as an action and not as one more filter -->
+	<Style Selector="Button.filterChip">
+		<Setter Property="Padding" Value="9,4" />
 		<Setter Property="FontSize" Value="11.5" />
 		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="CornerRadius" Value="14" />
+		<Setter Property="Template">
+			<ControlTemplate TargetType="Button">
+				<Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+					<ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      VerticalAlignment="Center" />
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+	<Style Selector="Button.filterChip.filled">
+		<Setter Property="Padding" Value="10,5" />
+		<Setter Property="BorderThickness" Value="0" />
 		<Setter Property="Foreground" Value="White" />
 		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
-		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="CornerRadius" Value="14" />
-		<Setter Property="Template">
-			<ControlTemplate TargetType="Button">
-				<Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-					<ContentPresenter Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      VerticalAlignment="Center" />
-				</Border>
-			</ControlTemplate>
-		</Setter>
 	</Style>
-	<Style Selector="Button.filterChipFilled:pointerover">
+	<Style Selector="Button.filterChip.filled:pointerover">
 		<Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
 	</Style>
-
-	<!-- A chip of a quick filter (a car, an author), after the filled chips of the filter menu's filters: the same
-	     shape, outlined, so the two kinds are told apart at a glance -->
-	<Style Selector="Button.filterChipOutlined">
-		<Setter Property="Padding" Value="9,4" />
-		<Setter Property="FontSize" Value="11.5" />
-		<Setter Property="Cursor" Value="Hand" />
-		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
-		<Setter Property="Background" Value="Transparent" />
+	<Style Selector="Button.filterChip.outlined">
 		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="CornerRadius" Value="14" />
-		<Setter Property="Template">
-			<ControlTemplate TargetType="Button">
-				<Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-					<ContentPresenter Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      VerticalAlignment="Center" />
-				</Border>
-			</ControlTemplate>
-		</Setter>
 	</Style>
-	<Style Selector="Button.filterChipOutlined:pointerover">
+	<Style Selector="Button.filterChip.outlined:pointerover, Button.filterChip.reset:pointerover">
 		<Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
 	</Style>
-
-	<!-- "Reset filters" at the end of the chips: of their height, with no fill and no outline, so it reads as an action
-	     and not as one more filter -->
-	<Style Selector="Button.filterChipReset">
-		<Setter Property="Padding" Value="9,4" />
-		<Setter Property="FontSize" Value="11.5" />
-		<Setter Property="Cursor" Value="Hand" />
+	<Style Selector="Button.filterChip.reset">
 		<Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="CornerRadius" Value="14" />
-		<Setter Property="Template">
-			<ControlTemplate TargetType="Button">
-				<Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-					<ContentPresenter Content="{TemplateBinding Content}"
-                                      ContentTemplate="{TemplateBinding ContentTemplate}"
-                                      VerticalAlignment="Center" />
-				</Border>
-			</ControlTemplate>
-		</Setter>
 	</Style>
-	<Style Selector="Button.filterChipReset:pointerover">
-		<Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
+	<Style Selector="Button.filterChip.reset:pointerover">
 		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
 	</Style>
 
-	<Style Selector="Button.tagChipCard">
-		<Setter Property="Padding" Value="5,1" />
-		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="Cursor" Value="Hand" />
-		<Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
-		<Setter Property="CornerRadius" Value="5" />
-		<Setter Property="Template">
-			<ControlTemplate TargetType="Button">
-				<Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-					<ContentPresenter Content="{TemplateBinding Content}"
-                                       ContentTemplate="{TemplateBinding ContentTemplate}" />
-				</Border>
-			</ControlTemplate>
-		</Setter>
-	</Style>
-	<Style Selector="Button.tagChipCard:pointerover">
-		<Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
-	</Style>
-	<Style Selector="Button.tagChipCard:pressed">
-		<Setter Property="RenderTransform" Value="scale(1)" />
-		<Setter Property="Opacity" Value="0.75" />
-	</Style>
 
+	<!-- A group: no box, a line of its own with a rule to the right (MainWindow.axaml, GroupHeaderTemplate). The cards keep
+	     their 8 px margin; the header's text starts where the cards do. The header of the group at the top of the view
+	     stays there (VirtualGalleryPanel, "pinned") on the window's background, with a shadow under it -->
 	<Style Selector="ToggleButton.groupHeader">
-		<Setter Property="Background" Value="{DynamicResource GroupBackgroundBrush}" />
+		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
-		<Setter Property="Padding" Value="16,12" />
-		<Setter Property="Margin" Value="4,10,4,0" />
-		<Setter Property="CornerRadius" Value="10,10,0,0" />
+		<Setter Property="Padding" Value="8,14,8,6" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="CornerRadius" Value="0" />
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="Cursor" Value="Hand" />
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Border Background="{TemplateBinding Background}"
-                        CornerRadius="{TemplateBinding CornerRadius}"
-                        Padding="{TemplateBinding Padding}">
-					<Grid ColumnDefinitions="*,Auto">
+				<Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"
+				        BoxShadow="{TemplateBinding Tag}">
+					<Grid ColumnDefinitions="Auto,*,Auto">
 						<ContentPresenter Content="{TemplateBinding Content}"
                                           ContentTemplate="{TemplateBinding ContentTemplate}"
                                           VerticalAlignment="Center" />
-						<Path x:Name="PART_Chevron" Grid.Column="1" Data="{DynamicResource IconChevronDown}"
+						<Border Grid.Column="1" Height="1" Margin="14,0,0,0" VerticalAlignment="Center"
+						        Background="{DynamicResource BorderBrush2}" />
+						<Path x:Name="PART_Chevron" Grid.Column="2" Data="{DynamicResource IconChevronDown}"
                               Width="10" Height="6" Stretch="Uniform" Margin="12,0,0,0"
                               Stroke="{DynamicResource TextSecondaryBrush}" StrokeThickness="1.5"
                               VerticalAlignment="Center" RenderTransformOrigin="50%,50%" />
@@ -432,20 +568,24 @@
 	<Style Selector="ToggleButton.groupHeader:checked /template/ Path#PART_Chevron">
 		<Setter Property="RenderTransform" Value="rotate(180deg)" />
 	</Style>
-	<Style Selector="ToggleButton.groupHeader:unchecked">
-		<Setter Property="Margin" Value="4,10,4,4" />
-		<Setter Property="CornerRadius" Value="10" />
+	<Style Selector="ToggleButton.groupHeader:pointerover /template/ Path#PART_Chevron">
+		<Setter Property="Stroke" Value="{DynamicResource TextPrimaryBrush}" />
 	</Style>
 	<Style Selector="ToggleButton.groupHeader:pressed">
 		<Setter Property="RenderTransform" Value="scale(1)" />
 	</Style>
+	<Style Selector="ToggleButton.groupHeader.pinned">
+		<Setter Property="Background" Value="{DynamicResource BgBrush}" />
+		<Setter Property="Padding" Value="8,8,8,6" />
+		<Setter Property="Tag">
+			<BoxShadows>0 6 8 -6 #80000000</BoxShadows>
+		</Setter>
+	</Style>
 	<Style Selector="Border.galleryRow">
-		<Setter Property="Background" Value="{DynamicResource GroupBackgroundBrush}" />
-		<Setter Property="Margin" Value="4,0" />
+		<Setter Property="Background" Value="Transparent" />
 	</Style>
 	<Style Selector="Border.galleryRow.last">
-		<Setter Property="Margin" Value="4,0,4,4" />
-		<Setter Property="CornerRadius" Value="0,0,10,10" />
+		<Setter Property="Margin" Value="0,0,0,10" />
 	</Style>
 	<Style Selector="Button.langItem">
 		<Setter Property="Background" Value="Transparent" />
@@ -558,6 +698,17 @@
 		<Setter Property="Padding" Value="8,2" />
 		<Setter Property="Cursor" Value="Hand" />
 	</Style>
+	<!-- A screenshot's tile (MainWindow.axaml, ScreenshotGroups): rounded, the line under it. In the tiles
+	     (MainWindow.ScreenshotLayout.cs, the class "tiles" on ScreenshotsView) the corners are small and there is no line -->
+	<Style Selector="Border.shotPicture, Border.shotFrame">
+		<Setter Property="CornerRadius" Value="8" />
+	</Style>
+	<Style Selector="Grid.tiles Border.shotPicture, Grid.tiles Border.shotFrame">
+		<Setter Property="CornerRadius" Value="3" />
+	</Style>
+	<Style Selector="Grid.tiles TextBlock.shotCaption">
+		<Setter Property="IsVisible" Value="False" />
+	</Style>
 	<Style Selector="Border.shotFrame">
 		<Setter Property="BorderThickness" Value="2.5" />
 		<Setter Property="BorderBrush" Value="Transparent" />
@@ -573,7 +724,7 @@
 		<Setter Property="BoxShadow" Value="0 0 0 2 #94A3B8" />
 	</Style>
 	<Style Selector="Border.shotTile.current.selected Border.shotFrame">
-		<Setter Property="BoxShadow" Value="0 0 0 2 #6366F1, 0 0 0 4 #94A3B8" />
+		<Setter Property="BoxShadow" Value="0 0 0 2 #5B5EF0, 0 0 0 4 #94A3B8" />
 	</Style>
 
 	<!-- A small round button over a picture (the card's and the strip's "game's preview back"). The dark circle is the
@@ -655,31 +806,6 @@
 		<Setter Property="Opacity" Value="0.9" />
 	</Style>
 
-	<!-- A stored card: "To the game" filled with the storage's cyan, the mark of a selected card and its frame in it -->
-	<Style Selector="Button.cardIconButton.toGame /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource StorageBrush}" />
-		<Setter Property="BorderBrush" Value="{DynamicResource StorageBrush}" />
-	</Style>
-	<Style Selector="Button.cardIconButton.toGame:pointerover /template/ ContentPresenter">
-		<Setter Property="Background" Value="{DynamicResource StorageBrush}" />
-		<Setter Property="Opacity" Value="0.88" />
-	</Style>
-	<Style Selector="Border.selectMark">
-		<Setter Property="Background" Value="{DynamicResource AccentBrush}" />
-	</Style>
-	<Style Selector="Window.storageMode Border.selectMark">
-		<Setter Property="Background" Value="{DynamicResource StorageBrush}" />
-	</Style>
-	<Style Selector="Window.storageMode Border.liveryCard:pointerover">
-		<Setter Property="BorderBrush" Value="{DynamicResource StorageBrush}" />
-	</Style>
-	<Style Selector="Window.storageMode Border.liveryCard.selected">
-		<Setter Property="BorderBrush" Value="{DynamicResource StorageBrush}" />
-		<Setter Property="BoxShadow" Value="0 0 0 2 #0E7490" />
-	</Style>
-	<Style Selector="Window.storageMode Border.liveryCard.current.selected">
-		<Setter Property="BoxShadow" Value="0 0 0 2 #0E7490, 0 0 0 4 #94A3B8" />
-	</Style>
 
 	<!-- "Return to the game" with too little room: the line of the room, a way to choose (in cyan when chosen), the list
 	     of the game's liveries that make room, and the button in the storage's colour -->
@@ -717,6 +843,10 @@
 	</Style>
 	<Style Selector="Border.swapRow">
 		<Setter Property="Padding" Value="2,3" />
+	</Style>
+	<!-- A secondary button that cannot be used looks so, whatever its colour (the livery window's "Move to the trash") -->
+	<Style Selector="Button.secondary:disabled">
+		<Setter Property="Opacity" Value="0.45" />
 	</Style>
 	<Style Selector="Button.primary.storage">
 		<Setter Property="Background" Value="{DynamicResource StorageBrush}" />

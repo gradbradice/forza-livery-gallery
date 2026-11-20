@@ -201,12 +201,6 @@
   <data name="ButtonClose" xml:space="preserve">
     <value>Close</value>
   </data>
-  <data name="TagsDialogTitle" xml:space="preserve">
-    <value>Tags</value>
-  </data>
-  <data name="TagsDialogHint" xml:space="preserve">
-    <value>Separate tags with commas, for example: drift, anime, race</value>
-  </data>
   <data name="ButtonSave" xml:space="preserve">
     <value>Save</value>
   </data>
@@ -599,19 +593,19 @@ A card joins the nicknames of one author under one name.</value>
     <value>No author card</value>
   </data>
   <data name="ContextMenuMoveToArchive" xml:space="preserve">
-    <value>Move to the archive</value>
+    <value>Move to the trash</value>
   </data>
   <data name="MenuOpenArchive" xml:space="preserve">
-    <value>Archive</value>
+    <value>Trash</value>
   </data>
   <data name="MenuOpenBackups" xml:space="preserve">
     <value>Backups</value>
   </data>
   <data name="ArchiveDialogTitle" xml:space="preserve">
-    <value>Archive</value>
+    <value>Trash</value>
   </data>
   <data name="ArchiveEmptyHint" xml:space="preserve">
-    <value>The archive is empty</value>
+    <value>The trash is empty</value>
   </data>
   <data name="ArchiveSelectedCountFormat" xml:space="preserve">
     <value>Selected: {0}</value>
@@ -629,7 +623,7 @@ A card joins the nicknames of one author under one name.</value>
     <value>{0} will be moved to the Recycle Bin. The gallery cannot undo this.</value>
   </data>
   <data name="ArchivedOnFormat" xml:space="preserve">
-    <value>Archived on {0}</value>
+    <value>In the trash since {0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
     <value>Choose the save folder in Settings before restoring liveries</value>
@@ -647,7 +641,7 @@ A card joins the nicknames of one author under one name.</value>
     <value>Open the original preview</value>
   </data>
   <data name="LoadingMovingToArchive" xml:space="preserve">
-    <value>Moving to the archive…</value>
+    <value>Moving to the trash…</value>
   </data>
   <data name="ArchiveSelectAllButton" xml:space="preserve">
     <value>Select all</value>
@@ -824,10 +818,10 @@ Restore these liveries anyway?</value>
   </data>
   <data name="AuctionBadgeTooltip" xml:space="preserve">
     <value>Bought at the Auction House.
-It can be moved to the archive only after the livery server confirms that no car uses it.</value>
+It can be moved to the trash only after the livery server confirms that no car uses it.</value>
   </data>
   <data name="ArchiveAuctionNotAllowedTooltip" xml:space="preserve">
-    <value>Auction liveries can be moved to the archive only after the livery server confirms that no car uses them</value>
+    <value>Auction liveries can be moved to the trash only after the livery server confirms that no car uses them</value>
   </data>
   <data name="ArchiveAuctionSkippedFormat" xml:space="preserve">
     <value>Selected auction liveries left in the game: {0}. It is not confirmed that no car uses them. They can be moved once the livery server has the current save.</value>
@@ -996,7 +990,7 @@ It can be moved to the archive only after the livery server confirms that no car
 Updated at {1}</value>
   </data>
   <data name="ServerSyncProfileNotFound" xml:space="preserve">
-    <value>The save folder has no profile file C_ProfileData.</value>
+    <value>The save folder has no profile file ProfileData.</value>
   </data>
   <data name="ServerSyncSaveNotSupported" xml:space="preserve">
     <value>The server cannot read this save yet. The game was probably updated. Support will be added.</value>
@@ -1023,14 +1017,17 @@ Updated at {1}</value>
     <value>Use the server to find the liveries on cars</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>To find out which liveries are on your cars and the name of your account, the gallery sends the save file C_ProfileData to the server. The server uses the file only for this and does not store it.
+    <value>To find out which liveries are on your cars and the name of your account, the gallery sends the save file ProfileData to the server. The server uses the file only for this and does not store it.
 
 The data from the file is not kept and is not used for anything else. The server keeps the keys needed to decrypt the save file in a safe place.
 
 The server has no connection to the official servers of Forza Horizon, Xbox or Microsoft.</value>
   </data>
+  <data name="ServerConnectionAllGames" xml:space="preserve">
+    <value>The setting is shared by every game in the gallery: FH6, FH5, FH4 and FH3.</value>
+  </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>To find out which liveries are on your cars and the name of your account, the gallery sends the save file C_ProfileData to the server. The server uses the file only for this and does not store it.
+    <value>To find out which liveries are on your cars and the name of your account, the gallery sends the save file ProfileData to the server. The server uses the file only for this and does not store it.
 
 The data from the file is not kept and is not used for anything else. The server keeps the keys needed to decrypt the save file in a safe place.
 
@@ -1082,36 +1079,36 @@ Data is sent to the server only with your consent. Turn on the connection to the
 {0}</value>
   </data>
   <data name="ArchiveInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Liveries that are on cars in the game cannot be moved to the archive</value>
+    <value>Liveries that are on cars in the game cannot be moved to the trash</value>
   </data>
   <data name="ArchiveInstalledSkippedFormat" xml:space="preserve">
-    <value>Liveries that are on cars in the game cannot be moved to the archive. Selected liveries left in the game: {0}.</value>
+    <value>Liveries that are on cars in the game cannot be moved to the trash. Selected liveries left in the game: {0}.</value>
   </data>
   <data name="ArchiveInstalledUnknownMessage" xml:space="preserve">
-    <value>It is not known which liveries are on cars, so moving this livery to the archive is not safe: it may be on a car in the game.
+    <value>It is not known which liveries are on cars, so moving this livery to the trash is not safe: it may be on a car in the game.
 
-Move the livery to the archive?</value>
+Move the livery to the trash?</value>
   </data>
   <data name="ArchiveInstalledUnknownMessageMany" xml:space="preserve">
-    <value>It is not known which liveries are on cars, so moving these liveries to the archive is not safe: some of them may be on cars in the game.
+    <value>It is not known which liveries are on cars, so moving these liveries to the trash is not safe: some of them may be on cars in the game.
 
-Move the liveries to the archive?</value>
+Move the liveries to the trash?</value>
   </data>
   <data name="DontShowAgainCheckBox" xml:space="preserve">
     <value>Do not show again</value>
   </data>
   <data name="ArchiveAuctionOrInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Liveries that are on cars in the game cannot be moved to the archive. Auction liveries can be moved only after the livery server confirms that no car uses them.</value>
+    <value>Liveries that are on cars in the game cannot be moved to the trash. Auction liveries can be moved only after the livery server confirms that no car uses them.</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessage" xml:space="preserve">
-    <value>The save has changed since the last sync, and the new data has not reached the livery server yet. The list of liveries on cars may be out of date, so moving this livery to the archive is not safe: it may be on a car in the game.
+    <value>The save has changed since the last sync, and the new data has not reached the livery server yet. The list of liveries on cars may be out of date, so moving this livery to the trash is not safe: it may be on a car in the game.
 
-It is better to wait for the sync, which runs automatically and may take a few minutes, and then try again. Move the livery to the archive now?</value>
+It is better to wait for the sync, which runs automatically and may take a few minutes, and then try again. Move the livery to the trash now?</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>The save has changed since the last sync, and the new data has not reached the livery server yet. The list of liveries on cars may be out of date, so moving these liveries to the archive is not safe: some of them may be on cars in the game.
+    <value>The save has changed since the last sync, and the new data has not reached the livery server yet. The list of liveries on cars may be out of date, so moving these liveries to the trash is not safe: some of them may be on cars in the game.
 
-It is better to wait for the sync, which runs automatically and may take a few minutes, and then try again. Move the liveries to the archive now?</value>
+It is better to wait for the sync, which runs automatically and may take a few minutes, and then try again. Move the liveries to the trash now?</value>
   </data>
   <data name="ContextMenuNavigateInGame" xml:space="preserve">
     <value>Find in game</value>
@@ -1199,29 +1196,41 @@ While the cursor moves, do not touch the mouse or the keyboard: moving the mouse
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>Automatic</value>
   </data>
+  <data name="NavigationRowsOne" xml:space="preserve">
+    <value>1 row</value>
+  </data>
   <data name="NavigationRowsTwo" xml:space="preserve">
-    <value>2 rows, standard menu</value>
+    <value>2 rows</value>
   </data>
   <data name="NavigationRowsThree" xml:space="preserve">
-    <value>3 rows, menu mod</value>
+    <value>3 rows</value>
   </data>
-  <data name="NavigationRowsDetectedVanilla" xml:space="preserve">
-    <value>Detected: 2 rows, the standard menu.</value>
+  <data name="NavigationRowsStandardFormat" xml:space="preserve">
+    <value>{0}, standard menu</value>
+  </data>
+  <data name="NavigationRowsDetectedStandardFormat" xml:space="preserve">
+    <value>Detected: {0}, the standard menu.</value>
   </data>
   <data name="NavigationRowsDetectedModFormat" xml:space="preserve">
-    <value>Detected: {0} rows, a mod changed the menu.</value>
+    <value>Detected: {0}, a mod changed the menu.</value>
   </data>
-  <data name="NavigationRowsDetectedNoGameFolder" xml:space="preserve">
-    <value>The game folder is not set, so 2 rows are assumed. Set the game folder to detect menu mods.</value>
+  <data name="NavigationRowsDetectedNoGameFolderFormat" xml:space="preserve">
+    <value>The game folder is not set, so the standard menu is assumed ({0}). Set the game folder to detect menu mods.</value>
   </data>
   <data name="NavigationRowsDetectedUnknown" xml:space="preserve">
-    <value>Could not detect the rows: the menu file was changed in an unknown way. Choose 2 or 3 rows.</value>
+    <value>Could not detect the rows: the menu was changed in an unknown way. Choose the rows by hand.</value>
   </data>
   <data name="NavigationKeyIntervalLabel" xml:space="preserve">
     <value>Pause between key presses</value>
   </data>
   <data name="NavigationKeyIntervalHint" xml:space="preserve">
     <value>Increase it if the cursor stops before the livery: the game skips keys that come too fast.</value>
+  </data>
+  <data name="NavigationMenuOpenDelayLabel" xml:space="preserve">
+    <value>Wait after opening “My Designs”</value>
+  </data>
+  <data name="NavigationMenuOpenDelayHint" xml:space="preserve">
+    <value>Before it moves the cursor, the gallery closes “My Designs” and opens it again. Increase the wait if the game, with many designs, is still opening the menu when the cursor starts to move. Up to 10 seconds.</value>
   </data>
   <data name="MillisecondsFormat" xml:space="preserve">
     <value>{0} ms</value>
@@ -1266,7 +1275,7 @@ While the cursor moves, do not touch the mouse or the keyboard: moving the mouse
     <value>Saves a ZIP file with the log, the settings without paths and IDs, and the livery read errors, to attach to a bug report. Nothing is sent anywhere.</value>
   </data>
   <data name="ExportDiagnosticsButton" xml:space="preserve">
-    <value>Export diagnostics…</value>
+    <value>Export diagnostics</value>
   </data>
   <data name="DiagnosticsSaveDialogTitle" xml:space="preserve">
     <value>Save diagnostics</value>
@@ -1379,7 +1388,7 @@ All accounts and nicknames of these authors will belong to one card. You can spl
     <value>Account data</value>
   </data>
   <data name="AccountDataHint" xml:space="preserve">
-    <value>Each game account has its own scan cache and previews. Forgetting an account frees this space. If the account comes back, its liveries are scanned again. The archive and backups are not affected.</value>
+    <value>Each game account has its own scan cache and previews. Forgetting an account frees this space. If the account comes back, its liveries are scanned again. The trash and backups are not affected.</value>
   </data>
   <data name="AccountDataCurrent" xml:space="preserve">
     <value>Current account</value>
@@ -1400,7 +1409,7 @@ All accounts and nicknames of these authors will belong to one card. You can spl
     <value>Forget the account</value>
   </data>
   <data name="AccountDataForgetMessage" xml:space="preserve">
-    <value>Forget {0}? Its scan cache and previews, about {1}, will be deleted. The archive and backups stay. If the account comes back, its liveries will be scanned again.</value>
+    <value>Forget {0}? Its scan cache and previews, about {1}, will be deleted. The trash and backups stay. If the account comes back, its liveries will be scanned again.</value>
   </data>
   <data name="AccountDataForgetFailedMessage" xml:space="preserve">
     <value>Could not delete the data of the account. The details are in the log.</value>
@@ -1483,8 +1492,8 @@ All accounts and nicknames of these authors will belong to one card. You can spl
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>no language files, StringTables: car names are taken from the car database</value>
   </data>
-  <data name="AboutDescriptionFormat" xml:space="preserve">
-    <value>A gallery of the liveries in {0} saves.</value>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>A gallery of the liveries in Forza games’ saves.</value>
   </data>
   <data name="FolderNotFoundMessageFormat" xml:space="preserve">
     <value>Could not find the {0} save folder automatically.
@@ -1542,7 +1551,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>the artwork is {0}% similar to “{1}”</value>
   </data>
   <data name="ContextMenuAssignAuthor" xml:space="preserve">
-    <value>Choose the author…</value>
+    <value>Choose the author</value>
   </data>
   <data name="ContextMenuUnassignAuthor" xml:space="preserve">
     <value>Remove the chosen author</value>
@@ -1743,7 +1752,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Deleted</value>
   </data>
   <data name="StatsLegendArchived" xml:space="preserve">
-    <value>Archived</value>
+    <value>To the trash</value>
   </data>
   <data name="StatsSizeTooltipFormat" xml:space="preserve">
     <value>Liveries at the end of the month: {0}</value>
@@ -1929,16 +1938,16 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Unused</value>
   </data>
   <data name="StatsHealthUnusedNote" xml:space="preserve">
-    <value>Not on a car, not a favorite, not locked, not your own and not from the auction. These are the first candidates for the archive.</value>
+    <value>Not on a car, not a favorite, not locked, not your own and not from the auction. These are the first candidates for the trash.</value>
   </data>
   <data name="StatsHealthUnused" xml:space="preserve">
     <value>Unused liveries</value>
   </data>
   <data name="StatsHealthArchiveTitle" xml:space="preserve">
-    <value>Archive</value>
+    <value>Trash</value>
   </data>
   <data name="StatsHealthArchived" xml:space="preserve">
-    <value>In the archive</value>
+    <value>In the trash</value>
   </data>
   <data name="StatsHealthLastArchived" xml:space="preserve">
     <value>Latest moved</value>
@@ -2052,7 +2061,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Whose liveries you remove</value>
   </data>
   <data name="StatsDeparturesCellFormat" xml:space="preserve">
-    <value>{0} + {1} archived</value>
+    <value>{0} + {1} to the trash</value>
   </data>
   <data name="StatsNoJournalShort" xml:space="preserve">
     <value>No removals in the journal yet</value>
@@ -2118,10 +2127,10 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Export</value>
   </data>
   <data name="StatsExportLiveries" xml:space="preserve">
-    <value>Liveries to CSV…</value>
+    <value>Liveries to CSV</value>
   </data>
   <data name="StatsExportAuthors" xml:space="preserve">
-    <value>Authors to CSV…</value>
+    <value>Authors to CSV</value>
   </data>
   <data name="StatsExportLiveriesFileName" xml:space="preserve">
     <value>liveries</value>
@@ -2133,7 +2142,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Could not save the file.</value>
   </data>
   <data name="StatsSaveChart" xml:space="preserve">
-    <value>Save as PNG…</value>
+    <value>Save as PNG</value>
   </data>
   <data name="StatsAuthorsTopTooltipFormat" xml:space="preserve">
     <value>{1} of {2} liveries with a known author are by the {0} authors you have the most liveries from</value>
@@ -2145,22 +2154,10 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Remove from favorites</value>
   </data>
   <data name="ContextMenuEditTags" xml:space="preserve">
-    <value>Edit tags…</value>
+    <value>Edit tags</value>
   </data>
   <data name="TagChipTooltip" xml:space="preserve">
     <value>Click to show only liveries with this tag. Right-click to hide them. Click again to undo.</value>
-  </data>
-  <data name="TagsDialogManyTitleFormat" xml:space="preserve">
-    <value>Tags of the selected liveries: {0}</value>
-  </data>
-  <data name="TagsDialogManyHint" xml:space="preserve">
-    <value>A check mark adds the tag to every selected livery, an empty box removes it from all of them. A filled square means only some of them have the tag. It stays as it is.</value>
-  </data>
-  <data name="TagsDialogNewTagsLabel" xml:space="preserve">
-    <value>New tags, separated by commas. They are added to every selected livery.</value>
-  </data>
-  <data name="TagsDialogPartialTooltipFormat" xml:space="preserve">
-    <value>On {0} of {1} selected</value>
   </data>
   <data name="ContextMenuLock" xml:space="preserve">
     <value>Lock</value>
@@ -2169,16 +2166,16 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Unlock</value>
   </data>
   <data name="LockToggleTooltip" xml:space="preserve">
-    <value>Lock the livery so that it cannot be moved to the archive</value>
+    <value>Lock the livery so that it cannot be moved to the trash</value>
   </data>
   <data name="LockedTooltip" xml:space="preserve">
-    <value>Locked: the livery cannot be moved to the archive. Click to unlock it.</value>
+    <value>Locked: the livery cannot be moved to the trash. Click to unlock it.</value>
   </data>
   <data name="ArchiveLockedNotAllowedTooltip" xml:space="preserve">
-    <value>Locked liveries cannot be moved to the archive. Unlock them first.</value>
+    <value>Locked liveries cannot be moved to the trash. Unlock them first.</value>
   </data>
   <data name="ArchiveLockedSkippedFormat" xml:space="preserve">
-    <value>Locked liveries cannot be moved to the archive. Selected locked liveries left in the game: {0}.</value>
+    <value>Locked liveries cannot be moved to the trash. Selected locked liveries left in the game: {0}.</value>
   </data>
   <data name="AuthorLabelOwnFormat" xml:space="preserve">
     <value>{0} (you)</value>
@@ -2265,16 +2262,16 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Letters, digits, {0} and {1} do nothing while the cursor is in a text field. Enter, 3 and G work when exactly one livery is selected.</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
-    <value>Click to free up room: the extra copies of duplicated liveries go to the archive.</value>
+    <value>Click to free up room: the extra copies of duplicated liveries go to the trash.</value>
   </data>
   <data name="FreeSpaceMenuItem" xml:space="preserve">
-    <value>Free up room…</value>
+    <value>Free up room</value>
   </data>
   <data name="FreeSpaceTitle" xml:space="preserve">
     <value>Free up room</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>One copy of each duplicated livery stays: one with tags or your own first, else the first downloaded. Locked liveries, liveries on a car, auction liveries and favorites stay as well. Uncheck a copy to keep it. Everything that goes can be brought back from the archive.</value>
+    <value>One copy of each duplicated livery stays: one with tags or your own first, else the first downloaded. Locked liveries, liveries on a car, auction liveries and favorites stay as well. Uncheck a copy to keep it. Everything that goes can be brought back from the trash.</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>Downloaded: {0}</value>
@@ -2304,31 +2301,31 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>In the save now: {0} of {1}.</value>
   </data>
   <data name="FreeSpaceAfterFormat" xml:space="preserve">
-    <value>To the archive: {0}, free afterwards: {1}.</value>
+    <value>To the trash: {0}, free afterwards: {1}.</value>
   </data>
   <data name="FreeSpaceAfterNoLimitFormat" xml:space="preserve">
-    <value>To the archive: {0}.</value>
+    <value>To the trash: {0}.</value>
   </data>
   <data name="FreeSpaceApplyFormat" xml:space="preserve">
-    <value>Move to the archive ({0})</value>
+    <value>Move to the trash ({0})</value>
   </data>
   <data name="FewFreeSlotsMessageFormat" xml:space="preserve">
-    <value>Only {0} free slots are left in the save out of {1}. At the limit, the game lets you neither download nor make a livery. Free up room now by moving the extra copies of duplicated liveries to the archive?</value>
+    <value>Only {0} free slots are left in the save out of {1}. At the limit, the game lets you neither download nor make a livery. Free up room now by moving the extra copies of duplicated liveries to the trash?</value>
   </data>
   <data name="FewFreeSlotsFullMessageFormat" xml:space="preserve">
-    <value>The save is full: all {0} slots are taken, and the game lets you neither download nor make a livery. Free up room now by moving the extra copies of duplicated liveries to the archive?</value>
+    <value>The save is full: all {0} slots are taken, and the game lets you neither download nor make a livery. Free up room now by moving the extra copies of duplicated liveries to the trash?</value>
   </data>
   <data name="AutoBackupFailedTitle" xml:space="preserve">
     <value>Backup</value>
   </data>
   <data name="AutoBackupFailedMessage" xml:space="preserve">
-    <value>The backup before moving to the archive could not be made. Move the liveries to the archive without it?</value>
+    <value>The backup before moving to the trash could not be made. Move the liveries to the trash without it?</value>
   </data>
   <data name="AutoBackupFailedContinueButton" xml:space="preserve">
     <value>Move without a backup</value>
   </data>
   <data name="LoadingBackupBeforeArchive" xml:space="preserve">
-    <value>Making a backup before moving to the archive…</value>
+    <value>Making a backup before moving to the trash…</value>
   </data>
   <data name="StatusAutoBackupMade" xml:space="preserve">
     <value>An automatic backup has been made</value>
@@ -2337,7 +2334,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Automatic backups</value>
   </data>
   <data name="AutoBackupBeforeArchiveLabel" xml:space="preserve">
-    <value>Before moving liveries to the archive</value>
+    <value>Before moving liveries to the trash</value>
   </data>
   <data name="AutoBackupOnChangeLabel" xml:space="preserve">
     <value>When the liveries in the save change, at most once a day</value>
@@ -2358,7 +2355,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Automatic</value>
   </data>
   <data name="BackupKindBeforeArchive" xml:space="preserve">
-    <value>Made before liveries were moved to the archive</value>
+    <value>Made before liveries were moved to the trash</value>
   </data>
   <data name="BackupKindSaveChanged" xml:space="preserve">
     <value>Made after the liveries in the save changed</value>
@@ -2407,12 +2404,6 @@ Look through the files before sending them. A value the gallery does not know ab
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
     <value>Betas come out before releases and may have bugs. Turn this off while on a beta, and the gallery offers to go back to the latest stable version.</value>
-  </data>
-  <data name="TagsDialogOneHint" xml:space="preserve">
-    <value>A check mark puts the tag on the livery, an empty box takes it off.</value>
-  </data>
-  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
-    <value>New tags, separated by commas.</value>
   </data>
   <data name="KeyClick" xml:space="preserve">
     <value>Click</value>
@@ -2495,9 +2486,6 @@ Look through the files before sending them. A value the gallery does not know ab
   <data name="LiveryDetailsUnknown" xml:space="preserve">
     <value>unknown</value>
   </data>
-  <data name="LiveryDetailsAddTag" xml:space="preserve">
-    <value>+ tag</value>
-  </data>
   <data name="LiveryDetailsNoteLabel" xml:space="preserve">
     <value>Note</value>
   </data>
@@ -2532,7 +2520,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Appeared in the save</value>
   </data>
   <data name="HistoryRestoredFromArchive" xml:space="preserve">
-    <value>Back from the archive</value>
+    <value>Back from the trash</value>
   </data>
   <data name="HistoryReturned" xml:space="preserve">
     <value>Came back: from a backup, or downloaded again</value>
@@ -2541,7 +2529,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Gone from the save</value>
   </data>
   <data name="HistoryArchived" xml:space="preserve">
-    <value>Moved to the archive</value>
+    <value>Moved to the trash</value>
   </data>
   <data name="HistoryChanged" xml:space="preserve">
     <value>File changed</value>
@@ -2571,7 +2559,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Move to this account</value>
   </data>
   <data name="ArchiveUnassignedTooltip" xml:space="preserve">
-    <value>An earlier version archived these without noting the account, and the gallery knew more than one account. Move them here if they are from this account.</value>
+    <value>An earlier version moved these to the trash without noting the account, and the gallery knew more than one account. Move them here if they are from this account.</value>
   </data>
   <data name="BackupsUnassignedTooltip" xml:space="preserve">
     <value>An earlier version made these backups without noting the account, and the gallery knew more than one account. Move them here if they are from this account.</value>
@@ -2586,7 +2574,7 @@ Look through the files before sending them. A value the gallery does not know ab
     <value>Save not found</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
-    <value>Choose folder…</value>
+    <value>Choose folder</value>
   </data>
   <data name="SearchSaveAgainButton" xml:space="preserve">
     <value>Search again</value>
@@ -2638,16 +2626,16 @@ Updated on {1} at {2}</value>
     <value>Account</value>
   </data>
   <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
-    <value>Archive</value>
+    <value>Trash</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>Ask before archiving when it is not known which liveries are on cars</value>
+    <value>Ask before moving to the trash when it is not known which liveries are on cars</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>Ask before archiving when the list of liveries on cars may be out of date</value>
+    <value>Ask before moving to the trash when the list of liveries on cars may be out of date</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>A livery that is on a car in the game is not safe to move to the archive. "Don't show again" in these questions turns them off, and here they can be turned back on.</value>
+    <value>A livery that is on a car in the game is not safe to move to the trash. "Don't show again" in these questions turns them off, and here they can be turned back on.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Home</value>
@@ -2693,7 +2681,7 @@ Updated on {1} at {2}</value>
 or Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>Kept on this PC only. They go to the archive with the livery and come back with it.</value>
+    <value>Kept on this PC only. They go to the trash with the livery and come back with it.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>Screenshots of the livery</value>
@@ -2756,7 +2744,7 @@ or Ctrl+V</value>
     <value>Taken: {0} · screenshots: {1} · liveries: {2}</value>
   </data>
   <data name="ScreenshotsConvertButton" xml:space="preserve">
-    <value>Compress the added ones…</value>
+    <value>Compress the added ones</value>
   </data>
   <data name="ScreenshotsOpenFolder" xml:space="preserve">
     <value>Open the folder</value>
@@ -2852,7 +2840,7 @@ or Ctrl+V</value>
     <value>Add to album</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
-    <value>New album…</value>
+    <value>New album</value>
   </data>
   <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
     <value>Take out of “{0}”</value>
@@ -2879,7 +2867,7 @@ or Ctrl+V</value>
     <value>Rename</value>
   </data>
   <data name="CollectionDelete" xml:space="preserve">
-    <value>Delete…</value>
+    <value>Delete</value>
   </data>
   <data name="CollectionMoveUp" xml:space="preserve">
     <value>Move up</value>
@@ -2942,7 +2930,7 @@ or Ctrl+V</value>
     <value>Ins</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>From the storage to the archive</value>
+    <value>From the storage to the trash</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Return to the game</value>
@@ -2975,16 +2963,16 @@ or Ctrl+V</value>
     <value>In the storage: {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0}: to the game · {1}: to the archive</value>
+    <value>{0}: to the game · {1}: to the trash</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>Returned to the game: {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>From the storage to the archive: {0}</value>
+    <value>From the storage to the trash: {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Stayed in the storage: {0}. The archive already has a livery with the same key.</value>
+    <value>Stayed in the storage: {0}. The trash already has a livery with the same key.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>Returning liveries to the game…</value>
@@ -3092,7 +3080,7 @@ or Ctrl+V</value>
     <value>Delete the empty folder "{0}"?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>Send its liveries to the archive</value>
+    <value>Send its liveries to the trash</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>Return the folder to the game</value>
@@ -3101,7 +3089,7 @@ or Ctrl+V</value>
     <value>Move to the folder</value>
   </data>
   <data name="ContextMenuNewFolder" xml:space="preserve">
-    <value>New folder…</value>
+    <value>New folder</value>
   </data>
   <data name="StatusMovedToFolderFormat" xml:space="preserve">
     <value>Moved to "{0}": {1}</value>
@@ -3230,7 +3218,7 @@ or Ctrl+V</value>
     <value>another account's storage is here ({0}).</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>The storage cannot be inside a save, the archive, the program's folder or another account's storage.</value>
+    <value>The storage cannot be inside a save, the trash, the program's folder or another account's storage.</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>This folder does not fit:</value>
@@ -3339,7 +3327,7 @@ or Ctrl+V</value>
     <value>The folder is not available</value>
   </data>
   <data name="SettingsStorageChangeButton" xml:space="preserve">
-    <value>Change folder…</value>
+    <value>Change folder</value>
   </data>
   <data name="SettingsStorageOpenButton" xml:space="preserve">
     <value>Open the storage folder</value>
@@ -3447,7 +3435,7 @@ or Ctrl+V</value>
     <value>Check again</value>
   </data>
   <data name="StorageChooseOtherButton" xml:space="preserve">
-    <value>Choose another folder…</value>
+    <value>Choose another folder</value>
   </data>
   <data name="StorageUnavailableReasonFormat" xml:space="preserve">
     <value>The storage folder is not available: {0}</value>
@@ -3467,7 +3455,7 @@ or Ctrl+V</value>
 {1}</value>
   </data>
   <data name="ArchiveFailedFormat" xml:space="preserve">
-    <value>These liveries could not be moved to the archive ({0}). The game may be using their files, or the disk may be full. The details are in the log:
+    <value>These liveries could not be moved to the trash ({0}). The game may be using their files, or the disk may be full. The details are in the log:
 {1}</value>
   </data>
   <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
@@ -3582,9 +3570,6 @@ or Ctrl+V</value>
   <data name="ResetFiltersTooltip" xml:space="preserve">
     <value>Reset filters: clears the search and the filters. The order stays</value>
   </data>
-  <data name="UndoLabel" xml:space="preserve">
-    <value>Undo</value>
-  </data>
   <data name="UndoTooltipFormat" xml:space="preserve">
     <value>Undo: {0}</value>
   </data>
@@ -3613,7 +3598,7 @@ or Ctrl+V</value>
     <value>Saved filter sets</value>
   </data>
   <data name="FilterPresetSave" xml:space="preserve">
-    <value>Save the current filters…</value>
+    <value>Save the current filters</value>
   </data>
   <data name="FilterPresetDelete" xml:space="preserve">
     <value>Delete a set</value>
@@ -3641,5 +3626,236 @@ or Ctrl+V</value>
   </data>
   <data name="TagsGripTooltip" xml:space="preserve">
     <value>Drag up or down to show more or fewer rows of tags. Double-click: every tag or one row.</value>
+  </data>
+  <data name="SaveReadOnlyLabel" xml:space="preserve">
+    <value>View only</value>
+  </data>
+  <data name="SaveReadOnlyNoticeFormat" xml:space="preserve">
+    <value>In this version {0} liveries are only shown: moving them to the trash or the storage, returning them to the game and restoring them from a backup are not available yet.</value>
+  </data>
+  <data name="RenderBorrowedFormat" xml:space="preserve">
+    <value>Drawn with {1} car models and paints: the game files of {0} cannot be read. Cars, logos and paints may differ from {0}.</value>
+  </data>
+  <data name="ServerStatusGameNotSupported" xml:space="preserve">
+    <value>Server: this game is not supported yet</value>
+  </data>
+  <data name="ServerStatusGameNotSupportedHint" xml:space="preserve">
+    <value>The server does not read the saves of this game, or of this version of it (Steam or Microsoft Store), yet. Which liveries are on your cars is not shown. The gallery checks again every 30 minutes.</value>
+  </data>
+  <data name="DisplayFilterLabel" xml:space="preserve">
+    <value>Show</value>
+  </data>
+  <data name="FilterPresetsLabel" xml:space="preserve">
+    <value>Sets</value>
+  </data>
+  <data name="MenuRefresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="CardSizeSmall" xml:space="preserve">
+    <value>Small cards</value>
+  </data>
+  <data name="CardSizeNormal" xml:space="preserve">
+    <value>Normal cards</value>
+  </data>
+  <data name="CardSizeLarge" xml:space="preserve">
+    <value>Large cards</value>
+  </data>
+  <data name="ShortcutsGroupView" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="ShortcutCardsLarger" xml:space="preserve">
+    <value>Larger cards (screenshots)</value>
+  </data>
+  <data name="ShortcutCardsSmaller" xml:space="preserve">
+    <value>Smaller cards (screenshots)</value>
+  </data>
+  <data name="ShortcutCardsNormal" xml:space="preserve">
+    <value>Normal size of cards (screenshots)</value>
+  </data>
+  <data name="ShortcutCardsWheel" xml:space="preserve">
+    <value>Size of cards</value>
+  </data>
+  <data name="KeyWheel" xml:space="preserve">
+    <value>Wheel</value>
+  </data>
+  <data name="UserDataProblemTitle" xml:space="preserve">
+    <value>Tags, notes and favourites</value>
+  </data>
+  <data name="UserDataUnreadableMessageFormat" xml:space="preserve">
+    <value>These files could not be opened at start. Another program may be holding them (a sync client such as OneDrive, an antivirus):
+{0}
+
+The gallery left them as they are. Tags, notes, favourites and locks changed now will not be saved. Close the program holding them and start the gallery again.</value>
+  </data>
+  <data name="UserDataSetAsideMessageFormat" xml:space="preserve">
+    <value>These files were damaged and could not be read:
+{0}
+
+A copy of each was kept beside it, with the date in its name. The gallery started them again from empty.</value>
+  </data>
+  <data name="GalleryAccessibleName" xml:space="preserve">
+    <value>Liveries</value>
+  </data>
+  <data name="CardAccessibleSelected" xml:space="preserve">
+    <value>selected</value>
+  </data>
+  <data name="CardAccessibleFavorite" xml:space="preserve">
+    <value>favourite</value>
+  </data>
+  <data name="CardAccessibleLocked" xml:space="preserve">
+    <value>locked</value>
+  </data>
+  <data name="NoticesTitle" xml:space="preserve">
+    <value>Notices</value>
+  </data>
+  <data name="NoticesNone" xml:space="preserve">
+    <value>Nothing to tell yet</value>
+  </data>
+  <data name="NoticeCounterFormat" xml:space="preserve">
+    <value>{0} of {1}</value>
+  </data>
+  <data name="NoticeNextTooltip" xml:space="preserve">
+    <value>Next notice</value>
+  </data>
+  <data name="NoticeCloseTooltip" xml:space="preserve">
+    <value>Close (it stays under the bell)</value>
+  </data>
+  <data name="NoticeShowFile" xml:space="preserve">
+    <value>Show the file</value>
+  </data>
+  <data name="NoticeChooseFolder" xml:space="preserve">
+    <value>Choose a folder</value>
+  </data>
+  <data name="ToastUndo" xml:space="preserve">
+    <value>Undo</value>
+  </data>
+  <data name="ToastUndoDetail" xml:space="preserve">
+    <value>Ctrl+Z undoes it too</value>
+  </data>
+  <data name="ToastClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="PropertiesTitle" xml:space="preserve">
+    <value>Properties</value>
+  </data>
+  <data name="PropertiesToggleTooltip" xml:space="preserve">
+    <value>The panel of the selected liveries</value>
+  </data>
+  <data name="PropertiesEmpty" xml:space="preserve">
+    <value>Select a livery to see it here. With several selected, what they have in common shows.</value>
+  </data>
+  <data name="PropertiesAuthorsFormat" xml:space="preserve">
+    <value>authors: {0}</value>
+  </data>
+  <data name="PropertiesFavorite" xml:space="preserve">
+    <value>Favourite</value>
+  </data>
+  <data name="PropertiesLock" xml:space="preserve">
+    <value>Lock</value>
+  </data>
+  <data name="PropertiesTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="PropertiesTagsPartHint" xml:space="preserve">
+    <value>dashed: on some of them, click to give it to all</value>
+  </data>
+  <data name="PropertiesAddTagPlaceholder" xml:space="preserve">
+    <value>Add a tag, Enter</value>
+  </data>
+  <data name="PropertiesCreateTagFormat" xml:space="preserve">
+    <value>New tag «{0}»</value>
+  </data>
+  <data name="PropertiesRemoveTagFormat" xml:space="preserve">
+    <value>Take the tag {0} off</value>
+  </data>
+  <data name="PropertiesNote" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="PropertiesNoteSavesItself" xml:space="preserve">
+    <value>saved as you type</value>
+  </data>
+  <data name="PropertiesNotesOwnFormat" xml:space="preserve">
+    <value>{0} of {1} have a note of their own.</value>
+  </data>
+  <data name="PropertiesNoteForAllPlaceholder" xml:space="preserve">
+    <value>A note for all of them</value>
+  </data>
+  <data name="PropertiesNoteAppend" xml:space="preserve">
+    <value>Add to theirs</value>
+  </data>
+  <data name="PropertiesNoteReplace" xml:space="preserve">
+    <value>Replace theirs</value>
+  </data>
+  <data name="PropertiesFindInGame" xml:space="preserve">
+    <value>Find in the game</value>
+  </data>
+  <data name="PropertiesToStorage" xml:space="preserve">
+    <value>To the storage</value>
+  </data>
+  <data name="PropertiesToGame" xml:space="preserve">
+    <value>To the game</value>
+  </data>
+  <data name="PropertiesDetails" xml:space="preserve">
+    <value>More</value>
+  </data>
+  <data name="PropertiesClose" xml:space="preserve">
+    <value>Hide the panel</value>
+  </data>
+  <data name="ShortcutProperties" xml:space="preserve">
+    <value>The panel of the selected liveries</value>
+  </data>
+  <data name="SelectionBarTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="SelectionBarMore" xml:space="preserve">
+    <value>More actions</value>
+  </data>
+  <data name="SelectionBarClear" xml:space="preserve">
+    <value>Clear the selection</value>
+  </data>
+  <data name="EmptyNoFilterResults" xml:space="preserve">
+    <value>No livery matches the filters</value>
+  </data>
+  <data name="EmptyNoResultsWithFilters" xml:space="preserve">
+    <value>Nothing found for «{0}» with the filters on</value>
+  </data>
+  <data name="EmptyClearSearch" xml:space="preserve">
+    <value>Clear the search</value>
+  </data>
+  <data name="EmptyResetFilters" xml:space="preserve">
+    <value>Reset the filters</value>
+  </data>
+  <data name="EmptyShowGame" xml:space="preserve">
+    <value>Show the game's liveries</value>
+  </data>
+  <data name="EmptyLookAgain" xml:space="preserve">
+    <value>Look again</value>
+  </data>
+  <data name="ScreenshotsShowAllAlbums" xml:space="preserve">
+    <value>All screenshots</value>
+  </data>
+  <data name="NoticeProblemTitle" xml:space="preserve">
+    <value>That did not work</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptioned" xml:space="preserve">
+    <value>With captions</value>
+  </data>
+  <data name="ScreenshotsLayoutTiles" xml:space="preserve">
+    <value>Tiles</value>
+  </data>
+  <data name="ScreenshotsSizeSmall" xml:space="preserve">
+    <value>Small screenshots</value>
+  </data>
+  <data name="ScreenshotsSizeNormal" xml:space="preserve">
+    <value>Normal screenshots</value>
+  </data>
+  <data name="ScreenshotsSizeLarge" xml:space="preserve">
+    <value>Large screenshots</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptionedTooltip" xml:space="preserve">
+    <value>Under each screenshot, its livery or the time it was taken</value>
+  </data>
+  <data name="ScreenshotsLayoutTilesTooltip" xml:space="preserve">
+    <value>The pictures alone, close together. The caption is in the tooltip</value>
   </data>
 </root>

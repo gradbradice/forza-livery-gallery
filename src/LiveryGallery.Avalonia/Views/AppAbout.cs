@@ -10,9 +10,9 @@ namespace LiveryGallery.Views;
 internal static class AppAbout
 {
     /// <param name="components">Versions of the closed components (the host reads them); the open ones are read here</param>
-    /// <param name="profile">The game: its package is listed with the open ones</param>
+    /// <param name="profile">The game: its package is listed with the open ones (the words are every game's: one program for the Forza games)</param>
     public static AboutInfo Info(AboutComponents components, GameProfile profile) => AboutInfo.For(
-        AppSettings.Identity.Name, AppSettings.Version, string.Format(Strings.AboutDescriptionFormat, profile.Game.Name),
+        AppSettings.Identity.Name, AppSettings.Version, Strings.AboutDescription,
         ComponentVersions.OpenPackages(profile), components.Closed, new Uri("avares://LiveryGallery.Avalonia/Assets/app-icon.png"),
         Strings.ContactsGithubLabel, () => TrustedUrlLauncher.TryOpen(AppSettings.Identity.GitHubUrl));
 }

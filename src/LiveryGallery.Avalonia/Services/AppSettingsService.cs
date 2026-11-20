@@ -1,5 +1,6 @@
 using LiveryGallery.Configuration;
 using LiveryGallery.Enums;
+using LiveryGallery.Models;
 
 namespace LiveryGallery.Services;
 
@@ -24,6 +25,7 @@ internal static class AppSettingsService
         if (data.ThemeMode is { } theme && !Enum.IsDefined(theme)) { data.ThemeMode = AppThemeMode.System; changed = true; }
         if (!Enum.IsDefined(data.MyDesignsRowsMode)) { data.MyDesignsRowsMode = MyDesignsRowsMode.Auto; changed = true; }
         if (!Enum.IsDefined(data.UpdateInstall)) { data.UpdateInstall = UpdateInstallMode.Ask; changed = true; }
+        if (!Enum.IsDefined(data.ScreenshotsSize)) { data.ScreenshotsSize = CardSize.Normal; changed = true; }
         if (data.ServerLiveries is < 0 or > MyDesignsGrid.MaxServerLiveries)
         {
             data.ServerLiveries = Math.Clamp(data.ServerLiveries, 0, MyDesignsGrid.MaxServerLiveries);

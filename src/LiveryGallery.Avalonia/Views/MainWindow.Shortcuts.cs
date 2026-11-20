@@ -38,16 +38,17 @@ internal partial class MainWindow
             return;
         }
         if (GalleryShortcuts.Match(e.Key, e.PhysicalKey, e.KeyModifiers, typing, _mainViewModel.IsStorageMode) is { } action
-            && (RunModeShortcut(action) || (_showingScreenshots ? RunScreenshotsShortcut(action, focused) : RunShortcut(action, focused))))
+            && (RunModeShortcut(action) || RunCardSizeShortcut(action)
+                || (_showingScreenshots ? RunScreenshotsShortcut(action, focused) : RunShortcut(action, focused))))
             e.Handled = true;
     }
 
     /// <summary>Does what the key asks; false when there is nothing to do, and the key goes on to the control in focus</summary>
     private bool RunShortcut(GalleryShortcut action, object? focused)
     {
+        // The keys of the selection (F, L, T, Del, Ins, Enter, 3, G…): the gallery's actions, as the menu runs them
+        if (_mainViewModel.Actions.RunKey(action)) return true;
         var gallery = _mainViewModel.Gallery;
-        LiveryEntry? first = gallery.SelectedEntries.FirstOrDefault();
-        LiveryEntry? single = gallery.SelectedCount == 1 ? first : null;
         switch (action)
         {
             case GalleryShortcut.Search:
@@ -70,48 +71,8 @@ internal partial class MainWindow
                 _mainViewModel.RefreshCommand.Execute(null);
                 return true;
 
-            // The context menu's commands: each works on every selected livery
-            case GalleryShortcut.Favorite when first is not null:
-                gallery.ToggleFavoritesCommand.Execute(first);
-                return true;
-            case GalleryShortcut.Lock when first is not null && _mainViewModel.IsStorageMode:
-                return true; // the lock keeps a livery in the game: a stored one has none
-            case GalleryShortcut.Lock when first is not null:
-                gallery.ToggleLocksCommand.Execute(first);
-                return true;
-            case GalleryShortcut.Tags when first is not null:
-                gallery.EditTagsCommand.Execute(first);
-                return true;
-            case GalleryShortcut.MoveToStorage when first is not null:
-                if (_mainViewModel.MoveSelectedToStorageCommand.CanExecute(null)) _mainViewModel.MoveSelectedToStorageCommand.Execute(null);
-                else if (_mainViewModel.StorageBlockedTooltip is { } why)
-                    RunUiTask(() => InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, why), "storage blocked");
-                return true;
-            // Shift+Del in the game, Del and Shift+Del in the storage: to the archive
-            case GalleryShortcut.MoveToArchive or GalleryShortcut.StoredToArchive when first is not null:
-                if (_mainViewModel.MoveSelectedToArchiveCommand.CanExecute(null)) _mainViewModel.MoveSelectedToArchiveCommand.Execute(null);
-                return true;
-            case GalleryShortcut.ReturnToGame when first is not null:
-                if (_mainViewModel.ReturnSelectedToGameCommand.CanExecute(null)) _mainViewModel.ReturnSelectedToGameCommand.Execute(null);
-                return true;
-
-            // A card's buttons: one livery
-            case GalleryShortcut.OpenDetails when single is not null:
-                gallery.OpenDetailsCommand.Execute(single);
-                return true;
             case GalleryShortcut.ToggleSelection:
                 return ToggleCursor();
-            case GalleryShortcut.View3D when single is not null:
-                if (single.CanView3D) gallery.View3DCommand.Execute(single);
-                return true;
-            // One more window for the livery, or a window for each selected one
-            case GalleryShortcut.View3DNewWindow when first is not null:
-                gallery.View3DNewWindowCommand.Execute(first);
-                return true;
-            case GalleryShortcut.FindInGame when single is not null:
-                if (single.ShowFindInGame && _mainViewModel.NavigateInGameCommand.CanExecute(single))
-                    _mainViewModel.NavigateInGameCommand.Execute(single);
-                return true;
 
             case GalleryShortcut.Settings:
                 OpenSettingsMenuItem_Click(null, new RoutedEventArgs());

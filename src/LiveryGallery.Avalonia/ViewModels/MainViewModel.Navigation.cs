@@ -16,37 +16,12 @@ internal sealed partial class MainViewModel
 
     /// <summary>The game's My Designs grid; null when the gallery cannot find liveries in this game</summary>
     private MyDesignsGrid? MyDesigns => savePathService.Profile.MyDesigns;
-    private bool _selectionBlocksNavigation;
 
     public Func<GameFolderState>? GameFolderStateProvider { get; set; }
-
-    public string? NavigateInGameMenuBlockedTooltip =>
-        Gallery.SelectedCount > 1 ? Strings.NavigateInGameMultipleSelectedTooltip : null;
-
-    private void InitializeNavigation()
-    {
-        Gallery.SelectedEntries.CollectionChanged += (_, __) => OnSelectionChangedForNavigation();
-    }
-
-    /// <summary>
-    /// With several liveries selected the target is ambiguous, so the card button and the menu item are
-    /// both disabled. Entries are only touched when the selection crosses that line, not on every click.
-    /// </summary>
-    private void OnSelectionChangedForNavigation()
-    {
-        bool blocks = Gallery.SelectedCount > 1;
-        if (blocks != _selectionBlocksNavigation)
-        {
-            _selectionBlocksNavigation = blocks;
-            foreach (var entry in GameEntries) entry.SelectionBlocksNavigation = blocks;
-        }
-        NotifyNavigationCommands();
-    }
 
     private void NotifyNavigationCommands()
     {
         NavigateInGameCommand.NotifyCanExecuteChanged();
-        OnPropertyChanged(nameof(NavigateInGameMenuBlockedTooltip));
     }
 
     private bool CanNavigateInGame(LiveryEntry? entry) => !_isNavigating && entry is { CanNavigateInGame: true };
@@ -60,8 +35,11 @@ internal sealed partial class MainViewModel
         if (MyDesigns is not { } grid) return (null, null, false);
         switch (settings.MyDesignsRowsMode)
         {
-            case MyDesignsRowsMode.Two: return (2, null, false);
-            case MyDesignsRowsMode.Three: return (3, null, false);
+            case MyDesignsRowsMode.One or MyDesignsRowsMode.Two or MyDesignsRowsMode.Three:
+                // Chosen in Settings: only rows the game's grid can take (a choice kept from another game is not)
+                int chosen = (int)settings.MyDesignsRowsMode;
+                if (grid.RowChoices.Contains(chosen)) return (chosen, null, false);
+                break;
         }
 
         var folder = GameFolderStateProvider?.Invoke() ?? new GameFolderState(false, null);
@@ -103,7 +81,6 @@ internal sealed partial class MainViewModel
         _gridLayout = layout;
         foreach (var entry in GameEntries)
         {
-            entry.SelectionBlocksNavigation = _selectionBlocksNavigation; // entries may be new after a scan
             entry.GamePosition = layout is not null && !entry.IsAuction && layout.TryGetSlot(entry.FolderName, out var slot)
                 ? slot
                 : null;

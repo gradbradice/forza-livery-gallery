@@ -44,6 +44,12 @@ internal partial class MainWindow
     /// <summary>"Free up room": the copies of each duplicated livery but the best go to the archive, as the user ticks them</summary>
     private async Task OpenFreeSpaceAsync()
     {
+        // Nothing moves out of a save only shown: the counter says why instead
+        if (_mainViewModel.ReadOnlySaveText is { } readOnly)
+        {
+            await Tell(readOnly);
+            return;
+        }
         var gallery = _mainViewModel.Gallery;
         var all = _mainViewModel.GameEntries.ToList();
         var plan = FreeSpacePlanner.Plan(all, gallery.IsInstalledDataKnown);

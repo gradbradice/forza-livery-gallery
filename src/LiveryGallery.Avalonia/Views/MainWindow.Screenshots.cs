@@ -27,8 +27,7 @@ internal partial class MainWindow
     private const string AllAlbumsId = ":all";
     private const string NoAlbumId = ":none";
 
-    // A tile in the screenshots view is 300 wide (MainWindow.axaml); the group heading's picture 44
-    private const double ScreenshotTileWidth = 300;
+    // The group heading's picture is 44 wide; a tile's width is the size chosen (MainWindow.ScreenshotLayout.cs)
     private const double GroupPictureWidth = 44;
 
     // The screenshots dragged onto an album, inside the gallery only
@@ -57,6 +56,7 @@ internal partial class MainWindow
         ViewSwitch.IsVisible = _mainViewModel.Screenshots is not null;
         if (_mainViewModel.Screenshots is not { } store) return;
         ScreenshotGroups.ItemsSource = _screenshotGroups;
+        InitializeScreenshotLayout();
         _mainViewModel.FilterBar.FiltersChanged += () => { if (_showingScreenshots) FillScreenshotsView(); };
         _mainViewModel.ScreenshotsChanged += _ => { if (_showingScreenshots) FillScreenshotsView(); };
         // The search, a filter, a scan: the gallery groups its cards again, and the screenshots follow the liveries shown
@@ -87,6 +87,7 @@ internal partial class MainWindow
         AlbumsSidebar.SetTexts(Strings.AlbumsHeading, Strings.AlbumsNew, Strings.AlbumsHint);
         ScreenshotsOrderBox.ItemsSource = new[] { Strings.ScreenshotsNewestFirst, Strings.ScreenshotsOldestFirst };
         ScreenshotsOrderBox.SelectedIndex = _settings.ScreenshotsNewestFirst ? 0 : 1;
+        ApplyScreenshotLayoutTexts();
         MarkScreenshotGrouping();
     }
 
@@ -151,7 +152,7 @@ internal partial class MainWindow
                 int c = rows[r].IndexOf(cursor);
                 if (c >= 0) (row, column) = (r, c);
             }
-        double tileHeight = borders.Values.FirstOrDefault()?.Bounds.Height + 14 ?? 220;
+        double tileHeight = borders.Values.FirstOrDefault()?.Bounds.Height + ScreenshotGap ?? 220;
         int pageRows = Math.Max(1, (int)(ScreenshotsScroll.Viewport.Height / tileHeight));
         // From no cursor: the first row on screen
         int start = rows.FindIndex(r => borders[r[0]].TranslatePoint(new Point(0, 0), ScreenshotGroups) is { } p && p.Y + tileHeight > ScreenshotsScroll.Offset.Y);
@@ -191,6 +192,10 @@ internal partial class MainWindow
         LiveriesViewButton.Classes.Set("on", !show);
         ScreenshotsViewButton.Classes.Set("on", show);
         ScreenshotsView.IsVisible = show;
+        UpdateSelectionPanels();
+        // The status bar's size switch is the screenshots' while they are shown
+        UpdateCardSizeSwitch();
+        ApplyCardSizeTexts();
         if (show) FillScreenshotsView();
         else ClearScreenshotTiles(disposePictures: true);
     }
@@ -253,8 +258,11 @@ internal partial class MainWindow
         string album = _album;
         var mode = ScreenshotGrouping;
         bool newestFirst = _settings.ScreenshotsNewestFirst;
-        int tileWidth = ScreenshotStore.PixelWidth(ScreenshotTileWidth, RenderScaling);
-        int groupPictureWidth = ScreenshotStore.PixelWidth(GroupPictureWidth, RenderScaling);
+        // The screen's scale times the interface's own
+        double scaling = RenderScaling * ForzaToolkit.UI.UiScale.Current;
+        int tileWidth = ScreenshotDecodeWidth();
+        _screenshotDecodeWidth = tileWidth;
+        int groupPictureWidth = ScreenshotStore.PixelWidth(GroupPictureWidth, scaling);
 
         _ = Task.Run(() =>
         {
@@ -302,6 +310,8 @@ internal partial class MainWindow
             ResetScreenshotSelection();
             ScreenshotsEmpty.IsVisible = tiles.Count == 0;
             ScreenshotsEmptyText.Text = album == AllAlbumsId ? Strings.ScreenshotsEmptyView : Strings.ScreenshotsEmptyAlbum;
+            ScreenshotsAllAlbumsButton.IsVisible = album != AllAlbumsId;
+            ScreenshotsResetFiltersButton.IsVisible = _mainViewModel.FilterBar.HasActiveFilters || _mainViewModel.Gallery.HasTagFilter;
             _ = LoadScreenshotPicturesAsync([.. _screenshotGroups], tileWidth, groupPictureWidth, ct);
         }, TaskScheduler.FromCurrentSynchronizationContext());
     }

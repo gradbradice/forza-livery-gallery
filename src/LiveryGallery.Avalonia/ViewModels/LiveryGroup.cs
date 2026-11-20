@@ -76,20 +76,22 @@ internal class LiveryGroup : INotifyPropertyChanged, IDisposable
         }
     }
 
-    private const double CardStep = 286;
+    /// <summary>The room of one card, its margins with it (<see cref="Models.CardLayout.CardStep"/>)</summary>
+    public double CardStep { get; set; } = Models.CardLayout.NormalWidth + 2 * Models.CardLayout.Margin;
 
     private LazyRowList? _rows;
-    private double _rowsBuiltForWidth = -1;
+    private int _rowsBuiltForColumns = -1;
 
+    /// <summary>The group's cards by rows: as many in a row as its width holds. Kept while that number is the same (a
+    /// wider window with as many columns only makes the cards wider)</summary>
     public IReadOnlyList<GalleryRow> Rows
     {
         get
         {
-            if (_rows is not null && _rowsBuiltForWidth == GroupWidth) return _rows;
-
-            int columns = Math.Max(1, (int)(GroupWidth / CardStep));
+            int columns = Math.Max(1, (int)Math.Round(GroupWidth / CardStep));
+            if (_rows is not null && _rowsBuiltForColumns == columns) return _rows;
             _rows = new LazyRowList(this, Items, columns);
-            _rowsBuiltForWidth = GroupWidth;
+            _rowsBuiltForColumns = columns;
             return _rows;
         }
     }

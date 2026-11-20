@@ -144,10 +144,4 @@ internal partial class StatisticsWindow : Window
         }
     }
 
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) =>
-        this.HandleTitleBarDragOrMaximize(e, MaximizeIcon);
-
-    private void MaximizeButton_Click(object? sender, RoutedEventArgs e) => this.ToggleMaximize(MaximizeIcon);
-
-    private void CloseButton_Click(object? sender, RoutedEventArgs e) => Close();
 }

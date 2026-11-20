@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
         xmlns:views="clr-namespace:LiveryGallery.Views"
         xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
         x:Class="LiveryGallery.Views.ReturnRoomDialog"
@@ -14,15 +15,7 @@
     <!-- "Return to the game" with too little room (docs/storage.md, stage 3): three ways, the swap with the game's
          liveries ticked that go to the storage in their place -->
     <DockPanel>
-        <Border DockPanel.Dock="Top" Background="{DynamicResource ToolbarBrush}" Height="36" PointerPressed="TitleBar_PointerPressed">
-            <Grid ColumnDefinitions="*,Auto">
-                <TextBlock x:Name="TitleBarText" FontSize="12" Margin="12,0,0,0" VerticalAlignment="Center"
-                           IsHitTestVisible="False" Foreground="{DynamicResource TextSecondaryBrush}" />
-                <Button Grid.Column="1" Classes="titlebar close" Click="CloseButton_Click">
-                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
-                </Button>
-            </Grid>
-        </Border>
+        <ui:TitleBar x:Name="Bar" />
 
         <StackPanel Margin="24,18,24,20" Spacing="12">
             <TextBlock Text="{Binding TitleText}" FontSize="18" FontWeight="Bold" />

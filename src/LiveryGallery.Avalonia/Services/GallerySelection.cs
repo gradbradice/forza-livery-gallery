@@ -1,8 +1,9 @@
+using ForzaToolkit.Core.Collections;
 using LiveryGallery.ViewModels;
 
 namespace LiveryGallery.Services;
 
-/// <summary>A Shift-click range of cards, as in Explorer. Pure</summary>
+/// <summary>A Shift-click range of cards, as in Explorer (the rules: Collections.ExplorerSelection). Pure</summary>
 internal static class GallerySelection
 {
     /// <summary>
@@ -12,19 +13,13 @@ internal static class GallerySelection
     /// </summary>
     public static IReadOnlyList<LiveryEntry> Range(IReadOnlyList<LiveryEntry> shown, string? anchorFolderName, LiveryEntry target)
     {
-        ArgumentNullException.ThrowIfNull(shown);
         ArgumentNullException.ThrowIfNull(target);
-        int to = IndexOf(shown, target.FolderName);
-        int from = anchorFolderName is null ? -1 : IndexOf(shown, anchorFolderName);
-        if (to < 0 || from < 0) return [target];
-        int start = Math.Min(from, to), end = Math.Max(from, to);
-        return [.. shown.Skip(start).Take(end - start + 1)];
+        var anchor = anchorFolderName is null ? null : shown.FirstOrDefault(e => string.Equals(e.FolderName, anchorFolderName, StringComparison.Ordinal));
+        return Rules.Range(shown, anchor, target);
     }
 
-    private static int IndexOf(IReadOnlyList<LiveryEntry> shown, string folderName)
-    {
-        for (int i = 0; i < shown.Count; i++)
-            if (string.Equals(shown[i].FolderName, folderName, StringComparison.Ordinal)) return i;
-        return -1;
-    }
+    private static readonly ExplorerSelection<LiveryEntry> Rules = new(SameLivery);
+
+    /// <summary>Two cards of the same livery: the same folder (a card after a rescan is another object)</summary>
+    public static bool SameLivery(LiveryEntry a, LiveryEntry b) => string.Equals(a.FolderName, b.FolderName, StringComparison.Ordinal);
 }

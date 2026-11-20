@@ -39,6 +39,8 @@ internal partial class App : Application
             ForzaToolkit.UI.Dialogs.EscapeClosesWindows.Enable(window => window is not MainWindow and not StartupWindow);
             // No window bigger than its screen: on 1920×1080 at 125 % the gallery opened with its title bar above it
             ForzaToolkit.UI.WindowsFitScreen.Enable();
+            // The interface's own scale on top of the screen's (Settings → Appearance), for every window and popup
+            ForzaToolkit.UI.UiScale.Enable(ForzaToolkit.UI.UiScale.FromPercent(settings.UiScalePercent));
             // A second start shows the window there is (the gallery's, or this one while it opens) and ends; a gallery
             // that is closing makes it wait and open in its place
             Program.Instance?.OnSecondStart(() =>

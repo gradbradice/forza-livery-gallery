@@ -26,13 +26,11 @@ internal partial class AuthorsDialog : Window
         _viewModel.SplitRequested += row => _work.Run(() => SplitAsync(row), "authors: split card");
 
         Title = Strings.AuthorsDialogTitle;
-        TitleBarText.Text = Strings.AuthorsDialogTitle;
+        Bar.Title = Strings.AuthorsDialogTitle;
         TitleText.Text = Strings.AuthorsDialogTitle;
         AddCardButton.Content = Strings.AuthorsAddCardButton;
         SearchBox.PlaceholderText = Strings.AuthorsSearchPlaceholder;
     }
-
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
 
     private async Task EditCardAsync(AuthorCard? existingCard)
     {
@@ -80,5 +78,4 @@ internal partial class AuthorsDialog : Window
         await _viewModel.SplitAsync(row);
     }
 
-    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 }

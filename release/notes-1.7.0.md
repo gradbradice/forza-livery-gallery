@@ -84,22 +84,22 @@ Il programma ora si chiama Forza Livery Gallery (prima FH6 Livery Gallery). Al p
 
 ## 한국어
 
-프로그램 이름이 Forza Livery Gallery로 바뀌었습니다(이전 FH6 Livery Gallery). 처음 실행할 때 설정, 보관함, 백업 등 나머지 데이터를 알아서 옮기며, 1.6.0도 지금처럼 계속 사용할 수 있습니다.
+프로그램 이름이 Forza Livery Gallery로 바뀌었습니다(이전 FH6 Livery Gallery). 처음 실행할 때 설정, 아카이브, 백업 등 나머지 데이터를 알아서 옮기며, 1.6.0도 지금처럼 계속 사용할 수 있습니다.
 
 * 이제 갤러리를 설치할 수 있고, 설치 후에는 스스로 업데이트됩니다. 새 버전을 찾으면 백그라운드에서 내려받고, 갤러리를 닫을 때 또는 ‘다시 시작하고 업데이트’를 누르면 바로 설치합니다. 제작자가 서명한 버전만 설치됩니다. 베타 버전은 ‘설정 → 갤러리 → 업데이트’에서 켤 수 있습니다. 1.6.0에서 넘어오는 경우 설치 파일을 한 번만 직접 내려받아 주세요.
-* 리버리 보관함이 생겼습니다. 게임 세이브와 별도로 리버리를 보관할 수 있습니다. 폴더는 ‘설정 → 폴더’에서 고를 수 있고, 다른 드라이브도 가능하며 나중에 옮길 수도 있습니다. 이 폴더에 직접 넣은 리버리도 갤러리가 알아서 가져옵니다.
+* 리버리 보관함이 생겼습니다. 게임 저장 데이터와 별도로 리버리를 보관할 수 있습니다. 폴더는 ‘설정 → 폴더’에서 고를 수 있고, 다른 드라이브도 가능하며 나중에 옮길 수도 있습니다. 이 폴더에 직접 넣은 리버리도 갤러리가 알아서 가져옵니다.
 * 이제 리버리마다 스크린샷을 따로 두고 갤러리 안에서 편하게 보관하고 볼 수 있습니다. 어떤 스크린샷이든 게임 미리보기 대신 커버로 쓸 수 있습니다.
 * 3D 보기가 개선되었습니다. 휠을 포함한 튜닝 부품을 차에 달고, 번호판을 숨길 수 있습니다.
-* 이제 계정마다 보관함과 백업이 따로 있습니다. 1.6.0이 어느 계정의 항목인지 기록하지 않았다면, 갤러리가 알맞은 계정으로 옮기도록 안내합니다.
+* 이제 계정마다 아카이브와 백업이 따로 있습니다. 1.6.0이 어느 계정의 항목인지 기록하지 않았다면, 갤러리가 알맞은 계정으로 옮기도록 안내합니다.
 * ‘차량에 적용됨’ 필터에서 어떤 차에도 쓰이지 않은 리버리를 먼저, 또는 그것만 볼 수 있습니다. 리버리 서버의 목록을 받아 왔을 때 작동합니다.
-* FH6의 일부 플레이어에게는 개발사가 지급한 리버리가 세이브가 아닌 게임 서버에 저장되어 있고, ‘내 디자인’에서 항상 맨 앞에 표시됩니다. ‘설정 → 게임에서 찾기’에서 그 개수를 지정하면 게임에서 리버리를 찾을 때 다시 올바른 칸을 가리킵니다.
+* FH6의 일부 플레이어에게는 개발사가 지급한 리버리가 저장 데이터가 아닌 게임 서버에 저장되어 있고, ‘내 디자인’에서 항상 맨 앞에 표시됩니다. ‘설정 → 게임에서 찾기’에서 그 개수를 지정하면 게임에서 리버리를 찾을 때 다시 올바른 칸을 가리킵니다.
 
 ## Português
 
 O programa agora se chama Forza Livery Gallery (antes FH6 Livery Gallery). Na primeira vez que abre, ele transfere sozinho as configurações, o arquivo, os backups e o resto dos dados, e a 1.6.0 continua funcionando como antes.
 
 * Agora a galeria pode ser instalada e, a partir daí, se atualiza sozinha: encontra a nova versão, baixa em segundo plano e instala ao fechar, ou na hora com “Reiniciar e atualizar”. Só são instaladas versões assinadas pelo autor. As versões beta são ativadas em “Configurações → Galeria → Atualizações”. Quem vem da 1.6.0 precisa baixar o instalador manualmente uma vez.
-* Novo depósito de pinturas: guarde pinturas fora do salvamento do jogo. Escolha a pasta em “Configurações → Pastas”, inclusive em outro disco, e mude-a de lugar depois. As pinturas que você colocar manualmente nessa pasta são reconhecidas pela galeria automaticamente.
+* Novo armazém de pinturas: guarde pinturas fora do salvamento do jogo. Escolha a pasta em “Configurações → Pastas”, inclusive em outro disco, e mude-a de lugar depois. As pinturas que você colocar manualmente nessa pasta são reconhecidas pela galeria automaticamente.
 * Cada pintura agora pode ter suas próprias capturas, fáceis de guardar e ver dentro da galeria. Qualquer captura pode virar a capa no lugar da prévia do jogo.
 * Visualização 3D renovada: dá para colocar peças de tuning no carro, rodas incluídas, e esconder a placa.
 * Cada conta agora tem seu próprio arquivo e seus próprios backups. Se a 1.6.0 não registrou a qual conta um item pertence, a galeria oferece movê-lo para a conta certa.

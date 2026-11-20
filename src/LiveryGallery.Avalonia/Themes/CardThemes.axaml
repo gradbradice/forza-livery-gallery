@@ -1,0 +1,207 @@
+<!-- The looks of a livery card's buttons and frames (Views/CardParts.cs: types of their own, so the app's styles of
+     Button.class and Border.class are not tried on them). Each kind has a theme, given on Theme; a theme's nested styles
+     are the only ones its element watches. Each look is what the app's styles of its class gave before (the classes
+     stay on the elements, for the code that finds them: GalleryClicks.CardClass). docs/plans.md, «Облегчение карточки» -->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:views="clr-namespace:LiveryGallery.Views">
+
+    <!-- What every button of the card has from a button, without Fluent's theme of Button (its six setters of resources
+         and four styles of the presenter on each button): the presenter as the template, the press's small shrink.
+         The looks below set the rest, and the states Fluent gave the round buttons -->
+    <ControlTheme x:Key="CardButtonBaseTheme" TargetType="views:CardButton">
+        <Setter Property="Foreground" Value="{DynamicResource ButtonForeground}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="RenderTransform" Value="none" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:.075" />
+            </Transitions>
+        </Setter>
+        <Setter Property="Template">
+            <ControlTemplate TargetType="Button">
+                <ContentPresenter Name="PART_ContentPresenter"
+                                  Background="{TemplateBinding Background}"
+                                  BorderBrush="{TemplateBinding BorderBrush}"
+                                  BorderThickness="{TemplateBinding BorderThickness}"
+                                  CornerRadius="{TemplateBinding CornerRadius}"
+                                  Content="{TemplateBinding Content}"
+                                  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                  Padding="{TemplateBinding Padding}"
+                                  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pressed">
+            <Setter Property="RenderTransform" Value="scale(0.98)" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The round buttons (tags, 3D, back to the game, find in the game, the note, the lock, the star): a ring of 28 -->
+    <ControlTheme x:Key="CardIconButtonTheme" TargetType="views:CardButton" BasedOn="{StaticResource CardButtonBaseTheme}">
+        <Setter Property="Background" Value="{DynamicResource BgBrush}" />
+        <Setter Property="Width" Value="28" />
+        <Setter Property="Height" Value="28" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <!-- Fluent's: the ring and the icon's colour under the pointer, pressed, off -->
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushPointerOver}" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundPointerOver}" />
+        </Style>
+        <Style Selector="^:pressed /template/ ContentPresenter">
+            <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushPressed}" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundPressed}" />
+        </Style>
+        <Style Selector="^:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ButtonBackgroundDisabled}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorderBrushDisabled}" />
+            <Setter Property="Foreground" Value="{DynamicResource ButtonForegroundDisabled}" />
+        </Style>
+        <Style Selector="^.view3d:disabled">
+            <Setter Property="Opacity" Value="0.4" />
+            <Setter Property="Cursor" Value="Arrow" />
+        </Style>
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+        </Style>
+        <!-- A locked livery: the lock button filled with the accent colour, seen from afar like the gold star -->
+        <Style Selector="^.locked /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        </Style>
+        <Style Selector="^.locked:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource AccentHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentHoverBrush}" />
+        </Style>
+        <!-- A stored card: "To the game" filled with the storage's cyan -->
+        <Style Selector="^.toGame /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource StorageBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource StorageBrush}" />
+        </Style>
+        <Style Selector="^.toGame:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource StorageBrush}" />
+            <Setter Property="Opacity" Value="0.88" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The author's line: a link-like row, lit under the pointer -->
+    <ControlTheme x:Key="CardRowLinkTheme" TargetType="views:CardButton" BasedOn="{StaticResource CardButtonBaseTheme}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="CornerRadius" Value="4" />
+        <Setter Property="HorizontalContentAlignment" Value="Left" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Style Selector="^:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource HoverBrush}" />
+        </Style>
+    </ControlTheme>
+
+    <!-- A tag of the card: a small chip, a click filters by it -->
+    <ControlTheme x:Key="CardTagChipTheme" TargetType="views:CardButton" BasedOn="{StaticResource CardButtonBaseTheme}">
+        <Setter Property="Padding" Value="5,1" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
+        <Setter Property="CornerRadius" Value="5" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="Button">
+                <Border Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        </Style>
+        <Style Selector="^:pressed">
+            <Setter Property="RenderTransform" Value="scale(1)" />
+            <Setter Property="Opacity" Value="0.75" />
+        </Style>
+    </ControlTheme>
+
+    <!-- "The game's preview back" over the picture: a dark circle of 24, darker under the pointer. The circle is in the
+         template (a theme reaches no further than its template), the icon is the content -->
+    <ControlTheme x:Key="CardCoverResetTheme" TargetType="views:CardButton" BasedOn="{StaticResource CardButtonBaseTheme}">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Template">
+            <ControlTemplate TargetType="Button">
+                <Border Name="PART_Circle" CornerRadius="12" Background="#B0000000">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                      HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                      VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+        <Style Selector="^:pointerover /template/ Border#PART_Circle">
+            <Setter Property="Background" Value="#E8000000" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The card itself. Under the pointer, selected (a ring in the accent colour), the keys' cursor (a grey ring), both;
+         a stored livery's (the storage shown: its cards are the stored ones) in the storage's cyan -->
+    <ControlTheme x:Key="CardFrameTheme" TargetType="views:CardBorder">
+        <Setter Property="Background" Value="{DynamicResource CardBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush2}" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Style Selector="^:pointerover">
+            <Setter Property="Background" Value="{DynamicResource CardHoverBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+        </Style>
+        <Style Selector="^.selected">
+            <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+            <Setter Property="BoxShadow" Value="0 0 0 2 #5B5EF0" />
+        </Style>
+        <Style Selector="^.current">
+            <Setter Property="BoxShadow" Value="0 0 0 2 #94A3B8" />
+        </Style>
+        <Style Selector="^.current.selected">
+            <Setter Property="BoxShadow" Value="0 0 0 2 #5B5EF0, 0 0 0 4 #94A3B8" />
+        </Style>
+        <Style Selector="^.storage:pointerover">
+            <Setter Property="BorderBrush" Value="{DynamicResource StorageBrush}" />
+        </Style>
+        <Style Selector="^.storage.selected">
+            <Setter Property="BorderBrush" Value="{DynamicResource StorageBrush}" />
+            <Setter Property="BoxShadow" Value="0 0 0 2 #0E7490" />
+        </Style>
+        <Style Selector="^.storage.current.selected">
+            <Setter Property="BoxShadow" Value="0 0 0 2 #0E7490, 0 0 0 4 #94A3B8" />
+        </Style>
+    </ControlTheme>
+
+    <!-- The check over a selected card's picture: the accent colour, the storage's for a stored livery -->
+    <ControlTheme x:Key="CardSelectMarkTheme" TargetType="views:CardBorder">
+        <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
+        <Style Selector="^.storage">
+            <Setter Property="Background" Value="{DynamicResource StorageBrush}" />
+        </Style>
+    </ControlTheme>
+
+</ResourceDictionary>

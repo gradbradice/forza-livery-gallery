@@ -35,7 +35,7 @@ internal partial class StorageFolderDialog : Window
         _move = move;
         DataContext = viewModel;
         Title = Strings.StorageFolderDialogTitle;
-        TitleBarText.Text = Strings.StorageFolderDialogTitle;
+        Bar.Title = Strings.StorageFolderDialogTitle;
         ProgramOptionText.Text = Strings.StorageOptionProgram;
         CommonOptionText.Text = Strings.StorageOptionCommon;
         RecommendedText.Text = Strings.StorageOptionRecommended;
@@ -52,8 +52,6 @@ internal partial class StorageFolderDialog : Window
             _moving.Cancel();
         };
     }
-
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
 
     private void CloseButton_Click(object? sender, RoutedEventArgs e) => Close(_done);
 

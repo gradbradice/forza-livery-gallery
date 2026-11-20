@@ -56,6 +56,8 @@
                         </DataTemplate>
                     </ItemsControl.DataTemplates>
                 </ItemsControl>
+                <!-- Beside the search, on its row: the search's width (150) and the gap after it (8). At the strip's
+                     left it was drawn over the search box -->
                 <TextBlock x:Name="NothingFoundText" IsVisible="{Binding NothingFound}" FontSize="12" Margin="158,5,0,8"
                            VerticalAlignment="Top" Foreground="{DynamicResource TextSecondaryBrush}" />
             </Panel>

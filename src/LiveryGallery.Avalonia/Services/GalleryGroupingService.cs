@@ -17,7 +17,8 @@ internal static class GalleryGroupingService
         AuctionFilterMode auctionMode,
         bool groupingEnabled,
         double groupWidth,
-        InstalledMode installedMode = InstalledMode.None)
+        InstalledMode installedMode = InstalledMode.None,
+        double cardStep = Models.CardLayout.NormalWidth + 2 * Models.CardLayout.Margin)
     {
         var groups = GalleryGrouping.Group(filtered, new GalleryGroupingOptions
         {
@@ -28,14 +29,15 @@ internal static class GalleryGroupingService
             Installed = installedMode,
             GroupingEnabled = groupingEnabled,
         });
-        return [.. groups.Select(g => ToViewGroup(g, groupWidth))];
+        return [.. groups.Select(g => ToViewGroup(g, groupWidth, cardStep))];
     }
 
-    private static LiveryGroup ToViewGroup(GalleryGroup<LiveryEntry> group, double groupWidth) => new()
+    private static LiveryGroup ToViewGroup(GalleryGroup<LiveryEntry> group, double groupWidth, double cardStep) => new()
     {
         Key = Name(group),
         Items = [.. group.Items],
         GroupWidth = groupWidth,
+        CardStep = cardStep,
         SpecialKind = group.Kind switch
         {
             GalleryGroupKind.AllLiveries => LiveryGroupSpecialKind.AllLiveries,

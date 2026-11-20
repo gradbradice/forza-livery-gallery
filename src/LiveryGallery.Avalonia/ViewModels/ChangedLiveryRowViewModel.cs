@@ -11,9 +11,7 @@ internal sealed partial class ChangedLiveryRowViewModel : ObservableObject, IThu
         LiveryName = entry.LiveryName;
         LiveryIdText = entry.LiveryIdText;
         Author = entry.AuthorDisplayText;
-        CarText = entry.CarYear is { } year
-            ? $"{entry.CarManufacturer} {entry.CarModelName} ({year})"
-            : $"{entry.CarManufacturer} {entry.CarModelName}";
+        CarText = entry.CarTitle;
         DateText = entry.DateDisplay;
         Badges = Views.LiveryBadges.Of(entry);
         IsRemoved = isRemoved;

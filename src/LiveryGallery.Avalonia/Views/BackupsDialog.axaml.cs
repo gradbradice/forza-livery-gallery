@@ -40,16 +40,12 @@ internal partial class BackupsDialog : Window
         _viewModel.DeleteRequested += row => _work.Run(() => ConfirmDeleteAsync(row), "backups: delete");
 
         Title = Strings.BackupsDialogTitle;
-        TitleBarText.Text = Strings.BackupsDialogTitle;
+        Bar.Title = Strings.BackupsDialogTitle;
         TitleText.Text = Strings.BackupsDialogTitle;
         CreateBackupButton.Content = Strings.BackupCreateButton;
         TakeUnassignedButton.Content = Strings.UnassignedTakeButton;
         ToolTip.SetTip(TakeUnassignedButton, Strings.BackupsUnassignedTooltip);
     }
-
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
-
-    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 
     protected override void OnClosed(EventArgs e)
     {

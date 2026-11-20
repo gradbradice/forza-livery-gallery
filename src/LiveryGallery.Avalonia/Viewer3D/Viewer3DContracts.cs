@@ -120,6 +120,12 @@ internal interface ILivery3DViewer
     /// <summary>The last check of the game folder; null before the first one finished</summary>
     GameFolderReport? FolderReport { get; }
 
+    /// <summary>
+    /// "Drawn with FH4 car models and paints: …" when another game's files draw the liveries (FH3 to FH5 whose own
+    /// files cannot be read: encrypted, not installed); null when the game's own do. The 3D window says it under the car, the settings beside the folder
+    /// </summary>
+    string? DrawnWithNote { get; }
+
     /// <summary>Checking started or finished, or the game folder changed</summary>
     event Action? StateChanged;
 

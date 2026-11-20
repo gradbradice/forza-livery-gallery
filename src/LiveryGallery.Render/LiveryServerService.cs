@@ -9,8 +9,34 @@ namespace LiveryGallery.Render;
 /// <see cref="ProfileDataLocator"/>.
 /// </summary>
 /// <param name="gameId">The game whose saves are sent (ForzaToolkit.Games id): the server decrypts them with its keys</param>
-internal sealed class LiveryServerService(string gameId) : ILiveryServerClient
+internal sealed class LiveryServerService(string gameId) : ILiveryServerClient, ISaveStoreAware
 {
+    /// <inheritdoc/>
+    public Func<ForzaToolkit.Saves.SaveStoreKind?>? SaveStore { get; set; }
+
+    /// <summary>
+    /// The <c>source</c> the server is told: FH3 to FH5 only (<see cref="SaveSource.AppliesTo"/>), by the build whose
+    /// files the save is; null when that cannot be told
+    /// </summary>
+    internal string? Source()
+    {
+        if (!SaveSource.AppliesTo(gameId)) return null;
+        ForzaToolkit.Saves.SaveStoreKind? kind;
+        try { kind = SaveStore?.Invoke(); }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            AppLog.LogErrorThrottled("LiveryServer.SaveSource", "Failed to tell which build the save is of", ex);
+            return null;
+        }
+        return kind switch
+        {
+            ForzaToolkit.Saves.SaveStoreKind.SteamCloud => SaveSource.Steam,
+            ForzaToolkit.Saves.SaveStoreKind.MicrosoftStore => SaveSource.MicrosoftStore,
+            null => null,
+            _ => SaveSource.Other,
+        };
+    }
+
     // Short requests (status, challenge). The save is sent with the client's own upload timeout (5 minutes,
     // ForzaLiveryClientOptions.UploadTimeout): with a ping of seconds a megabyte takes more than a minute
     private static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(45);
@@ -62,8 +88,29 @@ internal sealed class LiveryServerService(string gameId) : ILiveryServerClient
     public async Task<ServerCheckResult?> CheckConnectionAsync(CancellationToken ct)
     {
         if (GetClient() is not { } client) return null;
+        string? source = Source();
+        client.Options.SaveSource = source;
         var status = await client.CheckConnectionAsync(gameId, ct).ConfigureAwait(false);
-        return ToCheckResult(status);
+        return ForGame(ToCheckResult(status), status, gameId, source);
+    }
+
+    /// <summary>
+    /// A server that answers but does not read this game's saves, or not those of this build (FH3 to FH5 before it
+    /// has their keys: the game not in its list, not accepting saves, or not from this source): nothing is sent, the
+    /// window says so (<see cref="ServerConnectionState.GameNotSupported"/>). FH6 as before: a server that does not
+    /// list it is only "limited"
+    /// </summary>
+    internal static ServerCheckResult ForGame(ServerCheckResult result, ServerConnectionStatus status, string gameId, string? source)
+    {
+        if (!SaveSource.AppliesTo(gameId) || !result.CanUpload || status.Server is null) return result;
+        bool reads = status.Game is { AcceptsSaves: true } game && (source is null || game.AcceptsSource(source));
+        if (reads) return result;
+        return result with
+        {
+            State = ServerConnectionState.GameNotSupported,
+            ServerMessage = status.Game?.Message,
+            RecheckAfter = ServerCheckResult.DefaultRecheckAfter(ServerConnectionState.GameNotSupported, null),
+        };
     }
 
     public async Task<IReadOnlyDictionary<string, int>> GetInstalledLiveriesAsync(ReadOnlyMemory<byte> profileData, CancellationToken ct) =>
@@ -73,6 +120,7 @@ internal sealed class LiveryServerService(string gameId) : ILiveryServerClient
     public async Task<ServerSaveRead> ReadSaveAsync(ReadOnlyMemory<byte> profileData, CancellationToken ct)
     {
         var client = GetClient() ?? throw new InvalidOperationException("The livery server is not configured in this build");
+        client.Options.SaveSource = Source();
         try
         {
             var read = await client.ReadSaveAsync(profileData, cancellationToken: ct).ConfigureAwait(false);

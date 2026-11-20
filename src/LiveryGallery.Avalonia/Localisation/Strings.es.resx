@@ -201,12 +201,6 @@
   <data name="ButtonClose" xml:space="preserve">
     <value>Cerrar</value>
   </data>
-  <data name="TagsDialogTitle" xml:space="preserve">
-    <value>Etiquetas</value>
-  </data>
-  <data name="TagsDialogHint" xml:space="preserve">
-    <value>Separe las etiquetas con comas, por ejemplo: drift, anime, carreras</value>
-  </data>
   <data name="ButtonSave" xml:space="preserve">
     <value>Guardar</value>
   </data>
@@ -599,19 +593,19 @@ Una tarjeta reúne los apodos de un autor bajo un solo nombre.</value>
     <value>No hay tarjeta de autor</value>
   </data>
   <data name="ContextMenuMoveToArchive" xml:space="preserve">
-    <value>Mover al archivo</value>
+    <value>Mover a la papelera</value>
   </data>
   <data name="MenuOpenArchive" xml:space="preserve">
-    <value>Archivo</value>
+    <value>Papelera</value>
   </data>
   <data name="MenuOpenBackups" xml:space="preserve">
     <value>Copias de seguridad</value>
   </data>
   <data name="ArchiveDialogTitle" xml:space="preserve">
-    <value>Archivo</value>
+    <value>Papelera</value>
   </data>
   <data name="ArchiveEmptyHint" xml:space="preserve">
-    <value>El archivo está vacío</value>
+    <value>La papelera está vacía</value>
   </data>
   <data name="ArchiveSelectedCountFormat" xml:space="preserve">
     <value>Seleccionadas: {0}</value>
@@ -629,7 +623,7 @@ Una tarjeta reúne los apodos de un autor bajo un solo nombre.</value>
     <value>{0} se moverán a la Papelera de reciclaje. La galería no puede deshacerlo.</value>
   </data>
   <data name="ArchivedOnFormat" xml:space="preserve">
-    <value>Archivada el {0}</value>
+    <value>En la papelera desde el {0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
     <value>Antes de restaurar libreas, elija la carpeta de guardado en la configuración</value>
@@ -647,7 +641,7 @@ Una tarjeta reúne los apodos de un autor bajo un solo nombre.</value>
     <value>Abrir la vista previa original</value>
   </data>
   <data name="LoadingMovingToArchive" xml:space="preserve">
-    <value>Moviendo al archivo…</value>
+    <value>Moviendo a la papelera…</value>
   </data>
   <data name="ArchiveSelectAllButton" xml:space="preserve">
     <value>Seleccionar todas</value>
@@ -824,10 +818,10 @@ Una tarjeta reúne los apodos de un autor bajo un solo nombre.</value>
   </data>
   <data name="AuctionBadgeTooltip" xml:space="preserve">
     <value>Comprada en la casa de subastas.
-Solo se puede mover al archivo cuando el servidor de libreas confirma que ningún coche la usa.</value>
+Solo se puede mover a la papelera cuando el servidor de libreas confirma que ningún coche la usa.</value>
   </data>
   <data name="ArchiveAuctionNotAllowedTooltip" xml:space="preserve">
-    <value>Las libreas de subasta solo se pueden mover al archivo cuando el servidor de libreas confirma que ningún coche las usa</value>
+    <value>Las libreas de subasta solo se pueden mover a la papelera cuando el servidor de libreas confirma que ningún coche las usa</value>
   </data>
   <data name="ArchiveAuctionSkippedFormat" xml:space="preserve">
     <value>Libreas de subasta seleccionadas que siguen en el juego: {0}. No está confirmado que ningún coche las use. Se podrán mover cuando el servidor de libreas tenga la partida guardada actual.</value>
@@ -996,7 +990,7 @@ Solo se puede mover al archivo cuando el servidor de libreas confirma que ningú
 Actualizado a las {1}</value>
   </data>
   <data name="ServerSyncProfileNotFound" xml:space="preserve">
-    <value>La carpeta de guardado no contiene el archivo de perfil C_ProfileData.</value>
+    <value>La carpeta de guardado no contiene el archivo de perfil ProfileData.</value>
   </data>
   <data name="ServerSyncSaveNotSupported" xml:space="preserve">
     <value>El servidor aún no puede leer esta partida guardada. Probablemente el juego se actualizó. Se añadirá compatibilidad.</value>
@@ -1023,14 +1017,17 @@ Actualizado a las {1}</value>
     <value>Usar el servidor para saber qué libreas están puestas en coches</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Para saber qué libreas están puestas en sus coches y el nombre de su cuenta, la galería envía al servidor el archivo de partida guardada C_ProfileData. El servidor usa el archivo solo para esto y no lo almacena.
+    <value>Para saber qué libreas están puestas en sus coches y el nombre de su cuenta, la galería envía al servidor el archivo de partida guardada ProfileData. El servidor usa el archivo solo para esto y no lo almacena.
 
 Los datos del archivo no se conservan ni se usan para nada más. El servidor guarda de forma segura las claves necesarias para descifrar el archivo de partida guardada.
 
 El servidor no tiene relación con los servidores oficiales de Forza Horizon, Xbox o Microsoft.</value>
   </data>
+  <data name="ServerConnectionAllGames" xml:space="preserve">
+    <value>El ajuste es común a todos los juegos de la galería: FH6, FH5, FH4 y FH3.</value>
+  </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Para saber qué libreas están puestas en sus coches y el nombre de su cuenta, la galería envía al servidor el archivo de partida guardada C_ProfileData. El servidor usa el archivo solo para esto y no lo almacena.
+    <value>Para saber qué libreas están puestas en sus coches y el nombre de su cuenta, la galería envía al servidor el archivo de partida guardada ProfileData. El servidor usa el archivo solo para esto y no lo almacena.
 
 Los datos del archivo no se conservan ni se usan para nada más. El servidor guarda de forma segura las claves necesarias para descifrar el archivo de partida guardada.
 
@@ -1082,36 +1079,36 @@ Los datos se envían al servidor solo con su consentimiento. ¿Activar la conexi
 {0}</value>
   </data>
   <data name="ArchiveInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Las libreas puestas en coches en el juego no se pueden mover al archivo</value>
+    <value>Las libreas puestas en coches en el juego no se pueden mover a la papelera</value>
   </data>
   <data name="ArchiveInstalledSkippedFormat" xml:space="preserve">
-    <value>Las libreas puestas en coches en el juego no se pueden mover al archivo. Libreas seleccionadas que siguen en el juego: {0}.</value>
+    <value>Las libreas puestas en coches en el juego no se pueden mover a la papelera. Libreas seleccionadas que siguen en el juego: {0}.</value>
   </data>
   <data name="ArchiveInstalledUnknownMessage" xml:space="preserve">
-    <value>No se sabe qué libreas están puestas en coches, así que mover esta librea al archivo no es seguro: podría estar puesta en un coche en el juego.
+    <value>No se sabe qué libreas están puestas en coches, así que mover esta librea a la papelera no es seguro: podría estar puesta en un coche en el juego.
 
-¿Mover la librea al archivo?</value>
+¿Mover la librea a la papelera?</value>
   </data>
   <data name="ArchiveInstalledUnknownMessageMany" xml:space="preserve">
-    <value>No se sabe qué libreas están puestas en coches, así que mover estas libreas al archivo no es seguro: algunas podrían estar puestas en coches en el juego.
+    <value>No se sabe qué libreas están puestas en coches, así que mover estas libreas a la papelera no es seguro: algunas podrían estar puestas en coches en el juego.
 
-¿Mover las libreas al archivo?</value>
+¿Mover las libreas a la papelera?</value>
   </data>
   <data name="DontShowAgainCheckBox" xml:space="preserve">
     <value>No volver a mostrar</value>
   </data>
   <data name="ArchiveAuctionOrInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Las libreas puestas en coches en el juego no se pueden mover al archivo. Las de subasta, solo cuando el servidor de libreas confirma que ningún coche las usa.</value>
+    <value>Las libreas puestas en coches en el juego no se pueden mover a la papelera. Las de subasta, solo cuando el servidor de libreas confirma que ningún coche las usa.</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessage" xml:space="preserve">
-    <value>La partida guardada cambió desde la última sincronización y los nuevos datos aún no han llegado al servidor de libreas. La lista de libreas puestas en coches puede estar desactualizada, así que mover esta librea al archivo no es seguro: podría estar puesta en un coche en el juego.
+    <value>La partida guardada cambió desde la última sincronización y los nuevos datos aún no han llegado al servidor de libreas. La lista de libreas puestas en coches puede estar desactualizada, así que mover esta librea a la papelera no es seguro: podría estar puesta en un coche en el juego.
 
-Es mejor esperar a la sincronización, que es automática y puede tardar unos minutos, y volver a intentarlo. ¿Mover la librea al archivo ahora?</value>
+Es mejor esperar a la sincronización, que es automática y puede tardar unos minutos, y volver a intentarlo. ¿Mover la librea a la papelera ahora?</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>La partida guardada cambió desde la última sincronización y los nuevos datos aún no han llegado al servidor de libreas. La lista de libreas puestas en coches puede estar desactualizada, así que mover estas libreas al archivo no es seguro: algunas podrían estar puestas en coches en el juego.
+    <value>La partida guardada cambió desde la última sincronización y los nuevos datos aún no han llegado al servidor de libreas. La lista de libreas puestas en coches puede estar desactualizada, así que mover estas libreas a la papelera no es seguro: algunas podrían estar puestas en coches en el juego.
 
-Es mejor esperar a la sincronización, que es automática y puede tardar unos minutos, y volver a intentarlo. ¿Mover las libreas al archivo ahora?</value>
+Es mejor esperar a la sincronización, que es automática y puede tardar unos minutos, y volver a intentarlo. ¿Mover las libreas a la papelera ahora?</value>
   </data>
   <data name="ContextMenuNavigateInGame" xml:space="preserve">
     <value>Buscar en el juego</value>
@@ -1199,29 +1196,41 @@ Mientras el cursor se mueve, no toque el ratón ni el teclado: mover el ratón, 
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>Automático</value>
   </data>
+  <data name="NavigationRowsOne" xml:space="preserve">
+    <value>1 fila</value>
+  </data>
   <data name="NavigationRowsTwo" xml:space="preserve">
-    <value>2 filas, menú estándar</value>
+    <value>2 filas</value>
   </data>
   <data name="NavigationRowsThree" xml:space="preserve">
-    <value>3 filas, mod de menú</value>
+    <value>3 filas</value>
   </data>
-  <data name="NavigationRowsDetectedVanilla" xml:space="preserve">
-    <value>Detectado: 2 filas, menú estándar.</value>
+  <data name="NavigationRowsStandardFormat" xml:space="preserve">
+    <value>{0}, menú estándar</value>
+  </data>
+  <data name="NavigationRowsDetectedStandardFormat" xml:space="preserve">
+    <value>Detectado: {0}, menú estándar.</value>
   </data>
   <data name="NavigationRowsDetectedModFormat" xml:space="preserve">
-    <value>Detectado: {0} filas, un mod cambió el menú.</value>
+    <value>Detectado: {0}, un mod cambió el menú.</value>
   </data>
-  <data name="NavigationRowsDetectedNoGameFolder" xml:space="preserve">
-    <value>La carpeta del juego no está indicada, así que se suponen 2 filas. Indique la carpeta del juego para detectar mods de menú.</value>
+  <data name="NavigationRowsDetectedNoGameFolderFormat" xml:space="preserve">
+    <value>La carpeta del juego no está indicada, así que se supone el menú estándar ({0}). Indique la carpeta del juego para detectar mods de menú.</value>
   </data>
   <data name="NavigationRowsDetectedUnknown" xml:space="preserve">
-    <value>No se pudieron detectar las filas: el archivo del menú se cambió de forma desconocida. Elija 2 o 3 filas.</value>
+    <value>No se pudieron detectar las filas: el menú se cambió de forma desconocida. Elija las filas a mano.</value>
   </data>
   <data name="NavigationKeyIntervalLabel" xml:space="preserve">
     <value>Pausa entre pulsaciones de teclas</value>
   </data>
   <data name="NavigationKeyIntervalHint" xml:space="preserve">
     <value>Auméntela si el cursor se detiene antes de la librea: el juego omite las pulsaciones demasiado rápidas.</value>
+  </data>
+  <data name="NavigationMenuOpenDelayLabel" xml:space="preserve">
+    <value>Espera tras abrir «Mis diseños»</value>
+  </data>
+  <data name="NavigationMenuOpenDelayHint" xml:space="preserve">
+    <value>Antes de buscar, la galería cierra «Mis diseños» y lo vuelve a abrir. Aumente la espera si, con muchos diseños, el juego aún está abriendo el menú cuando el cursor empieza a moverse. Hasta 10 segundos.</value>
   </data>
   <data name="MillisecondsFormat" xml:space="preserve">
     <value>{0} ms</value>
@@ -1266,7 +1275,7 @@ Mientras el cursor se mueve, no toque el ratón ni el teclado: mover el ratón, 
     <value>Guarda un archivo ZIP con el registro, la configuración sin rutas ni ID y los errores de lectura de las libreas, para adjuntarlo a un informe de errores. No se envía nada.</value>
   </data>
   <data name="ExportDiagnosticsButton" xml:space="preserve">
-    <value>Exportar diagnóstico…</value>
+    <value>Exportar diagnóstico</value>
   </data>
   <data name="DiagnosticsSaveDialogTitle" xml:space="preserve">
     <value>Guardar diagnóstico</value>
@@ -1379,7 +1388,7 @@ Todas las cuentas y apodos de estos autores estarán en una tarjeta. Más adelan
     <value>Datos de las cuentas</value>
   </data>
   <data name="AccountDataHint" xml:space="preserve">
-    <value>Cada cuenta de juego tiene su propia caché de escaneo y sus vistas previas. Al olvidar una cuenta se libera ese espacio. Si la cuenta vuelve, sus libreas se escanean de nuevo. El archivo y las copias de seguridad no se ven afectados.</value>
+    <value>Cada cuenta de juego tiene su propia caché de escaneo y sus vistas previas. Al olvidar una cuenta se libera ese espacio. Si la cuenta vuelve, sus libreas se escanean de nuevo. La papelera y las copias de seguridad no se ven afectadas.</value>
   </data>
   <data name="AccountDataCurrent" xml:space="preserve">
     <value>Cuenta actual</value>
@@ -1400,7 +1409,7 @@ Todas las cuentas y apodos de estos autores estarán en una tarjeta. Más adelan
     <value>Olvidar la cuenta</value>
   </data>
   <data name="AccountDataForgetMessage" xml:space="preserve">
-    <value>¿Olvidar la cuenta {0}? Se eliminarán su caché de escaneo y sus vistas previas, unos {1}. El archivo y las copias de seguridad se conservan. Si la cuenta vuelve, sus libreas se escanearán de nuevo.</value>
+    <value>¿Olvidar la cuenta {0}? Se eliminarán su caché de escaneo y sus vistas previas, unos {1}. La papelera y las copias de seguridad se conservan. Si la cuenta vuelve, sus libreas se escanearán de nuevo.</value>
   </data>
   <data name="AccountDataForgetFailedMessage" xml:space="preserve">
     <value>No se pudieron eliminar los datos de la cuenta. Los detalles están en el registro.</value>
@@ -1483,8 +1492,8 @@ Todas las cuentas y apodos de estos autores estarán en una tarjeta. Más adelan
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>no hay archivos de idioma StringTables: los nombres de los coches se toman de la base de datos de coches</value>
   </data>
-  <data name="AboutDescriptionFormat" xml:space="preserve">
-    <value>Una galería de las libreas de las partidas guardadas de {0}.</value>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Una galería de las libreas de las partidas guardadas de los juegos Forza.</value>
   </data>
   <data name="FolderNotFoundMessageFormat" xml:space="preserve">
     <value>No se encontró automáticamente la carpeta de guardado de {0}.
@@ -1542,7 +1551,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>el dibujo se parece en un {0} % a «{1}»</value>
   </data>
   <data name="ContextMenuAssignAuthor" xml:space="preserve">
-    <value>Indicar el autor…</value>
+    <value>Indicar el autor</value>
   </data>
   <data name="ContextMenuUnassignAuthor" xml:space="preserve">
     <value>Quitar el autor indicado</value>
@@ -1743,7 +1752,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Eliminadas</value>
   </data>
   <data name="StatsLegendArchived" xml:space="preserve">
-    <value>Archivadas</value>
+    <value>A la papelera</value>
   </data>
   <data name="StatsSizeTooltipFormat" xml:space="preserve">
     <value>Libreas a fin de mes: {0}</value>
@@ -1929,16 +1938,16 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Sin usar</value>
   </data>
   <data name="StatsHealthUnusedNote" xml:space="preserve">
-    <value>No están puestas en coches, no son favoritas, no están bloqueadas, no son propias ni de subasta. Son las primeras candidatas al archivo.</value>
+    <value>No están puestas en coches, no son favoritas, no están bloqueadas, no son propias ni de subasta. Son las primeras candidatas a la papelera.</value>
   </data>
   <data name="StatsHealthUnused" xml:space="preserve">
     <value>Libreas sin usar</value>
   </data>
   <data name="StatsHealthArchiveTitle" xml:space="preserve">
-    <value>Archivo</value>
+    <value>Papelera</value>
   </data>
   <data name="StatsHealthArchived" xml:space="preserve">
-    <value>En el archivo</value>
+    <value>En la papelera</value>
   </data>
   <data name="StatsHealthLastArchived" xml:space="preserve">
     <value>Último traslado</value>
@@ -2052,7 +2061,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>De quién elimina libreas</value>
   </data>
   <data name="StatsDeparturesCellFormat" xml:space="preserve">
-    <value>{0} + {1} archivadas</value>
+    <value>{0} + {1} a la papelera</value>
   </data>
   <data name="StatsNoJournalShort" xml:space="preserve">
     <value>Todavía no hay eliminaciones en el historial</value>
@@ -2118,10 +2127,10 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Exportar</value>
   </data>
   <data name="StatsExportLiveries" xml:space="preserve">
-    <value>Libreas a CSV…</value>
+    <value>Libreas a CSV</value>
   </data>
   <data name="StatsExportAuthors" xml:space="preserve">
-    <value>Autores a CSV…</value>
+    <value>Autores a CSV</value>
   </data>
   <data name="StatsExportLiveriesFileName" xml:space="preserve">
     <value>libreas</value>
@@ -2133,7 +2142,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>No se pudo guardar el archivo.</value>
   </data>
   <data name="StatsSaveChart" xml:space="preserve">
-    <value>Guardar como PNG…</value>
+    <value>Guardar como PNG</value>
   </data>
   <data name="StatsAuthorsTopTooltipFormat" xml:space="preserve">
     <value>{1} de {2} libreas con autor conocido son de los {0} autores de los que tiene más libreas</value>
@@ -2145,22 +2154,10 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Quitar de favoritos</value>
   </data>
   <data name="ContextMenuEditTags" xml:space="preserve">
-    <value>Editar etiquetas…</value>
+    <value>Editar etiquetas</value>
   </data>
   <data name="TagChipTooltip" xml:space="preserve">
     <value>Haga clic para mostrar solo las libreas con esta etiqueta y clic derecho para ocultarlas. Otro clic lo deshace.</value>
-  </data>
-  <data name="TagsDialogManyTitleFormat" xml:space="preserve">
-    <value>Etiquetas de las libreas seleccionadas: {0}</value>
-  </data>
-  <data name="TagsDialogManyHint" xml:space="preserve">
-    <value>Una marca añade la etiqueta a todas las libreas seleccionadas y una casilla vacía la quita de todas. Un cuadro relleno indica que solo algunas la tienen. Se queda como está.</value>
-  </data>
-  <data name="TagsDialogNewTagsLabel" xml:space="preserve">
-    <value>Etiquetas nuevas, separadas por comas. Se añaden a todas las libreas seleccionadas.</value>
-  </data>
-  <data name="TagsDialogPartialTooltipFormat" xml:space="preserve">
-    <value>En {0} de {1} seleccionadas</value>
   </data>
   <data name="ContextMenuLock" xml:space="preserve">
     <value>Bloquear</value>
@@ -2169,16 +2166,16 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Desbloquear</value>
   </data>
   <data name="LockToggleTooltip" xml:space="preserve">
-    <value>Bloquear la librea para que no se pueda mover al archivo</value>
+    <value>Bloquear la librea para que no se pueda mover a la papelera</value>
   </data>
   <data name="LockedTooltip" xml:space="preserve">
-    <value>Bloqueada: la librea no se puede mover al archivo. Haga clic para desbloquearla.</value>
+    <value>Bloqueada: la librea no se puede mover a la papelera. Haga clic para desbloquearla.</value>
   </data>
   <data name="ArchiveLockedNotAllowedTooltip" xml:space="preserve">
-    <value>Las libreas bloqueadas no se pueden mover al archivo. Desbloquéelas primero.</value>
+    <value>Las libreas bloqueadas no se pueden mover a la papelera. Desbloquéelas primero.</value>
   </data>
   <data name="ArchiveLockedSkippedFormat" xml:space="preserve">
-    <value>Las libreas bloqueadas no se pueden mover al archivo. Libreas bloqueadas seleccionadas que quedan en el juego: {0}.</value>
+    <value>Las libreas bloqueadas no se pueden mover a la papelera. Libreas bloqueadas seleccionadas que quedan en el juego: {0}.</value>
   </data>
   <data name="AuthorLabelOwnFormat" xml:space="preserve">
     <value>{0} (usted)</value>
@@ -2265,16 +2262,16 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Las letras, los dígitos, {0} y {1} no hacen nada mientras el cursor está en un campo de texto. Enter, 3 y G funcionan cuando hay exactamente una librea seleccionada.</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
-    <value>Haga clic para liberar espacio: las copias sobrantes de las libreas duplicadas van al archivo.</value>
+    <value>Haga clic para liberar espacio: las copias sobrantes de las libreas duplicadas van a la papelera.</value>
   </data>
   <data name="FreeSpaceMenuItem" xml:space="preserve">
-    <value>Liberar espacio…</value>
+    <value>Liberar espacio</value>
   </data>
   <data name="FreeSpaceTitle" xml:space="preserve">
     <value>Liberar espacio</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>De cada librea duplicada queda una copia: primero una con etiquetas o una propia, si no, la primera descargada. También quedan las libreas bloqueadas, las puestas en un coche, las de subasta y las favoritas. Desmarque una copia para conservarla. Todo lo que se va se puede recuperar del archivo.</value>
+    <value>De cada librea duplicada queda una copia: primero una con etiquetas o una propia, si no, la primera descargada. También quedan las libreas bloqueadas, las puestas en un coche, las de subasta y las favoritas. Desmarque una copia para conservarla. Todo lo que se va se puede recuperar de la papelera.</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>Descargada: {0}</value>
@@ -2304,31 +2301,31 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Ahora en la partida guardada: {0} de {1}.</value>
   </data>
   <data name="FreeSpaceAfterFormat" xml:space="preserve">
-    <value>Al archivo: {0}, libres después: {1}.</value>
+    <value>A la papelera: {0}, libres después: {1}.</value>
   </data>
   <data name="FreeSpaceAfterNoLimitFormat" xml:space="preserve">
-    <value>Al archivo: {0}.</value>
+    <value>A la papelera: {0}.</value>
   </data>
   <data name="FreeSpaceApplyFormat" xml:space="preserve">
-    <value>Mover al archivo ({0})</value>
+    <value>Mover a la papelera ({0})</value>
   </data>
   <data name="FewFreeSlotsMessageFormat" xml:space="preserve">
-    <value>En la partida guardada solo quedan {0} espacios libres de {1}. En el límite, el juego no deja descargar ni crear libreas. ¿Liberar espacio ahora moviendo al archivo las copias sobrantes de las libreas duplicadas?</value>
+    <value>En la partida guardada solo quedan {0} espacios libres de {1}. En el límite, el juego no deja descargar ni crear libreas. ¿Liberar espacio ahora moviendo a la papelera las copias sobrantes de las libreas duplicadas?</value>
   </data>
   <data name="FewFreeSlotsFullMessageFormat" xml:space="preserve">
-    <value>La partida guardada está llena: los {0} espacios están ocupados y el juego no deja descargar ni crear libreas. ¿Liberar espacio ahora moviendo al archivo las copias sobrantes de las libreas duplicadas?</value>
+    <value>La partida guardada está llena: los {0} espacios están ocupados y el juego no deja descargar ni crear libreas. ¿Liberar espacio ahora moviendo a la papelera las copias sobrantes de las libreas duplicadas?</value>
   </data>
   <data name="AutoBackupFailedTitle" xml:space="preserve">
     <value>Copia de seguridad</value>
   </data>
   <data name="AutoBackupFailedMessage" xml:space="preserve">
-    <value>No se pudo crear la copia de seguridad antes de mover al archivo. ¿Mover las libreas al archivo sin ella?</value>
+    <value>No se pudo crear la copia de seguridad antes de mover a la papelera. ¿Mover las libreas a la papelera sin ella?</value>
   </data>
   <data name="AutoBackupFailedContinueButton" xml:space="preserve">
     <value>Mover sin copia</value>
   </data>
   <data name="LoadingBackupBeforeArchive" xml:space="preserve">
-    <value>Creando una copia de seguridad antes de mover al archivo…</value>
+    <value>Creando una copia de seguridad antes de mover a la papelera…</value>
   </data>
   <data name="StatusAutoBackupMade" xml:space="preserve">
     <value>Se creó una copia de seguridad automática</value>
@@ -2337,7 +2334,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Copias de seguridad automáticas</value>
   </data>
   <data name="AutoBackupBeforeArchiveLabel" xml:space="preserve">
-    <value>Antes de mover libreas al archivo</value>
+    <value>Antes de mover libreas a la papelera</value>
   </data>
   <data name="AutoBackupOnChangeLabel" xml:space="preserve">
     <value>Cuando cambian las libreas de la partida guardada, como mucho una vez al día</value>
@@ -2358,7 +2355,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Automática</value>
   </data>
   <data name="BackupKindBeforeArchive" xml:space="preserve">
-    <value>Creada antes de mover libreas al archivo</value>
+    <value>Creada antes de mover libreas a la papelera</value>
   </data>
   <data name="BackupKindSaveChanged" xml:space="preserve">
     <value>Creada después de que cambiaran las libreas de la partida guardada</value>
@@ -2407,12 +2404,6 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
     <value>Las betas salen antes que las versiones estables y pueden tener errores. Si lo desactiva estando en una beta, la galería le ofrece volver a la última versión estable.</value>
-  </data>
-  <data name="TagsDialogOneHint" xml:space="preserve">
-    <value>Una marca pone la etiqueta a la librea y una casilla vacía la quita.</value>
-  </data>
-  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
-    <value>Etiquetas nuevas, separadas por comas.</value>
   </data>
   <data name="KeyClick" xml:space="preserve">
     <value>Clic</value>
@@ -2495,9 +2486,6 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
   <data name="LiveryDetailsUnknown" xml:space="preserve">
     <value>desconocido</value>
   </data>
-  <data name="LiveryDetailsAddTag" xml:space="preserve">
-    <value>+ etiqueta</value>
-  </data>
   <data name="LiveryDetailsNoteLabel" xml:space="preserve">
     <value>Nota</value>
   </data>
@@ -2532,7 +2520,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Apareció en la partida guardada</value>
   </data>
   <data name="HistoryRestoredFromArchive" xml:space="preserve">
-    <value>Recuperada del archivo</value>
+    <value>Recuperada de la papelera</value>
   </data>
   <data name="HistoryReturned" xml:space="preserve">
     <value>Volvió: desde una copia de seguridad o descargada de nuevo</value>
@@ -2541,7 +2529,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Desapareció de la partida guardada</value>
   </data>
   <data name="HistoryArchived" xml:space="preserve">
-    <value>Movida al archivo</value>
+    <value>Movida a la papelera</value>
   </data>
   <data name="HistoryChanged" xml:space="preserve">
     <value>Archivo modificado</value>
@@ -2571,7 +2559,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Mover a esta cuenta</value>
   </data>
   <data name="ArchiveUnassignedTooltip" xml:space="preserve">
-    <value>Una versión anterior las archivó sin anotar la cuenta, y había varias cuentas. Muévalas aquí si son de esta cuenta.</value>
+    <value>Una versión anterior las movió a la papelera sin anotar la cuenta, y había varias cuentas. Muévalas aquí si son de esta cuenta.</value>
   </data>
   <data name="BackupsUnassignedTooltip" xml:space="preserve">
     <value>Una versión anterior hizo estas copias sin anotar la cuenta, y había varias cuentas. Muévalas aquí si son de esta cuenta.</value>
@@ -2586,7 +2574,7 @@ Revise los archivos antes de enviarlos. Los valores que la galería no conoce, p
     <value>Partida guardada no encontrada</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
-    <value>Elegir carpeta…</value>
+    <value>Elegir carpeta</value>
   </data>
   <data name="SearchSaveAgainButton" xml:space="preserve">
     <value>Buscar de nuevo</value>
@@ -2638,16 +2626,16 @@ Actualizado el {1} a las {2}</value>
     <value>Cuenta</value>
   </data>
   <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
-    <value>Archivo</value>
+    <value>Papelera</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>Preguntar antes de archivar si no se sabe qué libreas están en los coches</value>
+    <value>Preguntar antes de mover a la papelera si no se sabe qué libreas están en los coches</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>Preguntar antes de archivar si la lista de libreas en los coches puede estar desactualizada</value>
+    <value>Preguntar antes de mover a la papelera si la lista de libreas en los coches puede estar desactualizada</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>No es seguro mover al archivo una librea que está en un coche del juego. «No volver a mostrar» en estas preguntas las desactiva, y aquí se pueden volver a activar.</value>
+    <value>No es seguro mover a la papelera una librea que está en un coche del juego. «No volver a mostrar» en estas preguntas las desactiva, y aquí se pueden volver a activar.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Inicio</value>
@@ -2693,7 +2681,7 @@ Actualizado el {1} a las {2}</value>
 o Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>Solo se guardan en este PC. Van al archivo con la librea y vuelven con ella.</value>
+    <value>Solo se guardan en este PC. Van a la papelera con la librea y vuelven con ella.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>Capturas de la librea</value>
@@ -2756,7 +2744,7 @@ o Ctrl+V</value>
     <value>Ocupado: {0} · capturas: {1} · libreas: {2}</value>
   </data>
   <data name="ScreenshotsConvertButton" xml:space="preserve">
-    <value>Comprimir las añadidas…</value>
+    <value>Comprimir las añadidas</value>
   </data>
   <data name="ScreenshotsOpenFolder" xml:space="preserve">
     <value>Abrir la carpeta</value>
@@ -2852,7 +2840,7 @@ o Ctrl+V</value>
     <value>Añadir al álbum</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
-    <value>Nuevo álbum…</value>
+    <value>Nuevo álbum</value>
   </data>
   <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
     <value>Quitar de «{0}»</value>
@@ -2879,7 +2867,7 @@ o Ctrl+V</value>
     <value>Cambiar nombre</value>
   </data>
   <data name="CollectionDelete" xml:space="preserve">
-    <value>Eliminar…</value>
+    <value>Eliminar</value>
   </data>
   <data name="CollectionMoveUp" xml:space="preserve">
     <value>Subir</value>
@@ -2942,7 +2930,7 @@ o Ctrl+V</value>
     <value>Insert</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>Del almacén al archivo</value>
+    <value>Del almacén a la papelera</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Devolver al juego</value>
@@ -2975,16 +2963,16 @@ o Ctrl+V</value>
     <value>En el almacén: {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0}: al juego · {1}: al archivo</value>
+    <value>{0}: al juego · {1}: a la papelera</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>Devueltos al juego: {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>Del almacén al archivo: {0}</value>
+    <value>Del almacén a la papelera: {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Se quedaron en el almacén: {0}. El archivo ya tiene una librea con la misma clave.</value>
+    <value>Se quedaron en el almacén: {0}. La papelera ya tiene una librea con la misma clave.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>Devolviendo libreas al juego…</value>
@@ -3092,7 +3080,7 @@ o Ctrl+V</value>
     <value>¿Eliminar la carpeta vacía «{0}»?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>Enviar sus libreas al archivo</value>
+    <value>Enviar sus libreas a la papelera</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>Devolver la carpeta al juego</value>
@@ -3101,7 +3089,7 @@ o Ctrl+V</value>
     <value>Mover a la carpeta</value>
   </data>
   <data name="ContextMenuNewFolder" xml:space="preserve">
-    <value>Carpeta nueva…</value>
+    <value>Carpeta nueva</value>
   </data>
   <data name="StatusMovedToFolderFormat" xml:space="preserve">
     <value>Movidos a «{0}»: {1}</value>
@@ -3230,7 +3218,7 @@ o Ctrl+V</value>
     <value>aquí está el almacén de otra cuenta ({0}).</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>El almacén no puede estar dentro de una partida guardada, del archivo, de la carpeta del programa ni del almacén de otra cuenta.</value>
+    <value>El almacén no puede estar dentro de una partida guardada, de la papelera, de la carpeta del programa ni del almacén de otra cuenta.</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>Esta carpeta no sirve:</value>
@@ -3339,7 +3327,7 @@ o Ctrl+V</value>
     <value>La carpeta no está disponible</value>
   </data>
   <data name="SettingsStorageChangeButton" xml:space="preserve">
-    <value>Cambiar carpeta…</value>
+    <value>Cambiar carpeta</value>
   </data>
   <data name="SettingsStorageOpenButton" xml:space="preserve">
     <value>Abrir la carpeta del almacén</value>
@@ -3447,7 +3435,7 @@ o Ctrl+V</value>
     <value>Comprobar de nuevo</value>
   </data>
   <data name="StorageChooseOtherButton" xml:space="preserve">
-    <value>Elegir otra carpeta…</value>
+    <value>Elegir otra carpeta</value>
   </data>
   <data name="StorageUnavailableReasonFormat" xml:space="preserve">
     <value>La carpeta del almacén no está disponible: {0}</value>
@@ -3467,7 +3455,7 @@ o Ctrl+V</value>
 {1}</value>
   </data>
   <data name="ArchiveFailedFormat" xml:space="preserve">
-    <value>No se pudieron mover estas libreas al archivo ({0}). Puede que el juego esté usando sus archivos o que el disco esté lleno. Los detalles están en el registro:
+    <value>No se pudieron mover estas libreas a la papelera ({0}). Puede que el juego esté usando sus archivos o que el disco esté lleno. Los detalles están en el registro:
 {1}</value>
   </data>
   <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
@@ -3582,9 +3570,6 @@ o Ctrl+V</value>
   <data name="ResetFiltersTooltip" xml:space="preserve">
     <value>Restablecer filtros: borra la búsqueda y los filtros. El orden se mantiene</value>
   </data>
-  <data name="UndoLabel" xml:space="preserve">
-    <value>Deshacer</value>
-  </data>
   <data name="UndoTooltipFormat" xml:space="preserve">
     <value>Deshacer: {0}</value>
   </data>
@@ -3613,7 +3598,7 @@ o Ctrl+V</value>
     <value>Conjuntos de filtros guardados</value>
   </data>
   <data name="FilterPresetSave" xml:space="preserve">
-    <value>Guardar los filtros actuales…</value>
+    <value>Guardar los filtros actuales</value>
   </data>
   <data name="FilterPresetDelete" xml:space="preserve">
     <value>Eliminar un conjunto</value>
@@ -3641,5 +3626,236 @@ o Ctrl+V</value>
   </data>
   <data name="TagsGripTooltip" xml:space="preserve">
     <value>Arrastre hacia arriba o hacia abajo para ver más o menos filas de etiquetas. Doble clic: todas las etiquetas o una fila.</value>
+  </data>
+  <data name="SaveReadOnlyLabel" xml:space="preserve">
+    <value>Solo lectura</value>
+  </data>
+  <data name="SaveReadOnlyNoticeFormat" xml:space="preserve">
+    <value>En esta versión las libreas de {0} solo se muestran: moverlas a la papelera o al almacén, devolverlas al juego y restaurarlas desde una copia aún no está disponible.</value>
+  </data>
+  <data name="RenderBorrowedFormat" xml:space="preserve">
+    <value>Dibujado con modelos y pinturas de {1}: los archivos de {0} no se pueden leer. Los coches, logotipos y pinturas pueden diferir de {0}.</value>
+  </data>
+  <data name="ServerStatusGameNotSupported" xml:space="preserve">
+    <value>Servidor: este juego aún no es compatible</value>
+  </data>
+  <data name="ServerStatusGameNotSupportedHint" xml:space="preserve">
+    <value>El servidor aún no lee las partidas guardadas de este juego o de esta versión (Steam o Microsoft Store). No se muestra qué libreas están en tus coches. La galería vuelve a comprobarlo cada 30 minutos.</value>
+  </data>
+  <data name="DisplayFilterLabel" xml:space="preserve">
+    <value>Mostrar</value>
+  </data>
+  <data name="FilterPresetsLabel" xml:space="preserve">
+    <value>Conjuntos</value>
+  </data>
+  <data name="MenuRefresh" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="CardSizeSmall" xml:space="preserve">
+    <value>Tarjetas pequeñas</value>
+  </data>
+  <data name="CardSizeNormal" xml:space="preserve">
+    <value>Tarjetas normales</value>
+  </data>
+  <data name="CardSizeLarge" xml:space="preserve">
+    <value>Tarjetas grandes</value>
+  </data>
+  <data name="ShortcutsGroupView" xml:space="preserve">
+    <value>Vista</value>
+  </data>
+  <data name="ShortcutCardsLarger" xml:space="preserve">
+    <value>Tarjetas (capturas) más grandes</value>
+  </data>
+  <data name="ShortcutCardsSmaller" xml:space="preserve">
+    <value>Tarjetas (capturas) más pequeñas</value>
+  </data>
+  <data name="ShortcutCardsNormal" xml:space="preserve">
+    <value>Tamaño normal de tarjetas (capturas)</value>
+  </data>
+  <data name="ShortcutCardsWheel" xml:space="preserve">
+    <value>Tamaño de las tarjetas</value>
+  </data>
+  <data name="KeyWheel" xml:space="preserve">
+    <value>Rueda</value>
+  </data>
+  <data name="UserDataProblemTitle" xml:space="preserve">
+    <value>Etiquetas, notas y favoritos</value>
+  </data>
+  <data name="UserDataUnreadableMessageFormat" xml:space="preserve">
+    <value>Estos archivos no se pudieron abrir al iniciar. Puede que otro programa los esté usando (un cliente de sincronización como OneDrive, un antivirus):
+{0}
+
+La galería los dejó como estaban. Las etiquetas, notas, favoritos y bloqueos que cambies ahora no se guardarán. Cierra el programa que los usa y vuelve a iniciar la galería.</value>
+  </data>
+  <data name="UserDataSetAsideMessageFormat" xml:space="preserve">
+    <value>Estos archivos estaban dañados y no se pudieron leer:
+{0}
+
+Se guardó una copia de cada uno a su lado, con la fecha en el nombre. La galería los empezó de nuevo vacíos.</value>
+  </data>
+  <data name="GalleryAccessibleName" xml:space="preserve">
+    <value>Diseños</value>
+  </data>
+  <data name="CardAccessibleSelected" xml:space="preserve">
+    <value>seleccionado</value>
+  </data>
+  <data name="CardAccessibleFavorite" xml:space="preserve">
+    <value>favorito</value>
+  </data>
+  <data name="CardAccessibleLocked" xml:space="preserve">
+    <value>bloqueado</value>
+  </data>
+  <data name="NoticesTitle" xml:space="preserve">
+    <value>Avisos</value>
+  </data>
+  <data name="NoticesNone" xml:space="preserve">
+    <value>Nada por ahora</value>
+  </data>
+  <data name="NoticeCounterFormat" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="NoticeNextTooltip" xml:space="preserve">
+    <value>Siguiente aviso</value>
+  </data>
+  <data name="NoticeCloseTooltip" xml:space="preserve">
+    <value>Cerrar (queda bajo la campana)</value>
+  </data>
+  <data name="NoticeShowFile" xml:space="preserve">
+    <value>Mostrar el archivo</value>
+  </data>
+  <data name="NoticeChooseFolder" xml:space="preserve">
+    <value>Elegir carpeta</value>
+  </data>
+  <data name="ToastUndo" xml:space="preserve">
+    <value>Deshacer</value>
+  </data>
+  <data name="ToastUndoDetail" xml:space="preserve">
+    <value>Ctrl+Z también lo deshace</value>
+  </data>
+  <data name="ToastClose" xml:space="preserve">
+    <value>Cerrar</value>
+  </data>
+  <data name="PropertiesTitle" xml:space="preserve">
+    <value>Propiedades</value>
+  </data>
+  <data name="PropertiesToggleTooltip" xml:space="preserve">
+    <value>Panel de los diseños seleccionados</value>
+  </data>
+  <data name="PropertiesEmpty" xml:space="preserve">
+    <value>Selecciona un diseño para verlo aquí. Con varios, aparece lo que tienen en común.</value>
+  </data>
+  <data name="PropertiesAuthorsFormat" xml:space="preserve">
+    <value>autores: {0}</value>
+  </data>
+  <data name="PropertiesFavorite" xml:space="preserve">
+    <value>Favorito</value>
+  </data>
+  <data name="PropertiesLock" xml:space="preserve">
+    <value>Bloqueo</value>
+  </data>
+  <data name="PropertiesTags" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="PropertiesTagsPartHint" xml:space="preserve">
+    <value>discontinuas: solo en algunos, clic para darla a todos</value>
+  </data>
+  <data name="PropertiesAddTagPlaceholder" xml:space="preserve">
+    <value>Añadir etiqueta, Enter</value>
+  </data>
+  <data name="PropertiesCreateTagFormat" xml:space="preserve">
+    <value>Etiqueta nueva «{0}»</value>
+  </data>
+  <data name="PropertiesRemoveTagFormat" xml:space="preserve">
+    <value>Quitar la etiqueta {0}</value>
+  </data>
+  <data name="PropertiesNote" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="PropertiesNoteSavesItself" xml:space="preserve">
+    <value>se guarda al escribir</value>
+  </data>
+  <data name="PropertiesNotesOwnFormat" xml:space="preserve">
+    <value>{0} de {1} tienen nota propia.</value>
+  </data>
+  <data name="PropertiesNoteForAllPlaceholder" xml:space="preserve">
+    <value>Una nota para todos</value>
+  </data>
+  <data name="PropertiesNoteAppend" xml:space="preserve">
+    <value>Añadir a las suyas</value>
+  </data>
+  <data name="PropertiesNoteReplace" xml:space="preserve">
+    <value>Reemplazar las suyas</value>
+  </data>
+  <data name="PropertiesFindInGame" xml:space="preserve">
+    <value>Buscar en el juego</value>
+  </data>
+  <data name="PropertiesToStorage" xml:space="preserve">
+    <value>Al almacén</value>
+  </data>
+  <data name="PropertiesToGame" xml:space="preserve">
+    <value>Al juego</value>
+  </data>
+  <data name="PropertiesDetails" xml:space="preserve">
+    <value>Más</value>
+  </data>
+  <data name="PropertiesClose" xml:space="preserve">
+    <value>Ocultar el panel</value>
+  </data>
+  <data name="ShortcutProperties" xml:space="preserve">
+    <value>Panel de los diseños seleccionados</value>
+  </data>
+  <data name="SelectionBarTags" xml:space="preserve">
+    <value>Etiquetas</value>
+  </data>
+  <data name="SelectionBarMore" xml:space="preserve">
+    <value>Más acciones</value>
+  </data>
+  <data name="SelectionBarClear" xml:space="preserve">
+    <value>Quitar la selección</value>
+  </data>
+  <data name="EmptyNoFilterResults" xml:space="preserve">
+    <value>Ningún diseño coincide con los filtros</value>
+  </data>
+  <data name="EmptyNoResultsWithFilters" xml:space="preserve">
+    <value>No se encontró nada para «{0}» con los filtros activos</value>
+  </data>
+  <data name="EmptyClearSearch" xml:space="preserve">
+    <value>Borrar la búsqueda</value>
+  </data>
+  <data name="EmptyResetFilters" xml:space="preserve">
+    <value>Restablecer los filtros</value>
+  </data>
+  <data name="EmptyShowGame" xml:space="preserve">
+    <value>Mostrar los diseños del juego</value>
+  </data>
+  <data name="EmptyLookAgain" xml:space="preserve">
+    <value>Volver a buscar</value>
+  </data>
+  <data name="ScreenshotsShowAllAlbums" xml:space="preserve">
+    <value>Todas las capturas</value>
+  </data>
+  <data name="NoticeProblemTitle" xml:space="preserve">
+    <value>No se pudo</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptioned" xml:space="preserve">
+    <value>Con títulos</value>
+  </data>
+  <data name="ScreenshotsLayoutTiles" xml:space="preserve">
+    <value>Mosaico</value>
+  </data>
+  <data name="ScreenshotsSizeSmall" xml:space="preserve">
+    <value>Capturas pequeñas</value>
+  </data>
+  <data name="ScreenshotsSizeNormal" xml:space="preserve">
+    <value>Capturas normales</value>
+  </data>
+  <data name="ScreenshotsSizeLarge" xml:space="preserve">
+    <value>Capturas grandes</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptionedTooltip" xml:space="preserve">
+    <value>Bajo cada captura aparece su diseño o la hora</value>
+  </data>
+  <data name="ScreenshotsLayoutTilesTooltip" xml:space="preserve">
+    <value>Solo las imágenes, muy juntas. El título está en la información emergente</value>
   </data>
 </root>
