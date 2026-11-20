@@ -28,15 +28,10 @@ internal partial class ArchiveDialog : Window
         _viewModel.ErrorMessageRequested += message => _work.Run(
             () => InfoDialog.ShowAsync(this, Strings.ArchiveDialogTitle, message), "archive: error message");
         _viewModel.DeleteRequested += rows => _work.Run(() => ConfirmDeleteAsync(rows), "archive: delete");
-        _viewModel.ConfirmRestoreDuplicatesAsync = message => ConfirmDialog.AskAsync(
-            this, Strings.RestoreDuplicateTitle, message, Strings.RestoreAnywayButton, Strings.RestoreSkipDuplicatesButton);
-        _viewModel.ConfirmRestoreIntoCurrentAccountAsync = message => ConfirmDialog.AskAsync(
-            this, Strings.RestoreFromOtherAccountTitle, message, Strings.RestoreIntoCurrentAccountButton, Strings.ButtonCancel);
-        _viewModel.ConfirmWhileGameRunningAsync = () => ConfirmDialog.AskAsync(
-            this, string.Format(Strings.GameRunningTitleFormat, savePathService.Profile.Game.Name), Strings.GameRunningFileChangeMessage, Strings.GameRunningContinueButton, Strings.ButtonCancel);
+        _viewModel.Ask.AskOver(this, savePathService.Profile.Game.Name);
 
         Title = Strings.ArchiveDialogTitle;
-        TitleBarText.Text = Strings.ArchiveDialogTitle;
+        Bar.Title = Strings.ArchiveDialogTitle;
         TitleText.Text = Strings.ArchiveDialogTitle;
         RestoreButton.Content = Strings.ArchiveRestoreButton;
         ToStorageButton.Content = Strings.ArchiveToStorageButton;
@@ -45,10 +40,6 @@ internal partial class ArchiveDialog : Window
         TakeUnassignedButton.Content = Strings.UnassignedTakeButton;
         ToolTip.SetTip(TakeUnassignedButton, Strings.ArchiveUnassignedTooltip);
     }
-
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
-
-    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 
     private readonly Services.Screenshots.ScreenshotStore? _screenshots;
 

@@ -13,6 +13,7 @@ internal partial class MainWindow
         Title = AppSettings.Identity.Name;
         CustomTitleBarText.Text = AppSettings.Identity.Name;
         GameButtonText.Text = _profile.Game.Name;
+        ReadOnlySaveLabel.Text = "· " + Strings.SaveReadOnlyLabel;
         ApplyModeTexts();
         ApplyStorageFoldersTexts();
         ApplyScreenshotsTexts();
@@ -23,7 +24,13 @@ internal partial class MainWindow
         MaximizeButtonEl.SetValue(ToolTip.TipProperty, Strings.MaximizeTooltip);
         CloseButtonEl.SetValue(ToolTip.TipProperty, Strings.CloseTooltip);
 
-        RefreshButton.SetValue(ToolTip.TipProperty, new ShortcutTip(Strings.RefreshTooltip, GalleryShortcut.Refresh));
+        RefreshMenuItem.Header = Strings.MenuRefresh;
+        RefreshMenuItem.SetValue(ToolTip.TipProperty, Strings.RefreshTooltip);
+        AuthorsButtonLabel.Text = Strings.AuthorsButtonTooltip;
+        StatsButtonLabel.Text = Strings.StatsToggleTooltip;
+        DisplayFilterLabel.Text = Strings.DisplayFilterLabel;
+        FilterPresetsLabel.Text = Strings.FilterPresetsLabel;
+        ApplyCardSizeTexts();
         StatsButton.SetValue(ToolTip.TipProperty, new ShortcutTip(Strings.StatsToggleTooltip, GalleryShortcut.Statistics));
         SettingsButton.SetValue(ToolTip.TipProperty, Strings.SettingsToggleTooltip);
         OpenSettingsMenuItem.Header = Strings.SettingsDialogTitle;

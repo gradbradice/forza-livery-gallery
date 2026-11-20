@@ -201,12 +201,6 @@
   <data name="ButtonClose" xml:space="preserve">
     <value>Fermer</value>
   </data>
-  <data name="TagsDialogTitle" xml:space="preserve">
-    <value>Tags</value>
-  </data>
-  <data name="TagsDialogHint" xml:space="preserve">
-    <value>Séparez les tags par des virgules, par exemple : drift, anime, course</value>
-  </data>
   <data name="ButtonSave" xml:space="preserve">
     <value>Enregistrer</value>
   </data>
@@ -599,19 +593,19 @@ Une fiche réunit les pseudos d’un auteur sous un seul nom.</value>
     <value>Aucune fiche d’auteur</value>
   </data>
   <data name="ContextMenuMoveToArchive" xml:space="preserve">
-    <value>Déplacer vers l’archive</value>
+    <value>Déplacer vers la corbeille</value>
   </data>
   <data name="MenuOpenArchive" xml:space="preserve">
-    <value>Archive</value>
+    <value>Corbeille</value>
   </data>
   <data name="MenuOpenBackups" xml:space="preserve">
     <value>Copies de sauvegarde</value>
   </data>
   <data name="ArchiveDialogTitle" xml:space="preserve">
-    <value>Archive</value>
+    <value>Corbeille</value>
   </data>
   <data name="ArchiveEmptyHint" xml:space="preserve">
-    <value>L’archive est vide</value>
+    <value>La corbeille est vide</value>
   </data>
   <data name="ArchiveSelectedCountFormat" xml:space="preserve">
     <value>Sélectionnées : {0}</value>
@@ -629,7 +623,7 @@ Une fiche réunit les pseudos d’un auteur sous un seul nom.</value>
     <value>{0} seront déplacées vers la Corbeille. La galerie ne peut pas annuler cette action.</value>
   </data>
   <data name="ArchivedOnFormat" xml:space="preserve">
-    <value>Archivée le {0}</value>
+    <value>Dans la corbeille depuis le {0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
     <value>Avant de restaurer des livrées, choisissez le dossier de sauvegarde dans les paramètres</value>
@@ -647,7 +641,7 @@ Une fiche réunit les pseudos d’un auteur sous un seul nom.</value>
     <value>Ouvrir l’aperçu d’origine</value>
   </data>
   <data name="LoadingMovingToArchive" xml:space="preserve">
-    <value>Déplacement vers l’archive…</value>
+    <value>Déplacement vers la corbeille…</value>
   </data>
   <data name="ArchiveSelectAllButton" xml:space="preserve">
     <value>Tout sélectionner</value>
@@ -824,10 +818,10 @@ Restaurer ces livrées quand même ?</value>
   </data>
   <data name="AuctionBadgeTooltip" xml:space="preserve">
     <value>Achetée à l’hôtel des ventes.
-Elle ne peut être déplacée vers l’archive qu’après confirmation par le serveur de livrées qu’aucune voiture ne l’utilise.</value>
+Elle ne peut être déplacée vers la corbeille qu’après confirmation par le serveur de livrées qu’aucune voiture ne l’utilise.</value>
   </data>
   <data name="ArchiveAuctionNotAllowedTooltip" xml:space="preserve">
-    <value>Les livrées des enchères ne peuvent être déplacées vers l’archive qu’après confirmation par le serveur de livrées qu’aucune voiture ne les utilise</value>
+    <value>Les livrées des enchères ne peuvent être déplacées vers la corbeille qu’après confirmation par le serveur de livrées qu’aucune voiture ne les utilise</value>
   </data>
   <data name="ArchiveAuctionSkippedFormat" xml:space="preserve">
     <value>Livrées des enchères sélectionnées restées dans le jeu : {0}. Il n’est pas confirmé qu’aucune voiture ne les utilise. Elles pourront être déplacées quand le serveur de livrées aura la sauvegarde actuelle du jeu.</value>
@@ -996,7 +990,7 @@ Elle ne peut être déplacée vers l’archive qu’après confirmation par le s
 Mis à jour à {1}</value>
   </data>
   <data name="ServerSyncProfileNotFound" xml:space="preserve">
-    <value>Le dossier de sauvegarde ne contient pas le fichier de profil C_ProfileData.</value>
+    <value>Le dossier de sauvegarde ne contient pas le fichier de profil ProfileData.</value>
   </data>
   <data name="ServerSyncSaveNotSupported" xml:space="preserve">
     <value>Le serveur ne sait pas encore lire cette sauvegarde du jeu. Le jeu a probablement été mis à jour. La prise en charge sera ajoutée.</value>
@@ -1023,14 +1017,17 @@ Mis à jour à {1}</value>
     <value>Utiliser le serveur pour trouver les livrées posées sur des voitures</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Pour savoir quelles livrées sont posées sur vos voitures et connaître le nom de votre compte, la galerie envoie au serveur le fichier de sauvegarde du jeu C_ProfileData. Le serveur utilise ce fichier uniquement à cette fin et ne le conserve pas.
+    <value>Pour savoir quelles livrées sont posées sur vos voitures et connaître le nom de votre compte, la galerie envoie au serveur le fichier de sauvegarde du jeu ProfileData. Le serveur utilise ce fichier uniquement à cette fin et ne le conserve pas.
 
 Les données du fichier ne sont ni conservées ni utilisées à d’autres fins. Le serveur garde en sécurité les clés nécessaires pour déchiffrer le fichier de sauvegarde.
 
 Le serveur n’a aucun lien avec les serveurs officiels de Forza Horizon, Xbox ou Microsoft.</value>
   </data>
+  <data name="ServerConnectionAllGames" xml:space="preserve">
+    <value>Ce réglage est commun à tous les jeux de la galerie : FH6, FH5, FH4 et FH3.</value>
+  </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Pour savoir quelles livrées sont posées sur vos voitures et connaître le nom de votre compte, la galerie envoie au serveur le fichier de sauvegarde du jeu C_ProfileData. Le serveur utilise ce fichier uniquement à cette fin et ne le conserve pas.
+    <value>Pour savoir quelles livrées sont posées sur vos voitures et connaître le nom de votre compte, la galerie envoie au serveur le fichier de sauvegarde du jeu ProfileData. Le serveur utilise ce fichier uniquement à cette fin et ne le conserve pas.
 
 Les données du fichier ne sont ni conservées ni utilisées à d’autres fins. Le serveur garde en sécurité les clés nécessaires pour déchiffrer le fichier de sauvegarde.
 
@@ -1082,36 +1079,36 @@ Les données ne sont envoyées au serveur qu’avec votre accord. Activer la con
 {0}</value>
   </data>
   <data name="ArchiveInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Les livrées posées sur des voitures dans le jeu ne peuvent pas être déplacées vers l’archive</value>
+    <value>Les livrées posées sur des voitures dans le jeu ne peuvent pas être déplacées vers la corbeille</value>
   </data>
   <data name="ArchiveInstalledSkippedFormat" xml:space="preserve">
-    <value>Les livrées posées sur des voitures dans le jeu ne peuvent pas être déplacées vers l’archive. Livrées sélectionnées restées dans le jeu : {0}.</value>
+    <value>Les livrées posées sur des voitures dans le jeu ne peuvent pas être déplacées vers la corbeille. Livrées sélectionnées restées dans le jeu : {0}.</value>
   </data>
   <data name="ArchiveInstalledUnknownMessage" xml:space="preserve">
-    <value>On ne sait pas quelles livrées sont posées sur des voitures, il n’est donc pas sûr de déplacer cette livrée vers l’archive : elle est peut-être posée sur une voiture dans le jeu.
+    <value>On ne sait pas quelles livrées sont posées sur des voitures, il n’est donc pas sûr de déplacer cette livrée vers la corbeille : elle est peut-être posée sur une voiture dans le jeu.
 
-Déplacer la livrée vers l’archive ?</value>
+Déplacer la livrée vers la corbeille ?</value>
   </data>
   <data name="ArchiveInstalledUnknownMessageMany" xml:space="preserve">
-    <value>On ne sait pas quelles livrées sont posées sur des voitures, il n’est donc pas sûr de déplacer ces livrées vers l’archive : certaines sont peut-être posées sur des voitures dans le jeu.
+    <value>On ne sait pas quelles livrées sont posées sur des voitures, il n’est donc pas sûr de déplacer ces livrées vers la corbeille : certaines sont peut-être posées sur des voitures dans le jeu.
 
-Déplacer les livrées vers l’archive ?</value>
+Déplacer les livrées vers la corbeille ?</value>
   </data>
   <data name="DontShowAgainCheckBox" xml:space="preserve">
     <value>Ne plus afficher</value>
   </data>
   <data name="ArchiveAuctionOrInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Les livrées posées sur des voitures dans le jeu ne peuvent pas être déplacées vers l’archive. Celles des enchères, seulement après confirmation par le serveur de livrées qu’aucune voiture ne les utilise.</value>
+    <value>Les livrées posées sur des voitures dans le jeu ne peuvent pas être déplacées vers la corbeille. Celles des enchères, seulement après confirmation par le serveur de livrées qu’aucune voiture ne les utilise.</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessage" xml:space="preserve">
-    <value>La sauvegarde du jeu a changé depuis la dernière synchronisation, et les nouvelles données ne sont pas encore parvenues au serveur de livrées. La liste des livrées posées sur des voitures n’est peut-être plus à jour, il n’est donc pas sûr de déplacer cette livrée vers l’archive : elle est peut-être posée sur une voiture dans le jeu.
+    <value>La sauvegarde du jeu a changé depuis la dernière synchronisation, et les nouvelles données ne sont pas encore parvenues au serveur de livrées. La liste des livrées posées sur des voitures n’est peut-être plus à jour, il n’est donc pas sûr de déplacer cette livrée vers la corbeille : elle est peut-être posée sur une voiture dans le jeu.
 
-Mieux vaut attendre la synchronisation, qui est automatique et peut prendre quelques minutes, puis réessayer. Déplacer la livrée vers l’archive maintenant ?</value>
+Mieux vaut attendre la synchronisation, qui est automatique et peut prendre quelques minutes, puis réessayer. Déplacer la livrée vers la corbeille maintenant ?</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>La sauvegarde du jeu a changé depuis la dernière synchronisation, et les nouvelles données ne sont pas encore parvenues au serveur de livrées. La liste des livrées posées sur des voitures n’est peut-être plus à jour, il n’est donc pas sûr de déplacer ces livrées vers l’archive : certaines sont peut-être posées sur des voitures dans le jeu.
+    <value>La sauvegarde du jeu a changé depuis la dernière synchronisation, et les nouvelles données ne sont pas encore parvenues au serveur de livrées. La liste des livrées posées sur des voitures n’est peut-être plus à jour, il n’est donc pas sûr de déplacer ces livrées vers la corbeille : certaines sont peut-être posées sur des voitures dans le jeu.
 
-Mieux vaut attendre la synchronisation, qui est automatique et peut prendre quelques minutes, puis réessayer. Déplacer les livrées vers l’archive maintenant ?</value>
+Mieux vaut attendre la synchronisation, qui est automatique et peut prendre quelques minutes, puis réessayer. Déplacer les livrées vers la corbeille maintenant ?</value>
   </data>
   <data name="ContextMenuNavigateInGame" xml:space="preserve">
     <value>Trouver dans le jeu</value>
@@ -1199,29 +1196,41 @@ Pendant que le curseur se déplace, ne touchez ni à la souris ni au clavier : b
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>Automatique</value>
   </data>
+  <data name="NavigationRowsOne" xml:space="preserve">
+    <value>1 rangée</value>
+  </data>
   <data name="NavigationRowsTwo" xml:space="preserve">
-    <value>2 rangées, menu standard</value>
+    <value>2 rangées</value>
   </data>
   <data name="NavigationRowsThree" xml:space="preserve">
-    <value>3 rangées, mod de menu</value>
+    <value>3 rangées</value>
   </data>
-  <data name="NavigationRowsDetectedVanilla" xml:space="preserve">
-    <value>Détecté : 2 rangées, menu standard.</value>
+  <data name="NavigationRowsStandardFormat" xml:space="preserve">
+    <value>{0}, menu standard</value>
+  </data>
+  <data name="NavigationRowsDetectedStandardFormat" xml:space="preserve">
+    <value>Détecté : {0}, menu standard.</value>
   </data>
   <data name="NavigationRowsDetectedModFormat" xml:space="preserve">
-    <value>Détecté : {0} rangées, un mod a modifié le menu.</value>
+    <value>Détecté : {0}, un mod a modifié le menu.</value>
   </data>
-  <data name="NavigationRowsDetectedNoGameFolder" xml:space="preserve">
-    <value>Le dossier du jeu n’est pas défini, 2 rangées sont donc supposées. Indiquez le dossier du jeu pour détecter les mods de menu.</value>
+  <data name="NavigationRowsDetectedNoGameFolderFormat" xml:space="preserve">
+    <value>Le dossier du jeu n’est pas défini, le menu standard est donc supposé ({0}). Indiquez le dossier du jeu pour détecter les mods de menu.</value>
   </data>
   <data name="NavigationRowsDetectedUnknown" xml:space="preserve">
-    <value>Impossible de détecter les rangées : le fichier du menu a été modifié d’une façon inconnue. Choisissez 2 ou 3 rangées.</value>
+    <value>Impossible de détecter les rangées : le menu a été modifié d’une façon inconnue. Choisissez les rangées vous-même.</value>
   </data>
   <data name="NavigationKeyIntervalLabel" xml:space="preserve">
     <value>Pause entre les appuis de touche</value>
   </data>
   <data name="NavigationKeyIntervalHint" xml:space="preserve">
     <value>Augmentez-la si le curseur s’arrête avant la livrée : le jeu ignore les touches trop rapides.</value>
+  </data>
+  <data name="NavigationMenuOpenDelayLabel" xml:space="preserve">
+    <value>Attente après l’ouverture de « Mes designs »</value>
+  </data>
+  <data name="NavigationMenuOpenDelayHint" xml:space="preserve">
+    <value>Avant la recherche, la galerie ferme « Mes designs » puis le rouvre. Augmentez l’attente si, avec beaucoup de designs, le jeu ouvre encore le menu quand le curseur commence à bouger. Jusqu’à 10 secondes.</value>
   </data>
   <data name="MillisecondsFormat" xml:space="preserve">
     <value>{0} ms</value>
@@ -1266,7 +1275,7 @@ Pendant que le curseur se déplace, ne touchez ni à la souris ni au clavier : b
     <value>Enregistre un fichier ZIP avec le journal, les paramètres sans chemins ni identifiants et les erreurs de lecture des livrées, à joindre à un rapport de bug. Rien n’est envoyé.</value>
   </data>
   <data name="ExportDiagnosticsButton" xml:space="preserve">
-    <value>Exporter le diagnostic…</value>
+    <value>Exporter le diagnostic</value>
   </data>
   <data name="DiagnosticsSaveDialogTitle" xml:space="preserve">
     <value>Enregistrer le diagnostic</value>
@@ -1379,7 +1388,7 @@ Tous les comptes et pseudos de ces auteurs seront dans une seule fiche. Vous pou
     <value>Données des comptes</value>
   </data>
   <data name="AccountDataHint" xml:space="preserve">
-    <value>Chaque compte de jeu a son propre cache d’analyse et ses aperçus. Oublier un compte libère cet espace. Si le compte réapparaît, ses livrées sont analysées à nouveau. L’archive et les copies de sauvegarde ne sont pas concernées.</value>
+    <value>Chaque compte de jeu a son propre cache d’analyse et ses aperçus. Oublier un compte libère cet espace. Si le compte réapparaît, ses livrées sont analysées à nouveau. La corbeille et les copies de sauvegarde ne sont pas concernées.</value>
   </data>
   <data name="AccountDataCurrent" xml:space="preserve">
     <value>Compte actuel</value>
@@ -1400,7 +1409,7 @@ Tous les comptes et pseudos de ces auteurs seront dans une seule fiche. Vous pou
     <value>Oublier le compte</value>
   </data>
   <data name="AccountDataForgetMessage" xml:space="preserve">
-    <value>Oublier le compte {0} ? Son cache d’analyse et ses aperçus, environ {1}, seront supprimés. L’archive et les copies de sauvegarde restent. Si le compte réapparaît, ses livrées seront analysées à nouveau.</value>
+    <value>Oublier le compte {0} ? Son cache d’analyse et ses aperçus, environ {1}, seront supprimés. La corbeille et les copies de sauvegarde restent. Si le compte réapparaît, ses livrées seront analysées à nouveau.</value>
   </data>
   <data name="AccountDataForgetFailedMessage" xml:space="preserve">
     <value>Impossible de supprimer les données du compte. Les détails figurent dans le journal.</value>
@@ -1483,8 +1492,8 @@ Tous les comptes et pseudos de ces auteurs seront dans une seule fiche. Vous pou
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>aucun fichier de langue StringTables : les noms des voitures viennent de la base des voitures</value>
   </data>
-  <data name="AboutDescriptionFormat" xml:space="preserve">
-    <value>Une galerie des livrées des sauvegardes de {0}.</value>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Une galerie des livrées des sauvegardes des jeux Forza.</value>
   </data>
   <data name="FolderNotFoundMessageFormat" xml:space="preserve">
     <value>Impossible de trouver automatiquement le dossier de sauvegarde de {0}.
@@ -1542,7 +1551,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>le motif ressemble à {0} % à « {1} »</value>
   </data>
   <data name="ContextMenuAssignAuthor" xml:space="preserve">
-    <value>Indiquer l’auteur…</value>
+    <value>Indiquer l’auteur</value>
   </data>
   <data name="ContextMenuUnassignAuthor" xml:space="preserve">
     <value>Retirer l’auteur indiqué</value>
@@ -1743,7 +1752,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Supprimées</value>
   </data>
   <data name="StatsLegendArchived" xml:space="preserve">
-    <value>Archivées</value>
+    <value>Vers la corbeille</value>
   </data>
   <data name="StatsSizeTooltipFormat" xml:space="preserve">
     <value>Livrées en fin de mois : {0}</value>
@@ -1929,16 +1938,16 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Inutilisées</value>
   </data>
   <data name="StatsHealthUnusedNote" xml:space="preserve">
-    <value>Ni posées sur une voiture, ni dans les favoris, ni verrouillées, ni à vous, ni des enchères. Ce sont les premières à archiver.</value>
+    <value>Ni posées sur une voiture, ni dans les favoris, ni verrouillées, ni à vous, ni des enchères. Ce sont les premières à mettre à la corbeille.</value>
   </data>
   <data name="StatsHealthUnused" xml:space="preserve">
     <value>Livrées inutilisées</value>
   </data>
   <data name="StatsHealthArchiveTitle" xml:space="preserve">
-    <value>Archive</value>
+    <value>Corbeille</value>
   </data>
   <data name="StatsHealthArchived" xml:space="preserve">
-    <value>Dans l’archive</value>
+    <value>Dans la corbeille</value>
   </data>
   <data name="StatsHealthLastArchived" xml:space="preserve">
     <value>Dernier déplacement</value>
@@ -2052,7 +2061,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>De qui vous retirez les livrées</value>
   </data>
   <data name="StatsDeparturesCellFormat" xml:space="preserve">
-    <value>{0} + {1} archivées</value>
+    <value>{0} + {1} vers la corbeille</value>
   </data>
   <data name="StatsNoJournalShort" xml:space="preserve">
     <value>Aucune suppression dans l’historique pour le moment</value>
@@ -2118,10 +2127,10 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Exporter</value>
   </data>
   <data name="StatsExportLiveries" xml:space="preserve">
-    <value>Livrées en CSV…</value>
+    <value>Livrées en CSV</value>
   </data>
   <data name="StatsExportAuthors" xml:space="preserve">
-    <value>Auteurs en CSV…</value>
+    <value>Auteurs en CSV</value>
   </data>
   <data name="StatsExportLiveriesFileName" xml:space="preserve">
     <value>livrees</value>
@@ -2133,7 +2142,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Impossible d’enregistrer le fichier.</value>
   </data>
   <data name="StatsSaveChart" xml:space="preserve">
-    <value>Enregistrer en PNG…</value>
+    <value>Enregistrer en PNG</value>
   </data>
   <data name="StatsAuthorsTopTooltipFormat" xml:space="preserve">
     <value>{1} des {2} livrées d’auteur connu viennent des {0} auteurs dont vous avez le plus de livrées</value>
@@ -2145,22 +2154,10 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Retirer des favoris</value>
   </data>
   <data name="ContextMenuEditTags" xml:space="preserve">
-    <value>Modifier les tags…</value>
+    <value>Modifier les tags</value>
   </data>
   <data name="TagChipTooltip" xml:space="preserve">
     <value>Cliquez pour n’afficher que les livrées avec ce tag, clic droit pour les masquer. Un nouveau clic annule.</value>
-  </data>
-  <data name="TagsDialogManyTitleFormat" xml:space="preserve">
-    <value>Tags des livrées sélectionnées : {0}</value>
-  </data>
-  <data name="TagsDialogManyHint" xml:space="preserve">
-    <value>Une coche ajoute le tag à toutes les livrées sélectionnées, une case vide le retire de toutes. Un carré plein signifie que seules certaines l’ont. Il reste tel quel.</value>
-  </data>
-  <data name="TagsDialogNewTagsLabel" xml:space="preserve">
-    <value>Nouveaux tags, séparés par des virgules. Ils sont ajoutés à toutes les livrées sélectionnées.</value>
-  </data>
-  <data name="TagsDialogPartialTooltipFormat" xml:space="preserve">
-    <value>Sur {0} des {1} sélectionnées</value>
   </data>
   <data name="ContextMenuLock" xml:space="preserve">
     <value>Verrouiller</value>
@@ -2169,16 +2166,16 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Déverrouiller</value>
   </data>
   <data name="LockToggleTooltip" xml:space="preserve">
-    <value>Verrouiller la livrée pour qu’elle ne puisse pas être déplacée dans l’archive</value>
+    <value>Verrouiller la livrée pour qu’elle ne puisse pas être déplacée dans la corbeille</value>
   </data>
   <data name="LockedTooltip" xml:space="preserve">
-    <value>Verrouillée : la livrée ne peut pas être déplacée dans l’archive. Cliquez pour la déverrouiller.</value>
+    <value>Verrouillée : la livrée ne peut pas être déplacée dans la corbeille. Cliquez pour la déverrouiller.</value>
   </data>
   <data name="ArchiveLockedNotAllowedTooltip" xml:space="preserve">
-    <value>Les livrées verrouillées ne peuvent pas être déplacées dans l’archive. Déverrouillez-les d’abord.</value>
+    <value>Les livrées verrouillées ne peuvent pas être déplacées dans la corbeille. Déverrouillez-les d’abord.</value>
   </data>
   <data name="ArchiveLockedSkippedFormat" xml:space="preserve">
-    <value>Les livrées verrouillées ne peuvent pas être déplacées dans l’archive. Livrées verrouillées sélectionnées restées dans le jeu : {0}.</value>
+    <value>Les livrées verrouillées ne peuvent pas être déplacées dans la corbeille. Livrées verrouillées sélectionnées restées dans le jeu : {0}.</value>
   </data>
   <data name="AuthorLabelOwnFormat" xml:space="preserve">
     <value>{0} (vous)</value>
@@ -2265,16 +2262,16 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Les lettres, les chiffres, {0} et {1} ne font rien tant que le curseur est dans un champ de texte. Enter, 3 et G fonctionnent quand une seule livrée est sélectionnée.</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
-    <value>Cliquez pour faire de la place : les copies en trop des livrées en double vont dans l’archive.</value>
+    <value>Cliquez pour faire de la place : les copies en trop des livrées en double vont dans la corbeille.</value>
   </data>
   <data name="FreeSpaceMenuItem" xml:space="preserve">
-    <value>Faire de la place…</value>
+    <value>Faire de la place</value>
   </data>
   <data name="FreeSpaceTitle" xml:space="preserve">
     <value>Faire de la place</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>De chaque livrée en double, une copie reste : d’abord une avec des tags ou une à vous, sinon la première téléchargée. Les livrées verrouillées, celles posées sur une voiture, celles des enchères et les favoris restent aussi. Décochez une copie pour la garder. Tout ce qui part peut être récupéré depuis l’archive.</value>
+    <value>De chaque livrée en double, une copie reste : d’abord une avec des tags ou une à vous, sinon la première téléchargée. Les livrées verrouillées, celles posées sur une voiture, celles des enchères et les favoris restent aussi. Décochez une copie pour la garder. Tout ce qui part peut être récupéré depuis la corbeille.</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>Téléchargée : {0}</value>
@@ -2304,31 +2301,31 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Dans la sauvegarde du jeu : {0} sur {1}.</value>
   </data>
   <data name="FreeSpaceAfterFormat" xml:space="preserve">
-    <value>Vers l’archive : {0}, libres ensuite : {1}.</value>
+    <value>Vers la corbeille : {0}, libres ensuite : {1}.</value>
   </data>
   <data name="FreeSpaceAfterNoLimitFormat" xml:space="preserve">
-    <value>Vers l’archive : {0}.</value>
+    <value>Vers la corbeille : {0}.</value>
   </data>
   <data name="FreeSpaceApplyFormat" xml:space="preserve">
-    <value>Déplacer vers l’archive ({0})</value>
+    <value>Déplacer vers la corbeille ({0})</value>
   </data>
   <data name="FewFreeSlotsMessageFormat" xml:space="preserve">
-    <value>Il ne reste que {0} places libres sur {1} dans la sauvegarde du jeu. À la limite, le jeu ne permet ni de télécharger ni de créer une livrée. Faire de la place maintenant en déplaçant vers l’archive les copies en trop des livrées en double ?</value>
+    <value>Il ne reste que {0} places libres sur {1} dans la sauvegarde du jeu. À la limite, le jeu ne permet ni de télécharger ni de créer une livrée. Faire de la place maintenant en déplaçant vers la corbeille les copies en trop des livrées en double ?</value>
   </data>
   <data name="FewFreeSlotsFullMessageFormat" xml:space="preserve">
-    <value>La sauvegarde du jeu est pleine : les {0} places sont prises et le jeu ne permet ni de télécharger ni de créer une livrée. Faire de la place maintenant en déplaçant vers l’archive les copies en trop des livrées en double ?</value>
+    <value>La sauvegarde du jeu est pleine : les {0} places sont prises et le jeu ne permet ni de télécharger ni de créer une livrée. Faire de la place maintenant en déplaçant vers la corbeille les copies en trop des livrées en double ?</value>
   </data>
   <data name="AutoBackupFailedTitle" xml:space="preserve">
     <value>Copie de sauvegarde</value>
   </data>
   <data name="AutoBackupFailedMessage" xml:space="preserve">
-    <value>La copie de sauvegarde avant le déplacement vers l’archive n’a pas pu être créée. Déplacer les livrées vers l’archive sans elle ?</value>
+    <value>La copie de sauvegarde avant le déplacement vers la corbeille n’a pas pu être créée. Déplacer les livrées vers la corbeille sans elle ?</value>
   </data>
   <data name="AutoBackupFailedContinueButton" xml:space="preserve">
     <value>Déplacer sans copie</value>
   </data>
   <data name="LoadingBackupBeforeArchive" xml:space="preserve">
-    <value>Création d’une copie de sauvegarde avant le déplacement vers l’archive…</value>
+    <value>Création d’une copie de sauvegarde avant le déplacement vers la corbeille…</value>
   </data>
   <data name="StatusAutoBackupMade" xml:space="preserve">
     <value>Une copie de sauvegarde automatique a été créée</value>
@@ -2337,7 +2334,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Copies de sauvegarde automatiques</value>
   </data>
   <data name="AutoBackupBeforeArchiveLabel" xml:space="preserve">
-    <value>Avant de déplacer des livrées vers l’archive</value>
+    <value>Avant de déplacer des livrées vers la corbeille</value>
   </data>
   <data name="AutoBackupOnChangeLabel" xml:space="preserve">
     <value>Quand les livrées de la sauvegarde du jeu changent, au plus une fois par jour</value>
@@ -2358,7 +2355,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Automatique</value>
   </data>
   <data name="BackupKindBeforeArchive" xml:space="preserve">
-    <value>Créée avant le déplacement de livrées vers l’archive</value>
+    <value>Créée avant le déplacement de livrées vers la corbeille</value>
   </data>
   <data name="BackupKindSaveChanged" xml:space="preserve">
     <value>Créée après un changement des livrées de la sauvegarde du jeu</value>
@@ -2407,12 +2404,6 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
     <value>Les bêtas sortent avant les versions stables et peuvent contenir des bugs. Si vous désactivez l’option sur une bêta, la galerie propose de revenir à la dernière version stable.</value>
-  </data>
-  <data name="TagsDialogOneHint" xml:space="preserve">
-    <value>Une coche ajoute le tag à la livrée, une case vide le retire.</value>
-  </data>
-  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
-    <value>Nouveaux tags, séparés par des virgules.</value>
   </data>
   <data name="KeyClick" xml:space="preserve">
     <value>Clic</value>
@@ -2495,9 +2486,6 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
   <data name="LiveryDetailsUnknown" xml:space="preserve">
     <value>inconnu</value>
   </data>
-  <data name="LiveryDetailsAddTag" xml:space="preserve">
-    <value>+ tag</value>
-  </data>
   <data name="LiveryDetailsNoteLabel" xml:space="preserve">
     <value>Note</value>
   </data>
@@ -2532,7 +2520,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Apparue dans la sauvegarde</value>
   </data>
   <data name="HistoryRestoredFromArchive" xml:space="preserve">
-    <value>Revenue de l’archive</value>
+    <value>Revenue de la corbeille</value>
   </data>
   <data name="HistoryReturned" xml:space="preserve">
     <value>Revenue : depuis une copie de sauvegarde ou téléchargée à nouveau</value>
@@ -2541,7 +2529,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Disparue de la sauvegarde</value>
   </data>
   <data name="HistoryArchived" xml:space="preserve">
-    <value>Déplacée vers l’archive</value>
+    <value>Déplacée vers la corbeille</value>
   </data>
   <data name="HistoryChanged" xml:space="preserve">
     <value>Fichier modifié</value>
@@ -2571,7 +2559,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Déplacer vers ce compte</value>
   </data>
   <data name="ArchiveUnassignedTooltip" xml:space="preserve">
-    <value>Une version précédente les a archivées sans noter le compte, et il y avait plusieurs comptes. Déplacez-les ici si elles viennent de ce compte.</value>
+    <value>Une version précédente les a mises à la corbeille sans noter le compte, et il y avait plusieurs comptes. Déplacez-les ici si elles viennent de ce compte.</value>
   </data>
   <data name="BackupsUnassignedTooltip" xml:space="preserve">
     <value>Une version précédente a fait ces copies sans noter le compte, et il y avait plusieurs comptes. Déplacez-les ici si elles viennent de ce compte.</value>
@@ -2586,7 +2574,7 @@ Parcourez les fichiers avant de les envoyer. Une valeur que la galerie ne conna�
     <value>Sauvegarde introuvable</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
-    <value>Choisir le dossier…</value>
+    <value>Choisir le dossier</value>
   </data>
   <data name="SearchSaveAgainButton" xml:space="preserve">
     <value>Chercher à nouveau</value>
@@ -2638,16 +2626,16 @@ Mis à jour le {1} à {2}</value>
     <value>Compte</value>
   </data>
   <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
-    <value>Archive</value>
+    <value>Corbeille</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>Demander avant d’archiver quand on ne sait pas quelles livrées sont sur les voitures</value>
+    <value>Demander avant de mettre à la corbeille quand on ne sait pas quelles livrées sont sur les voitures</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>Demander avant d’archiver quand la liste des livrées sur les voitures peut être périmée</value>
+    <value>Demander avant de mettre à la corbeille quand la liste des livrées sur les voitures peut être périmée</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>Il n’est pas sûr de déplacer dans l’archive une livrée qui est sur une voiture du jeu. « Ne plus afficher » dans ces questions les désactive, et on peut les réactiver ici.</value>
+    <value>Il n’est pas sûr de déplacer dans la corbeille une livrée qui est sur une voiture du jeu. « Ne plus afficher » dans ces questions les désactive, et on peut les réactiver ici.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Début</value>
@@ -2693,7 +2681,7 @@ Mis à jour le {1} à {2}</value>
 ou Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>Conservées sur ce PC uniquement. Elles vont dans l’archive avec la livrée et en reviennent avec elle.</value>
+    <value>Conservées sur ce PC uniquement. Elles vont dans la corbeille avec la livrée et en reviennent avec elle.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>Captures de la livrée</value>
@@ -2756,7 +2744,7 @@ ou Ctrl+V</value>
     <value>Occupé : {0} · captures : {1} · livrées : {2}</value>
   </data>
   <data name="ScreenshotsConvertButton" xml:space="preserve">
-    <value>Compresser celles ajoutées…</value>
+    <value>Compresser celles ajoutées</value>
   </data>
   <data name="ScreenshotsOpenFolder" xml:space="preserve">
     <value>Ouvrir le dossier</value>
@@ -2852,7 +2840,7 @@ ou Ctrl+V</value>
     <value>Ajouter à l’album</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
-    <value>Nouvel album…</value>
+    <value>Nouvel album</value>
   </data>
   <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
     <value>Retirer de « {0} »</value>
@@ -2879,7 +2867,7 @@ ou Ctrl+V</value>
     <value>Renommer</value>
   </data>
   <data name="CollectionDelete" xml:space="preserve">
-    <value>Supprimer…</value>
+    <value>Supprimer</value>
   </data>
   <data name="CollectionMoveUp" xml:space="preserve">
     <value>Monter</value>
@@ -2942,7 +2930,7 @@ ou Ctrl+V</value>
     <value>Inser</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>Du stockage vers l’archive</value>
+    <value>Du stockage vers la corbeille</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Remettre dans le jeu</value>
@@ -2975,16 +2963,16 @@ ou Ctrl+V</value>
     <value>Dans le stockage : {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0} : dans le jeu · {1} : vers l’archive</value>
+    <value>{0} : dans le jeu · {1} : vers la corbeille</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>Remis dans le jeu : {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>Du stockage vers l’archive : {0}</value>
+    <value>Du stockage vers la corbeille : {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Restées dans le stockage : {0}. L’archive a déjà une livrée avec la même clé.</value>
+    <value>Restées dans le stockage : {0}. La corbeille a déjà une livrée avec la même clé.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>Retour des livrées dans le jeu…</value>
@@ -3092,7 +3080,7 @@ ou Ctrl+V</value>
     <value>Supprimer le dossier vide « {0} » ?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>Envoyer ses livrées vers l’archive</value>
+    <value>Envoyer ses livrées vers la corbeille</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>Remettre le dossier dans le jeu</value>
@@ -3101,7 +3089,7 @@ ou Ctrl+V</value>
     <value>Ranger dans le dossier</value>
   </data>
   <data name="ContextMenuNewFolder" xml:space="preserve">
-    <value>Nouveau dossier…</value>
+    <value>Nouveau dossier</value>
   </data>
   <data name="StatusMovedToFolderFormat" xml:space="preserve">
     <value>Rangés dans « {0} » : {1}</value>
@@ -3230,7 +3218,7 @@ ou Ctrl+V</value>
     <value>le stockage d’un autre compte est ici ({0}).</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>Le stockage ne peut pas se trouver dans une sauvegarde, l’archive, le dossier du programme ou le stockage d’un autre compte.</value>
+    <value>Le stockage ne peut pas se trouver dans une sauvegarde, la corbeille, le dossier du programme ou le stockage d’un autre compte.</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>Ce dossier ne convient pas :</value>
@@ -3339,7 +3327,7 @@ ou Ctrl+V</value>
     <value>Le dossier n’est pas disponible</value>
   </data>
   <data name="SettingsStorageChangeButton" xml:space="preserve">
-    <value>Changer de dossier…</value>
+    <value>Changer de dossier</value>
   </data>
   <data name="SettingsStorageOpenButton" xml:space="preserve">
     <value>Ouvrir le dossier du stockage</value>
@@ -3447,7 +3435,7 @@ ou Ctrl+V</value>
     <value>Vérifier à nouveau</value>
   </data>
   <data name="StorageChooseOtherButton" xml:space="preserve">
-    <value>Choisir un autre dossier…</value>
+    <value>Choisir un autre dossier</value>
   </data>
   <data name="StorageUnavailableReasonFormat" xml:space="preserve">
     <value>Le dossier du stockage n’est pas disponible : {0}</value>
@@ -3467,7 +3455,7 @@ ou Ctrl+V</value>
 {1}</value>
   </data>
   <data name="ArchiveFailedFormat" xml:space="preserve">
-    <value>Impossible de déplacer ces livrées vers l’archive ({0}). Le jeu utilise peut-être leurs fichiers ou le disque est peut-être plein. Les détails figurent dans le journal :
+    <value>Impossible de déplacer ces livrées vers la corbeille ({0}). Le jeu utilise peut-être leurs fichiers ou le disque est peut-être plein. Les détails figurent dans le journal :
 {1}</value>
   </data>
   <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
@@ -3582,9 +3570,6 @@ ou Ctrl+V</value>
   <data name="ResetFiltersTooltip" xml:space="preserve">
     <value>Réinitialiser les filtres : efface la recherche et les filtres. L’ordre est conservé</value>
   </data>
-  <data name="UndoLabel" xml:space="preserve">
-    <value>Annuler</value>
-  </data>
   <data name="UndoTooltipFormat" xml:space="preserve">
     <value>Annuler : {0}</value>
   </data>
@@ -3613,7 +3598,7 @@ ou Ctrl+V</value>
     <value>Jeux de filtres enregistrés</value>
   </data>
   <data name="FilterPresetSave" xml:space="preserve">
-    <value>Enregistrer les filtres actuels…</value>
+    <value>Enregistrer les filtres actuels</value>
   </data>
   <data name="FilterPresetDelete" xml:space="preserve">
     <value>Supprimer un jeu</value>
@@ -3641,5 +3626,236 @@ ou Ctrl+V</value>
   </data>
   <data name="TagsGripTooltip" xml:space="preserve">
     <value>Faites glisser vers le haut ou le bas pour afficher plus ou moins de rangées de tags. Double-clic : tous les tags ou une rangée.</value>
+  </data>
+  <data name="SaveReadOnlyLabel" xml:space="preserve">
+    <value>Lecture seule</value>
+  </data>
+  <data name="SaveReadOnlyNoticeFormat" xml:space="preserve">
+    <value>Dans cette version, les livrées de {0} sont seulement affichées : les déplacer vers la corbeille ou le stockage, les remettre dans le jeu et les restaurer depuis une sauvegarde ne sont pas encore disponibles.</value>
+  </data>
+  <data name="RenderBorrowedFormat" xml:space="preserve">
+    <value>Dessiné avec les modèles et peintures de {1} : les fichiers de {0} ne sont pas lisibles. Voitures, logos et peintures peuvent différer de {0}.</value>
+  </data>
+  <data name="ServerStatusGameNotSupported" xml:space="preserve">
+    <value>Serveur : ce jeu n’est pas encore pris en charge</value>
+  </data>
+  <data name="ServerStatusGameNotSupportedHint" xml:space="preserve">
+    <value>Le serveur ne lit pas encore les sauvegardes de ce jeu ou de cette version (Steam ou Microsoft Store). Les livrées posées sur vos voitures ne sont pas indiquées. La galerie vérifie à nouveau toutes les 30 minutes.</value>
+  </data>
+  <data name="DisplayFilterLabel" xml:space="preserve">
+    <value>Afficher</value>
+  </data>
+  <data name="FilterPresetsLabel" xml:space="preserve">
+    <value>Ensembles</value>
+  </data>
+  <data name="MenuRefresh" xml:space="preserve">
+    <value>Actualiser</value>
+  </data>
+  <data name="CardSizeSmall" xml:space="preserve">
+    <value>Petites cartes</value>
+  </data>
+  <data name="CardSizeNormal" xml:space="preserve">
+    <value>Cartes normales</value>
+  </data>
+  <data name="CardSizeLarge" xml:space="preserve">
+    <value>Grandes cartes</value>
+  </data>
+  <data name="ShortcutsGroupView" xml:space="preserve">
+    <value>Affichage</value>
+  </data>
+  <data name="ShortcutCardsLarger" xml:space="preserve">
+    <value>Cartes (captures) plus grandes</value>
+  </data>
+  <data name="ShortcutCardsSmaller" xml:space="preserve">
+    <value>Cartes (captures) plus petites</value>
+  </data>
+  <data name="ShortcutCardsNormal" xml:space="preserve">
+    <value>Taille normale des cartes (captures)</value>
+  </data>
+  <data name="ShortcutCardsWheel" xml:space="preserve">
+    <value>Taille des cartes</value>
+  </data>
+  <data name="KeyWheel" xml:space="preserve">
+    <value>Molette</value>
+  </data>
+  <data name="UserDataProblemTitle" xml:space="preserve">
+    <value>Tags, notes et favoris</value>
+  </data>
+  <data name="UserDataUnreadableMessageFormat" xml:space="preserve">
+    <value>Ces fichiers n’ont pas pu être ouverts au démarrage. Un autre programme les utilise peut-être (un client de synchronisation comme OneDrive, un antivirus) :
+{0}
+
+La galerie les a laissés tels quels. Les tags, notes, favoris et verrous modifiés maintenant ne seront pas enregistrés. Fermez le programme qui les utilise et relancez la galerie.</value>
+  </data>
+  <data name="UserDataSetAsideMessageFormat" xml:space="preserve">
+    <value>Ces fichiers étaient endommagés et n’ont pas pu être lus :
+{0}
+
+Une copie de chacun a été gardée à côté, avec la date dans son nom. La galerie les a recommencés à vide.</value>
+  </data>
+  <data name="GalleryAccessibleName" xml:space="preserve">
+    <value>Livrées</value>
+  </data>
+  <data name="CardAccessibleSelected" xml:space="preserve">
+    <value>sélectionnée</value>
+  </data>
+  <data name="CardAccessibleFavorite" xml:space="preserve">
+    <value>favori</value>
+  </data>
+  <data name="CardAccessibleLocked" xml:space="preserve">
+    <value>verrouillée</value>
+  </data>
+  <data name="NoticesTitle" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="NoticesNone" xml:space="preserve">
+    <value>Rien pour l’instant</value>
+  </data>
+  <data name="NoticeCounterFormat" xml:space="preserve">
+    <value>{0} sur {1}</value>
+  </data>
+  <data name="NoticeNextTooltip" xml:space="preserve">
+    <value>Notification suivante</value>
+  </data>
+  <data name="NoticeCloseTooltip" xml:space="preserve">
+    <value>Fermer (reste sous la cloche)</value>
+  </data>
+  <data name="NoticeShowFile" xml:space="preserve">
+    <value>Afficher le fichier</value>
+  </data>
+  <data name="NoticeChooseFolder" xml:space="preserve">
+    <value>Choisir un dossier</value>
+  </data>
+  <data name="ToastUndo" xml:space="preserve">
+    <value>Annuler</value>
+  </data>
+  <data name="ToastUndoDetail" xml:space="preserve">
+    <value>Ctrl+Z l’annule aussi</value>
+  </data>
+  <data name="ToastClose" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="PropertiesTitle" xml:space="preserve">
+    <value>Propriétés</value>
+  </data>
+  <data name="PropertiesToggleTooltip" xml:space="preserve">
+    <value>Panneau des livrées sélectionnées</value>
+  </data>
+  <data name="PropertiesEmpty" xml:space="preserve">
+    <value>Sélectionnez une livrée pour la voir ici. Avec plusieurs, ce qu’elles ont en commun s’affiche.</value>
+  </data>
+  <data name="PropertiesAuthorsFormat" xml:space="preserve">
+    <value>auteurs : {0}</value>
+  </data>
+  <data name="PropertiesFavorite" xml:space="preserve">
+    <value>Favori</value>
+  </data>
+  <data name="PropertiesLock" xml:space="preserve">
+    <value>Verrou</value>
+  </data>
+  <data name="PropertiesTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="PropertiesTagsPartHint" xml:space="preserve">
+    <value>en pointillés : sur certaines, cliquer l’ajoute à toutes</value>
+  </data>
+  <data name="PropertiesAddTagPlaceholder" xml:space="preserve">
+    <value>Ajouter un tag, Entrée</value>
+  </data>
+  <data name="PropertiesCreateTagFormat" xml:space="preserve">
+    <value>Nouveau tag « {0} »</value>
+  </data>
+  <data name="PropertiesRemoveTagFormat" xml:space="preserve">
+    <value>Retirer le tag {0}</value>
+  </data>
+  <data name="PropertiesNote" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="PropertiesNoteSavesItself" xml:space="preserve">
+    <value>enregistrée en tapant</value>
+  </data>
+  <data name="PropertiesNotesOwnFormat" xml:space="preserve">
+    <value>{0} sur {1} ont leur propre note.</value>
+  </data>
+  <data name="PropertiesNoteForAllPlaceholder" xml:space="preserve">
+    <value>Une note pour toutes</value>
+  </data>
+  <data name="PropertiesNoteAppend" xml:space="preserve">
+    <value>Ajouter aux leurs</value>
+  </data>
+  <data name="PropertiesNoteReplace" xml:space="preserve">
+    <value>Remplacer les leurs</value>
+  </data>
+  <data name="PropertiesFindInGame" xml:space="preserve">
+    <value>Trouver dans le jeu</value>
+  </data>
+  <data name="PropertiesToStorage" xml:space="preserve">
+    <value>Vers le stockage</value>
+  </data>
+  <data name="PropertiesToGame" xml:space="preserve">
+    <value>Vers le jeu</value>
+  </data>
+  <data name="PropertiesDetails" xml:space="preserve">
+    <value>Plus</value>
+  </data>
+  <data name="PropertiesClose" xml:space="preserve">
+    <value>Masquer le panneau</value>
+  </data>
+  <data name="ShortcutProperties" xml:space="preserve">
+    <value>Panneau des livrées sélectionnées</value>
+  </data>
+  <data name="SelectionBarTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="SelectionBarMore" xml:space="preserve">
+    <value>Autres actions</value>
+  </data>
+  <data name="SelectionBarClear" xml:space="preserve">
+    <value>Désélectionner</value>
+  </data>
+  <data name="EmptyNoFilterResults" xml:space="preserve">
+    <value>Aucune livrée ne correspond aux filtres</value>
+  </data>
+  <data name="EmptyNoResultsWithFilters" xml:space="preserve">
+    <value>Rien trouvé pour « {0} » avec les filtres actifs</value>
+  </data>
+  <data name="EmptyClearSearch" xml:space="preserve">
+    <value>Effacer la recherche</value>
+  </data>
+  <data name="EmptyResetFilters" xml:space="preserve">
+    <value>Réinitialiser les filtres</value>
+  </data>
+  <data name="EmptyShowGame" xml:space="preserve">
+    <value>Afficher les livrées du jeu</value>
+  </data>
+  <data name="EmptyLookAgain" xml:space="preserve">
+    <value>Vérifier à nouveau</value>
+  </data>
+  <data name="ScreenshotsShowAllAlbums" xml:space="preserve">
+    <value>Toutes les captures</value>
+  </data>
+  <data name="NoticeProblemTitle" xml:space="preserve">
+    <value>Cela n’a pas fonctionné</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptioned" xml:space="preserve">
+    <value>Avec légendes</value>
+  </data>
+  <data name="ScreenshotsLayoutTiles" xml:space="preserve">
+    <value>Mosaïque</value>
+  </data>
+  <data name="ScreenshotsSizeSmall" xml:space="preserve">
+    <value>Petites captures</value>
+  </data>
+  <data name="ScreenshotsSizeNormal" xml:space="preserve">
+    <value>Captures normales</value>
+  </data>
+  <data name="ScreenshotsSizeLarge" xml:space="preserve">
+    <value>Grandes captures</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptionedTooltip" xml:space="preserve">
+    <value>Sous chaque capture figurent sa livrée ou l’heure</value>
+  </data>
+  <data name="ScreenshotsLayoutTilesTooltip" xml:space="preserve">
+    <value>Les images seules, serrées. La légende est dans l’info-bulle</value>
   </data>
 </root>

@@ -1,0 +1,42 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
+             xmlns:views="clr-namespace:LiveryGallery.Views"
+             x:Class="LiveryGallery.Views.LiveryRow"
+             x:DataType="vm:LiveryRowViewModel">
+    <!-- A livery in the archive's or a backup's list (LiveryRowViewModel): the box, the picture, the name and number,
+         the author, the car, then what the list adds (when archived, the folder, another account) -->
+    <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="10" Padding="10,8" Margin="0,0,0,8"
+            views:ThumbnailRows.Track="True">
+        <Grid ColumnDefinitions="Auto,Auto,*">
+            <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" IsVisible="{Binding CanCheck}"
+                      VerticalAlignment="Center" Margin="0,0,10,0" AutomationProperties.Name="{Binding LiveryName}" />
+            <Border Grid.Column="1" Width="100" Height="56" CornerRadius="6" ClipToBounds="True"
+                    Background="{DynamicResource BgBrush}" Margin="0,0,12,0">
+                <Image Source="{Binding Thumbnail}" Stretch="UniformToFill" />
+            </Border>
+            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Grid.Column="0" Text="{Binding LiveryName}" FontSize="13.5" FontWeight="Bold"
+                               TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding LiveryName}" />
+                    <TextBlock Grid.Column="1" Text="{Binding LiveryIdText}" FontSize="11" FontWeight="SemiBold"
+                               Margin="8,0,0,0" VerticalAlignment="Center" ToolTip.Tip="{Binding LiveryIdTooltip}"
+                               Foreground="{DynamicResource TextSecondaryBrush}" />
+                </Grid>
+                <TextBlock Text="{Binding AuthorRaw}" FontSize="11.5" Margin="0,2,0,0"
+                           TextTrimming="CharacterEllipsis" Foreground="{DynamicResource TextSecondaryBrush}" />
+                <TextBlock Text="{Binding CarText}" FontSize="11.5" Margin="0,3,0,0" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                <TextBlock Text="{Binding DetailText}" FontSize="10.5" Margin="0,3,0,0" IsVisible="{Binding HasDetail}"
+                           Foreground="{DynamicResource TextSecondaryBrush}" />
+                <!-- The folder, as on a gallery card, while folder names are shown: search finds rows by it -->
+                <TextBlock Text="{Binding FolderName}" FontSize="10" Margin="0,3,0,0"
+                           IsVisible="{Binding ShowFolderName}" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource TextTertiaryBrush}" />
+                <TextBlock Text="{Binding OtherAccountText}" FontSize="10.5" Margin="0,3,0,0"
+                           IsVisible="{Binding IsFromOtherAccount}" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource WarningTextBrush}" />
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

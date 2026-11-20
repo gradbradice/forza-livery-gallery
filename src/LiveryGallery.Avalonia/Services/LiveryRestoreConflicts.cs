@@ -16,18 +16,60 @@ internal static class LiveryRestoreConflicts
     /// </summary>
     /// <param name="sources">The account each livery comes from</param>
     public static async Task<string?> PrepareAsync(SavePathService saves, AccountContext accounts, IEnumerable<AccountRef?> sources,
-        Func<string, Task<bool>>? confirmAccount, Func<Task<bool>>? confirmWhileRunning, Action<string>? tell)
+        ViewModels.RestoreQuestions ask, Action<string>? tell)
     {
+        var confirmAccount = ask.IntoCurrentAccount;
+        var confirmWhileRunning = ask.WhileGameRunning;
         string? savePath = saves.ResolveSaveDataPath();
         if (savePath is null)
         {
             tell?.Invoke(Strings.ArchiveNoSavePathMessage);
             return null;
         }
+        // Nothing is restored into a save only read (FH3 to FH5 in this version)
+        if (saves.Profile.IsSaveReadOnly(savePath))
+        {
+            tell?.Invoke(ReadOnlySaveNotice.For(saves.Profile));
+            return null;
+        }
         if (accounts.BuildRestoreIntoCurrentPrompt(sources) is { } accountPrompt && confirmAccount is not null
             && !await confirmAccount(accountPrompt))
             return null;
         return await saves.Profile.RunningGuard.ConfirmAsync(confirmWhileRunning) ? savePath : null;
+    }
+
+    /// <summary>
+    /// Liveries back into the open save, as the archive and a backup restore them: the checks before
+    /// (<see cref="PrepareAsync"/>), the plan (<see cref="PlanAsync"/>), <paramref name="restore"/> with what the plan
+    /// keeps, <paramref name="onRestored"/> when any came back, what did not told. The keys restored; none when the user
+    /// stopped or it failed (told and logged)
+    /// </summary>
+    /// <param name="selected">The liveries, each with the account it comes from</param>
+    /// <param name="current">The liveries the save has</param>
+    /// <param name="restore">Puts the keys into the save folder; the keys put back</param>
+    /// <param name="onRestored">Told the keys put back, when any were</param>
+    /// <param name="what">For the log: "from the archive", "from a backup"</param>
+    public static async Task<HashSet<string>> RestoreToSaveAsync(SavePathService saves, AccountContext accounts,
+        IReadOnlyList<(LiveryData Data, AccountRef? Source)> selected, IReadOnlyList<LiveryData> current, ViewModels.RestoreQuestions ask,
+        Func<IReadOnlyList<string>, string, Task<IReadOnlyCollection<string>>> restore, Func<IReadOnlySet<string>, Task> onRestored,
+        Action<string>? tell, string what)
+    {
+        var restored = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        if (selected.Count == 0) return restored;
+        if (await PrepareAsync(saves, accounts, selected.Select(s => s.Source), ask, tell) is not { } savePath) return restored;
+        try
+        {
+            var plan = await PlanAsync([.. selected.Select(s => s.Data)], current, savePath, saves.Profile.Liveries, ask.Duplicates);
+            if (plan.ToRestore.Count > 0) restored.UnionWith(await restore([.. plan.ToRestore.Select(d => d.FolderName)], savePath));
+            if (restored.Count > 0) await onRestored(restored);
+            if (plan.Report(restored) is { } report) tell?.Invoke(report);
+        }
+        catch (Exception ex)
+        {
+            AppLog.LogError($"Failed to restore {what}", ex);
+            tell?.Invoke(Strings.FileOperationFailedMessage);
+        }
+        return restored;
     }
 
     public static string FormatLiveryId(ulong liveryId) => liveryId > 0 ? $"#{liveryId}" : "";

@@ -201,12 +201,6 @@
   <data name="ButtonClose" xml:space="preserve">
     <value>關閉</value>
   </data>
-  <data name="TagsDialogTitle" xml:space="preserve">
-    <value>標籤</value>
-  </data>
-  <data name="TagsDialogHint" xml:space="preserve">
-    <value>以逗號分隔標籤，例如：甩尾, 動漫, 競速</value>
-  </data>
   <data name="ButtonSave" xml:space="preserve">
     <value>儲存</value>
   </data>
@@ -599,19 +593,19 @@
     <value>沒有作者卡片</value>
   </data>
   <data name="ContextMenuMoveToArchive" xml:space="preserve">
-    <value>移至封存</value>
+    <value>移至回收筒</value>
   </data>
   <data name="MenuOpenArchive" xml:space="preserve">
-    <value>封存</value>
+    <value>回收筒</value>
   </data>
   <data name="MenuOpenBackups" xml:space="preserve">
     <value>備份</value>
   </data>
   <data name="ArchiveDialogTitle" xml:space="preserve">
-    <value>封存</value>
+    <value>回收筒</value>
   </data>
   <data name="ArchiveEmptyHint" xml:space="preserve">
-    <value>封存中沒有塗裝</value>
+    <value>回收筒中沒有塗裝</value>
   </data>
   <data name="ArchiveSelectedCountFormat" xml:space="preserve">
     <value>已選取：{0} 個</value>
@@ -629,7 +623,7 @@
     <value>{0}將被移至資源回收筒。圖庫無法復原此操作。</value>
   </data>
   <data name="ArchivedOnFormat" xml:space="preserve">
-    <value>封存日期：{0}</value>
+    <value>移入回收筒的日期：{0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
     <value>還原塗裝前，請先在設定中選擇存檔資料夾</value>
@@ -647,7 +641,7 @@
     <value>開啟原始預覽圖</value>
   </data>
   <data name="LoadingMovingToArchive" xml:space="preserve">
-    <value>正在移至封存…</value>
+    <value>正在移至回收筒…</value>
   </data>
   <data name="ArchiveSelectAllButton" xml:space="preserve">
     <value>全選</value>
@@ -824,10 +818,10 @@
   </data>
   <data name="AuctionBadgeTooltip" xml:space="preserve">
     <value>在拍賣行購買。
-只有在塗裝伺服器確認沒有車輛使用後，才能移至封存。</value>
+只有在塗裝伺服器確認沒有車輛使用後，才能移至回收筒。</value>
   </data>
   <data name="ArchiveAuctionNotAllowedTooltip" xml:space="preserve">
-    <value>只有在塗裝伺服器確認沒有車輛使用後，拍賣塗裝才能移至封存</value>
+    <value>只有在塗裝伺服器確認沒有車輛使用後，拍賣塗裝才能移至回收筒</value>
   </data>
   <data name="ArchiveAuctionSkippedFormat" xml:space="preserve">
     <value>所選拍賣塗裝中仍留在遊戲裡的有 {0} 個。尚未確認沒有車輛使用它們。塗裝伺服器收到目前存檔後即可移動。</value>
@@ -996,7 +990,7 @@
 更新時間：{1}</value>
   </data>
   <data name="ServerSyncProfileNotFound" xml:space="preserve">
-    <value>存檔資料夾中沒有設定檔 C_ProfileData。</value>
+    <value>存檔資料夾中沒有設定檔 ProfileData。</value>
   </data>
   <data name="ServerSyncSaveNotSupported" xml:space="preserve">
     <value>伺服器暫時無法讀取此存檔。遊戲可能已更新。之後會加入支援。</value>
@@ -1023,14 +1017,17 @@
     <value>使用伺服器確定已套用到車輛的塗裝</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>為了確定哪些塗裝已套用到車輛以及您的帳戶名稱，圖庫會將存檔檔案 C_ProfileData 傳送到伺服器。伺服器僅將該檔案用於此目的，不會保存它。
+    <value>為了確定哪些塗裝已套用到車輛以及您的帳戶名稱，圖庫會將存檔檔案 ProfileData 傳送到伺服器。伺服器僅將該檔案用於此目的，不會保存它。
 
 檔案中的資料不會被保留，也不會用於其他任何用途。伺服器會安全保管解密存檔檔案所需的金鑰。
 
 此伺服器與 Forza Horizon、Xbox 或 Microsoft 的官方伺服器無關。</value>
   </data>
+  <data name="ServerConnectionAllGames" xml:space="preserve">
+    <value>此設定適用於圖庫中的所有遊戲：FH6、FH5、FH4 和 FH3。</value>
+  </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>為了確定哪些塗裝已套用到車輛以及您的帳戶名稱，圖庫會將存檔檔案 C_ProfileData 傳送到伺服器。伺服器僅將該檔案用於此目的，不會保存它。
+    <value>為了確定哪些塗裝已套用到車輛以及您的帳戶名稱，圖庫會將存檔檔案 ProfileData 傳送到伺服器。伺服器僅將該檔案用於此目的，不會保存它。
 
 檔案中的資料不會被保留，也不會用於其他任何用途。伺服器會安全保管解密存檔檔案所需的金鑰。
 
@@ -1082,36 +1079,36 @@
 {0}</value>
   </data>
   <data name="ArchiveInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>已在遊戲中套用到車輛的塗裝無法移至封存</value>
+    <value>已在遊戲中套用到車輛的塗裝無法移至回收筒</value>
   </data>
   <data name="ArchiveInstalledSkippedFormat" xml:space="preserve">
-    <value>已在遊戲中套用到車輛的塗裝無法移至封存。所選塗裝中仍留在遊戲裡的有 {0} 個。</value>
+    <value>已在遊戲中套用到車輛的塗裝無法移至回收筒。所選塗裝中仍留在遊戲裡的有 {0} 個。</value>
   </data>
   <data name="ArchiveInstalledUnknownMessage" xml:space="preserve">
-    <value>目前不知道哪些塗裝已套用到車輛，因此將此塗裝移至封存並不安全：它可能已在遊戲中套用到車輛。
+    <value>目前不知道哪些塗裝已套用到車輛，因此將此塗裝移至回收筒並不安全：它可能已在遊戲中套用到車輛。
 
-要將塗裝移至封存嗎？</value>
+要將塗裝移至回收筒嗎？</value>
   </data>
   <data name="ArchiveInstalledUnknownMessageMany" xml:space="preserve">
-    <value>目前不知道哪些塗裝已套用到車輛，因此將這些塗裝移至封存並不安全：其中一些可能已在遊戲中套用到車輛。
+    <value>目前不知道哪些塗裝已套用到車輛，因此將這些塗裝移至回收筒並不安全：其中一些可能已在遊戲中套用到車輛。
 
-要將塗裝移至封存嗎？</value>
+要將塗裝移至回收筒嗎？</value>
   </data>
   <data name="DontShowAgainCheckBox" xml:space="preserve">
     <value>不再顯示</value>
   </data>
   <data name="ArchiveAuctionOrInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>已在遊戲中套用到車輛的塗裝無法移至封存。拍賣塗裝只有在塗裝伺服器確認沒有車輛使用後才能移動。</value>
+    <value>已在遊戲中套用到車輛的塗裝無法移至回收筒。拍賣塗裝只有在塗裝伺服器確認沒有車輛使用後才能移動。</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessage" xml:space="preserve">
-    <value>存檔在上次同步後發生了變化，新資料尚未到達塗裝伺服器。已套用到車輛的塗裝清單可能已過時，因此將此塗裝移至封存並不安全：它可能已在遊戲中套用到車輛。
+    <value>存檔在上次同步後發生了變化，新資料尚未到達塗裝伺服器。已套用到車輛的塗裝清單可能已過時，因此將此塗裝移至回收筒並不安全：它可能已在遊戲中套用到車輛。
 
-建議等待自動同步完成後再試，同步可能需要幾分鐘。現在就將塗裝移至封存嗎？</value>
+建議等待自動同步完成後再試，同步可能需要幾分鐘。現在就將塗裝移至回收筒嗎？</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>存檔在上次同步後發生了變化，新資料尚未到達塗裝伺服器。已套用到車輛的塗裝清單可能已過時，因此將這些塗裝移至封存並不安全：其中一些可能已在遊戲中套用到車輛。
+    <value>存檔在上次同步後發生了變化，新資料尚未到達塗裝伺服器。已套用到車輛的塗裝清單可能已過時，因此將這些塗裝移至回收筒並不安全：其中一些可能已在遊戲中套用到車輛。
 
-建議等待自動同步完成後再試，同步可能需要幾分鐘。現在就將塗裝移至封存嗎？</value>
+建議等待自動同步完成後再試，同步可能需要幾分鐘。現在就將塗裝移至回收筒嗎？</value>
   </data>
   <data name="ContextMenuNavigateInGame" xml:space="preserve">
     <value>在遊戲中定位</value>
@@ -1199,29 +1196,41 @@
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>自動</value>
   </data>
+  <data name="NavigationRowsOne" xml:space="preserve">
+    <value>1 列</value>
+  </data>
   <data name="NavigationRowsTwo" xml:space="preserve">
-    <value>2 列，標準選單</value>
+    <value>2 列</value>
   </data>
   <data name="NavigationRowsThree" xml:space="preserve">
-    <value>3 列，選單模組</value>
+    <value>3 列</value>
   </data>
-  <data name="NavigationRowsDetectedVanilla" xml:space="preserve">
-    <value>偵測結果：2 列，標準選單。</value>
+  <data name="NavigationRowsStandardFormat" xml:space="preserve">
+    <value>{0}，標準選單</value>
+  </data>
+  <data name="NavigationRowsDetectedStandardFormat" xml:space="preserve">
+    <value>偵測結果：{0}，標準選單。</value>
   </data>
   <data name="NavigationRowsDetectedModFormat" xml:space="preserve">
-    <value>偵測結果：{0} 列，選單已被模組修改。</value>
+    <value>偵測結果：{0}，選單已被模組修改。</value>
   </data>
-  <data name="NavigationRowsDetectedNoGameFolder" xml:space="preserve">
-    <value>未設定遊戲資料夾，因此按 2 列處理。設定遊戲資料夾後即可辨識選單模組。</value>
+  <data name="NavigationRowsDetectedNoGameFolderFormat" xml:space="preserve">
+    <value>未設定遊戲資料夾，因此按標準選單（{0}）處理。設定遊戲資料夾後即可辨識選單模組。</value>
   </data>
   <data name="NavigationRowsDetectedUnknown" xml:space="preserve">
-    <value>無法偵測列數：選單檔案以未知方式被修改。請選擇 2 列或 3 列。</value>
+    <value>無法偵測列數：選單以未知方式被修改。請手動選擇列數。</value>
   </data>
   <data name="NavigationKeyIntervalLabel" xml:space="preserve">
     <value>按鍵間隔</value>
   </data>
   <data name="NavigationKeyIntervalHint" xml:space="preserve">
     <value>如果游標停在塗裝之前，請調大間隔：按鍵過快時遊戲會忽略。</value>
+  </data>
+  <data name="NavigationMenuOpenDelayLabel" xml:space="preserve">
+    <value>開啟「我的設計」後的等待時間</value>
+  </data>
+  <data name="NavigationMenuOpenDelayHint" xml:space="preserve">
+    <value>尋找前，圖庫會關閉「我的設計」再重新開啟。如果設計較多，遊戲仍在開啟選單時游標就開始移動，請調長等待時間。最長 10 秒。</value>
   </data>
   <data name="MillisecondsFormat" xml:space="preserve">
     <value>{0} 毫秒</value>
@@ -1266,7 +1275,7 @@
     <value>將記錄檔、移除路徑和 ID 的設定以及塗裝讀取錯誤儲存為 ZIP 檔案，可附在錯誤回報中。不會傳送到任何地方。</value>
   </data>
   <data name="ExportDiagnosticsButton" xml:space="preserve">
-    <value>匯出診斷資訊…</value>
+    <value>匯出診斷資訊</value>
   </data>
   <data name="DiagnosticsSaveDialogTitle" xml:space="preserve">
     <value>儲存診斷資訊</value>
@@ -1379,7 +1388,7 @@
     <value>帳戶資料</value>
   </data>
   <data name="AccountDataHint" xml:space="preserve">
-    <value>每個遊戲帳戶都有各自的掃描快取和預覽圖。刪除帳戶資料可釋放這部分空間。如果該帳戶再次出現，其塗裝會重新掃描。封存和備份不受影響。</value>
+    <value>每個遊戲帳戶都有各自的掃描快取和預覽圖。刪除帳戶資料可釋放這部分空間。如果該帳戶再次出現，其塗裝會重新掃描。回收筒和備份不受影響。</value>
   </data>
   <data name="AccountDataCurrent" xml:space="preserve">
     <value>目前帳戶</value>
@@ -1400,7 +1409,7 @@
     <value>刪除帳戶資料</value>
   </data>
   <data name="AccountDataForgetMessage" xml:space="preserve">
-    <value>刪除帳戶 {0} 的資料？其掃描快取和預覽圖，約 {1}，將被刪除。封存和備份會保留。如果該帳戶再次出現，其塗裝會重新掃描。</value>
+    <value>刪除帳戶 {0} 的資料？其掃描快取和預覽圖，約 {1}，將被刪除。回收筒和備份會保留。如果該帳戶再次出現，其塗裝會重新掃描。</value>
   </data>
   <data name="AccountDataForgetFailedMessage" xml:space="preserve">
     <value>無法刪除帳戶資料。詳細資訊請見記錄檔。</value>
@@ -1483,8 +1492,8 @@
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>沒有語言檔案 StringTables：車輛名稱取自車輛資料庫</value>
   </data>
-  <data name="AboutDescriptionFormat" xml:space="preserve">
-    <value>用於瀏覽 {0} 存檔中塗裝的圖庫。</value>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>用於瀏覽 Forza 遊戲存檔中塗裝的圖庫。</value>
   </data>
   <data name="FolderNotFoundMessageFormat" xml:space="preserve">
     <value>無法自動找到 {0} 的存檔資料夾。
@@ -1542,7 +1551,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>圖案與「{1}」的相似度為 {0}%</value>
   </data>
   <data name="ContextMenuAssignAuthor" xml:space="preserve">
-    <value>指定作者…</value>
+    <value>指定作者</value>
   </data>
   <data name="ContextMenuUnassignAuthor" xml:space="preserve">
     <value>取消指定的作者</value>
@@ -1743,7 +1752,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>已刪除</value>
   </data>
   <data name="StatsLegendArchived" xml:space="preserve">
-    <value>已封存</value>
+    <value>移入回收筒</value>
   </data>
   <data name="StatsSizeTooltipFormat" xml:space="preserve">
     <value>月底塗裝：{0}</value>
@@ -1929,19 +1938,19 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>未使用</value>
   </data>
   <data name="StatsHealthUnusedNote" xml:space="preserve">
-    <value>未套用到車輛、不在最愛中、未鎖定、不是自己的也不是拍賣的塗裝。最適合移至封存。</value>
+    <value>未套用到車輛、不在最愛中、未鎖定、不是自己的也不是拍賣的塗裝。最適合移至回收筒。</value>
   </data>
   <data name="StatsHealthUnused" xml:space="preserve">
     <value>未使用的塗裝</value>
   </data>
   <data name="StatsHealthArchiveTitle" xml:space="preserve">
-    <value>封存</value>
+    <value>回收筒</value>
   </data>
   <data name="StatsHealthArchived" xml:space="preserve">
-    <value>在封存中</value>
+    <value>在回收筒中</value>
   </data>
   <data name="StatsHealthLastArchived" xml:space="preserve">
-    <value>最近一次封存</value>
+    <value>最近一次移入回收筒</value>
   </data>
   <data name="StatsShowTheseTooltip" xml:space="preserve">
     <value>在圖庫中顯示這些塗裝</value>
@@ -2052,7 +2061,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>您常移除誰的塗裝</value>
   </data>
   <data name="StatsDeparturesCellFormat" xml:space="preserve">
-    <value>{0} + 封存 {1}</value>
+    <value>{0} + 回收筒 {1}</value>
   </data>
   <data name="StatsNoJournalShort" xml:space="preserve">
     <value>紀錄中還沒有移除</value>
@@ -2118,10 +2127,10 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>匯出</value>
   </data>
   <data name="StatsExportLiveries" xml:space="preserve">
-    <value>將塗裝匯出為 CSV…</value>
+    <value>將塗裝匯出為 CSV</value>
   </data>
   <data name="StatsExportAuthors" xml:space="preserve">
-    <value>將作者匯出為 CSV…</value>
+    <value>將作者匯出為 CSV</value>
   </data>
   <data name="StatsExportLiveriesFileName" xml:space="preserve">
     <value>liveries</value>
@@ -2133,7 +2142,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>無法儲存檔案。</value>
   </data>
   <data name="StatsSaveChart" xml:space="preserve">
-    <value>另存為 PNG…</value>
+    <value>另存為 PNG</value>
   </data>
   <data name="StatsAuthorsTopTooltipFormat" xml:space="preserve">
     <value>在 {2} 個已知作者的塗裝中，有 {1} 個來自塗裝最多的 {0} 位作者</value>
@@ -2145,22 +2154,10 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>從最愛移除</value>
   </data>
   <data name="ContextMenuEditTags" xml:space="preserve">
-    <value>編輯標籤…</value>
+    <value>編輯標籤</value>
   </data>
   <data name="TagChipTooltip" xml:space="preserve">
     <value>按一下只顯示帶此標籤的塗裝，按右鍵則隱藏它們。再按一次可取消。</value>
-  </data>
-  <data name="TagsDialogManyTitleFormat" xml:space="preserve">
-    <value>所選塗裝的標籤：{0} 個</value>
-  </data>
-  <data name="TagsDialogManyHint" xml:space="preserve">
-    <value>勾選會為所有選取的塗裝加入此標籤，留空則全部移除。實心方塊表示只有部分塗裝有此標籤，將維持不變。</value>
-  </data>
-  <data name="TagsDialogNewTagsLabel" xml:space="preserve">
-    <value>新標籤，以逗號分隔。將加入所有選取的塗裝。</value>
-  </data>
-  <data name="TagsDialogPartialTooltipFormat" xml:space="preserve">
-    <value>{1} 個選取塗裝中有 {0} 個帶此標籤</value>
   </data>
   <data name="ContextMenuLock" xml:space="preserve">
     <value>鎖定</value>
@@ -2169,16 +2166,16 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>解除鎖定</value>
   </data>
   <data name="LockToggleTooltip" xml:space="preserve">
-    <value>鎖定塗裝，使其無法移至封存</value>
+    <value>鎖定塗裝，使其無法移至回收筒</value>
   </data>
   <data name="LockedTooltip" xml:space="preserve">
-    <value>已鎖定：此塗裝無法移至封存。按一下可解除鎖定。</value>
+    <value>已鎖定：此塗裝無法移至回收筒。按一下可解除鎖定。</value>
   </data>
   <data name="ArchiveLockedNotAllowedTooltip" xml:space="preserve">
-    <value>已鎖定的塗裝無法移至封存。請先解除鎖定。</value>
+    <value>已鎖定的塗裝無法移至回收筒。請先解除鎖定。</value>
   </data>
   <data name="ArchiveLockedSkippedFormat" xml:space="preserve">
-    <value>已鎖定的塗裝無法移至封存。留在遊戲中的所選已鎖定塗裝：{0}。</value>
+    <value>已鎖定的塗裝無法移至回收筒。留在遊戲中的所選已鎖定塗裝：{0}。</value>
   </data>
   <data name="AuthorLabelOwnFormat" xml:space="preserve">
     <value>{0}（您）</value>
@@ -2265,16 +2262,16 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>游標位於文字方塊中時，字母、數字、{0} 和 {1} 沒有作用。Enter、3 和 G 僅在只選取一個塗裝時有作用。</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
-    <value>按一下可騰出空間：重複塗裝的多餘副本將移至封存。</value>
+    <value>按一下可騰出空間：重複塗裝的多餘副本將移至回收筒。</value>
   </data>
   <data name="FreeSpaceMenuItem" xml:space="preserve">
-    <value>騰出空間…</value>
+    <value>騰出空間</value>
   </data>
   <data name="FreeSpaceTitle" xml:space="preserve">
     <value>騰出空間</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>每個重複塗裝保留一個副本：優先保留有標籤的或您自己的，否則保留最先下載的。已鎖定、已套用到車輛的塗裝、拍賣塗裝和最愛也會保留。取消勾選即可保留該副本。移走的塗裝都可以從封存中還原。</value>
+    <value>每個重複塗裝保留一個副本：優先保留有標籤的或您自己的，否則保留最先下載的。已鎖定、已套用到車輛的塗裝、拍賣塗裝和最愛也會保留。取消勾選即可保留該副本。移走的塗裝都可以從回收筒中還原。</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>下載於：{0}</value>
@@ -2304,31 +2301,31 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>目前存檔：{0} / {1}。</value>
   </data>
   <data name="FreeSpaceAfterFormat" xml:space="preserve">
-    <value>移至封存：{0} 個，之後剩餘：{1}。</value>
+    <value>移至回收筒：{0} 個，之後剩餘：{1}。</value>
   </data>
   <data name="FreeSpaceAfterNoLimitFormat" xml:space="preserve">
-    <value>移至封存：{0} 個。</value>
+    <value>移至回收筒：{0} 個。</value>
   </data>
   <data name="FreeSpaceApplyFormat" xml:space="preserve">
-    <value>移至封存（{0}）</value>
+    <value>移至回收筒（{0}）</value>
   </data>
   <data name="FewFreeSlotsMessageFormat" xml:space="preserve">
-    <value>存檔中只剩 {0} 個空位（共 {1} 個）。達到上限後，遊戲將無法下載或建立塗裝。要將重複塗裝的多餘副本移至封存，立即騰出空間嗎？</value>
+    <value>存檔中只剩 {0} 個空位（共 {1} 個）。達到上限後，遊戲將無法下載或建立塗裝。要將重複塗裝的多餘副本移至回收筒，立即騰出空間嗎？</value>
   </data>
   <data name="FewFreeSlotsFullMessageFormat" xml:space="preserve">
-    <value>存檔已滿：{0} 個位置全部占用，遊戲將無法下載或建立塗裝。要將重複塗裝的多餘副本移至封存，立即騰出空間嗎？</value>
+    <value>存檔已滿：{0} 個位置全部占用，遊戲將無法下載或建立塗裝。要將重複塗裝的多餘副本移至回收筒，立即騰出空間嗎？</value>
   </data>
   <data name="AutoBackupFailedTitle" xml:space="preserve">
     <value>備份</value>
   </data>
   <data name="AutoBackupFailedMessage" xml:space="preserve">
-    <value>移至封存前無法建立備份。要在沒有備份的情況下將塗裝移至封存嗎？</value>
+    <value>移至回收筒前無法建立備份。要在沒有備份的情況下將塗裝移至回收筒嗎？</value>
   </data>
   <data name="AutoBackupFailedContinueButton" xml:space="preserve">
     <value>不備份直接移動</value>
   </data>
   <data name="LoadingBackupBeforeArchive" xml:space="preserve">
-    <value>正在移至封存前建立備份…</value>
+    <value>正在移至回收筒前建立備份…</value>
   </data>
   <data name="StatusAutoBackupMade" xml:space="preserve">
     <value>已建立自動備份</value>
@@ -2337,7 +2334,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>自動備份</value>
   </data>
   <data name="AutoBackupBeforeArchiveLabel" xml:space="preserve">
-    <value>將塗裝移至封存前</value>
+    <value>將塗裝移至回收筒前</value>
   </data>
   <data name="AutoBackupOnChangeLabel" xml:space="preserve">
     <value>存檔中的塗裝發生變化時（每天最多一次）</value>
@@ -2358,7 +2355,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>自動</value>
   </data>
   <data name="BackupKindBeforeArchive" xml:space="preserve">
-    <value>在將塗裝移至封存前建立</value>
+    <value>在將塗裝移至回收筒前建立</value>
   </data>
   <data name="BackupKindSaveChanged" xml:space="preserve">
     <value>在存檔中的塗裝變化後建立</value>
@@ -2407,12 +2404,6 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
     <value>測試版會比正式版早發布，可能含有錯誤。在使用測試版時關閉此選項，圖庫會提示返回最新的正式版。</value>
-  </data>
-  <data name="TagsDialogOneHint" xml:space="preserve">
-    <value>勾選會為此塗裝加入標籤，留空則移除。</value>
-  </data>
-  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
-    <value>新標籤，以逗號分隔。</value>
   </data>
   <data name="KeyClick" xml:space="preserve">
     <value>按一下</value>
@@ -2495,9 +2486,6 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   <data name="LiveryDetailsUnknown" xml:space="preserve">
     <value>未知</value>
   </data>
-  <data name="LiveryDetailsAddTag" xml:space="preserve">
-    <value>+ 標籤</value>
-  </data>
   <data name="LiveryDetailsNoteLabel" xml:space="preserve">
     <value>備註</value>
   </data>
@@ -2532,7 +2520,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>出現在存檔中</value>
   </data>
   <data name="HistoryRestoredFromArchive" xml:space="preserve">
-    <value>從封存還原</value>
+    <value>從回收筒還原</value>
   </data>
   <data name="HistoryReturned" xml:space="preserve">
     <value>回來了：來自備份或重新下載</value>
@@ -2541,7 +2529,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>從存檔中消失</value>
   </data>
   <data name="HistoryArchived" xml:space="preserve">
-    <value>移至封存</value>
+    <value>移至回收筒</value>
   </data>
   <data name="HistoryChanged" xml:space="preserve">
     <value>檔案已變更</value>
@@ -2571,7 +2559,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>移到此帳戶</value>
   </data>
   <data name="ArchiveUnassignedTooltip" xml:space="preserve">
-    <value>早期版本封存時未記錄帳戶，而當時有多個帳戶。如果它們來自此帳戶，請移到這裡。</value>
+    <value>早期版本移入回收筒時未記錄帳戶，而當時有多個帳戶。如果它們來自此帳戶，請移到這裡。</value>
   </data>
   <data name="BackupsUnassignedTooltip" xml:space="preserve">
     <value>早期版本建立這些備份時未記錄帳戶，而當時有多個帳戶。如果它們來自此帳戶，請移到這裡。</value>
@@ -2586,7 +2574,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>找不到存檔</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
-    <value>選擇資料夾…</value>
+    <value>選擇資料夾</value>
   </data>
   <data name="SearchSaveAgainButton" xml:space="preserve">
     <value>重新尋找</value>
@@ -2638,16 +2626,16 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>帳戶</value>
   </data>
   <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
-    <value>封存</value>
+    <value>回收筒</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>不清楚哪些塗裝用在車上時，封存前詢問</value>
+    <value>不清楚哪些塗裝用在車上時，移至回收筒前詢問</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>車上塗裝清單可能過時時，封存前詢問</value>
+    <value>車上塗裝清單可能過時時，移至回收筒前詢問</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>把遊戲中用在車上的塗裝移入封存並不安全。這些提問中的「不再顯示」會關閉它們，可在這裡重新開啟。</value>
+    <value>把遊戲中用在車上的塗裝移入回收筒並不安全。這些提問中的「不再顯示」會關閉它們，可在這裡重新開啟。</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Home</value>
@@ -2693,7 +2681,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
 或 Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>僅儲存在此電腦上。隨塗裝一起進入封存，也隨它一起還原。</value>
+    <value>僅儲存在此電腦上。隨塗裝一起進入回收筒，也隨它一起還原。</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>塗裝截圖</value>
@@ -2756,7 +2744,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>已佔用：{0} · 截圖：{1}（塗裝 {2}）</value>
   </data>
   <data name="ScreenshotsConvertButton" xml:space="preserve">
-    <value>壓縮已新增的…</value>
+    <value>壓縮已新增的</value>
   </data>
   <data name="ScreenshotsOpenFolder" xml:space="preserve">
     <value>開啟資料夾</value>
@@ -2852,7 +2840,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>加入相簿</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
-    <value>新增相簿…</value>
+    <value>新增相簿</value>
   </data>
   <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
     <value>移出「{0}」</value>
@@ -2879,7 +2867,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>重新命名</value>
   </data>
   <data name="CollectionDelete" xml:space="preserve">
-    <value>刪除…</value>
+    <value>刪除</value>
   </data>
   <data name="CollectionMoveUp" xml:space="preserve">
     <value>上移</value>
@@ -2942,7 +2930,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>Insert</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>從倉庫移到封存</value>
+    <value>從倉庫移到回收筒</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>放回遊戲</value>
@@ -2975,16 +2963,16 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>倉庫中：{0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0}：放回遊戲 · {1}：移到封存</value>
+    <value>{0}：放回遊戲 · {1}：移到回收筒</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>已放回遊戲：{0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>從倉庫移到封存：{0}</value>
+    <value>從倉庫移到回收筒：{0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>留在倉庫：{0}。封存中已有相同鍵的塗裝。</value>
+    <value>留在倉庫：{0}。回收筒中已有相同鍵的塗裝。</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>正在把塗裝放回遊戲…</value>
@@ -3092,7 +3080,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>刪除空資料夾「{0}」？</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>把其中的塗裝移到封存</value>
+    <value>把其中的塗裝移到回收筒</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>把資料夾放回遊戲</value>
@@ -3101,7 +3089,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>移到資料夾</value>
   </data>
   <data name="ContextMenuNewFolder" xml:space="preserve">
-    <value>新增資料夾…</value>
+    <value>新增資料夾</value>
   </data>
   <data name="StatusMovedToFolderFormat" xml:space="preserve">
     <value>已移到「{0}」：{1}</value>
@@ -3230,7 +3218,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>這裡是另一個帳戶的倉庫（{0}）。</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>倉庫不能位於存檔、封存、程式資料夾或其他帳戶的倉庫之中。</value>
+    <value>倉庫不能位於存檔、回收筒、程式資料夾或其他帳戶的倉庫之中。</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>此資料夾不可用：</value>
@@ -3339,7 +3327,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>資料夾無法使用</value>
   </data>
   <data name="SettingsStorageChangeButton" xml:space="preserve">
-    <value>變更資料夾…</value>
+    <value>變更資料夾</value>
   </data>
   <data name="SettingsStorageOpenButton" xml:space="preserve">
     <value>開啟倉庫資料夾</value>
@@ -3447,7 +3435,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>重新檢查</value>
   </data>
   <data name="StorageChooseOtherButton" xml:space="preserve">
-    <value>選擇其他資料夾…</value>
+    <value>選擇其他資料夾</value>
   </data>
   <data name="StorageUnavailableReasonFormat" xml:space="preserve">
     <value>倉庫資料夾無法使用：{0}</value>
@@ -3467,7 +3455,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
 {1}</value>
   </data>
   <data name="ArchiveFailedFormat" xml:space="preserve">
-    <value>無法將以下塗裝移至封存（{0}）。可能是遊戲正在使用其檔案或磁碟已滿。詳細資訊請見記錄：
+    <value>無法將以下塗裝移至回收筒（{0}）。可能是遊戲正在使用其檔案或磁碟已滿。詳細資訊請見記錄：
 {1}</value>
   </data>
   <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
@@ -3582,9 +3570,6 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   <data name="ResetFiltersTooltip" xml:space="preserve">
     <value>重設篩選：清除搜尋和篩選。排序保持不變</value>
   </data>
-  <data name="UndoLabel" xml:space="preserve">
-    <value>復原</value>
-  </data>
   <data name="UndoTooltipFormat" xml:space="preserve">
     <value>復原：{0}</value>
   </data>
@@ -3613,7 +3598,7 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
     <value>已儲存的篩選組合</value>
   </data>
   <data name="FilterPresetSave" xml:space="preserve">
-    <value>儲存目前的篩選…</value>
+    <value>儲存目前的篩選</value>
   </data>
   <data name="FilterPresetDelete" xml:space="preserve">
     <value>刪除組合</value>
@@ -3641,5 +3626,236 @@ logs：最近幾天的記錄檔。已知資料夾和玩家 ID 已替換為 &lt;s
   </data>
   <data name="TagsGripTooltip" xml:space="preserve">
     <value>上下拖曳可顯示更多或更少行標籤。按兩下：顯示全部標籤或只顯示一行。</value>
+  </data>
+  <data name="SaveReadOnlyLabel" xml:space="preserve">
+    <value>僅檢視</value>
+  </data>
+  <data name="SaveReadOnlyNoticeFormat" xml:space="preserve">
+    <value>此版本中 {0} 的塗裝僅供檢視：移至回收筒或倉庫、放回遊戲以及從備份還原暫不可用。</value>
+  </data>
+  <data name="RenderBorrowedFormat" xml:space="preserve">
+    <value>使用 {1} 的車輛模型和烤漆繪製：無法讀取 {0} 的遊戲檔案。車輛、標誌和烤漆可能與 {0} 不同。</value>
+  </data>
+  <data name="ServerStatusGameNotSupported" xml:space="preserve">
+    <value>伺服器：尚不支援此遊戲</value>
+  </data>
+  <data name="ServerStatusGameNotSupportedHint" xml:space="preserve">
+    <value>伺服器尚無法讀取此遊戲或此版本（Steam 或 Microsoft Store）的存檔。不會顯示車輛上使用的塗裝。圖庫每 30 分鐘重新檢查一次。</value>
+  </data>
+  <data name="DisplayFilterLabel" xml:space="preserve">
+    <value>顯示</value>
+  </data>
+  <data name="FilterPresetsLabel" xml:space="preserve">
+    <value>組合</value>
+  </data>
+  <data name="MenuRefresh" xml:space="preserve">
+    <value>重新整理</value>
+  </data>
+  <data name="CardSizeSmall" xml:space="preserve">
+    <value>小卡片</value>
+  </data>
+  <data name="CardSizeNormal" xml:space="preserve">
+    <value>標準卡片</value>
+  </data>
+  <data name="CardSizeLarge" xml:space="preserve">
+    <value>大卡片</value>
+  </data>
+  <data name="ShortcutsGroupView" xml:space="preserve">
+    <value>檢視</value>
+  </data>
+  <data name="ShortcutCardsLarger" xml:space="preserve">
+    <value>卡片（截圖）更大</value>
+  </data>
+  <data name="ShortcutCardsSmaller" xml:space="preserve">
+    <value>卡片（截圖）更小</value>
+  </data>
+  <data name="ShortcutCardsNormal" xml:space="preserve">
+    <value>卡片（截圖）預設大小</value>
+  </data>
+  <data name="ShortcutCardsWheel" xml:space="preserve">
+    <value>卡片大小</value>
+  </data>
+  <data name="KeyWheel" xml:space="preserve">
+    <value>滾輪</value>
+  </data>
+  <data name="UserDataProblemTitle" xml:space="preserve">
+    <value>標籤、備註和收藏</value>
+  </data>
+  <data name="UserDataUnreadableMessageFormat" xml:space="preserve">
+    <value>啟動時無法開啟以下檔案。可能有其他程式正在使用它們（如 OneDrive 等同步軟體或防毒軟體）：
+{0}
+
+圖庫未變更這些檔案。現在變更的標籤、備註、收藏和鎖定不會被儲存。請關閉佔用它們的程式，然後重新啟動圖庫。</value>
+  </data>
+  <data name="UserDataSetAsideMessageFormat" xml:space="preserve">
+    <value>以下檔案已損壞，無法讀取：
+{0}
+
+每個檔案的副本已保存在旁邊，檔名中帶有日期。圖庫已從空白重新開始。</value>
+  </data>
+  <data name="GalleryAccessibleName" xml:space="preserve">
+    <value>塗裝</value>
+  </data>
+  <data name="CardAccessibleSelected" xml:space="preserve">
+    <value>已選取</value>
+  </data>
+  <data name="CardAccessibleFavorite" xml:space="preserve">
+    <value>已收藏</value>
+  </data>
+  <data name="CardAccessibleLocked" xml:space="preserve">
+    <value>已鎖定</value>
+  </data>
+  <data name="NoticesTitle" xml:space="preserve">
+    <value>通知</value>
+  </data>
+  <data name="NoticesNone" xml:space="preserve">
+    <value>暫時沒有</value>
+  </data>
+  <data name="NoticeCounterFormat" xml:space="preserve">
+    <value>{0}/{1}</value>
+  </data>
+  <data name="NoticeNextTooltip" xml:space="preserve">
+    <value>下一則通知</value>
+  </data>
+  <data name="NoticeCloseTooltip" xml:space="preserve">
+    <value>關閉（仍保留在鈴鐺中）</value>
+  </data>
+  <data name="NoticeShowFile" xml:space="preserve">
+    <value>顯示檔案</value>
+  </data>
+  <data name="NoticeChooseFolder" xml:space="preserve">
+    <value>選擇資料夾</value>
+  </data>
+  <data name="ToastUndo" xml:space="preserve">
+    <value>復原</value>
+  </data>
+  <data name="ToastUndoDetail" xml:space="preserve">
+    <value>Ctrl+Z 也可復原</value>
+  </data>
+  <data name="ToastClose" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="PropertiesTitle" xml:space="preserve">
+    <value>屬性</value>
+  </data>
+  <data name="PropertiesToggleTooltip" xml:space="preserve">
+    <value>所選塗裝的面板</value>
+  </data>
+  <data name="PropertiesEmpty" xml:space="preserve">
+    <value>選擇一個塗裝即可在此檢視。選擇多個時顯示它們的共同之處。</value>
+  </data>
+  <data name="PropertiesAuthorsFormat" xml:space="preserve">
+    <value>作者：{0}</value>
+  </data>
+  <data name="PropertiesFavorite" xml:space="preserve">
+    <value>收藏</value>
+  </data>
+  <data name="PropertiesLock" xml:space="preserve">
+    <value>鎖定</value>
+  </data>
+  <data name="PropertiesTags" xml:space="preserve">
+    <value>標籤</value>
+  </data>
+  <data name="PropertiesTagsPartHint" xml:space="preserve">
+    <value>虛線表示僅部分塗裝有，點擊加入全部</value>
+  </data>
+  <data name="PropertiesAddTagPlaceholder" xml:space="preserve">
+    <value>新增標籤，按 Enter</value>
+  </data>
+  <data name="PropertiesCreateTagFormat" xml:space="preserve">
+    <value>新標籤「{0}」</value>
+  </data>
+  <data name="PropertiesRemoveTagFormat" xml:space="preserve">
+    <value>移除標籤 {0}</value>
+  </data>
+  <data name="PropertiesNote" xml:space="preserve">
+    <value>備註</value>
+  </data>
+  <data name="PropertiesNoteSavesItself" xml:space="preserve">
+    <value>輸入時自動儲存</value>
+  </data>
+  <data name="PropertiesNotesOwnFormat" xml:space="preserve">
+    <value>{1} 個中有 {0} 個有自己的備註。</value>
+  </data>
+  <data name="PropertiesNoteForAllPlaceholder" xml:space="preserve">
+    <value>給全部的備註</value>
+  </data>
+  <data name="PropertiesNoteAppend" xml:space="preserve">
+    <value>追加到各自備註</value>
+  </data>
+  <data name="PropertiesNoteReplace" xml:space="preserve">
+    <value>取代全部備註</value>
+  </data>
+  <data name="PropertiesFindInGame" xml:space="preserve">
+    <value>在遊戲中尋找</value>
+  </data>
+  <data name="PropertiesToStorage" xml:space="preserve">
+    <value>移到倉庫</value>
+  </data>
+  <data name="PropertiesToGame" xml:space="preserve">
+    <value>放回遊戲</value>
+  </data>
+  <data name="PropertiesDetails" xml:space="preserve">
+    <value>詳情</value>
+  </data>
+  <data name="PropertiesClose" xml:space="preserve">
+    <value>隱藏面板</value>
+  </data>
+  <data name="ShortcutProperties" xml:space="preserve">
+    <value>所選塗裝的面板</value>
+  </data>
+  <data name="SelectionBarTags" xml:space="preserve">
+    <value>標籤</value>
+  </data>
+  <data name="SelectionBarMore" xml:space="preserve">
+    <value>更多操作</value>
+  </data>
+  <data name="SelectionBarClear" xml:space="preserve">
+    <value>取消選取</value>
+  </data>
+  <data name="EmptyNoFilterResults" xml:space="preserve">
+    <value>沒有符合篩選條件的塗裝</value>
+  </data>
+  <data name="EmptyNoResultsWithFilters" xml:space="preserve">
+    <value>在目前篩選下找不到「{0}」</value>
+  </data>
+  <data name="EmptyClearSearch" xml:space="preserve">
+    <value>清除搜尋</value>
+  </data>
+  <data name="EmptyResetFilters" xml:space="preserve">
+    <value>重設篩選</value>
+  </data>
+  <data name="EmptyShowGame" xml:space="preserve">
+    <value>顯示遊戲中的塗裝</value>
+  </data>
+  <data name="EmptyLookAgain" xml:space="preserve">
+    <value>重新檢查</value>
+  </data>
+  <data name="ScreenshotsShowAllAlbums" xml:space="preserve">
+    <value>全部截圖</value>
+  </data>
+  <data name="NoticeProblemTitle" xml:space="preserve">
+    <value>未能完成</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptioned" xml:space="preserve">
+    <value>帶說明</value>
+  </data>
+  <data name="ScreenshotsLayoutTiles" xml:space="preserve">
+    <value>平鋪</value>
+  </data>
+  <data name="ScreenshotsSizeSmall" xml:space="preserve">
+    <value>小截圖</value>
+  </data>
+  <data name="ScreenshotsSizeNormal" xml:space="preserve">
+    <value>一般截圖</value>
+  </data>
+  <data name="ScreenshotsSizeLarge" xml:space="preserve">
+    <value>大截圖</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptionedTooltip" xml:space="preserve">
+    <value>每張截圖下方顯示塗裝或時間</value>
+  </data>
+  <data name="ScreenshotsLayoutTilesTooltip" xml:space="preserve">
+    <value>僅顯示圖片，緊密排列。說明在提示中</value>
   </data>
 </root>

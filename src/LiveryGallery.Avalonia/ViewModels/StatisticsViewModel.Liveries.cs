@@ -74,7 +74,7 @@ internal sealed partial class StatisticsViewModel
         Fact(Strings.StatsRecordOldestMade, records.OldestMadeKey, records.OldestMade?.ToString("Y", culture) ?? "—");
         Fact(Strings.StatsRecordMostLayers, records.MostComplexKey, records.MostLayers is { } most ? N(most) : "—");
         if (records.BusiestCarSampleKey is { } carKey && _byKey.TryGetValue(carKey, out var carSample))
-            facts.Add(new FactViewModel(Strings.StatsRecordBusiestCar, $"{carSample.CarManufacturer} {carSample.CarModelName} · {N(records.BusiestCarCount)}",
+            facts.Add(new FactViewModel(Strings.StatsRecordBusiestCar, $"{carSample.CarName} · {N(records.BusiestCarCount)}",
                 new RelayCommand(() => _host.ApplyQuickFilter(QuickFilter.ForCar(carSample))), Strings.StatsRowTooltip));
         if (records.BusiestMonth is { } month)
             facts.Add(new FactViewModel(Strings.StatsRecordBusiestMonth, $"{month.ToString("Y", culture)} · {N(records.BusiestMonthCount)}", null));
@@ -82,5 +82,5 @@ internal sealed partial class StatisticsViewModel
     }
 
     private static string LiveryLabel(LiveryEntry entry) =>
-        $"{AuthorInsights.Label(entry)} — {entry.CarManufacturer} {entry.CarModelName}".Trim();
+        $"{AuthorInsights.Label(entry)} — {entry.CarName}".Trim();
 }

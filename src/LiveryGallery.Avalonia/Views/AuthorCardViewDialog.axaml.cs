@@ -60,7 +60,7 @@ internal partial class AuthorCardViewDialog : Window
         var card = _card;
         var allEntries = _actions.Entries();
         Title = card.DisplayName;
-        TitleBarText.Text = card.DisplayName;
+        Bar.Title = card.DisplayName;
         ContentPanel.Children.Clear();
 
         var tagSet = card.IdentityTags.ToHashSet(StringComparer.OrdinalIgnoreCase);
@@ -230,7 +230,7 @@ internal partial class AuthorCardViewDialog : Window
             var row = new Grid { ColumnDefinitions = new ColumnDefinitions("*,Auto"), Margin = new Thickness(0, 4, 0, 0) };
             row.Children.Add(new TextBlock
             {
-                Text = $"{Services.AuthorInsights.Label(entry)} — {entry.CarManufacturer} {entry.CarModelName}",
+                Text = $"{Services.AuthorInsights.Label(entry)} — {entry.CarName}",
                 FontSize = 12.5,
                 VerticalAlignment = VerticalAlignment.Center,
                 TextTrimming = TextTrimming.CharacterEllipsis,
@@ -310,7 +310,6 @@ internal partial class AuthorCardViewDialog : Window
             Rebuild();
         }, "author card: edit");
 
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
-
+    // The "Close" button at the bottom (the cross is the title bar's)
     private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 }

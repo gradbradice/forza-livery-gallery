@@ -77,7 +77,6 @@ internal static class AppLocalisationService
         app.Resources["Loc_TagsSearchWatermark"] = Strings.TagsSearchWatermark;
         app.Resources["Loc_ViewPreviewTooltip"] = Strings.ViewPreviewTooltip;
         app.Resources["Loc_ClearSelectionLabel"] = Strings.ClearSelectionLabel;
-        app.Resources["Loc_UndoLabel"] = Strings.UndoLabel;
         app.Resources["Loc_ClearSelectionTip"] = new ShortcutTip(Strings.ClearSelectionLabel, GalleryShortcut.Escape);
         app.Resources["Loc_AuctionBadgeLabel"] = Strings.AuctionBadgeLabel;
         app.Resources["Loc_InstalledBadgeLabel"] = Strings.InstalledBadgeLabel;

@@ -1,3 +1,5 @@
+using ForzaToolkit.Core.Collections;
+
 namespace LiveryGallery.Services.Collections;
 
 /// <summary>Something a grid of tiles can select (a screenshot, a livery of the storage)</summary>
@@ -10,16 +12,14 @@ internal interface ISelectableItem
 }
 
 /// <summary>
-/// The selection of a grid of tiles, as in Explorer: a click selects one, Ctrl+click adds or takes away, Shift+click
-/// selects from the last one clicked (the anchor) to this one in the order on screen. The keys move a cursor
-/// (<see cref="MoveTo"/>, <see cref="ToggleCursor"/>) with the same rules as the cards' (<see cref="GalleryMoveSelection"/>).
-/// The items keep their own <see cref="ISelectableItem.IsSelected"/> and <see cref="ISelectableItem.IsCurrent"/>, which
-/// the tiles show
+/// The selection of a grid of tiles, with the cards' rules (<see cref="ExplorerSelection{T}"/>: a click, Ctrl, Shift, the
+/// keys and Space as on the cards). The items keep their own <see cref="ISelectableItem.IsSelected"/> and
+/// <see cref="ISelectableItem.IsCurrent"/>, which the tiles show
 /// </summary>
-internal sealed class ItemSelection<T> where T : class, ISelectableItem
+internal sealed class ItemSelection<T> : ISelectionChange<T> where T : class, ISelectableItem
 {
+    private readonly ExplorerSelection<T> _rules = new(ReferenceEquals);
     private IReadOnlyList<T> _items = [];
-    private T? _anchor;
     private T? _cursor;
 
     /// <summary>Where the keys are: the last tile clicked or moved to; null before either</summary>
@@ -40,7 +40,7 @@ internal sealed class ItemSelection<T> where T : class, ISelectableItem
         same ??= ReferenceEquals;
         var was = _items.Where(i => i.IsSelected).ToList();
         foreach (var item in items) item.IsSelected = was.Any(w => same(w, item));
-        _anchor = _anchor is { } anchor ? items.FirstOrDefault(i => same(anchor, i)) : null;
+        _rules.Anchor = _rules.Anchor is { } anchor ? items.FirstOrDefault(i => same(anchor, i)) : null;
         var cursor = _cursor is { } c ? items.FirstOrDefault(i => same(c, i)) : null;
         foreach (var item in items) item.IsCurrent = false;
         _items = items;
@@ -51,21 +51,9 @@ internal sealed class ItemSelection<T> where T : class, ISelectableItem
     public void Click(T item, bool control, bool shift)
     {
         ArgumentNullException.ThrowIfNull(item);
-        int to = IndexOf(item);
-        if (to < 0) return;
+        if (IndexOf(item) < 0) return;
         SetCursor(item);
-        if (shift && _anchor is { } anchor && IndexOf(anchor) is var from and >= 0)
-        {
-            if (!control) foreach (var i in _items) i.IsSelected = false;
-            for (int i = Math.Min(from, to); i <= Math.Max(from, to); i++) _items[i].IsSelected = true;
-            return;
-        }
-        if (control) item.IsSelected = !item.IsSelected;
-        else
-        {
-            foreach (var i in _items) i.IsSelected = ReferenceEquals(i, item);
-        }
-        _anchor = item;
+        _rules.Click(_items, item, control, shift, this);
     }
 
     /// <summary>A right click: a tile outside the selection becomes the selection, one inside keeps it (the menu acts on all)</summary>
@@ -77,36 +65,29 @@ internal sealed class ItemSelection<T> where T : class, ISelectableItem
     }
 
     /// <summary>The cursor moved by a key to <paramref name="target"/>, the selection with it as the cards' does</summary>
-    public void MoveTo(T target, GalleryMoveSelection selection)
+    public void MoveTo(T target, SelectionMove selection)
     {
         ArgumentNullException.ThrowIfNull(target);
-        switch (selection)
-        {
-            case GalleryMoveSelection.SelectOnly:
-                Click(target, control: false, shift: false);
-                break;
-            case GalleryMoveSelection.Extend:
-                if (_anchor is null) _anchor = _cursor ?? target;
-                Click(target, control: false, shift: true);
-                break;
-            case GalleryMoveSelection.ExtendAdd:
-                if (_anchor is null) _anchor = _cursor ?? target;
-                Click(target, control: true, shift: true);
-                break;
-            default: // CursorOnly: Space then adds or takes away
-                SetCursor(target);
-                break;
-        }
+        var from = _cursor;
+        SetCursor(target);
+        _rules.Move(_items, target, from, selection, this);
     }
 
     /// <summary>Space: the tile under the cursor into the selection or out of it; false when there is no cursor</summary>
     public bool ToggleCursor()
     {
         if (_cursor is not { } cursor) return false;
-        cursor.IsSelected = !cursor.IsSelected;
-        _anchor = cursor;
+        _rules.Toggle(cursor, this);
         return true;
     }
+
+    void ISelectionChange<T>.Choose(IReadOnlyList<T> items, bool add)
+    {
+        if (!add) foreach (var i in _items) i.IsSelected = false;
+        foreach (var i in items) i.IsSelected = true;
+    }
+
+    void ISelectionChange<T>.Toggle(T item) => item.IsSelected = !item.IsSelected;
 
     private void SetCursor(T? item)
     {
@@ -125,7 +106,7 @@ internal sealed class ItemSelection<T> where T : class, ISelectableItem
     {
         bool any = HasSelection;
         foreach (var i in _items) i.IsSelected = false;
-        _anchor = null;
+        _rules.Anchor = null;
         return any;
     }
 

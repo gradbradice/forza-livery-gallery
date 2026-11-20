@@ -69,7 +69,8 @@ internal sealed partial class MainViewModel
     {
         if (_roomChecked || savePathService.Profile.MaxLiveries is not { } limit) return;
         _roomChecked = true;
-        if (!settings.WarnFewFreeSlots) return;
+        // A save only shown: the counter says how full it is, nothing offers to free room
+        if (!settings.WarnFewFreeSlots || IsSaveReadOnly) return;
         int counted = SaveRoom.Counted(GameEntries);
         if (SaveRoom.IsFew(counted, limit)) FewFreeSlotsFound?.Invoke(Math.Max(0, limit - counted), limit);
     }

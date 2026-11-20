@@ -34,18 +34,20 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
 
     public bool ShowNoRemovedHint => RemovedRows.Count == 0;
     public bool ShowNoAddedHint => AddedEntries.Count == 0;
-    public bool HasSelection => RemovedRows.Any(r => r.IsSelected);
-    public string SelectedCountText => string.Format(Strings.ArchiveSelectedCountFormat, RemovedRows.Count(r => r.IsSelected));
+    // The ticked rows of those to restore
+    private readonly CheckedRows<BackupLiveryRowViewModel> _checked;
+
+    public bool HasSelection => _checked.Any;
+    public string SelectedCountText => _checked.CountText;
 
     /// <summary>Made on another account: the tabs compare it with the open account, and restoring puts liveries here</summary>
     public bool IsFromOtherAccount { get; }
     public string OtherAccountNote { get; } = "";
 
     public event Action<string>? ErrorMessageRequested;
-    public Func<string, Task<bool>>? ConfirmRestoreDuplicatesAsync { get; set; }
-    public Func<string, Task<bool>>? ConfirmRestoreIntoCurrentAccountAsync { get; set; }
-    /// <summary>Asked when the game is running; true to restore anyway</summary>
-    public Func<Task<bool>>? ConfirmWhileGameRunningAsync { get; set; }
+
+    /// <summary>What a restore asks (a copy in the game, another account, the game running), asked by the window</summary>
+    public RestoreQuestions Ask { get; } = new();
 
     public BackupDetailViewModel(
         LiveryBackups backupService, BackupPreviews previews, SavePathService savePathService, BackupRowViewModel backup,
@@ -77,11 +79,8 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
             AddedEntries.Add(BackupLiveryRowViewModel.FromCurrent(data));
 
         foreach (var data in removed.OrderBy(d => d.DisplayLiveryName, StringComparer.OrdinalIgnoreCase))
-        {
-            var row = BackupLiveryRowViewModel.FromBackup(data, _previews);
-            row.PropertyChanged += OnRowPropertyChanged;
-            RemovedRows.Add(row);
-        }
+            RemovedRows.Add(BackupLiveryRowViewModel.FromBackup(data, _previews));
+        _checked = new CheckedRows<BackupLiveryRowViewModel>(RemovedRows, RaiseSelectionChanged);
 
         GenerateMissingPreviews();
     }
@@ -133,20 +132,14 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
 
             var replacement = BackupLiveryRowViewModel.FromBackup(old.Data, _previews, previewPath);
             replacement.IsSelected = old.IsSelected;
-            old.PropertyChanged -= OnRowPropertyChanged;
-            replacement.PropertyChanged += OnRowPropertyChanged;
             RemovedRows[i] = replacement;
             return;
         }
     }
 
-    private void OnRowPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(BackupLiveryRowViewModel.IsSelected)) RaiseSelectionChanged();
-    }
-
     private void RaiseSelectionChanged()
     {
+        OnPropertyChanged(nameof(ShowNoRemovedHint));
         OnPropertyChanged(nameof(HasSelection));
         OnPropertyChanged(nameof(SelectedCountText));
     }
@@ -155,7 +148,7 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
     private async Task RestoreIntoStorageAsync(StorageBackupContext storage, List<BackupLiveryRowViewModel> selected)
     {
         if (_accounts.BuildRestoreIntoCurrentPrompt(selected.Select(_ => _sourceAccount)) is { } prompt
-            && ConfirmRestoreIntoCurrentAccountAsync is { } ask && !await ask(prompt))
+            && Ask.IntoCurrentAccount is { } ask && !await ask(prompt))
             return;
         try
         {
@@ -163,13 +156,7 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
                 .ToHashSet(StringComparer.OrdinalIgnoreCase);
             if (restored.Count > 0)
             {
-                foreach (var row in RemovedRows.Where(r => restored.Contains(r.FolderName)).ToList())
-                {
-                    row.PropertyChanged -= OnRowPropertyChanged;
-                    RemovedRows.Remove(row);
-                }
-                OnPropertyChanged(nameof(ShowNoRemovedHint));
-                RaiseSelectionChanged();
+                RemoveRows(restored);
                 await storage.OnRestored();
             }
             var failed = selected.Where(r => !restored.Contains(r.FolderName)).Select(r => r.Data).ToList();
@@ -182,64 +169,36 @@ internal sealed partial class BackupDetailViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
-    private void SelectAll()
+    // The rows put back: gone from the list
+    private void RemoveRows(IReadOnlySet<string> restored)
     {
-        foreach (var row in RemovedRows) row.IsSelected = true;
+        foreach (var row in RemovedRows.Where(r => restored.Contains(r.FolderName)).ToList()) RemovedRows.Remove(row);
     }
 
     [RelayCommand]
-    private void ClearSelection()
-    {
-        foreach (var row in RemovedRows) row.IsSelected = false;
-    }
+    private void SelectAll() => _checked.SelectAll();
+
+    [RelayCommand]
+    private void ClearSelection() => _checked.Clear();
 
     [RelayCommand]
     private async Task RestoreSelectedAsync()
     {
-        var selected = RemovedRows.Where(r => r.IsSelected).ToList();
+        var selected = _checked.Selected.ToList();
         if (selected.Count == 0) return;
         if (_storage is not null)
         {
             await RestoreIntoStorageAsync(_storage, selected);
             return;
         }
-
-        if (await LiveryRestoreConflicts.PrepareAsync(_savePathService, _accounts, selected.Select(_ => _sourceAccount),
-                ConfirmRestoreIntoCurrentAccountAsync, ConfirmWhileGameRunningAsync, ErrorMessageRequested) is not { } savePath)
-            return;
-
-        try
-        {
-            var plan = await LiveryRestoreConflicts.PlanAsync(
-                [.. selected.Select(r => r.Data)], _getCurrentEntries(), savePath, _savePathService.Profile.Liveries,
-                ConfirmRestoreDuplicatesAsync);
-
-            IReadOnlyList<string> restored = plan.ToRestore.Count > 0
-                ? await _backupService.RestoreAsync(_backupPath, plan.ToRestore.Select(d => d.FolderName), savePath)
-                : [];
-            var restoredSet = restored.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            if (restoredSet.Count > 0)
+        await LiveryRestoreConflicts.RestoreToSaveAsync(_savePathService, _accounts,
+            [.. selected.Select(r => (r.Data, _sourceAccount))], _getCurrentEntries(), Ask,
+            async (keys, savePath) => await _backupService.RestoreAsync(_backupPath, keys, savePath),
+            async restored =>
             {
-                foreach (var row in RemovedRows.Where(r => restoredSet.Contains(r.FolderName)).ToList())
-                {
-                    row.PropertyChanged -= OnRowPropertyChanged;
-                    RemovedRows.Remove(row);
-                }
-                OnPropertyChanged(nameof(ShowNoRemovedHint));
-                RaiseSelectionChanged();
-
+                RemoveRows(restored);
                 await _onRestored();
-            }
-
-            string? report = plan.Report(restoredSet);
-            if (report is not null) ErrorMessageRequested?.Invoke(report);
-        }
-        catch (Exception ex)
-        {
-            AppLog.LogError("Failed to restore from backup", ex);
-            ErrorMessageRequested?.Invoke(Strings.FileOperationFailedMessage);
-        }
+            },
+            ErrorMessageRequested, "from a backup");
     }
 }

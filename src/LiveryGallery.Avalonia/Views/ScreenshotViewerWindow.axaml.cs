@@ -76,7 +76,7 @@ internal partial class ScreenshotViewerWindow : Window
         var shot = _shots[_index];
         string livery = _liveryTitle(shot);
         Title = $"{Strings.ScreenshotsLabel} · {livery}";
-        TitleBarText.Text = Title;
+        Bar.Title = Title;
         PositionText.Text = $"{string.Format(Strings.ScreenshotPositionFormat, _index + 1, _shots.Count)} · {livery}";
 
         // The same screenshot again (its cover or albums changed): the picture on screen is already its own
@@ -287,9 +287,4 @@ internal partial class ScreenshotViewerWindow : Window
         _openLivery(shot.LiveryKey);
     }
 
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDragOrMaximize(e, MaximizeIcon);
-
-    private void MaximizeButton_Click(object? sender, RoutedEventArgs e) => this.ToggleMaximize(MaximizeIcon);
-
-    private void CloseButton_Click(object? sender, RoutedEventArgs e) => Close();
 }

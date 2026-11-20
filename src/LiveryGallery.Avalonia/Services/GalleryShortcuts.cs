@@ -44,6 +44,11 @@ internal enum GalleryShortcut
     RenameFolder,
     Undo,
     SaveFilterSet,
+    CardsLarger,
+    CardsSmaller,
+    CardsNormal,
+    /// <summary>Ctrl+I: the properties panel on the right opens or closes</summary>
+    Properties,
 }
 
 /// <summary>In which modes of the main window a key works (docs/storage.md)</summary>
@@ -62,6 +67,7 @@ internal enum GalleryShortcutGroup
     SelectedLiveries,
     Windows,
     Storage,
+    View,
 }
 
 /// <param name="WhileTyping">
@@ -76,7 +82,7 @@ internal sealed record GalleryShortcutKey(
 /// The gallery's keys: a fixed set. The main window asks <see cref="Match"/> for each key it gets, the menus, the
 /// tooltips and the list of keys (F1) show <see cref="GestureText"/>
 /// </summary>
-internal static class GalleryShortcuts
+internal static partial class GalleryShortcuts
 {
     private const KeyModifiers Ctrl = KeyModifiers.Control;
     private const KeyModifiers CtrlShift = KeyModifiers.Control | KeyModifiers.Shift;
@@ -110,6 +116,11 @@ internal static class GalleryShortcuts
         new(GalleryShortcut.Statistics, GalleryShortcutGroup.Windows, Key.S, CtrlShift, WhileTyping: true),
         new(GalleryShortcut.Authors, GalleryShortcutGroup.Windows, Key.U, CtrlShift, WhileTyping: true),
         new(GalleryShortcut.ShortcutList, GalleryShortcutGroup.Windows, Key.F1, KeyModifiers.None, WhileTyping: true),
+        // The cards' size, as a browser zooms: the wheel with Ctrl does the same (MainWindow.CardSize.cs)
+        new(GalleryShortcut.CardsLarger, GalleryShortcutGroup.View, Key.OemPlus, Ctrl, WhileTyping: true),
+        new(GalleryShortcut.CardsSmaller, GalleryShortcutGroup.View, Key.OemMinus, Ctrl, WhileTyping: true),
+        new(GalleryShortcut.CardsNormal, GalleryShortcutGroup.View, Key.D0, Ctrl, WhileTyping: true),
+        new(GalleryShortcut.Properties, GalleryShortcutGroup.View, Key.I, Ctrl, WhileTyping: true),
         new(GalleryShortcut.ShowGame, GalleryShortcutGroup.Storage, Key.D1, Ctrl, WhileTyping: true),
         new(GalleryShortcut.ShowStorage, GalleryShortcutGroup.Storage, Key.D2, Ctrl, WhileTyping: true),
         new(GalleryShortcut.ReturnToGame, GalleryShortcutGroup.Storage, Key.Insert, KeyModifiers.None, WhileTyping: false,
@@ -143,6 +154,9 @@ internal static class GalleryShortcuts
     private static Key Normalize(Key key, PhysicalKey physicalKey)
     {
         if (key is >= Key.NumPad0 and <= Key.NumPad9) return Key.D0 + (key - Key.NumPad0);
+        // "+" and "-" of the number pad are those of the row of digits
+        if (key == Key.Add) return Key.OemPlus;
+        if (key == Key.Subtract) return Key.OemMinus;
         if (key is >= Key.A and <= Key.Z or >= Key.D0 and <= Key.D9) return key;
         if (physicalKey is >= PhysicalKey.A and <= PhysicalKey.Z) return Key.A + (physicalKey - PhysicalKey.A);
         if (physicalKey is >= PhysicalKey.Digit0 and <= PhysicalKey.Digit9) return Key.D0 + (physicalKey - PhysicalKey.Digit0);
@@ -165,6 +179,8 @@ internal static class GalleryShortcuts
         {
             >= Key.D0 and <= Key.D9 => ((char)('0' + (shortcut.Key - Key.D0))).ToString(),
             Key.OemComma => ",",
+            Key.OemPlus => "+",
+            Key.OemMinus => "\u2212",
             Key.Delete => Text(nameof(Strings.KeyDelete)),
             Key.Insert => Text(nameof(Strings.KeyInsert)),
             Key.Escape => "Esc",
@@ -191,6 +207,7 @@ internal static class GalleryShortcuts
         [
             Group(GalleryShortcutGroup.SearchAndSelection, false, CursorMoves().Concat(CardClicks())),
             Group(GalleryShortcutGroup.Windows, false, []),
+            Group(GalleryShortcutGroup.View, false, CardSizeWheel()),
             Group(GalleryShortcutGroup.SelectedLiveries, true, []),
             Group(GalleryShortcutGroup.Storage, true, []),
         ];
@@ -208,7 +225,8 @@ internal static class GalleryShortcuts
     public static ShortcutLine Line(string gesture, string description)
     {
         ArgumentNullException.ThrowIfNull(gesture);
-        var gestures = gesture.Split('|').Select(g => (IReadOnlyList<string>)g.Split('+')).ToList();
+        // "+" between keys, but the key "+" itself stays a key: "Ctrl++" is Ctrl and +
+        var gestures = gesture.Split('|').Select(g => (IReadOnlyList<string>)KeySeparator().Split(g)).ToList();
         return new ShortcutLine(gestures[0], description) { OtherKeys = gestures.Skip(1).ToList() };
     }
 
@@ -251,6 +269,17 @@ internal static class GalleryShortcuts
         ];
     }
 
+    /// <summary>The wheel with Ctrl, for the list of keys under "View": the cards' size</summary>
+    public static IReadOnlyList<(string Gesture, string Description)> CardSizeWheel(CultureInfo? culture = null)
+    {
+        culture ??= Strings.Culture;
+        string Text(string name) => Strings.ResourceManager.GetString(name, culture) ?? name;
+        return [($"{Text(nameof(Strings.KeyCtrl))}+{Text(nameof(Strings.KeyWheel))}", Text(nameof(Strings.ShortcutCardsWheel)))];
+    }
+
+    [System.Text.RegularExpressions.GeneratedRegex(@"(?<=[^+])\+(?=.)")]
+    private static partial System.Text.RegularExpressions.Regex KeySeparator();
+
     /// <summary>What the key does, for the list of keys</summary>
     public static string Description(GalleryShortcut action) => action switch
     {
@@ -281,6 +310,10 @@ internal static class GalleryShortcuts
         GalleryShortcut.ShowGame => Strings.ShortcutShowGame,
         GalleryShortcut.ShowStorage => Strings.ShortcutShowStorage,
         GalleryShortcut.RenameFolder => Strings.ShortcutRenameFolder,
+        GalleryShortcut.CardsLarger => Strings.ShortcutCardsLarger,
+        GalleryShortcut.CardsSmaller => Strings.ShortcutCardsSmaller,
+        GalleryShortcut.CardsNormal => Strings.ShortcutCardsNormal,
+        GalleryShortcut.Properties => Strings.ShortcutProperties,
         _ => throw new ArgumentOutOfRangeException(nameof(action), action, null),
     };
 
@@ -290,6 +323,7 @@ internal static class GalleryShortcuts
         GalleryShortcutGroup.SelectedLiveries => Strings.ShortcutsGroupSelected,
         GalleryShortcutGroup.Windows => Strings.ShortcutsGroupWindows,
         GalleryShortcutGroup.Storage => Strings.ShortcutsGroupStorage,
+        GalleryShortcutGroup.View => Strings.ShortcutsGroupView,
         _ => throw new ArgumentOutOfRangeException(nameof(group), group, null),
     };
 }

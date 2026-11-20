@@ -12,7 +12,7 @@ internal partial class LiveryPreviewDialog : Window
         InitializeComponent();
 
         Title = Strings.PreviewDialogTitle;
-        TitleBarText.Text = Strings.PreviewDialogTitle;
+        Bar.Title = Strings.PreviewDialogTitle;
 
         try
         {
@@ -32,7 +32,4 @@ internal partial class LiveryPreviewDialog : Window
         }
     }
 
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
-
-    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 }

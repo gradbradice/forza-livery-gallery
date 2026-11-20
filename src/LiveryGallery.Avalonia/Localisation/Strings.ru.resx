@@ -201,12 +201,6 @@
   <data name="ButtonClose" xml:space="preserve">
     <value>Закрыть</value>
   </data>
-  <data name="TagsDialogTitle" xml:space="preserve">
-    <value>Теги</value>
-  </data>
-  <data name="TagsDialogHint" xml:space="preserve">
-    <value>Теги через запятую, например: дрифт, аниме, гонки</value>
-  </data>
   <data name="ButtonSave" xml:space="preserve">
     <value>Сохранить</value>
   </data>
@@ -599,19 +593,19 @@
     <value>Карточки автора нет</value>
   </data>
   <data name="ContextMenuMoveToArchive" xml:space="preserve">
-    <value>Переместить в архив</value>
+    <value>Переместить в корзину</value>
   </data>
   <data name="MenuOpenArchive" xml:space="preserve">
-    <value>Архив</value>
+    <value>Корзина</value>
   </data>
   <data name="MenuOpenBackups" xml:space="preserve">
     <value>Резервные копии</value>
   </data>
   <data name="ArchiveDialogTitle" xml:space="preserve">
-    <value>Архив</value>
+    <value>Корзина</value>
   </data>
   <data name="ArchiveEmptyHint" xml:space="preserve">
-    <value>Архив пуст</value>
+    <value>Корзина пуста</value>
   </data>
   <data name="ArchiveSelectedCountFormat" xml:space="preserve">
     <value>Выбрано: {0}</value>
@@ -629,7 +623,7 @@
     <value>{0} будут перемещены в корзину. Отменить это в галерее нельзя.</value>
   </data>
   <data name="ArchivedOnFormat" xml:space="preserve">
-    <value>В архиве с {0}</value>
+    <value>В корзине с {0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
     <value>Перед восстановлением ливрей выберите папку сохранений в настройках</value>
@@ -647,7 +641,7 @@
     <value>Открыть оригинальное превью</value>
   </data>
   <data name="LoadingMovingToArchive" xml:space="preserve">
-    <value>Перемещение в архив…</value>
+    <value>Перемещение в корзину…</value>
   </data>
   <data name="ArchiveSelectAllButton" xml:space="preserve">
     <value>Выбрать все</value>
@@ -824,10 +818,10 @@
   </data>
   <data name="AuctionBadgeTooltip" xml:space="preserve">
     <value>Куплена на аукционе.
-Переместить её в архив можно, только когда сервер ливрей подтвердит, что она не установлена ни на одну машину.</value>
+Переместить её в корзину можно, только когда сервер ливрей подтвердит, что она не установлена ни на одну машину.</value>
   </data>
   <data name="ArchiveAuctionNotAllowedTooltip" xml:space="preserve">
-    <value>Аукционные ливреи можно переместить в архив, только когда сервер ливрей подтвердит, что они не установлены на машины</value>
+    <value>Аукционные ливреи можно переместить в корзину, только когда сервер ливрей подтвердит, что они не установлены на машины</value>
   </data>
   <data name="ArchiveAuctionSkippedFormat" xml:space="preserve">
     <value>Выбранных аукционных ливрей осталось в игре: {0}. Не подтверждено, что они не установлены на машины. Их можно будет переместить, когда сервер ливрей получит текущее сохранение.</value>
@@ -996,7 +990,7 @@
 Обновлено в {1}</value>
   </data>
   <data name="ServerSyncProfileNotFound" xml:space="preserve">
-    <value>В папке сохранений нет файла профиля C_ProfileData.</value>
+    <value>В папке сохранений нет файла профиля ProfileData.</value>
   </data>
   <data name="ServerSyncSaveNotSupported" xml:space="preserve">
     <value>Сервер пока не может прочитать это сохранение. Вероятно, игра обновилась. Поддержка будет добавлена.</value>
@@ -1023,14 +1017,17 @@
     <value>Использовать сервер, чтобы определять ливреи на машинах</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Чтобы узнать, какие ливреи установлены на машины, и имя вашего аккаунта, галерея отправляет на сервер файл сохранения C_ProfileData. Сервер использует файл только для этого и не хранит его.
+    <value>Чтобы узнать, какие ливреи установлены на машины, и имя вашего аккаунта, галерея отправляет на сервер файл сохранения ProfileData. Сервер использует файл только для этого и не хранит его.
 
 Данные из файла не сохраняются и не используются ни для чего другого. На сервере надёжно хранятся ключи, которые нужны для расшифровки файла сохранения.
 
 Сервер не связан с официальными серверами Forza Horizon, Xbox и Microsoft.</value>
   </data>
+  <data name="ServerConnectionAllGames" xml:space="preserve">
+    <value>Настройка общая для всех игр в галерее: FH6, FH5, FH4 и FH3.</value>
+  </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Чтобы узнать, какие ливреи установлены на машины, и имя вашего аккаунта, галерея отправляет на сервер файл сохранения C_ProfileData. Сервер использует файл только для этого и не хранит его.
+    <value>Чтобы узнать, какие ливреи установлены на машины, и имя вашего аккаунта, галерея отправляет на сервер файл сохранения ProfileData. Сервер использует файл только для этого и не хранит его.
 
 Данные из файла не сохраняются и не используются ни для чего другого. На сервере надёжно хранятся ключи, которые нужны для расшифровки файла сохранения.
 
@@ -1082,36 +1079,36 @@
 {0}</value>
   </data>
   <data name="ArchiveInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Ливреи, установленные на машины в игре, нельзя перемещать в архив</value>
+    <value>Ливреи, установленные на машины в игре, нельзя перемещать в корзину</value>
   </data>
   <data name="ArchiveInstalledSkippedFormat" xml:space="preserve">
-    <value>Ливреи, установленные на машины в игре, нельзя перемещать в архив. Выбранных ливрей осталось в игре: {0}.</value>
+    <value>Ливреи, установленные на машины в игре, нельзя перемещать в корзину. Выбранных ливрей осталось в игре: {0}.</value>
   </data>
   <data name="ArchiveInstalledUnknownMessage" xml:space="preserve">
-    <value>Неизвестно, какие ливреи установлены на машины, поэтому перемещать эту ливрею в архив небезопасно: она может быть установлена на машину в игре.
+    <value>Неизвестно, какие ливреи установлены на машины, поэтому перемещать эту ливрею в корзину небезопасно: она может быть установлена на машину в игре.
 
-Переместить ливрею в архив?</value>
+Переместить ливрею в корзину?</value>
   </data>
   <data name="ArchiveInstalledUnknownMessageMany" xml:space="preserve">
-    <value>Неизвестно, какие ливреи установлены на машины, поэтому перемещать эти ливреи в архив небезопасно: некоторые из них могут быть установлены на машины в игре.
+    <value>Неизвестно, какие ливреи установлены на машины, поэтому перемещать эти ливреи в корзину небезопасно: некоторые из них могут быть установлены на машины в игре.
 
-Переместить ливреи в архив?</value>
+Переместить ливреи в корзину?</value>
   </data>
   <data name="DontShowAgainCheckBox" xml:space="preserve">
     <value>Больше не показывать</value>
   </data>
   <data name="ArchiveAuctionOrInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Ливреи, установленные на машины в игре, нельзя перемещать в архив. Аукционные ливреи можно переместить, только когда сервер ливрей подтвердит, что они не установлены на машины.</value>
+    <value>Ливреи, установленные на машины в игре, нельзя перемещать в корзину. Аукционные ливреи можно переместить, только когда сервер ливрей подтвердит, что они не установлены на машины.</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessage" xml:space="preserve">
-    <value>Сохранение изменилось после последней синхронизации, и новые данные ещё не дошли до сервера ливрей. Список ливрей на машинах может быть устаревшим, поэтому перемещать эту ливрею в архив небезопасно: она может быть установлена на машину в игре.
+    <value>Сохранение изменилось после последней синхронизации, и новые данные ещё не дошли до сервера ливрей. Список ливрей на машинах может быть устаревшим, поэтому перемещать эту ливрею в корзину небезопасно: она может быть установлена на машину в игре.
 
-Лучше дождаться синхронизации, она идёт автоматически и может занять несколько минут, и повторить попытку. Переместить ливрею в архив сейчас?</value>
+Лучше дождаться синхронизации, она идёт автоматически и может занять несколько минут, и повторить попытку. Переместить ливрею в корзину сейчас?</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>Сохранение изменилось после последней синхронизации, и новые данные ещё не дошли до сервера ливрей. Список ливрей на машинах может быть устаревшим, поэтому перемещать эти ливреи в архив небезопасно: некоторые из них могут быть установлены на машины в игре.
+    <value>Сохранение изменилось после последней синхронизации, и новые данные ещё не дошли до сервера ливрей. Список ливрей на машинах может быть устаревшим, поэтому перемещать эти ливреи в корзину небезопасно: некоторые из них могут быть установлены на машины в игре.
 
-Лучше дождаться синхронизации, она идёт автоматически и может занять несколько минут, и повторить попытку. Переместить ливреи в архив сейчас?</value>
+Лучше дождаться синхронизации, она идёт автоматически и может занять несколько минут, и повторить попытку. Переместить ливреи в корзину сейчас?</value>
   </data>
   <data name="ContextMenuNavigateInGame" xml:space="preserve">
     <value>Найти в игре</value>
@@ -1199,29 +1196,41 @@
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>Автоматически</value>
   </data>
+  <data name="NavigationRowsOne" xml:space="preserve">
+    <value>1 ряд</value>
+  </data>
   <data name="NavigationRowsTwo" xml:space="preserve">
-    <value>2 ряда, стандартное меню</value>
+    <value>2 ряда</value>
   </data>
   <data name="NavigationRowsThree" xml:space="preserve">
-    <value>3 ряда, мод меню</value>
+    <value>3 ряда</value>
   </data>
-  <data name="NavigationRowsDetectedVanilla" xml:space="preserve">
-    <value>Определено: 2 ряда, стандартное меню.</value>
+  <data name="NavigationRowsStandardFormat" xml:space="preserve">
+    <value>{0}, стандартное меню</value>
+  </data>
+  <data name="NavigationRowsDetectedStandardFormat" xml:space="preserve">
+    <value>Определено: {0}, стандартное меню.</value>
   </data>
   <data name="NavigationRowsDetectedModFormat" xml:space="preserve">
-    <value>Определено: {0} ряда, меню изменено модом.</value>
+    <value>Определено: {0}, меню изменено модом.</value>
   </data>
-  <data name="NavigationRowsDetectedNoGameFolder" xml:space="preserve">
-    <value>Папка игры не указана, поэтому считается, что рядов 2. Укажите папку игры, чтобы распознавать моды меню.</value>
+  <data name="NavigationRowsDetectedNoGameFolderFormat" xml:space="preserve">
+    <value>Папка игры не указана, поэтому считается, что меню стандартное ({0}). Укажите папку игры, чтобы распознавать моды меню.</value>
   </data>
   <data name="NavigationRowsDetectedUnknown" xml:space="preserve">
-    <value>Не удалось определить число рядов: файл меню изменён неизвестным образом. Выберите 2 или 3 ряда.</value>
+    <value>Не удалось определить число рядов: меню изменено неизвестным образом. Выберите число рядов вручную.</value>
   </data>
   <data name="NavigationKeyIntervalLabel" xml:space="preserve">
     <value>Пауза между нажатиями клавиш</value>
   </data>
   <data name="NavigationKeyIntervalHint" xml:space="preserve">
     <value>Увеличьте, если курсор не доходит до ливреи: слишком частые нажатия игра пропускает.</value>
+  </data>
+  <data name="NavigationMenuOpenDelayLabel" xml:space="preserve">
+    <value>Ожидание после открытия «Моих дизайнов»</value>
+  </data>
+  <data name="NavigationMenuOpenDelayHint" xml:space="preserve">
+    <value>Перед поиском галерея закрывает «Мои дизайны» и открывает снова. Увеличьте ожидание, если при большом числе дизайнов игра ещё открывает меню, когда курсор начинает двигаться. До 10 секунд.</value>
   </data>
   <data name="MillisecondsFormat" xml:space="preserve">
     <value>{0} мс</value>
@@ -1266,7 +1275,7 @@
     <value>Сохраняет ZIP-файл с журналом программы, настройками без путей и ID и ошибками чтения ливрей, чтобы приложить его к сообщению об ошибке. Ничего никуда не отправляется.</value>
   </data>
   <data name="ExportDiagnosticsButton" xml:space="preserve">
-    <value>Экспорт диагностики…</value>
+    <value>Экспорт диагностики</value>
   </data>
   <data name="DiagnosticsSaveDialogTitle" xml:space="preserve">
     <value>Сохранение диагностики</value>
@@ -1379,7 +1388,7 @@
     <value>Данные аккаунтов</value>
   </data>
   <data name="AccountDataHint" xml:space="preserve">
-    <value>У каждого игрового аккаунта свой кэш сканирования и превью. Если забыть аккаунт, это место освободится. Если аккаунт появится снова, его ливреи будут просканированы заново. Архив и резервные копии это не затрагивает.</value>
+    <value>У каждого игрового аккаунта свой кэш сканирования и превью. Если забыть аккаунт, это место освободится. Если аккаунт появится снова, его ливреи будут просканированы заново. Корзину и резервные копии это не затрагивает.</value>
   </data>
   <data name="AccountDataCurrent" xml:space="preserve">
     <value>Текущий аккаунт</value>
@@ -1400,7 +1409,7 @@
     <value>Забыть аккаунт</value>
   </data>
   <data name="AccountDataForgetMessage" xml:space="preserve">
-    <value>Забыть аккаунт {0}? Его кэш сканирования и превью, около {1}, будут удалены. Архив и резервные копии останутся. Если аккаунт появится снова, его ливреи будут просканированы заново.</value>
+    <value>Забыть аккаунт {0}? Его кэш сканирования и превью, около {1}, будут удалены. Корзина и резервные копии останутся. Если аккаунт появится снова, его ливреи будут просканированы заново.</value>
   </data>
   <data name="AccountDataForgetFailedMessage" xml:space="preserve">
     <value>Не удалось удалить данные аккаунта. Подробности в журнале программы.</value>
@@ -1483,8 +1492,8 @@
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>нет языковых файлов StringTables: названия машин берутся из базы машин</value>
   </data>
-  <data name="AboutDescriptionFormat" xml:space="preserve">
-    <value>Галерея ливрей из сохранений {0}.</value>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Галерея ливрей из сохранений игр Forza.</value>
   </data>
   <data name="FolderNotFoundMessageFormat" xml:space="preserve">
     <value>Не удалось автоматически найти папку сохранений {0}.
@@ -1542,7 +1551,7 @@ logs: журнал программы за последние дни. Извес
     <value>рисунок на {0}% похож на «{1}»</value>
   </data>
   <data name="ContextMenuAssignAuthor" xml:space="preserve">
-    <value>Указать автора…</value>
+    <value>Указать автора</value>
   </data>
   <data name="ContextMenuUnassignAuthor" xml:space="preserve">
     <value>Убрать указанного автора</value>
@@ -1743,7 +1752,7 @@ logs: журнал программы за последние дни. Извес
     <value>Удалены</value>
   </data>
   <data name="StatsLegendArchived" xml:space="preserve">
-    <value>В архиве</value>
+    <value>В корзину</value>
   </data>
   <data name="StatsSizeTooltipFormat" xml:space="preserve">
     <value>Ливрей в конце месяца: {0}</value>
@@ -1929,16 +1938,16 @@ logs: журнал программы за последние дни. Извес
     <value>Не используются</value>
   </data>
   <data name="StatsHealthUnusedNote" xml:space="preserve">
-    <value>Не установлены на машины, не в избранном, не под замком, не свои и не аукционные. Это первые кандидаты в архив.</value>
+    <value>Не установлены на машины, не в избранном, не под замком, не свои и не аукционные. Это первые кандидаты в корзину.</value>
   </data>
   <data name="StatsHealthUnused" xml:space="preserve">
     <value>Неиспользуемых ливрей</value>
   </data>
   <data name="StatsHealthArchiveTitle" xml:space="preserve">
-    <value>Архив</value>
+    <value>Корзина</value>
   </data>
   <data name="StatsHealthArchived" xml:space="preserve">
-    <value>В архиве</value>
+    <value>В корзине</value>
   </data>
   <data name="StatsHealthLastArchived" xml:space="preserve">
     <value>Последнее перемещение</value>
@@ -2052,7 +2061,7 @@ logs: журнал программы за последние дни. Извес
     <value>Чьи ливреи вы убираете</value>
   </data>
   <data name="StatsDeparturesCellFormat" xml:space="preserve">
-    <value>{0} + {1} в архив</value>
+    <value>{0} + {1} в корзину</value>
   </data>
   <data name="StatsNoJournalShort" xml:space="preserve">
     <value>В журнале пока нет удалений</value>
@@ -2118,10 +2127,10 @@ logs: журнал программы за последние дни. Извес
     <value>Экспорт</value>
   </data>
   <data name="StatsExportLiveries" xml:space="preserve">
-    <value>Ливреи в CSV…</value>
+    <value>Ливреи в CSV</value>
   </data>
   <data name="StatsExportAuthors" xml:space="preserve">
-    <value>Авторы в CSV…</value>
+    <value>Авторы в CSV</value>
   </data>
   <data name="StatsExportLiveriesFileName" xml:space="preserve">
     <value>ливреи</value>
@@ -2133,7 +2142,7 @@ logs: журнал программы за последние дни. Извес
     <value>Не удалось сохранить файл.</value>
   </data>
   <data name="StatsSaveChart" xml:space="preserve">
-    <value>Сохранить как PNG…</value>
+    <value>Сохранить как PNG</value>
   </data>
   <data name="StatsAuthorsTopTooltipFormat" xml:space="preserve">
     <value>{1} из {2} ливрей с известным автором сделаны {0} авторами, чьих ливрей у вас больше всего</value>
@@ -2145,22 +2154,10 @@ logs: журнал программы за последние дни. Извес
     <value>Убрать из избранного</value>
   </data>
   <data name="ContextMenuEditTags" xml:space="preserve">
-    <value>Изменить теги…</value>
+    <value>Изменить теги</value>
   </data>
   <data name="TagChipTooltip" xml:space="preserve">
     <value>Щелчок показывает только ливреи с этим тегом, правый щелчок скрывает их. Повторный щелчок отменяет выбор.</value>
-  </data>
-  <data name="TagsDialogManyTitleFormat" xml:space="preserve">
-    <value>Теги выбранных ливрей: {0}</value>
-  </data>
-  <data name="TagsDialogManyHint" xml:space="preserve">
-    <value>Галочка добавляет тег всем выбранным ливреям, пустой квадрат убирает его у всех. Закрашенный квадрат значит, что тег есть только у части ливрей. Он останется как есть.</value>
-  </data>
-  <data name="TagsDialogNewTagsLabel" xml:space="preserve">
-    <value>Новые теги через запятую. Они добавятся всем выбранным ливреям.</value>
-  </data>
-  <data name="TagsDialogPartialTooltipFormat" xml:space="preserve">
-    <value>Есть у {0} из {1} выбранных</value>
   </data>
   <data name="ContextMenuLock" xml:space="preserve">
     <value>Поставить замок</value>
@@ -2169,16 +2166,16 @@ logs: журнал программы за последние дни. Извес
     <value>Снять замок</value>
   </data>
   <data name="LockToggleTooltip" xml:space="preserve">
-    <value>Поставить замок, чтобы ливрею нельзя было переместить в архив</value>
+    <value>Поставить замок, чтобы ливрею нельзя было переместить в корзину</value>
   </data>
   <data name="LockedTooltip" xml:space="preserve">
-    <value>Под замком: ливрею нельзя переместить в архив. Щёлкните, чтобы снять замок.</value>
+    <value>Под замком: ливрею нельзя переместить в корзину. Щёлкните, чтобы снять замок.</value>
   </data>
   <data name="ArchiveLockedNotAllowedTooltip" xml:space="preserve">
-    <value>Ливреи под замком нельзя перемещать в архив. Сначала снимите замок.</value>
+    <value>Ливреи под замком нельзя перемещать в корзину. Сначала снимите замок.</value>
   </data>
   <data name="ArchiveLockedSkippedFormat" xml:space="preserve">
-    <value>Ливреи под замком нельзя перемещать в архив. Выбранных ливрей под замком осталось в игре: {0}.</value>
+    <value>Ливреи под замком нельзя перемещать в корзину. Выбранных ливрей под замком осталось в игре: {0}.</value>
   </data>
   <data name="AuthorLabelOwnFormat" xml:space="preserve">
     <value>{0} (вы)</value>
@@ -2265,16 +2262,16 @@ logs: журнал программы за последние дни. Извес
     <value>Пока курсор в поле ввода, буквы, цифры, {0} и {1} не работают. Enter, 3 и G работают, когда выбрана ровно одна ливрея.</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
-    <value>Щёлкните, чтобы освободить место: лишние копии дубликатов уйдут в архив.</value>
+    <value>Щёлкните, чтобы освободить место: лишние копии дубликатов уйдут в корзину.</value>
   </data>
   <data name="FreeSpaceMenuItem" xml:space="preserve">
-    <value>Освободить место…</value>
+    <value>Освободить место</value>
   </data>
   <data name="FreeSpaceTitle" xml:space="preserve">
     <value>Освободить место</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>От каждого дубликата остаётся одна копия: сначала с тегами или ваша, иначе скачанная первой. Ливреи под замком, на машинах, аукционные и избранные тоже остаются. Снимите отметку, чтобы оставить копию. Всё, что уйдёт, можно вернуть из архива.</value>
+    <value>От каждого дубликата остаётся одна копия: сначала с тегами или ваша, иначе скачанная первой. Ливреи под замком, на машинах, аукционные и избранные тоже остаются. Снимите отметку, чтобы оставить копию. Всё, что уйдёт, можно вернуть из корзины.</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>Скачана: {0}</value>
@@ -2304,31 +2301,31 @@ logs: журнал программы за последние дни. Извес
     <value>Сейчас в сохранении: {0} из {1}.</value>
   </data>
   <data name="FreeSpaceAfterFormat" xml:space="preserve">
-    <value>В архив: {0}, свободно станет: {1}.</value>
+    <value>В корзину: {0}, свободно станет: {1}.</value>
   </data>
   <data name="FreeSpaceAfterNoLimitFormat" xml:space="preserve">
-    <value>В архив: {0}.</value>
+    <value>В корзину: {0}.</value>
   </data>
   <data name="FreeSpaceApplyFormat" xml:space="preserve">
-    <value>Переместить в архив ({0})</value>
+    <value>Переместить в корзину ({0})</value>
   </data>
   <data name="FewFreeSlotsMessageFormat" xml:space="preserve">
-    <value>В сохранении осталось свободных мест: {0} из {1}. На пределе игра не даёт ни скачать, ни создать ливрею. Освободить место сейчас, переместив лишние копии дубликатов в архив?</value>
+    <value>В сохранении осталось свободных мест: {0} из {1}. На пределе игра не даёт ни скачать, ни создать ливрею. Освободить место сейчас, переместив лишние копии дубликатов в корзину?</value>
   </data>
   <data name="FewFreeSlotsFullMessageFormat" xml:space="preserve">
-    <value>Сохранение заполнено: заняты все {0} мест, и игра не даёт ни скачать, ни создать ливрею. Освободить место сейчас, переместив лишние копии дубликатов в архив?</value>
+    <value>Сохранение заполнено: заняты все {0} мест, и игра не даёт ни скачать, ни создать ливрею. Освободить место сейчас, переместив лишние копии дубликатов в корзину?</value>
   </data>
   <data name="AutoBackupFailedTitle" xml:space="preserve">
     <value>Резервная копия</value>
   </data>
   <data name="AutoBackupFailedMessage" xml:space="preserve">
-    <value>Не удалось создать резервную копию перед перемещением в архив. Переместить ливреи в архив без неё?</value>
+    <value>Не удалось создать резервную копию перед перемещением в корзину. Переместить ливреи в корзину без неё?</value>
   </data>
   <data name="AutoBackupFailedContinueButton" xml:space="preserve">
     <value>Переместить без копии</value>
   </data>
   <data name="LoadingBackupBeforeArchive" xml:space="preserve">
-    <value>Создаётся резервная копия перед перемещением в архив…</value>
+    <value>Создаётся резервная копия перед перемещением в корзину…</value>
   </data>
   <data name="StatusAutoBackupMade" xml:space="preserve">
     <value>Создана автоматическая резервная копия</value>
@@ -2337,7 +2334,7 @@ logs: журнал программы за последние дни. Извес
     <value>Автоматические резервные копии</value>
   </data>
   <data name="AutoBackupBeforeArchiveLabel" xml:space="preserve">
-    <value>Перед перемещением ливрей в архив</value>
+    <value>Перед перемещением ливрей в корзину</value>
   </data>
   <data name="AutoBackupOnChangeLabel" xml:space="preserve">
     <value>Когда ливреи в сохранении меняются, не чаще раза в день</value>
@@ -2358,7 +2355,7 @@ logs: журнал программы за последние дни. Извес
     <value>Автоматическая</value>
   </data>
   <data name="BackupKindBeforeArchive" xml:space="preserve">
-    <value>Создана перед перемещением ливрей в архив</value>
+    <value>Создана перед перемещением ливрей в корзину</value>
   </data>
   <data name="BackupKindSaveChanged" xml:space="preserve">
     <value>Создана после изменения ливрей в сохранении</value>
@@ -2407,12 +2404,6 @@ logs: журнал программы за последние дни. Извес
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
     <value>Бета-версии выходят раньше выпусков и могут содержать ошибки. Если выключить это на бета-версии, галерея предложит вернуться на последнюю стабильную версию.</value>
-  </data>
-  <data name="TagsDialogOneHint" xml:space="preserve">
-    <value>Галочка ставит тег ливрее, пустой квадрат снимает его.</value>
-  </data>
-  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
-    <value>Новые теги через запятую.</value>
   </data>
   <data name="KeyClick" xml:space="preserve">
     <value>Клик</value>
@@ -2495,9 +2486,6 @@ logs: журнал программы за последние дни. Извес
   <data name="LiveryDetailsUnknown" xml:space="preserve">
     <value>неизвестно</value>
   </data>
-  <data name="LiveryDetailsAddTag" xml:space="preserve">
-    <value>+ тег</value>
-  </data>
   <data name="LiveryDetailsNoteLabel" xml:space="preserve">
     <value>Заметка</value>
   </data>
@@ -2532,7 +2520,7 @@ logs: журнал программы за последние дни. Извес
     <value>Появилась в сохранении</value>
   </data>
   <data name="HistoryRestoredFromArchive" xml:space="preserve">
-    <value>Возвращена из архива</value>
+    <value>Возвращена из корзины</value>
   </data>
   <data name="HistoryReturned" xml:space="preserve">
     <value>Вернулась: из резервной копии или скачана снова</value>
@@ -2541,7 +2529,7 @@ logs: журнал программы за последние дни. Извес
     <value>Пропала из сохранения</value>
   </data>
   <data name="HistoryArchived" xml:space="preserve">
-    <value>Перенесена в архив</value>
+    <value>Перенесена в корзину</value>
   </data>
   <data name="HistoryChanged" xml:space="preserve">
     <value>Файл изменён</value>
@@ -2571,7 +2559,7 @@ logs: журнал программы за последние дни. Извес
     <value>Перенести в этот аккаунт</value>
   </data>
   <data name="ArchiveUnassignedTooltip" xml:space="preserve">
-    <value>Прежняя версия заархивировала их, не записав аккаунт, а аккаунтов было несколько. Перенесите их сюда, если они с этого аккаунта.</value>
+    <value>Прежняя версия перенесла их в корзину, не записав аккаунт, а аккаунтов было несколько. Перенесите их сюда, если они с этого аккаунта.</value>
   </data>
   <data name="BackupsUnassignedTooltip" xml:space="preserve">
     <value>Прежняя версия сделала эти копии, не записав аккаунт, а аккаунтов было несколько. Перенесите их сюда, если они с этого аккаунта.</value>
@@ -2586,7 +2574,7 @@ logs: журнал программы за последние дни. Извес
     <value>Сохранение не найдено</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
-    <value>Указать папку…</value>
+    <value>Указать папку</value>
   </data>
   <data name="SearchSaveAgainButton" xml:space="preserve">
     <value>Искать снова</value>
@@ -2638,16 +2626,16 @@ logs: журнал программы за последние дни. Извес
     <value>Аккаунт</value>
   </data>
   <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
-    <value>Архив</value>
+    <value>Корзина</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>Спрашивать перед архивацией, если неизвестно, какие ливреи стоят на машинах</value>
+    <value>Спрашивать перед перемещением в корзину, если неизвестно, какие ливреи стоят на машинах</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>Спрашивать перед архивацией, если список ливрей на машинах мог устареть</value>
+    <value>Спрашивать перед перемещением в корзину, если список ливрей на машинах мог устареть</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>Ливрею, которая стоит на машине в игре, переносить в архив небезопасно. «Больше не показывать» в этих вопросах выключает их, а здесь их можно включить снова.</value>
+    <value>Ливрею, которая стоит на машине в игре, переносить в корзину небезопасно. «Больше не показывать» в этих вопросах выключает их, а здесь их можно включить снова.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Home</value>
@@ -2693,7 +2681,7 @@ logs: журнал программы за последние дни. Извес
 или Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>Скриншоты хранятся только на этом ПК. Вместе с ливреей переходят в архив и возвращаются из него.</value>
+    <value>Скриншоты хранятся только на этом ПК. Вместе с ливреей переходят в корзину и возвращаются из неё.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>Скриншоты ливреи</value>
@@ -2756,7 +2744,7 @@ logs: журнал программы за последние дни. Извес
     <value>Занято: {0} · скриншотов: {1} · ливрей: {2}</value>
   </data>
   <data name="ScreenshotsConvertButton" xml:space="preserve">
-    <value>Сжать добавленные…</value>
+    <value>Сжать добавленные</value>
   </data>
   <data name="ScreenshotsOpenFolder" xml:space="preserve">
     <value>Открыть папку</value>
@@ -2852,7 +2840,7 @@ logs: журнал программы за последние дни. Извес
     <value>Добавить в альбом</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
-    <value>Новый альбом…</value>
+    <value>Новый альбом</value>
   </data>
   <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
     <value>Убрать из альбома «{0}»</value>
@@ -2879,7 +2867,7 @@ logs: журнал программы за последние дни. Извес
     <value>Переименовать</value>
   </data>
   <data name="CollectionDelete" xml:space="preserve">
-    <value>Удалить…</value>
+    <value>Удалить</value>
   </data>
   <data name="CollectionMoveUp" xml:space="preserve">
     <value>Переместить выше</value>
@@ -2942,7 +2930,7 @@ logs: журнал программы за последние дни. Извес
     <value>Ins</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>Из хранилища в архив</value>
+    <value>Из хранилища в корзину</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Вернуть в игру</value>
@@ -2975,16 +2963,16 @@ logs: журнал программы за последние дни. Извес
     <value>В хранилище: {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0}: в игру · {1}: в архив</value>
+    <value>{0}: в игру · {1}: в корзину</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>Возвращено в игру: {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>Из хранилища в архив: {0}</value>
+    <value>Из хранилища в корзину: {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Остались в хранилище: {0}. В архиве уже есть ливрея с тем же ключом.</value>
+    <value>Остались в хранилище: {0}. В корзине уже есть ливрея с тем же ключом.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>Возвращаем ливреи в игру…</value>
@@ -3092,7 +3080,7 @@ logs: журнал программы за последние дни. Извес
     <value>Удалить пустую папку «{0}»?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>Отправить её ливреи в архив</value>
+    <value>Отправить её ливреи в корзину</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>Вернуть папку в игру</value>
@@ -3101,7 +3089,7 @@ logs: журнал программы за последние дни. Извес
     <value>Переложить в папку</value>
   </data>
   <data name="ContextMenuNewFolder" xml:space="preserve">
-    <value>Новая папка…</value>
+    <value>Новая папка</value>
   </data>
   <data name="StatusMovedToFolderFormat" xml:space="preserve">
     <value>Переложено в «{0}»: {1}</value>
@@ -3230,7 +3218,7 @@ logs: журнал программы за последние дни. Извес
     <value>здесь хранилище другого аккаунта ({0}).</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>Хранилище не может быть внутри сохранения, архива, папки программы или хранилища другого аккаунта.</value>
+    <value>Хранилище не может быть внутри сохранения, корзины, папки программы или хранилища другого аккаунта.</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>Эта папка не подходит:</value>
@@ -3339,7 +3327,7 @@ logs: журнал программы за последние дни. Извес
     <value>Папка недоступна</value>
   </data>
   <data name="SettingsStorageChangeButton" xml:space="preserve">
-    <value>Изменить папку…</value>
+    <value>Изменить папку</value>
   </data>
   <data name="SettingsStorageOpenButton" xml:space="preserve">
     <value>Открыть папку хранилища</value>
@@ -3447,7 +3435,7 @@ logs: журнал программы за последние дни. Извес
     <value>Проверить снова</value>
   </data>
   <data name="StorageChooseOtherButton" xml:space="preserve">
-    <value>Выбрать другую папку…</value>
+    <value>Выбрать другую папку</value>
   </data>
   <data name="StorageUnavailableReasonFormat" xml:space="preserve">
     <value>Папка хранилища недоступна: {0}</value>
@@ -3467,7 +3455,7 @@ logs: журнал программы за последние дни. Извес
 {1}</value>
   </data>
   <data name="ArchiveFailedFormat" xml:space="preserve">
-    <value>Эти ливреи не удалось переместить в архив ({0}). Возможно, их файлы заняты игрой или на диске нет места. Подробности в журнале программы:
+    <value>Эти ливреи не удалось переместить в корзину ({0}). Возможно, их файлы заняты игрой или на диске нет места. Подробности в журнале программы:
 {1}</value>
   </data>
   <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
@@ -3582,9 +3570,6 @@ logs: журнал программы за последние дни. Извес
   <data name="ResetFiltersTooltip" xml:space="preserve">
     <value>Сбросить фильтры: очищает поиск и фильтры. Порядок остаётся</value>
   </data>
-  <data name="UndoLabel" xml:space="preserve">
-    <value>Отменить</value>
-  </data>
   <data name="UndoTooltipFormat" xml:space="preserve">
     <value>Отменить: {0}</value>
   </data>
@@ -3613,7 +3598,7 @@ logs: журнал программы за последние дни. Извес
     <value>Сохранённые наборы фильтров</value>
   </data>
   <data name="FilterPresetSave" xml:space="preserve">
-    <value>Сохранить текущие фильтры…</value>
+    <value>Сохранить текущие фильтры</value>
   </data>
   <data name="FilterPresetDelete" xml:space="preserve">
     <value>Удалить набор</value>
@@ -3641,5 +3626,236 @@ logs: журнал программы за последние дни. Извес
   </data>
   <data name="TagsGripTooltip" xml:space="preserve">
     <value>Потяните вверх или вниз, чтобы показать больше или меньше рядов тегов. Двойной щелчок: все теги или один ряд.</value>
+  </data>
+  <data name="SaveReadOnlyLabel" xml:space="preserve">
+    <value>Только просмотр</value>
+  </data>
+  <data name="SaveReadOnlyNoticeFormat" xml:space="preserve">
+    <value>В этой версии ливреи {0} только показываются: перемещение в корзину и хранилище, возврат в игру и восстановление из копии пока недоступны.</value>
+  </data>
+  <data name="RenderBorrowedFormat" xml:space="preserve">
+    <value>Нарисовано моделями и красками {1}: файлы {0} не читаются. Машины, логотипы и краски могут отличаться от {0}.</value>
+  </data>
+  <data name="ServerStatusGameNotSupported" xml:space="preserve">
+    <value>Сервер: эта игра пока не поддерживается</value>
+  </data>
+  <data name="ServerStatusGameNotSupportedHint" xml:space="preserve">
+    <value>Сервер пока не читает сохранения этой игры или этой её версии (Steam или Microsoft Store). Какие ливреи стоят на машинах, не показывается. Галерея проверяет снова каждые 30 минут.</value>
+  </data>
+  <data name="DisplayFilterLabel" xml:space="preserve">
+    <value>Показывать</value>
+  </data>
+  <data name="FilterPresetsLabel" xml:space="preserve">
+    <value>Наборы</value>
+  </data>
+  <data name="MenuRefresh" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
+  <data name="CardSizeSmall" xml:space="preserve">
+    <value>Мелкие карточки</value>
+  </data>
+  <data name="CardSizeNormal" xml:space="preserve">
+    <value>Обычные карточки</value>
+  </data>
+  <data name="CardSizeLarge" xml:space="preserve">
+    <value>Крупные карточки</value>
+  </data>
+  <data name="ShortcutsGroupView" xml:space="preserve">
+    <value>Вид</value>
+  </data>
+  <data name="ShortcutCardsLarger" xml:space="preserve">
+    <value>Карточки (скриншоты) крупнее</value>
+  </data>
+  <data name="ShortcutCardsSmaller" xml:space="preserve">
+    <value>Карточки (скриншоты) мельче</value>
+  </data>
+  <data name="ShortcutCardsNormal" xml:space="preserve">
+    <value>Обычный размер карточек (скриншотов)</value>
+  </data>
+  <data name="ShortcutCardsWheel" xml:space="preserve">
+    <value>Размер карточек</value>
+  </data>
+  <data name="KeyWheel" xml:space="preserve">
+    <value>Колесо</value>
+  </data>
+  <data name="UserDataProblemTitle" xml:space="preserve">
+    <value>Теги, заметки и избранное</value>
+  </data>
+  <data name="UserDataUnreadableMessageFormat" xml:space="preserve">
+    <value>Эти файлы не открылись при запуске. Возможно, их держит другая программа (синхронизация, например OneDrive, или антивирус):
+{0}
+
+Галерея оставила их как есть. Теги, заметки, избранное и замки, изменённые сейчас, не сохранятся. Закройте программу, которая их держит, и запустите галерею снова.</value>
+  </data>
+  <data name="UserDataSetAsideMessageFormat" xml:space="preserve">
+    <value>Эти файлы повреждены и не прочитались:
+{0}
+
+Копия каждого сохранена рядом, с датой в имени. Галерея начала их заново, с пустого.</value>
+  </data>
+  <data name="GalleryAccessibleName" xml:space="preserve">
+    <value>Ливреи</value>
+  </data>
+  <data name="CardAccessibleSelected" xml:space="preserve">
+    <value>выбрана</value>
+  </data>
+  <data name="CardAccessibleFavorite" xml:space="preserve">
+    <value>в избранном</value>
+  </data>
+  <data name="CardAccessibleLocked" xml:space="preserve">
+    <value>под замком</value>
+  </data>
+  <data name="NoticesTitle" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="NoticesNone" xml:space="preserve">
+    <value>Пока ничего нет</value>
+  </data>
+  <data name="NoticeCounterFormat" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="NoticeNextTooltip" xml:space="preserve">
+    <value>Следующее уведомление</value>
+  </data>
+  <data name="NoticeCloseTooltip" xml:space="preserve">
+    <value>Закрыть (останется под колокольчиком)</value>
+  </data>
+  <data name="NoticeShowFile" xml:space="preserve">
+    <value>Показать файл</value>
+  </data>
+  <data name="NoticeChooseFolder" xml:space="preserve">
+    <value>Выбрать папку</value>
+  </data>
+  <data name="ToastUndo" xml:space="preserve">
+    <value>Отменить</value>
+  </data>
+  <data name="ToastUndoDetail" xml:space="preserve">
+    <value>Ctrl+Z тоже отменяет</value>
+  </data>
+  <data name="ToastClose" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="PropertiesTitle" xml:space="preserve">
+    <value>Свойства</value>
+  </data>
+  <data name="PropertiesToggleTooltip" xml:space="preserve">
+    <value>Панель выбранных ливрей</value>
+  </data>
+  <data name="PropertiesEmpty" xml:space="preserve">
+    <value>Выберите ливрею, чтобы увидеть её здесь. Если выбрано несколько, здесь будет то, что у них общее.</value>
+  </data>
+  <data name="PropertiesAuthorsFormat" xml:space="preserve">
+    <value>авторов: {0}</value>
+  </data>
+  <data name="PropertiesFavorite" xml:space="preserve">
+    <value>Избранное</value>
+  </data>
+  <data name="PropertiesLock" xml:space="preserve">
+    <value>Замок</value>
+  </data>
+  <data name="PropertiesTags" xml:space="preserve">
+    <value>Теги</value>
+  </data>
+  <data name="PropertiesTagsPartHint" xml:space="preserve">
+    <value>пунктирные есть у части, щелчок добавит всем</value>
+  </data>
+  <data name="PropertiesAddTagPlaceholder" xml:space="preserve">
+    <value>Добавить тег, Enter</value>
+  </data>
+  <data name="PropertiesCreateTagFormat" xml:space="preserve">
+    <value>Новый тег «{0}»</value>
+  </data>
+  <data name="PropertiesRemoveTagFormat" xml:space="preserve">
+    <value>Убрать тег {0}</value>
+  </data>
+  <data name="PropertiesNote" xml:space="preserve">
+    <value>Заметка</value>
+  </data>
+  <data name="PropertiesNoteSavesItself" xml:space="preserve">
+    <value>сохраняется сама</value>
+  </data>
+  <data name="PropertiesNotesOwnFormat" xml:space="preserve">
+    <value>Своя заметка у {0} из {1}.</value>
+  </data>
+  <data name="PropertiesNoteForAllPlaceholder" xml:space="preserve">
+    <value>Заметка для всех выбранных</value>
+  </data>
+  <data name="PropertiesNoteAppend" xml:space="preserve">
+    <value>Дописать всем</value>
+  </data>
+  <data name="PropertiesNoteReplace" xml:space="preserve">
+    <value>Заменить у всех</value>
+  </data>
+  <data name="PropertiesFindInGame" xml:space="preserve">
+    <value>Найти в игре</value>
+  </data>
+  <data name="PropertiesToStorage" xml:space="preserve">
+    <value>В хранилище</value>
+  </data>
+  <data name="PropertiesToGame" xml:space="preserve">
+    <value>В игру</value>
+  </data>
+  <data name="PropertiesDetails" xml:space="preserve">
+    <value>Подробнее</value>
+  </data>
+  <data name="PropertiesClose" xml:space="preserve">
+    <value>Скрыть панель</value>
+  </data>
+  <data name="ShortcutProperties" xml:space="preserve">
+    <value>Панель выбранных ливрей</value>
+  </data>
+  <data name="SelectionBarTags" xml:space="preserve">
+    <value>Теги</value>
+  </data>
+  <data name="SelectionBarMore" xml:space="preserve">
+    <value>Ещё действия</value>
+  </data>
+  <data name="SelectionBarClear" xml:space="preserve">
+    <value>Снять выбор</value>
+  </data>
+  <data name="EmptyNoFilterResults" xml:space="preserve">
+    <value>Под фильтры не подошла ни одна ливрея</value>
+  </data>
+  <data name="EmptyNoResultsWithFilters" xml:space="preserve">
+    <value>По запросу «{0}» с включёнными фильтрами ничего не найдено</value>
+  </data>
+  <data name="EmptyClearSearch" xml:space="preserve">
+    <value>Очистить поиск</value>
+  </data>
+  <data name="EmptyResetFilters" xml:space="preserve">
+    <value>Сбросить фильтры</value>
+  </data>
+  <data name="EmptyShowGame" xml:space="preserve">
+    <value>Показать ливреи игры</value>
+  </data>
+  <data name="EmptyLookAgain" xml:space="preserve">
+    <value>Проверить снова</value>
+  </data>
+  <data name="ScreenshotsShowAllAlbums" xml:space="preserve">
+    <value>Все скриншоты</value>
+  </data>
+  <data name="NoticeProblemTitle" xml:space="preserve">
+    <value>Не получилось</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptioned" xml:space="preserve">
+    <value>С подписями</value>
+  </data>
+  <data name="ScreenshotsLayoutTiles" xml:space="preserve">
+    <value>Плиткой</value>
+  </data>
+  <data name="ScreenshotsSizeSmall" xml:space="preserve">
+    <value>Мелкие скриншоты</value>
+  </data>
+  <data name="ScreenshotsSizeNormal" xml:space="preserve">
+    <value>Обычные скриншоты</value>
+  </data>
+  <data name="ScreenshotsSizeLarge" xml:space="preserve">
+    <value>Крупные скриншоты</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptionedTooltip" xml:space="preserve">
+    <value>Под каждым скриншотом подписаны его ливрея или время</value>
+  </data>
+  <data name="ScreenshotsLayoutTilesTooltip" xml:space="preserve">
+    <value>Только картинки, плотно друг к другу. Подпись видна в подсказке</value>
   </data>
 </root>

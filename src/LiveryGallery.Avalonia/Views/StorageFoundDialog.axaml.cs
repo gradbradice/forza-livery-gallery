@@ -24,7 +24,7 @@ internal partial class StorageFoundDialog : Window
     {
         InitializeComponent();
         Title = Strings.StorageFoundDialogTitle;
-        TitleBarText.Text = Strings.StorageFoundDialogTitle;
+        Bar.Title = Strings.StorageFoundDialogTitle;
         DoneButton.Content = Strings.StorageFoundDone;
         Build(details);
     }
@@ -142,18 +142,9 @@ internal partial class StorageFoundDialog : Window
         return border;
     }
 
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
-
-    private void CloseButton_Click(object? sender, RoutedEventArgs e) => Close();
-
-    protected override void OnKeyDown(KeyEventArgs e)
-    {
-        base.OnKeyDown(e);
-        if (e.Handled || e.Key != Key.Escape) return;
-        e.Handled = true;
-        Close();
-    }
-
     /// <summary>Shows the details over <paramref name="owner"/></summary>
     public static Task ShowAsync(Window owner, StorageFoundDetails details) => new StorageFoundDialog(details).ShowDialog(owner);
+
+    // The "Close" button at the bottom (the cross is the title bar's)
+    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 }

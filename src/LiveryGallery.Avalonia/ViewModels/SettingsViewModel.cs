@@ -37,6 +37,12 @@ internal sealed class UpdateInstallOption(UpdateInstallMode mode, string display
     public UpdateInstallMode Mode { get; } = mode;
 }
 
+/// <summary>A step of the interface's scale, in percent</summary>
+internal sealed class UiScaleOption(int percent, string displayName) : LocalizedOption(displayName)
+{
+    public int Percent { get; } = percent;
+}
+
 /// <summary>Where a card's badges stand: on its picture (false) or at its bottom (true)</summary>
 internal sealed class BadgesPlaceOption(bool atBottom, string displayName) : LocalizedOption(displayName)
 {
@@ -68,10 +74,12 @@ internal sealed partial class SettingsViewModel : ObservableObject
     private MyDesignsRowsMode _savedRowsMode;
     private int _savedServerLiveries;
     private int _savedKeyInterval;
+    private int _savedMenuOpenDelay;
     private bool _savedShowChangesSinceLastLaunch;
     private bool _savedWheelClickScroll;
     private int _savedWheelScrollSpeed;
     private bool _savedBadgesAtBottom;
+    private int _savedUiScalePercent;
     private bool _savedWarnFewFreeSlots;
     private bool _savedWarnArchiveWithoutInstalledData;
     private bool _savedWarnArchiveWithOutdatedInstalledData;
@@ -88,10 +96,12 @@ internal sealed partial class SettingsViewModel : ObservableObject
     public bool SavePathChanged { get; private set; }
 
     /// <param name="carTextLanguages">The game languages whose texts were read from the game; empty before the first read</param>
+    /// <param name="drawnWithNote">"Drawn with FH4 car models…" when another game's files draw the liveries (FH3 to FH5); asked each check</param>
     public SettingsViewModel(
         AppSettingsData settings, string? resolvedSavePath, IGameFolderCheck gameFolderCheck, GameProfile profile,
-        IReadOnlyList<GameLanguage>? carTextLanguages = null)
+        IReadOnlyList<GameLanguage>? carTextLanguages = null, Func<string?>? drawnWithNote = null)
     {
+        _drawnWithNote = drawnWithNote;
         _settings = settings;
         _profile = profile;
         _gameFolderChecker = gameFolderCheck;
@@ -111,10 +121,12 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _savedRowsMode = settings.MyDesignsRowsMode;
         _savedServerLiveries = Math.Clamp(settings.ServerLiveries, 0, MyDesignsGrid.MaxServerLiveries);
         _savedKeyInterval = NavigationTiming.ClampKeyInterval(settings.NavigationKeyIntervalMs);
+        _savedMenuOpenDelay = NavigationTiming.ClampMenuOpenDelay(settings.NavigationMenuOpenDelayMs);
         _savedShowChangesSinceLastLaunch = settings.ShowChangesSinceLastLaunch;
         _savedWheelClickScroll = settings.WheelClickScroll;
         _savedWheelScrollSpeed = ClampWheelSpeed(settings.WheelScrollSpeedPercent);
         _savedBadgesAtBottom = settings.BadgesAtBottom;
+        _savedUiScalePercent = (int)Math.Round(UiScale.FromPercent(settings.UiScalePercent) * 100);
         _savedWarnFewFreeSlots = settings.WarnFewFreeSlots;
         _savedWarnArchiveWithoutInstalledData = settings.WarnArchiveWithoutInstalledData;
         _savedWarnArchiveWithOutdatedInstalledData = settings.WarnArchiveWithOutdatedInstalledData;
@@ -142,10 +154,12 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _rowsMode = _savedRowsMode;
         _serverLiveries = _savedServerLiveries;
         _keyInterval = _savedKeyInterval;
+        _menuOpenDelay = _savedMenuOpenDelay;
         _showChangesSinceLastLaunch = _savedShowChangesSinceLastLaunch;
         _wheelClickScroll = _savedWheelClickScroll;
         _wheelScrollSpeed = _savedWheelScrollSpeed;
         _badgesAtBottom = _savedBadgesAtBottom;
+        _uiScalePercent = _savedUiScalePercent;
         _warnFewFreeSlots = _savedWarnFewFreeSlots;
         _warnArchiveWithoutInstalledData = _savedWarnArchiveWithoutInstalledData;
         _warnArchiveWithOutdatedInstalledData = _savedWarnArchiveWithOutdatedInstalledData;
@@ -163,12 +177,13 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _carTextLanguages = carTextLanguages ?? [];
         HasGameCarTexts = _carTextLanguages.Count > 0;
         CarTextLanguageOptions = BuildCarTextLanguageOptions();
-        // The rows the game's menu can have (FH6: two, or three with a menu mod)
+        // The rows the game's menu can have (FH6: two, or three with a menu mod; FH3–FH5: one to three), the game's own
+        // marked as the standard menu
         var rowChoices = profile.MyDesigns?.RowChoices ?? [];
         RowsModeOptions =
         [
             new(MyDesignsRowsMode.Auto, RowsModeName(MyDesignsRowsMode.Auto)),
-            .. new[] { MyDesignsRowsMode.Two, MyDesignsRowsMode.Three }
+            .. new[] { MyDesignsRowsMode.One, MyDesignsRowsMode.Two, MyDesignsRowsMode.Three }
                 .Where(mode => rowChoices.Contains((int)mode))
                 .Select(mode => new RowsModeOption(mode, RowsModeName(mode))),
         ];
@@ -201,11 +216,21 @@ internal sealed partial class SettingsViewModel : ObservableObject
         ];
     }
 
-    private static string RowsModeName(MyDesignsRowsMode mode) => mode switch
+    /// <summary>A choice of rows: "Automatic", or "2 rows" with ", standard menu" for the rows of the game's own menu</summary>
+    private string RowsModeName(MyDesignsRowsMode mode) => mode switch
     {
-        MyDesignsRowsMode.Two => Strings.NavigationRowsTwo,
-        MyDesignsRowsMode.Three => Strings.NavigationRowsThree,
-        _ => Strings.NavigationRowsAuto,
+        MyDesignsRowsMode.Auto => Strings.NavigationRowsAuto,
+        _ when (int)mode == _profile.MyDesigns?.DefaultRows => string.Format(Strings.NavigationRowsStandardFormat, RowsName((int)mode)),
+        _ => RowsName((int)mode),
+    };
+
+    /// <summary>"1 row", "2 rows", "3 rows" (each language has its own word for each)</summary>
+    internal static string RowsName(int rows) => rows switch
+    {
+        1 => Strings.NavigationRowsOne,
+        2 => Strings.NavigationRowsTwo,
+        3 => Strings.NavigationRowsThree,
+        _ => rows.ToString(CultureInfo.CurrentCulture),
     };
 
     /// <summary>
@@ -219,6 +244,7 @@ internal sealed partial class SettingsViewModel : ObservableObject
         foreach (var option in RowsModeOptions) option.DisplayName = RowsModeName(option.Mode);
         foreach (var option in UpdateInstallOptions) option.DisplayName = UpdateInstallName(option.Mode);
         foreach (var option in BadgesPlaceOptions) option.DisplayName = BadgesPlaceName(option.AtBottom);
+        foreach (var option in UiScaleOptions) option.DisplayName = UiScale.PercentText(option.Percent, Strings.Culture);
 
         if (_shownGameFolderCheck is { } shown) ApplyGameFolderCheck(shown); // also the rows status
         else
@@ -228,6 +254,7 @@ internal sealed partial class SettingsViewModel : ObservableObject
         }
 
         OnPropertyChanged(nameof(KeyIntervalText));
+        OnPropertyChanged(nameof(MenuOpenDelayText));
         OnPropertyChanged(nameof(AutoBackupPeriodText));
         OnPropertyChanged(nameof(AutoBackupKeepText));
         SetStoredAccounts([.. StoredAccounts.Select(r => r.Account)]); // their status lines, without reading the disk again
@@ -364,15 +391,21 @@ internal sealed partial class SettingsViewModel : ObservableObject
         ApplyGameFolderCheck(check);
     }
 
+    // Another game's files draw the liveries when the game's own cannot (FH3 to FH5): said beside the folder's problem
+    private readonly Func<string?>? _drawnWithNote;
+
     private void ApplyGameFolderCheck(GameFolderReport check)
     {
         _shownGameFolderCheck = check;
         UpdateRowsStatus();
         if (!check.IsValid)
         {
-            GameFolderStatusText = string.Format(Strings.GameFolderInvalidFormat,
+            string problem = string.Format(Strings.GameFolderInvalidFormat,
                 GameFolderText.FirstError(check) ?? Strings.GameFolderProblemUnknown);
-            GameFolderStatusKind = GameFolderStatusKind.Error;
+            // Drawn with another game's files (FH4 encrypted with FH5's…): the 3D view works, with a difference the note names
+            string? borrowed = _drawnWithNote?.Invoke();
+            GameFolderStatusText = borrowed is null ? problem : problem + Environment.NewLine + borrowed;
+            GameFolderStatusKind = borrowed is null ? GameFolderStatusKind.Error : GameFolderStatusKind.Warning;
             return;
         }
 
@@ -426,6 +459,27 @@ internal sealed partial class SettingsViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsDirty), nameof(SelectedBadgesPlaceOption))]
     private bool _badgesAtBottom;
+
+    /// <summary>The interface's scale in percent (ForzaToolkit's UiScale): applied to every window when saved</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsDirty), nameof(SelectedUiScaleOption))]
+    private int _uiScalePercent;
+
+    /// <summary>The toolkit's steps, and the value kept if it is none of them (edited by hand)</summary>
+    public IReadOnlyList<UiScaleOption> UiScaleOptions => _uiScaleOptions ??=
+        [.. UiScale.Percents.Append(_savedUiScalePercent).Distinct().Order()
+            .Select(p => new UiScaleOption(p, UiScale.PercentText(p, Strings.Culture)))];
+
+    private IReadOnlyList<UiScaleOption>? _uiScaleOptions;
+
+    public UiScaleOption? SelectedUiScaleOption
+    {
+        get => UiScaleOptions.FirstOrDefault(o => o.Percent == UiScalePercent);
+        set
+        {
+            if (value is not null) UiScalePercent = value.Percent;
+        }
+    }
 
     /// <summary>On the picture (first, the default), at the bottom of the card</summary>
     public IReadOnlyList<BadgesPlaceOption> BadgesPlaceOptions { get; } =
@@ -682,9 +736,9 @@ internal sealed partial class SettingsViewModel : ObservableObject
         var detection = grid.DetectRows(gameDirectory);
         RowsStatusText = detection.Source switch
         {
-            GridRowsSource.Game => Strings.NavigationRowsDetectedVanilla,
-            GridRowsSource.Mod => string.Format(Strings.NavigationRowsDetectedModFormat, detection.Rows),
-            GridRowsSource.GameFolderUnknown => Strings.NavigationRowsDetectedNoGameFolder,
+            GridRowsSource.Game when detection.Rows is { } rows => string.Format(Strings.NavigationRowsDetectedStandardFormat, RowsName(rows)),
+            GridRowsSource.Mod when detection.Rows is { } rows => string.Format(Strings.NavigationRowsDetectedModFormat, RowsName(rows)),
+            GridRowsSource.GameFolderUnknown => string.Format(Strings.NavigationRowsDetectedNoGameFolderFormat, RowsName(grid.DefaultRows)),
             _ => Strings.NavigationRowsDetectedUnknown,
         };
     }
@@ -710,6 +764,30 @@ internal sealed partial class SettingsViewModel : ObservableObject
 
     public string KeyIntervalText => string.Format(Strings.MillisecondsFormat, _keyInterval);
 
+    /// <summary>
+    /// The wait after "Find in game" opened My Designs again, before the arrows: the game's own (each game keeps its own),
+    /// longer for a game that stalls with many designs (FH4 with hundreds); 0 to 10 s
+    /// </summary>
+    public double MaxMenuOpenDelay => NavigationTiming.MaxMenuOpenDelayMs;
+
+    private int _menuOpenDelay;
+
+    public double MenuOpenDelay
+    {
+        get => _menuOpenDelay;
+        set
+        {
+            int ms = NavigationTiming.ClampMenuOpenDelay((int)Math.Round(value));
+            if (ms == _menuOpenDelay) return;
+            _menuOpenDelay = ms;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(MenuOpenDelayText));
+            OnPropertyChanged(nameof(IsDirty));
+        }
+    }
+
+    public string MenuOpenDelayText => string.Format(Strings.MillisecondsFormat, _menuOpenDelay);
+
     public bool IsDirty =>
         ThemeMode != _savedThemeMode
         || Language != _savedLanguage
@@ -724,10 +802,12 @@ internal sealed partial class SettingsViewModel : ObservableObject
         || RowsMode != _savedRowsMode
         || ServerLiveries != _savedServerLiveries
         || _keyInterval != _savedKeyInterval
+        || _menuOpenDelay != _savedMenuOpenDelay
         || ShowChangesSinceLastLaunch != _savedShowChangesSinceLastLaunch
         || WheelClickScroll != _savedWheelClickScroll
         || _wheelScrollSpeed != _savedWheelScrollSpeed
         || BadgesAtBottom != _savedBadgesAtBottom
+        || UiScalePercent != _savedUiScalePercent
         || WarnFewFreeSlots != _savedWarnFewFreeSlots
         || WarnArchiveWithoutInstalledData != _savedWarnArchiveWithoutInstalledData
         || WarnArchiveWithOutdatedInstalledData != _savedWarnArchiveWithOutdatedInstalledData
@@ -770,10 +850,12 @@ internal sealed partial class SettingsViewModel : ObservableObject
         candidate.MyDesignsRowsMode = RowsMode;
         candidate.ServerLiveries = ServerLiveries;
         candidate.NavigationKeyIntervalMs = _keyInterval;
+        candidate.NavigationMenuOpenDelayMs = _menuOpenDelay;
         candidate.ShowChangesSinceLastLaunch = ShowChangesSinceLastLaunch;
         candidate.WheelClickScroll = WheelClickScroll;
         candidate.WheelScrollSpeedPercent = _wheelScrollSpeed;
         candidate.BadgesAtBottom = BadgesAtBottom;
+        candidate.UiScalePercent = UiScalePercent;
         candidate.WarnFewFreeSlots = WarnFewFreeSlots;
         candidate.WarnArchiveWithoutInstalledData = WarnArchiveWithoutInstalledData;
         candidate.WarnArchiveWithOutdatedInstalledData = WarnArchiveWithOutdatedInstalledData;
@@ -794,6 +876,7 @@ internal sealed partial class SettingsViewModel : ObservableObject
         bool languageChanged = Language != AppLocalisationService.AppLanguage;
         _settings.CopyFrom(candidate);
         AppThemes.Apply(ThemeMode);
+        UiScale.Apply(UiScale.FromPercent(UiScalePercent));
         if (languageChanged) AppLocalisationService.AppLanguage = Language;
 
         if (SavePath != _initialSavePath) SavePathChanged = true;
@@ -817,10 +900,12 @@ internal sealed partial class SettingsViewModel : ObservableObject
         _savedRowsMode = RowsMode;
         _savedServerLiveries = ServerLiveries;
         _savedKeyInterval = _keyInterval;
+        _savedMenuOpenDelay = _menuOpenDelay;
         _savedShowChangesSinceLastLaunch = ShowChangesSinceLastLaunch;
         _savedWheelClickScroll = WheelClickScroll;
         _savedWheelScrollSpeed = _wheelScrollSpeed;
         _savedBadgesAtBottom = BadgesAtBottom;
+        _savedUiScalePercent = UiScalePercent;
         _savedWarnFewFreeSlots = WarnFewFreeSlots;
         _savedWarnArchiveWithoutInstalledData = WarnArchiveWithoutInstalledData;
         _savedWarnArchiveWithOutdatedInstalledData = WarnArchiveWithOutdatedInstalledData;

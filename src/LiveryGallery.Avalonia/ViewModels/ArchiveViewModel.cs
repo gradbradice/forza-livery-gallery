@@ -4,7 +4,6 @@ using LiveryGallery.Localisation;
 using LiveryGallery.Services;
 using LiveryGallery.Services.Accounts;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using ForzaToolkit.Core.Text;
 
 namespace LiveryGallery.ViewModels;
@@ -27,6 +26,9 @@ internal sealed partial class ArchiveViewModel : ObservableObject
     private readonly List<ArchivedLiveryRowViewModel> _allRows = [];
 
     public ObservableCollection<ArchivedLiveryRowViewModel> Rows { get; } = [];
+
+    // The ticked rows of those shown
+    private readonly CheckedRows<ArchivedLiveryRowViewModel> _checked;
     public bool ShowEmptyState => Rows.Count == 0;
 
     /// <summary>The archive (after the account filter) has liveries: the search box is shown</summary>
@@ -57,14 +59,13 @@ internal sealed partial class ArchiveViewModel : ObservableObject
     public string HiddenByAccountText => string.Format(Strings.AccountFilterHiddenFormat, HiddenByAccountCount);
 
     partial void OnOnlyCurrentAccountChanged(bool value) => Reload();
-    public bool HasSelection => Rows.Any(r => r.IsSelected);
-    public int SelectedCount => Rows.Count(r => r.IsSelected);
-    public string SelectedCountText => string.Format(Strings.ArchiveSelectedCountFormat, SelectedCount);
+    public bool HasSelection => _checked.Any;
+    public int SelectedCount => _checked.Count;
+    public string SelectedCountText => _checked.CountText;
     public event Action<string>? ErrorMessageRequested;
-    public Func<string, Task<bool>>? ConfirmRestoreDuplicatesAsync { get; set; }
-    public Func<string, Task<bool>>? ConfirmRestoreIntoCurrentAccountAsync { get; set; }
-    /// <summary>Asked when the game is running; true to restore anyway</summary>
-    public Func<Task<bool>>? ConfirmWhileGameRunningAsync { get; set; }
+
+    /// <summary>What a restore asks (a copy in the game, another account, the game running), asked by the window</summary>
+    public RestoreQuestions Ask { get; } = new();
     public event Action<List<ArchivedLiveryRowViewModel>>? DeleteRequested;
 
     public ArchiveViewModel(
@@ -80,6 +81,7 @@ internal sealed partial class ArchiveViewModel : ObservableObject
         _savePathService = savePathService;
         _getCurrentEntries = getCurrentEntries;
         _onRestored = onRestored;
+        _checked = new CheckedRows<ArchivedLiveryRowViewModel>(Rows, RaiseSelectionChanged);
         Reload();
     }
 
@@ -110,7 +112,6 @@ internal sealed partial class ArchiveViewModel : ObservableObject
 
     private void Reload()
     {
-        foreach (var row in _allRows) row.PropertyChanged -= OnRowPropertyChanged;
         _allRows.Clear();
         UnassignedCount = _unassigned?.GetAll().Count ?? 0;
         OnPropertyChanged(nameof(UnassignedCount));
@@ -130,9 +131,7 @@ internal sealed partial class ArchiveViewModel : ObservableObject
         foreach (var entry in all)
         {
             if (OnlyCurrentAccount && _accounts.IsHiddenByAccountFilter(entry.SourceAccount)) continue;
-            var row = new ArchivedLiveryRowViewModel(entry, _accounts, SearchByFolderName);
-            row.PropertyChanged += OnRowPropertyChanged;
-            _allRows.Add(row);
+            _allRows.Add(new ArchivedLiveryRowViewModel(entry, _accounts, SearchByFolderName));
         }
 
         ApplySearch();
@@ -155,11 +154,6 @@ internal sealed partial class ArchiveViewModel : ObservableObject
         RaiseSelectionChanged();
     }
 
-    private void OnRowPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(ArchivedLiveryRowViewModel.IsSelected)) RaiseSelectionChanged();
-    }
-
     private void RaiseSelectionChanged()
     {
         OnPropertyChanged(nameof(HasSelection));
@@ -174,7 +168,7 @@ internal sealed partial class ArchiveViewModel : ObservableObject
     [RelayCommand]
     private async Task MoveSelectedToStorageAsync()
     {
-        var selected = Rows.Where(r => r.IsSelected).ToList();
+        var selected = _checked.Selected;
         if (_storage is null || selected.Count == 0) return;
         try
         {
@@ -194,60 +188,37 @@ internal sealed partial class ArchiveViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void SelectAll()
-    {
-        foreach (var row in Rows) row.IsSelected = true;
-    }
+    private void SelectAll() => _checked.SelectAll();
 
     [RelayCommand]
-    private void ClearSelection()
-    {
-        foreach (var row in Rows) row.IsSelected = false;
-    }
+    private void ClearSelection() => _checked.Clear();
 
     [RelayCommand]
     private async Task RestoreSelectedAsync()
     {
-        var selected = Rows.Where(r => r.IsSelected).ToList();
-        if (selected.Count == 0) return;
-
-        if (await LiveryRestoreConflicts.PrepareAsync(_savePathService, _accounts, selected.Select(r => r.Entry.SourceAccount),
-                ConfirmRestoreIntoCurrentAccountAsync, ConfirmWhileGameRunningAsync, ErrorMessageRequested) is not { } savePath)
-            return;
-
-        try
-        {
-            var plan = await LiveryRestoreConflicts.PlanAsync(
-                [.. selected.Select(r => r.Entry.Data)], _getCurrentEntries(), savePath, _savePathService.Profile.Liveries,
-                ConfirmRestoreDuplicatesAsync);
-
-            var result = plan.ToRestore.Count > 0
-                ? await _archiveService.RestoreAsync(plan.ToRestore.Select(d => d.FolderName), savePath)
-                : ArchiveOperationResult.Empty;
-            var restoredSet = result.Completed.ToHashSet(StringComparer.OrdinalIgnoreCase);
-
-            if (restoredSet.Count > 0)
+        IReadOnlyList<string> leftover = [];
+        await LiveryRestoreConflicts.RestoreToSaveAsync(_savePathService, _accounts,
+            [.. _checked.Selected.Select(r => (r.Entry.Data, r.Entry.SourceAccount))], _getCurrentEntries(), Ask,
+            async (keys, savePath) =>
+            {
+                var result = await _archiveService.RestoreAsync(keys, savePath);
+                leftover = result.LeftoverPaths;
+                return result.Completed;
+            },
+            async _ =>
             {
                 Reload();
                 await _onRestored();
-            }
-
-            string? report = plan.Report(restoredSet);
-            if (report is not null) ErrorMessageRequested?.Invoke(report);
-            if (result.LeftoverPaths.Count > 0)
-                ErrorMessageRequested?.Invoke(string.Format(Strings.ArchiveLeftoverFoldersFormat, string.Join("\n", result.LeftoverPaths)));
-        }
-        catch (Exception ex)
-        {
-            AppLog.LogError("Failed to restore from archive", ex);
-            ErrorMessageRequested?.Invoke(Strings.FileOperationFailedMessage);
-        }
+            },
+            ErrorMessageRequested, "from the archive");
+        if (leftover.Count > 0)
+            ErrorMessageRequested?.Invoke(string.Format(Strings.ArchiveLeftoverFoldersFormat, string.Join("\n", leftover)));
     }
 
     [RelayCommand]
     private void RequestDelete()
     {
-        var selected = Rows.Where(r => r.IsSelected).ToList();
+        var selected = _checked.Selected.ToList();
         if (selected.Count == 0) return;
         DeleteRequested?.Invoke(selected);
     }

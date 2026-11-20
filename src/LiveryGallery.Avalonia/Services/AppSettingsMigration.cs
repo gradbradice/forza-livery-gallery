@@ -20,6 +20,25 @@ internal static class AppSettingsMigration
         }
 
         changed |= ToVersion2(data, fileText);
+        changed |= OneServerSwitch(data);
+        return changed;
+    }
+
+    /// <summary>
+    /// The livery server's switch is the program's since 1.8.0-beta.1 (one consent for every game): on when any game's
+    /// own switch was (FH6's in 1.7.x). The games' switches are then dropped from the file. Nothing to do once they are
+    /// gone, so this runs at every start without a new version of the file
+    /// </summary>
+    private static bool OneServerSwitch(AppSettingsData data)
+    {
+        bool changed = false;
+        foreach (var game in data.Games.Values)
+        {
+            if (game.ServerConnectionOfGame is not { } enabled) continue;
+            if (enabled) data.ServerConnectionEnabled = true;
+            game.ServerConnectionOfGame = null;
+            changed = true;
+        }
         return changed;
     }
 

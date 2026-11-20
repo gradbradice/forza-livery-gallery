@@ -40,6 +40,40 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
     [ObservableProperty]
     private bool _isSaveMissing;
 
+    /// <summary>Nothing shows because of the search: «Clear the search» under the text</summary>
+    [ObservableProperty]
+    private bool _canClearSearch;
+
+    /// <summary>Nothing shows because of the filters or the tags: «Reset the filters» under the text</summary>
+    [ObservableProperty]
+    private bool _canResetFilters;
+
+    /// <summary>The game's save has no livery: «Choose another folder» and «Look again» under the text</summary>
+    [ObservableProperty]
+    private bool _isGameEmpty;
+
+    /// <summary>The storage has no livery: «Show the game» under the text</summary>
+    [ObservableProperty]
+    private bool _isStorageEmpty;
+
+    /// <summary>The empty gallery has a button to show</summary>
+    public bool HasEmptyActions => IsSaveMissing || CanClearSearch || CanResetFilters || IsGameEmpty || IsStorageEmpty;
+
+    partial void OnIsSaveMissingChanged(bool value) => OnPropertyChanged(nameof(HasEmptyActions));
+    partial void OnCanClearSearchChanged(bool value) => OnPropertyChanged(nameof(HasEmptyActions));
+    partial void OnCanResetFiltersChanged(bool value) => OnPropertyChanged(nameof(HasEmptyActions));
+    partial void OnIsGameEmptyChanged(bool value) => OnPropertyChanged(nameof(HasEmptyActions));
+    partial void OnIsStorageEmptyChanged(bool value) => OnPropertyChanged(nameof(HasEmptyActions));
+
+    private void ClearEmptyActions()
+    {
+        IsSaveMissing = false;
+        CanClearSearch = false;
+        CanResetFilters = false;
+        IsGameEmpty = false;
+        IsStorageEmpty = false;
+    }
+
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanRefresh))]
     private bool _isScanRunning;
@@ -66,7 +100,7 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
     {
         EmptyStateText = text;
         IsEmptyStateVisible = true;
-        IsSaveMissing = false;
+        ClearEmptyActions();
     }
 
     /// <summary>The game's save was not found: said in place of the gallery, with a way to choose it</summary>
@@ -74,6 +108,7 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
     {
         EmptyStateText = text;
         IsEmptyStateVisible = true;
+        ClearEmptyActions();
         IsSaveMissing = true;
     }
 
@@ -85,11 +120,12 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
 
     /// <param name="storage">The storage is shown: an empty one says how liveries get there</param>
     /// <param name="emptyText">What an empty view says instead (an empty folder of the storage)</param>
+    /// <param name="otherFilters">A filter or a tag other than the search hides liveries now</param>
     public void UpdateCountsAndEmptyState(List<LiveryEntry> filtered, int allEntriesCount, string? searchText, bool storage = false,
-        string? emptyText = null)
+        string? emptyText = null, bool otherFilters = false)
     {
         string search = searchText?.Trim() ?? string.Empty;
-        IsSaveMissing = false;
+        ClearEmptyActions();
         var stats = GalleryStatisticsService.Calculate(filtered);
 
         CountText = allEntriesCount == 0 ? string.Empty : string.Format(Strings.CountShowing, filtered.Count, allEntriesCount);
@@ -101,11 +137,18 @@ internal sealed partial class GalleryStatusViewModel : ObservableObject
         {
             EmptyStateText = emptyText ?? (storage ? Strings.StorageEmptyHint : Strings.EmptyNoLiveries);
             IsEmptyStateVisible = true;
+            IsStorageEmpty = storage && emptyText is null;
+            IsGameEmpty = !storage;
         }
         else if (filtered.Count == 0)
         {
-            EmptyStateText = string.Format(Strings.EmptyNoResults, search);
+            // What hides them, and the way back: the search, the filters, or both
+            EmptyStateText = search.Length == 0 ? Strings.EmptyNoFilterResults
+                : otherFilters ? string.Format(Strings.EmptyNoResultsWithFilters, search)
+                : string.Format(Strings.EmptyNoResults, search);
             IsEmptyStateVisible = true;
+            CanClearSearch = search.Length > 0;
+            CanResetFilters = otherFilters || search.Length == 0;
         }
         else
         {

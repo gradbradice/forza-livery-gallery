@@ -201,12 +201,6 @@
   <data name="ButtonClose" xml:space="preserve">
     <value>Fechar</value>
   </data>
-  <data name="TagsDialogTitle" xml:space="preserve">
-    <value>Tags</value>
-  </data>
-  <data name="TagsDialogHint" xml:space="preserve">
-    <value>Separe as tags com vírgulas, por exemplo: drift, anime, corrida</value>
-  </data>
   <data name="ButtonSave" xml:space="preserve">
     <value>Salvar</value>
   </data>
@@ -599,19 +593,19 @@ Um cartão reúne os apelidos de um autor sob um único nome.</value>
     <value>Nenhum cartão de autor</value>
   </data>
   <data name="ContextMenuMoveToArchive" xml:space="preserve">
-    <value>Mover para o arquivo</value>
+    <value>Mover para a lixeira</value>
   </data>
   <data name="MenuOpenArchive" xml:space="preserve">
-    <value>Arquivo</value>
+    <value>Lixeira</value>
   </data>
   <data name="MenuOpenBackups" xml:space="preserve">
     <value>Backups</value>
   </data>
   <data name="ArchiveDialogTitle" xml:space="preserve">
-    <value>Arquivo</value>
+    <value>Lixeira</value>
   </data>
   <data name="ArchiveEmptyHint" xml:space="preserve">
-    <value>O arquivo está vazio</value>
+    <value>A lixeira está vazia</value>
   </data>
   <data name="ArchiveSelectedCountFormat" xml:space="preserve">
     <value>Selecionadas: {0}</value>
@@ -629,7 +623,7 @@ Um cartão reúne os apelidos de um autor sob um único nome.</value>
     <value>{0} serão movidas para a Lixeira. A galeria não pode desfazer isso.</value>
   </data>
   <data name="ArchivedOnFormat" xml:space="preserve">
-    <value>Arquivada em {0}</value>
+    <value>Na lixeira desde {0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
     <value>Antes de restaurar pinturas, escolha a pasta de salvamento nas configurações</value>
@@ -647,7 +641,7 @@ Um cartão reúne os apelidos de um autor sob um único nome.</value>
     <value>Abrir a prévia original</value>
   </data>
   <data name="LoadingMovingToArchive" xml:space="preserve">
-    <value>Movendo para o arquivo…</value>
+    <value>Movendo para a lixeira…</value>
   </data>
   <data name="ArchiveSelectAllButton" xml:space="preserve">
     <value>Selecionar todas</value>
@@ -824,10 +818,10 @@ Restaurar estas pinturas mesmo assim?</value>
   </data>
   <data name="AuctionBadgeTooltip" xml:space="preserve">
     <value>Comprada na casa de leilões.
-Só pode ser movida para o arquivo depois que o servidor de pinturas confirmar que nenhum carro a usa.</value>
+Só pode ser movida para a lixeira depois que o servidor de pinturas confirmar que nenhum carro a usa.</value>
   </data>
   <data name="ArchiveAuctionNotAllowedTooltip" xml:space="preserve">
-    <value>Pinturas de leilão só podem ser movidas para o arquivo depois que o servidor de pinturas confirmar que nenhum carro as usa</value>
+    <value>Pinturas de leilão só podem ser movidas para a lixeira depois que o servidor de pinturas confirmar que nenhum carro as usa</value>
   </data>
   <data name="ArchiveAuctionSkippedFormat" xml:space="preserve">
     <value>Pinturas de leilão selecionadas que ficaram no jogo: {0}. Não está confirmado que nenhum carro as usa. Elas poderão ser movidas quando o servidor de pinturas tiver o salvamento atual.</value>
@@ -996,7 +990,7 @@ Só pode ser movida para o arquivo depois que o servidor de pinturas confirmar q
 Atualizado às {1}</value>
   </data>
   <data name="ServerSyncProfileNotFound" xml:space="preserve">
-    <value>A pasta de salvamento não contém o arquivo de perfil C_ProfileData.</value>
+    <value>A pasta de salvamento não contém o arquivo de perfil ProfileData.</value>
   </data>
   <data name="ServerSyncSaveNotSupported" xml:space="preserve">
     <value>O servidor ainda não consegue ler este salvamento. Provavelmente o jogo foi atualizado. O suporte será adicionado.</value>
@@ -1023,14 +1017,17 @@ Atualizado às {1}</value>
     <value>Usar o servidor para identificar as pinturas aplicadas a carros</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Para saber quais pinturas estão aplicadas aos seus carros e o nome da sua conta, a galeria envia ao servidor o arquivo de salvamento C_ProfileData. O servidor usa o arquivo só para isso e não o armazena.
+    <value>Para saber quais pinturas estão aplicadas aos seus carros e o nome da sua conta, a galeria envia ao servidor o arquivo de salvamento ProfileData. O servidor usa o arquivo só para isso e não o armazena.
 
 Os dados do arquivo não são guardados nem usados para outra finalidade. O servidor guarda com segurança as chaves necessárias para descriptografar o arquivo de salvamento.
 
 O servidor não tem relação com os servidores oficiais de Forza Horizon, Xbox ou Microsoft.</value>
   </data>
+  <data name="ServerConnectionAllGames" xml:space="preserve">
+    <value>A configuração vale para todos os jogos da galeria: FH6, FH5, FH4 e FH3.</value>
+  </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Para saber quais pinturas estão aplicadas aos seus carros e o nome da sua conta, a galeria envia ao servidor o arquivo de salvamento C_ProfileData. O servidor usa o arquivo só para isso e não o armazena.
+    <value>Para saber quais pinturas estão aplicadas aos seus carros e o nome da sua conta, a galeria envia ao servidor o arquivo de salvamento ProfileData. O servidor usa o arquivo só para isso e não o armazena.
 
 Os dados do arquivo não são guardados nem usados para outra finalidade. O servidor guarda com segurança as chaves necessárias para descriptografar o arquivo de salvamento.
 
@@ -1082,36 +1079,36 @@ Os dados são enviados ao servidor somente com o seu consentimento. Ativar a con
 {0}</value>
   </data>
   <data name="ArchiveInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Pinturas aplicadas a carros no jogo não podem ser movidas para o arquivo</value>
+    <value>Pinturas aplicadas a carros no jogo não podem ser movidas para a lixeira</value>
   </data>
   <data name="ArchiveInstalledSkippedFormat" xml:space="preserve">
-    <value>Pinturas aplicadas a carros no jogo não podem ser movidas para o arquivo. Pinturas selecionadas que ficaram no jogo: {0}.</value>
+    <value>Pinturas aplicadas a carros no jogo não podem ser movidas para a lixeira. Pinturas selecionadas que ficaram no jogo: {0}.</value>
   </data>
   <data name="ArchiveInstalledUnknownMessage" xml:space="preserve">
-    <value>Não se sabe quais pinturas estão aplicadas a carros, por isso mover esta pintura para o arquivo não é seguro: ela pode estar aplicada a um carro no jogo.
+    <value>Não se sabe quais pinturas estão aplicadas a carros, por isso mover esta pintura para a lixeira não é seguro: ela pode estar aplicada a um carro no jogo.
 
-Mover a pintura para o arquivo?</value>
+Mover a pintura para a lixeira?</value>
   </data>
   <data name="ArchiveInstalledUnknownMessageMany" xml:space="preserve">
-    <value>Não se sabe quais pinturas estão aplicadas a carros, por isso mover estas pinturas para o arquivo não é seguro: algumas podem estar aplicadas a carros no jogo.
+    <value>Não se sabe quais pinturas estão aplicadas a carros, por isso mover estas pinturas para a lixeira não é seguro: algumas podem estar aplicadas a carros no jogo.
 
-Mover as pinturas para o arquivo?</value>
+Mover as pinturas para a lixeira?</value>
   </data>
   <data name="DontShowAgainCheckBox" xml:space="preserve">
     <value>Não mostrar novamente</value>
   </data>
   <data name="ArchiveAuctionOrInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Pinturas aplicadas a carros no jogo não podem ser movidas para o arquivo. As de leilão, só depois que o servidor de pinturas confirmar que nenhum carro as usa.</value>
+    <value>Pinturas aplicadas a carros no jogo não podem ser movidas para a lixeira. As de leilão, só depois que o servidor de pinturas confirmar que nenhum carro as usa.</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessage" xml:space="preserve">
-    <value>O salvamento mudou desde a última sincronização, e os novos dados ainda não chegaram ao servidor de pinturas. A lista de pinturas aplicadas a carros pode estar desatualizada, por isso mover esta pintura para o arquivo não é seguro: ela pode estar aplicada a um carro no jogo.
+    <value>O salvamento mudou desde a última sincronização, e os novos dados ainda não chegaram ao servidor de pinturas. A lista de pinturas aplicadas a carros pode estar desatualizada, por isso mover esta pintura para a lixeira não é seguro: ela pode estar aplicada a um carro no jogo.
 
-É melhor aguardar a sincronização, que é automática e pode levar alguns minutos, e tentar de novo. Mover a pintura para o arquivo agora?</value>
+É melhor aguardar a sincronização, que é automática e pode levar alguns minutos, e tentar de novo. Mover a pintura para a lixeira agora?</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>O salvamento mudou desde a última sincronização, e os novos dados ainda não chegaram ao servidor de pinturas. A lista de pinturas aplicadas a carros pode estar desatualizada, por isso mover estas pinturas para o arquivo não é seguro: algumas podem estar aplicadas a carros no jogo.
+    <value>O salvamento mudou desde a última sincronização, e os novos dados ainda não chegaram ao servidor de pinturas. A lista de pinturas aplicadas a carros pode estar desatualizada, por isso mover estas pinturas para a lixeira não é seguro: algumas podem estar aplicadas a carros no jogo.
 
-É melhor aguardar a sincronização, que é automática e pode levar alguns minutos, e tentar de novo. Mover as pinturas para o arquivo agora?</value>
+É melhor aguardar a sincronização, que é automática e pode levar alguns minutos, e tentar de novo. Mover as pinturas para a lixeira agora?</value>
   </data>
   <data name="ContextMenuNavigateInGame" xml:space="preserve">
     <value>Encontrar no jogo</value>
@@ -1199,29 +1196,41 @@ Enquanto o cursor se move, não mexa no mouse nem no teclado: mover o mouse, ape
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>Automático</value>
   </data>
+  <data name="NavigationRowsOne" xml:space="preserve">
+    <value>1 linha</value>
+  </data>
   <data name="NavigationRowsTwo" xml:space="preserve">
-    <value>2 linhas, menu padrão</value>
+    <value>2 linhas</value>
   </data>
   <data name="NavigationRowsThree" xml:space="preserve">
-    <value>3 linhas, mod de menu</value>
+    <value>3 linhas</value>
   </data>
-  <data name="NavigationRowsDetectedVanilla" xml:space="preserve">
-    <value>Detectado: 2 linhas, menu padrão.</value>
+  <data name="NavigationRowsStandardFormat" xml:space="preserve">
+    <value>{0}, menu padrão</value>
+  </data>
+  <data name="NavigationRowsDetectedStandardFormat" xml:space="preserve">
+    <value>Detectado: {0}, menu padrão.</value>
   </data>
   <data name="NavigationRowsDetectedModFormat" xml:space="preserve">
-    <value>Detectado: {0} linhas, um mod alterou o menu.</value>
+    <value>Detectado: {0}, um mod alterou o menu.</value>
   </data>
-  <data name="NavigationRowsDetectedNoGameFolder" xml:space="preserve">
-    <value>A pasta do jogo não está definida, então são consideradas 2 linhas. Defina a pasta do jogo para detectar mods de menu.</value>
+  <data name="NavigationRowsDetectedNoGameFolderFormat" xml:space="preserve">
+    <value>A pasta do jogo não está definida, então é considerado o menu padrão ({0}). Defina a pasta do jogo para detectar mods de menu.</value>
   </data>
   <data name="NavigationRowsDetectedUnknown" xml:space="preserve">
-    <value>Não foi possível detectar as linhas: o arquivo do menu foi alterado de forma desconhecida. Escolha 2 ou 3 linhas.</value>
+    <value>Não foi possível detectar as linhas: o menu foi alterado de forma desconhecida. Escolha as linhas manualmente.</value>
   </data>
   <data name="NavigationKeyIntervalLabel" xml:space="preserve">
     <value>Pausa entre os toques de tecla</value>
   </data>
   <data name="NavigationKeyIntervalHint" xml:space="preserve">
     <value>Aumente se o cursor parar antes da pintura: o jogo ignora toques rápidos demais.</value>
+  </data>
+  <data name="NavigationMenuOpenDelayLabel" xml:space="preserve">
+    <value>Espera após abrir “Meus designs”</value>
+  </data>
+  <data name="NavigationMenuOpenDelayHint" xml:space="preserve">
+    <value>Antes da busca, a galeria fecha “Meus designs” e o abre de novo. Aumente a espera se, com muitos designs, o jogo ainda estiver abrindo o menu quando o cursor começar a se mover. Até 10 segundos.</value>
   </data>
   <data name="MillisecondsFormat" xml:space="preserve">
     <value>{0} ms</value>
@@ -1266,7 +1275,7 @@ Enquanto o cursor se move, não mexa no mouse nem no teclado: mover o mouse, ape
     <value>Salva um arquivo ZIP com o log, as configurações sem caminhos nem IDs e os erros de leitura das pinturas, para anexar a um relato de erro. Nada é enviado.</value>
   </data>
   <data name="ExportDiagnosticsButton" xml:space="preserve">
-    <value>Exportar diagnóstico…</value>
+    <value>Exportar diagnóstico</value>
   </data>
   <data name="DiagnosticsSaveDialogTitle" xml:space="preserve">
     <value>Salvar diagnóstico</value>
@@ -1379,7 +1388,7 @@ Todas as contas e apelidos desses autores ficarão em um cartão. Depois você p
     <value>Dados das contas</value>
   </data>
   <data name="AccountDataHint" xml:space="preserve">
-    <value>Cada conta do jogo tem seu próprio cache de verificação e suas prévias. Esquecer uma conta libera esse espaço. Se a conta voltar, as pinturas dela serão verificadas novamente. O arquivo e os backups não são afetados.</value>
+    <value>Cada conta do jogo tem seu próprio cache de verificação e suas prévias. Esquecer uma conta libera esse espaço. Se a conta voltar, as pinturas dela serão verificadas novamente. A lixeira e os backups não são afetados.</value>
   </data>
   <data name="AccountDataCurrent" xml:space="preserve">
     <value>Conta atual</value>
@@ -1400,7 +1409,7 @@ Todas as contas e apelidos desses autores ficarão em um cartão. Depois você p
     <value>Esquecer a conta</value>
   </data>
   <data name="AccountDataForgetMessage" xml:space="preserve">
-    <value>Esquecer a conta {0}? O cache de verificação e as prévias dela, cerca de {1}, serão excluídos. O arquivo e os backups permanecem. Se a conta voltar, as pinturas dela serão verificadas novamente.</value>
+    <value>Esquecer a conta {0}? O cache de verificação e as prévias dela, cerca de {1}, serão excluídos. A lixeira e os backups permanecem. Se a conta voltar, as pinturas dela serão verificadas novamente.</value>
   </data>
   <data name="AccountDataForgetFailedMessage" xml:space="preserve">
     <value>Não foi possível excluir os dados da conta. Os detalhes estão no log.</value>
@@ -1483,8 +1492,8 @@ Todas as contas e apelidos desses autores ficarão em um cartão. Depois você p
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>sem arquivos de idioma StringTables: os nomes dos carros vêm do banco de dados de carros</value>
   </data>
-  <data name="AboutDescriptionFormat" xml:space="preserve">
-    <value>Uma galeria das pinturas dos salvamentos de {0}.</value>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Uma galeria das pinturas dos salvamentos dos jogos Forza.</value>
   </data>
   <data name="FolderNotFoundMessageFormat" xml:space="preserve">
     <value>Não foi possível encontrar automaticamente a pasta de salvamento do {0}.
@@ -1542,7 +1551,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>o desenho é {0}% parecido com “{1}”</value>
   </data>
   <data name="ContextMenuAssignAuthor" xml:space="preserve">
-    <value>Indicar o autor…</value>
+    <value>Indicar o autor</value>
   </data>
   <data name="ContextMenuUnassignAuthor" xml:space="preserve">
     <value>Remover o autor indicado</value>
@@ -1743,7 +1752,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Excluídas</value>
   </data>
   <data name="StatsLegendArchived" xml:space="preserve">
-    <value>Arquivadas</value>
+    <value>Para a lixeira</value>
   </data>
   <data name="StatsSizeTooltipFormat" xml:space="preserve">
     <value>Pinturas no fim do mês: {0}</value>
@@ -1929,16 +1938,16 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Sem uso</value>
   </data>
   <data name="StatsHealthUnusedNote" xml:space="preserve">
-    <value>Não aplicadas a carros, não favoritas, não bloqueadas, não suas e não de leilão. São as primeiras candidatas ao arquivo.</value>
+    <value>Não aplicadas a carros, não favoritas, não bloqueadas, não suas e não de leilão. São as primeiras candidatas à lixeira.</value>
   </data>
   <data name="StatsHealthUnused" xml:space="preserve">
     <value>Pinturas sem uso</value>
   </data>
   <data name="StatsHealthArchiveTitle" xml:space="preserve">
-    <value>Arquivo</value>
+    <value>Lixeira</value>
   </data>
   <data name="StatsHealthArchived" xml:space="preserve">
-    <value>No arquivo</value>
+    <value>Na lixeira</value>
   </data>
   <data name="StatsHealthLastArchived" xml:space="preserve">
     <value>Última movimentação</value>
@@ -2052,7 +2061,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>De quem você remove pinturas</value>
   </data>
   <data name="StatsDeparturesCellFormat" xml:space="preserve">
-    <value>{0} + {1} arquivadas</value>
+    <value>{0} + {1} para a lixeira</value>
   </data>
   <data name="StatsNoJournalShort" xml:space="preserve">
     <value>Ainda não há remoções no histórico</value>
@@ -2118,10 +2127,10 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Exportar</value>
   </data>
   <data name="StatsExportLiveries" xml:space="preserve">
-    <value>Pinturas em CSV…</value>
+    <value>Pinturas em CSV</value>
   </data>
   <data name="StatsExportAuthors" xml:space="preserve">
-    <value>Autores em CSV…</value>
+    <value>Autores em CSV</value>
   </data>
   <data name="StatsExportLiveriesFileName" xml:space="preserve">
     <value>pinturas</value>
@@ -2133,7 +2142,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Não foi possível salvar o arquivo.</value>
   </data>
   <data name="StatsSaveChart" xml:space="preserve">
-    <value>Salvar como PNG…</value>
+    <value>Salvar como PNG</value>
   </data>
   <data name="StatsAuthorsTopTooltipFormat" xml:space="preserve">
     <value>{1} de {2} pinturas com autor conhecido são dos {0} autores de quem você tem mais pinturas</value>
@@ -2145,22 +2154,10 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Remover dos favoritos</value>
   </data>
   <data name="ContextMenuEditTags" xml:space="preserve">
-    <value>Editar tags…</value>
+    <value>Editar tags</value>
   </data>
   <data name="TagChipTooltip" xml:space="preserve">
     <value>Clique para mostrar só as pinturas com esta tag e clique com o botão direito para ocultá-las. Outro clique desfaz.</value>
-  </data>
-  <data name="TagsDialogManyTitleFormat" xml:space="preserve">
-    <value>Tags das pinturas selecionadas: {0}</value>
-  </data>
-  <data name="TagsDialogManyHint" xml:space="preserve">
-    <value>Uma marca adiciona a tag a todas as pinturas selecionadas e uma caixa vazia a remove de todas. Um quadrado cheio indica que só algumas têm a tag. Ela fica como está.</value>
-  </data>
-  <data name="TagsDialogNewTagsLabel" xml:space="preserve">
-    <value>Novas tags, separadas por vírgulas. Elas são adicionadas a todas as pinturas selecionadas.</value>
-  </data>
-  <data name="TagsDialogPartialTooltipFormat" xml:space="preserve">
-    <value>Em {0} de {1} selecionadas</value>
   </data>
   <data name="ContextMenuLock" xml:space="preserve">
     <value>Bloquear</value>
@@ -2169,16 +2166,16 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Desbloquear</value>
   </data>
   <data name="LockToggleTooltip" xml:space="preserve">
-    <value>Bloquear a pintura para que ela não possa ser movida para o arquivo</value>
+    <value>Bloquear a pintura para que ela não possa ser movida para a lixeira</value>
   </data>
   <data name="LockedTooltip" xml:space="preserve">
-    <value>Bloqueada: a pintura não pode ser movida para o arquivo. Clique para desbloqueá-la.</value>
+    <value>Bloqueada: a pintura não pode ser movida para a lixeira. Clique para desbloqueá-la.</value>
   </data>
   <data name="ArchiveLockedNotAllowedTooltip" xml:space="preserve">
-    <value>Pinturas bloqueadas não podem ser movidas para o arquivo. Desbloqueie-as primeiro.</value>
+    <value>Pinturas bloqueadas não podem ser movidas para a lixeira. Desbloqueie-as primeiro.</value>
   </data>
   <data name="ArchiveLockedSkippedFormat" xml:space="preserve">
-    <value>Pinturas bloqueadas não podem ser movidas para o arquivo. Pinturas bloqueadas selecionadas que ficaram no jogo: {0}.</value>
+    <value>Pinturas bloqueadas não podem ser movidas para a lixeira. Pinturas bloqueadas selecionadas que ficaram no jogo: {0}.</value>
   </data>
   <data name="AuthorLabelOwnFormat" xml:space="preserve">
     <value>{0} (você)</value>
@@ -2265,16 +2262,16 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Letras, dígitos, {0} e {1} não fazem nada enquanto o cursor está em um campo de texto. Enter, 3 e G funcionam quando exatamente uma pintura está selecionada.</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
-    <value>Clique para liberar espaço: as cópias a mais das pinturas duplicadas vão para o arquivo.</value>
+    <value>Clique para liberar espaço: as cópias a mais das pinturas duplicadas vão para a lixeira.</value>
   </data>
   <data name="FreeSpaceMenuItem" xml:space="preserve">
-    <value>Liberar espaço…</value>
+    <value>Liberar espaço</value>
   </data>
   <data name="FreeSpaceTitle" xml:space="preserve">
     <value>Liberar espaço</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>De cada pintura duplicada fica uma cópia: primeiro uma com tags ou uma sua, senão a primeira baixada. Pinturas bloqueadas, aplicadas a um carro, de leilão e favoritas também ficam. Desmarque uma cópia para mantê-la. Tudo o que sai pode voltar do arquivo.</value>
+    <value>De cada pintura duplicada fica uma cópia: primeiro uma com tags ou uma sua, senão a primeira baixada. Pinturas bloqueadas, aplicadas a um carro, de leilão e favoritas também ficam. Desmarque uma cópia para mantê-la. Tudo o que sai pode voltar da lixeira.</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>Baixada: {0}</value>
@@ -2304,31 +2301,31 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>No salvamento agora: {0} de {1}.</value>
   </data>
   <data name="FreeSpaceAfterFormat" xml:space="preserve">
-    <value>Para o arquivo: {0}, livres depois: {1}.</value>
+    <value>Para a lixeira: {0}, livres depois: {1}.</value>
   </data>
   <data name="FreeSpaceAfterNoLimitFormat" xml:space="preserve">
-    <value>Para o arquivo: {0}.</value>
+    <value>Para a lixeira: {0}.</value>
   </data>
   <data name="FreeSpaceApplyFormat" xml:space="preserve">
-    <value>Mover para o arquivo ({0})</value>
+    <value>Mover para a lixeira ({0})</value>
   </data>
   <data name="FewFreeSlotsMessageFormat" xml:space="preserve">
-    <value>Restam apenas {0} espaços livres de {1} no salvamento. No limite, o jogo não deixa baixar nem criar pinturas. Liberar espaço agora movendo para o arquivo as cópias a mais das pinturas duplicadas?</value>
+    <value>Restam apenas {0} espaços livres de {1} no salvamento. No limite, o jogo não deixa baixar nem criar pinturas. Liberar espaço agora movendo para a lixeira as cópias a mais das pinturas duplicadas?</value>
   </data>
   <data name="FewFreeSlotsFullMessageFormat" xml:space="preserve">
-    <value>O salvamento está cheio: todos os {0} espaços estão ocupados e o jogo não deixa baixar nem criar pinturas. Liberar espaço agora movendo para o arquivo as cópias a mais das pinturas duplicadas?</value>
+    <value>O salvamento está cheio: todos os {0} espaços estão ocupados e o jogo não deixa baixar nem criar pinturas. Liberar espaço agora movendo para a lixeira as cópias a mais das pinturas duplicadas?</value>
   </data>
   <data name="AutoBackupFailedTitle" xml:space="preserve">
     <value>Backup</value>
   </data>
   <data name="AutoBackupFailedMessage" xml:space="preserve">
-    <value>Não foi possível criar o backup antes de mover para o arquivo. Mover as pinturas para o arquivo sem ele?</value>
+    <value>Não foi possível criar o backup antes de mover para a lixeira. Mover as pinturas para a lixeira sem ele?</value>
   </data>
   <data name="AutoBackupFailedContinueButton" xml:space="preserve">
     <value>Mover sem backup</value>
   </data>
   <data name="LoadingBackupBeforeArchive" xml:space="preserve">
-    <value>Criando um backup antes de mover para o arquivo…</value>
+    <value>Criando um backup antes de mover para a lixeira…</value>
   </data>
   <data name="StatusAutoBackupMade" xml:space="preserve">
     <value>Um backup automático foi criado</value>
@@ -2337,7 +2334,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Backups automáticos</value>
   </data>
   <data name="AutoBackupBeforeArchiveLabel" xml:space="preserve">
-    <value>Antes de mover pinturas para o arquivo</value>
+    <value>Antes de mover pinturas para a lixeira</value>
   </data>
   <data name="AutoBackupOnChangeLabel" xml:space="preserve">
     <value>Quando as pinturas do salvamento mudam, no máximo uma vez por dia</value>
@@ -2358,7 +2355,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Automático</value>
   </data>
   <data name="BackupKindBeforeArchive" xml:space="preserve">
-    <value>Criado antes de mover pinturas para o arquivo</value>
+    <value>Criado antes de mover pinturas para a lixeira</value>
   </data>
   <data name="BackupKindSaveChanged" xml:space="preserve">
     <value>Criado depois que as pinturas do salvamento mudaram</value>
@@ -2407,12 +2404,6 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
     <value>As betas saem antes das versões estáveis e podem ter erros. Se você desativar isso numa beta, a galeria oferece voltar para a versão estável mais recente.</value>
-  </data>
-  <data name="TagsDialogOneHint" xml:space="preserve">
-    <value>Uma marca coloca a tag na pintura e uma caixa vazia a remove.</value>
-  </data>
-  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
-    <value>Novas tags, separadas por vírgulas.</value>
   </data>
   <data name="KeyClick" xml:space="preserve">
     <value>Clique</value>
@@ -2495,9 +2486,6 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
   <data name="LiveryDetailsUnknown" xml:space="preserve">
     <value>desconhecido</value>
   </data>
-  <data name="LiveryDetailsAddTag" xml:space="preserve">
-    <value>+ tag</value>
-  </data>
   <data name="LiveryDetailsNoteLabel" xml:space="preserve">
     <value>Nota</value>
   </data>
@@ -2532,7 +2520,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Apareceu no salvamento</value>
   </data>
   <data name="HistoryRestoredFromArchive" xml:space="preserve">
-    <value>Voltou do arquivo</value>
+    <value>Voltou da lixeira</value>
   </data>
   <data name="HistoryReturned" xml:space="preserve">
     <value>Voltou: de um backup ou baixada de novo</value>
@@ -2541,7 +2529,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Sumiu do salvamento</value>
   </data>
   <data name="HistoryArchived" xml:space="preserve">
-    <value>Movida para o arquivo</value>
+    <value>Movida para a lixeira</value>
   </data>
   <data name="HistoryChanged" xml:space="preserve">
     <value>Arquivo alterado</value>
@@ -2571,7 +2559,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Mover para esta conta</value>
   </data>
   <data name="ArchiveUnassignedTooltip" xml:space="preserve">
-    <value>Uma versão anterior arquivou estas sem registrar a conta, e havia várias contas. Mova-as para cá se forem desta conta.</value>
+    <value>Uma versão anterior moveu estas para a lixeira sem registrar a conta, e havia várias contas. Mova-as para cá se forem desta conta.</value>
   </data>
   <data name="BackupsUnassignedTooltip" xml:space="preserve">
     <value>Uma versão anterior fez estes backups sem registrar a conta, e havia várias contas. Mova-os para cá se forem desta conta.</value>
@@ -2586,7 +2574,7 @@ Revise os arquivos antes de enviá-los. Valores que a galeria não conhece, por 
     <value>Salvamento não encontrado</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
-    <value>Escolher pasta…</value>
+    <value>Escolher pasta</value>
   </data>
   <data name="SearchSaveAgainButton" xml:space="preserve">
     <value>Procurar de novo</value>
@@ -2638,16 +2626,16 @@ Atualizado em {1} às {2}</value>
     <value>Conta</value>
   </data>
   <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
-    <value>Arquivo</value>
+    <value>Lixeira</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>Perguntar antes de arquivar quando não se sabe quais pinturas estão nos carros</value>
+    <value>Perguntar antes de mover para a lixeira quando não se sabe quais pinturas estão nos carros</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>Perguntar antes de arquivar quando a lista de pinturas nos carros pode estar desatualizada</value>
+    <value>Perguntar antes de mover para a lixeira quando a lista de pinturas nos carros pode estar desatualizada</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>Não é seguro mover para o arquivo uma pintura que está num carro do jogo. «Não mostrar novamente» nestas perguntas as desativa, e aqui podem ser reativadas.</value>
+    <value>Não é seguro mover para a lixeira uma pintura que está num carro do jogo. «Não mostrar novamente» nestas perguntas as desativa, e aqui podem ser reativadas.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Home</value>
@@ -2693,7 +2681,7 @@ Atualizado em {1} às {2}</value>
 ou Ctrl+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>Guardadas só neste PC. Vão para o arquivo com a pintura e voltam com ela.</value>
+    <value>Guardadas só neste PC. Vão para a lixeira com a pintura e voltam com ela.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>Capturas da pintura</value>
@@ -2756,7 +2744,7 @@ ou Ctrl+V</value>
     <value>Ocupado: {0} · capturas: {1} · pinturas: {2}</value>
   </data>
   <data name="ScreenshotsConvertButton" xml:space="preserve">
-    <value>Comprimir as adicionadas…</value>
+    <value>Comprimir as adicionadas</value>
   </data>
   <data name="ScreenshotsOpenFolder" xml:space="preserve">
     <value>Abrir a pasta</value>
@@ -2852,7 +2840,7 @@ ou Ctrl+V</value>
     <value>Adicionar ao álbum</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
-    <value>Novo álbum…</value>
+    <value>Novo álbum</value>
   </data>
   <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
     <value>Tirar de “{0}”</value>
@@ -2879,7 +2867,7 @@ ou Ctrl+V</value>
     <value>Renomear</value>
   </data>
   <data name="CollectionDelete" xml:space="preserve">
-    <value>Excluir…</value>
+    <value>Excluir</value>
   </data>
   <data name="CollectionMoveUp" xml:space="preserve">
     <value>Mover para cima</value>
@@ -2942,7 +2930,7 @@ ou Ctrl+V</value>
     <value>Insert</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>Do armazém para o arquivo</value>
+    <value>Do armazém para a lixeira</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Devolver ao jogo</value>
@@ -2975,16 +2963,16 @@ ou Ctrl+V</value>
     <value>No armazém: {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0}: para o jogo · {1}: para o arquivo</value>
+    <value>{0}: para o jogo · {1}: para a lixeira</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>Devolvidas ao jogo: {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>Do armazém para o arquivo: {0}</value>
+    <value>Do armazém para a lixeira: {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Ficaram no armazém: {0}. O arquivo já tem uma pintura com a mesma chave.</value>
+    <value>Ficaram no armazém: {0}. A lixeira já tem uma pintura com a mesma chave.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>A devolver pinturas ao jogo…</value>
@@ -3092,7 +3080,7 @@ ou Ctrl+V</value>
     <value>Apagar a pasta vazia «{0}»?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>Enviar as suas pinturas para o arquivo</value>
+    <value>Enviar as suas pinturas para a lixeira</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>Devolver a pasta ao jogo</value>
@@ -3101,7 +3089,7 @@ ou Ctrl+V</value>
     <value>Mover para a pasta</value>
   </data>
   <data name="ContextMenuNewFolder" xml:space="preserve">
-    <value>Nova pasta…</value>
+    <value>Nova pasta</value>
   </data>
   <data name="StatusMovedToFolderFormat" xml:space="preserve">
     <value>Movidas para «{0}»: {1}</value>
@@ -3230,7 +3218,7 @@ ou Ctrl+V</value>
     <value>aqui está o armazém de outra conta ({0}).</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>O armazém não pode ficar dentro de um salvamento, do arquivo, da pasta do programa ou do armazém de outra conta.</value>
+    <value>O armazém não pode ficar dentro de um salvamento, da lixeira, da pasta do programa ou do armazém de outra conta.</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>Esta pasta não serve:</value>
@@ -3339,7 +3327,7 @@ ou Ctrl+V</value>
     <value>A pasta não está disponível</value>
   </data>
   <data name="SettingsStorageChangeButton" xml:space="preserve">
-    <value>Mudar a pasta…</value>
+    <value>Mudar a pasta</value>
   </data>
   <data name="SettingsStorageOpenButton" xml:space="preserve">
     <value>Abrir a pasta do armazém</value>
@@ -3447,7 +3435,7 @@ ou Ctrl+V</value>
     <value>Verificar de novo</value>
   </data>
   <data name="StorageChooseOtherButton" xml:space="preserve">
-    <value>Escolher outra pasta…</value>
+    <value>Escolher outra pasta</value>
   </data>
   <data name="StorageUnavailableReasonFormat" xml:space="preserve">
     <value>A pasta do armazém não está disponível: {0}</value>
@@ -3467,7 +3455,7 @@ ou Ctrl+V</value>
 {1}</value>
   </data>
   <data name="ArchiveFailedFormat" xml:space="preserve">
-    <value>Não foi possível mover estas pinturas para o arquivo ({0}). Talvez o jogo esteja usando os arquivos delas ou o disco esteja cheio. Os detalhes estão no log:
+    <value>Não foi possível mover estas pinturas para a lixeira ({0}). Talvez o jogo esteja usando os arquivos delas ou o disco esteja cheio. Os detalhes estão no log:
 {1}</value>
   </data>
   <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
@@ -3582,9 +3570,6 @@ ou Ctrl+V</value>
   <data name="ResetFiltersTooltip" xml:space="preserve">
     <value>Redefinir filtros: limpa a pesquisa e os filtros. A ordem é mantida</value>
   </data>
-  <data name="UndoLabel" xml:space="preserve">
-    <value>Desfazer</value>
-  </data>
   <data name="UndoTooltipFormat" xml:space="preserve">
     <value>Desfazer: {0}</value>
   </data>
@@ -3613,7 +3598,7 @@ ou Ctrl+V</value>
     <value>Conjuntos de filtros salvos</value>
   </data>
   <data name="FilterPresetSave" xml:space="preserve">
-    <value>Salvar os filtros atuais…</value>
+    <value>Salvar os filtros atuais</value>
   </data>
   <data name="FilterPresetDelete" xml:space="preserve">
     <value>Excluir um conjunto</value>
@@ -3641,5 +3626,236 @@ ou Ctrl+V</value>
   </data>
   <data name="TagsGripTooltip" xml:space="preserve">
     <value>Arraste para cima ou para baixo para mostrar mais ou menos linhas de tags. Clique duplo: todas as tags ou uma linha.</value>
+  </data>
+  <data name="SaveReadOnlyLabel" xml:space="preserve">
+    <value>Somente leitura</value>
+  </data>
+  <data name="SaveReadOnlyNoticeFormat" xml:space="preserve">
+    <value>Nesta versão as pinturas de {0} são apenas exibidas: movê-las para a lixeira ou o armazém, devolvê-las ao jogo e restaurá-las de uma cópia ainda não está disponível.</value>
+  </data>
+  <data name="RenderBorrowedFormat" xml:space="preserve">
+    <value>Desenhado com modelos e tintas de {1}: os arquivos de {0} não podem ser lidos. Carros, logotipos e tintas podem diferir de {0}.</value>
+  </data>
+  <data name="ServerStatusGameNotSupported" xml:space="preserve">
+    <value>Servidor: este jogo ainda não é compatível</value>
+  </data>
+  <data name="ServerStatusGameNotSupportedHint" xml:space="preserve">
+    <value>O servidor ainda não lê os salvamentos deste jogo ou desta versão (Steam ou Microsoft Store). As pinturas aplicadas aos seus carros não são mostradas. A galeria verifica novamente a cada 30 minutos.</value>
+  </data>
+  <data name="DisplayFilterLabel" xml:space="preserve">
+    <value>Mostrar</value>
+  </data>
+  <data name="FilterPresetsLabel" xml:space="preserve">
+    <value>Conjuntos</value>
+  </data>
+  <data name="MenuRefresh" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <data name="CardSizeSmall" xml:space="preserve">
+    <value>Cartões pequenos</value>
+  </data>
+  <data name="CardSizeNormal" xml:space="preserve">
+    <value>Cartões normais</value>
+  </data>
+  <data name="CardSizeLarge" xml:space="preserve">
+    <value>Cartões grandes</value>
+  </data>
+  <data name="ShortcutsGroupView" xml:space="preserve">
+    <value>Exibição</value>
+  </data>
+  <data name="ShortcutCardsLarger" xml:space="preserve">
+    <value>Cartões (capturas) maiores</value>
+  </data>
+  <data name="ShortcutCardsSmaller" xml:space="preserve">
+    <value>Cartões (capturas) menores</value>
+  </data>
+  <data name="ShortcutCardsNormal" xml:space="preserve">
+    <value>Tamanho normal dos cartões (capturas)</value>
+  </data>
+  <data name="ShortcutCardsWheel" xml:space="preserve">
+    <value>Tamanho dos cartões</value>
+  </data>
+  <data name="KeyWheel" xml:space="preserve">
+    <value>Roda</value>
+  </data>
+  <data name="UserDataProblemTitle" xml:space="preserve">
+    <value>Tags, notas e favoritos</value>
+  </data>
+  <data name="UserDataUnreadableMessageFormat" xml:space="preserve">
+    <value>Estes arquivos não puderam ser abertos ao iniciar. Talvez outro programa os esteja usando (um cliente de sincronização como o OneDrive, um antivírus):
+{0}
+
+A galeria os deixou como estavam. Tags, notas, favoritos e bloqueios alterados agora não serão salvos. Feche o programa que os usa e inicie a galeria novamente.</value>
+  </data>
+  <data name="UserDataSetAsideMessageFormat" xml:space="preserve">
+    <value>Estes arquivos estavam danificados e não puderam ser lidos:
+{0}
+
+Uma cópia de cada um foi guardada ao lado, com a data no nome. A galeria os recomeçou vazios.</value>
+  </data>
+  <data name="GalleryAccessibleName" xml:space="preserve">
+    <value>Pinturas</value>
+  </data>
+  <data name="CardAccessibleSelected" xml:space="preserve">
+    <value>selecionada</value>
+  </data>
+  <data name="CardAccessibleFavorite" xml:space="preserve">
+    <value>favorita</value>
+  </data>
+  <data name="CardAccessibleLocked" xml:space="preserve">
+    <value>bloqueada</value>
+  </data>
+  <data name="NoticesTitle" xml:space="preserve">
+    <value>Avisos</value>
+  </data>
+  <data name="NoticesNone" xml:space="preserve">
+    <value>Nada por enquanto</value>
+  </data>
+  <data name="NoticeCounterFormat" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="NoticeNextTooltip" xml:space="preserve">
+    <value>Próximo aviso</value>
+  </data>
+  <data name="NoticeCloseTooltip" xml:space="preserve">
+    <value>Fechar (fica sob o sino)</value>
+  </data>
+  <data name="NoticeShowFile" xml:space="preserve">
+    <value>Mostrar o arquivo</value>
+  </data>
+  <data name="NoticeChooseFolder" xml:space="preserve">
+    <value>Escolher pasta</value>
+  </data>
+  <data name="ToastUndo" xml:space="preserve">
+    <value>Desfazer</value>
+  </data>
+  <data name="ToastUndoDetail" xml:space="preserve">
+    <value>Ctrl+Z também desfaz</value>
+  </data>
+  <data name="ToastClose" xml:space="preserve">
+    <value>Fechar</value>
+  </data>
+  <data name="PropertiesTitle" xml:space="preserve">
+    <value>Propriedades</value>
+  </data>
+  <data name="PropertiesToggleTooltip" xml:space="preserve">
+    <value>Painel das pinturas selecionadas</value>
+  </data>
+  <data name="PropertiesEmpty" xml:space="preserve">
+    <value>Selecione uma pintura para vê-la aqui. Com várias, aparece o que têm em comum.</value>
+  </data>
+  <data name="PropertiesAuthorsFormat" xml:space="preserve">
+    <value>autores: {0}</value>
+  </data>
+  <data name="PropertiesFavorite" xml:space="preserve">
+    <value>Favorita</value>
+  </data>
+  <data name="PropertiesLock" xml:space="preserve">
+    <value>Bloqueio</value>
+  </data>
+  <data name="PropertiesTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="PropertiesTagsPartHint" xml:space="preserve">
+    <value>tracejadas: só em algumas, clique para dar a todas</value>
+  </data>
+  <data name="PropertiesAddTagPlaceholder" xml:space="preserve">
+    <value>Adicionar tag, Enter</value>
+  </data>
+  <data name="PropertiesCreateTagFormat" xml:space="preserve">
+    <value>Nova tag «{0}»</value>
+  </data>
+  <data name="PropertiesRemoveTagFormat" xml:space="preserve">
+    <value>Remover a tag {0}</value>
+  </data>
+  <data name="PropertiesNote" xml:space="preserve">
+    <value>Nota</value>
+  </data>
+  <data name="PropertiesNoteSavesItself" xml:space="preserve">
+    <value>salva enquanto você digita</value>
+  </data>
+  <data name="PropertiesNotesOwnFormat" xml:space="preserve">
+    <value>{0} de {1} têm nota própria.</value>
+  </data>
+  <data name="PropertiesNoteForAllPlaceholder" xml:space="preserve">
+    <value>Uma nota para todas</value>
+  </data>
+  <data name="PropertiesNoteAppend" xml:space="preserve">
+    <value>Acrescentar às delas</value>
+  </data>
+  <data name="PropertiesNoteReplace" xml:space="preserve">
+    <value>Substituir as delas</value>
+  </data>
+  <data name="PropertiesFindInGame" xml:space="preserve">
+    <value>Encontrar no jogo</value>
+  </data>
+  <data name="PropertiesToStorage" xml:space="preserve">
+    <value>Para o armazém</value>
+  </data>
+  <data name="PropertiesToGame" xml:space="preserve">
+    <value>Para o jogo</value>
+  </data>
+  <data name="PropertiesDetails" xml:space="preserve">
+    <value>Mais</value>
+  </data>
+  <data name="PropertiesClose" xml:space="preserve">
+    <value>Ocultar o painel</value>
+  </data>
+  <data name="ShortcutProperties" xml:space="preserve">
+    <value>Painel das pinturas selecionadas</value>
+  </data>
+  <data name="SelectionBarTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="SelectionBarMore" xml:space="preserve">
+    <value>Mais ações</value>
+  </data>
+  <data name="SelectionBarClear" xml:space="preserve">
+    <value>Limpar a seleção</value>
+  </data>
+  <data name="EmptyNoFilterResults" xml:space="preserve">
+    <value>Nenhuma pintura corresponde aos filtros</value>
+  </data>
+  <data name="EmptyNoResultsWithFilters" xml:space="preserve">
+    <value>Nada encontrado para «{0}» com os filtros ativos</value>
+  </data>
+  <data name="EmptyClearSearch" xml:space="preserve">
+    <value>Limpar a pesquisa</value>
+  </data>
+  <data name="EmptyResetFilters" xml:space="preserve">
+    <value>Redefinir os filtros</value>
+  </data>
+  <data name="EmptyShowGame" xml:space="preserve">
+    <value>Mostrar as pinturas do jogo</value>
+  </data>
+  <data name="EmptyLookAgain" xml:space="preserve">
+    <value>Verificar de novo</value>
+  </data>
+  <data name="ScreenshotsShowAllAlbums" xml:space="preserve">
+    <value>Todas as capturas</value>
+  </data>
+  <data name="NoticeProblemTitle" xml:space="preserve">
+    <value>Não deu certo</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptioned" xml:space="preserve">
+    <value>Com legendas</value>
+  </data>
+  <data name="ScreenshotsLayoutTiles" xml:space="preserve">
+    <value>Mosaico</value>
+  </data>
+  <data name="ScreenshotsSizeSmall" xml:space="preserve">
+    <value>Capturas pequenas</value>
+  </data>
+  <data name="ScreenshotsSizeNormal" xml:space="preserve">
+    <value>Capturas normais</value>
+  </data>
+  <data name="ScreenshotsSizeLarge" xml:space="preserve">
+    <value>Capturas grandes</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptionedTooltip" xml:space="preserve">
+    <value>Sob cada captura aparecem a pintura ou a hora</value>
+  </data>
+  <data name="ScreenshotsLayoutTilesTooltip" xml:space="preserve">
+    <value>Só as imagens, juntas. A legenda está na dica</value>
   </data>
 </root>

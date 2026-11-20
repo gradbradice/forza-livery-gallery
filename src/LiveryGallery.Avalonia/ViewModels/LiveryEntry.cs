@@ -271,6 +271,9 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
     public DateTime? DownloadDate => Data.DownloadDate;
     /// <summary>The livery's preview: the gallery's PNG of the game's one, or the one it drew (<see cref="LiveryData.ThumbnailDrawn"/>)</summary>
     public string? ThumbnailPath => Data.ThumbnailPath;
+
+    /// <summary>The preview's average colour, shown while it loads (PreviewColors); null when not known yet</summary>
+    public Avalonia.Media.IBrush? PlaceholderTint => Services.PreviewColors.BrushOf(((IThumbnailHost)this).ThumbnailPath);
     public string? CLiveryHash => Data.CLiveryHash;
     public bool HasThumbnail => Data.HasThumbnail;
 
@@ -366,20 +369,6 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
         }
     }
 
-    private bool _selectionBlocksNavigation;
-    /// <summary>Several liveries are selected: "Find in game" is only offered when the target is unambiguous</summary>
-    public bool SelectionBlocksNavigation
-    {
-        get => _selectionBlocksNavigation;
-        set
-        {
-            if (_selectionBlocksNavigation == value) return;
-            _selectionBlocksNavigation = value;
-            OnPropertyChanged(nameof(CanNavigateInGame));
-            OnPropertyChanged(nameof(NavigateInGameTooltip));
-        }
-    }
-
     private void OnGamePositionTextsChanged()
     {
         OnPropertyChanged(nameof(HasGamePosition));
@@ -392,7 +381,7 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
     public bool HasGamePosition => _gamePosition is not null;
     public int? GameSlot => _gamePosition?.Slot;
     public string GamePositionText => _gamePosition?.Label ?? "";
-    public bool CanNavigateInGame => !IsAuction && _gamePosition is not null && !_selectionBlocksNavigation;
+    public bool CanNavigateInGame => !IsAuction && _gamePosition is not null;
 
     private string GamePositionDescription => _gamePosition is { } p
         ? string.Format(Strings.GamePositionDescriptionFormat, p.Column, p.Row, p.Rows, p.Slot, p.TotalSlots)
@@ -405,7 +394,6 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
     public string NavigateInGameTooltip =>
         IsAuction ? Strings.NavigateInGameAuctionTooltip
         : _gamePosition is null ? Strings.NavigateInGameNoPositionTooltip
-        : _selectionBlocksNavigation ? Strings.NavigateInGameMultipleSelectedTooltip
         : string.Format(Strings.NavigateInGameTooltipFormat, GamePositionDescription);
 
     public bool IsMine { get; set; }
@@ -464,7 +452,7 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
     /// The car with its year and number, «Honda S2000 2004 (4231)» (the 3D window's title); an unknown car: its number
     /// </summary>
     public string CarTitleWithId => CarKnown
-        ? string.Create(CultureInfo.CurrentCulture, $"{CarManufacturer} {CarModelName}{(CarYear is { } year ? $" {year}" : "")} ({CarId})")
+        ? string.Create(CultureInfo.CurrentCulture, $"{CarTitle} ({CarId})")
         : CarModelName;
 
     public string CarManufacturer => CarKnown
@@ -496,6 +484,20 @@ internal class LiveryEntry : INotifyPropertyChanged, IThumbnailHost, IGalleryIte
 
     /// <summary>"Car type in the game: Modern Sports Cars", and why it is not in the chosen language when it is not</summary>
     public string CarTypeTooltip => WithNote($"{Strings.CarTypeLabel}: {CarType}");
+
+    /// <summary>
+    /// "Nissan Skyline GT-R V-Spec": the make and the model, as the card writes them. The one way the gallery names a
+    /// car in words (the livery window, the properties panel, the lists of changes, the statistics, free space)
+    /// </summary>
+    public string CarName => JoinWords(CarManufacturer, CarModelName);
+
+    /// <summary>"Nissan Skyline GT-R V-Spec 1999": the name and the year when it is known</summary>
+    public string CarTitle => CarYear is { } year ? JoinWords(CarName, year.ToString(CultureInfo.InvariantCulture)) : CarName;
+
+    /// <summary>"Nissan Skyline GT-R V-Spec 1999 · Japan · Retro Sports Cars": the title with the country and the type</summary>
+    public string CarLine => string.Join(" · ", new[] { CarTitle, CarCountry, CarType }.Where(s => !string.IsNullOrWhiteSpace(s)));
+
+    private static string JoinWords(params string?[] parts) => string.Join(' ', parts.Where(p => !string.IsNullOrWhiteSpace(p)));
 
     private string WithNote(string text) =>
         LocalizedCar?.UnavailableNote is { } note ? $"{text}{Environment.NewLine}{Environment.NewLine}{note}" : text;

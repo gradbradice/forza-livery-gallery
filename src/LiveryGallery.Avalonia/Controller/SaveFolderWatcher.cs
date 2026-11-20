@@ -127,10 +127,14 @@ internal sealed class SaveFolderWatcher : IDisposable
 
     public event Action? ProfileChanged;
 
-    // Only <containerId>\ContainersRoot\User_<hex>\C_ProfileData counts as the profile (FH6's: the livery server's)
-    private bool IsProfileData(string? path)
+    // The profile the livery server reads. FH6: only <containerId>\ContainersRoot\User_<hex>\C_ProfileData. FH3 to
+    // FH5: a Steam save's User_<hex>.ProfileData (in the save folder or the account's folder below it), or a Microsoft
+    // Store save's containers.index, written again with every change of its containers, the profile's too (the
+    // connection sends nothing when the profile's bytes are the same as last time)
+    internal bool IsProfileData(string? path)
     {
-        if (path is null || _savePath is null || _profile.SaveLayout != GameSaveLayout.LiveryFolders) return false;
+        if (path is null || _savePath is null) return false;
+        if (_profile.SaveLayout == GameSaveLayout.SaveItems) return IsSaveItemsProfile(path);
         if (!string.Equals(Path.GetFileName(path), ProfileDataLocator.ProfileDataFileName, StringComparison.OrdinalIgnoreCase))
             return false;
 
@@ -143,6 +147,17 @@ internal sealed class SaveFolderWatcher : IDisposable
             && parts[0].All(char.IsDigit)
             && string.Equals(parts[1], ContainersRootName, StringComparison.OrdinalIgnoreCase)
             && parts[2].StartsWith(ProfileDataLocator.ProfileUserFolderPrefix, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool IsSaveItemsProfile(string path)
+    {
+        string relative;
+        try { relative = Path.GetRelativePath(_savePath!, path); }
+        catch (ArgumentException) { return false; } // not a path below the save folder
+        var parts = relative.Split(PathSeparators, StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1 && string.Equals(parts[0], ForzaToolkit.Saves.WgsContainerIndex.FileName, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return parts.Length is 1 or 2 && !parts[0].StartsWith("..", StringComparison.Ordinal) && ProfileDataLocator.IsFlatProfileFile(parts[^1]);
     }
 
     private void OnThumbnailCacheEvent(object sender, FileSystemEventArgs e) => Dispatcher.UIThread.Post(RequestRefresh);

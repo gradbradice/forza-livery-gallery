@@ -77,17 +77,26 @@ internal sealed class CardBadges : Panel
     private const double GroupGap = 8, LineGap = 4;
 
     private readonly Chip?[] _chips = new Chip?[Kinds];
-    private readonly Border _more;
-    private readonly TextBlock _moreText;
-    private readonly TextBlock _moreTip = new() { TextWrapping = TextWrapping.Wrap, MaxWidth = 360 };
+    // "+N", made the first time the badges do not fit: most cards never need it, and of the three instances of a card
+    // one serves (docs/plans.md, «Облегчение карточки»)
+    private Border? _more;
+    private TextBlock? _moreText;
+    private TextBlock? _moreTip;
     private LiveryEntry? _entry;
     private int _shownInRow;
 
     public CardBadges()
     {
-        // "+N": the neutral chip of the set, slate with the white ring
+        IsVisible = false;
+    }
+
+    // "+N": the neutral chip of the set, slate with the white ring
+    private Border More()
+    {
+        if (_more is not null) return _more;
         _moreText = new TextBlock { FontWeight = FontWeight.Bold, Foreground = Brushes.White, VerticalAlignment = VerticalAlignment.Center,
             HorizontalAlignment = HorizontalAlignment.Center };
+        _moreTip = new TextBlock { TextWrapping = TextWrapping.Wrap, MinWidth = 220, MaxWidth = 360 };
         _more = new Border
         {
             BorderBrush = new SolidColorBrush(Color.Parse("#66FFFFFF")), BorderThickness = new Thickness(1),
@@ -96,7 +105,10 @@ internal sealed class CardBadges : Panel
         };
         ToolTip.SetTip(_more, _moreTip);
         VisualChildren.Add(_more);
-        IsVisible = false;
+        // A logical child too: its tooltip takes the window's theme (dark or light) and the app's tooltip style from
+        // the card, as the badges' own do. As a visual child only, it opened white in the dark theme
+        LogicalChildren.Add(_more);
+        return _more;
     }
 
     private double Size => Below ? 20 : 24;
@@ -249,14 +261,15 @@ internal sealed class CardBadges : Panel
         if (all <= width)
         {
             _shownInRow = shown.Count;
-            _more.IsVisible = false;
+            if (_more is not null) _more.IsVisible = false;
             return new Size(all, shown.Count > 0 ? size : 0);
         }
-        _more.Height = size;
-        _more.MinWidth = size;
-        _more.CornerRadius = new CornerRadius(size / 2);
-        _more.Padding = new Thickness(size / 4, 0);
-        _moreText.FontSize = size >= 24 ? 11.5 : 9.5;
+        var more = More();
+        more.Height = size;
+        more.MinWidth = size;
+        more.CornerRadius = new CornerRadius(size / 2);
+        more.Padding = new Thickness(size / 4, 0);
+        _moreText!.FontSize = size >= 24 ? 11.5 : 9.5;
         int count = shown.Count;
         double used = all, moreWidth = 0;
         while (count > 0)
@@ -264,14 +277,21 @@ internal sealed class CardBadges : Panel
             used -= shown[count - 1].Chip.DesiredSize.Width + (count > 1 ? gap : 0);
             count--;
             _moreText.Text = "+" + (shown.Count - count).ToString(AppLocalisationService.Culture);
-            _more.IsVisible = true;
-            _more.Measure(new Size(double.PositiveInfinity, size));
-            moreWidth = _more.DesiredSize.Width;
+            more.IsVisible = true;
+            more.Measure(new Size(double.PositiveInfinity, size));
+            moreWidth = more.DesiredSize.Width;
             if (used + (count > 0 ? gap : 0) + moreWidth <= width) break;
+        }
+        // Not even "+N" fits (the narrowest small card with a long number and place): no badge rather than one over them
+        if (count == 0 && moreWidth > width)
+        {
+            _shownInRow = 0;
+            more.IsVisible = false;
+            return new Size(0, 0);
         }
         _shownInRow = count;
         var rest = shown.Skip(count).ToList();
-        _moreTip.Text = MoreHeader(rest.Count) + string.Concat(rest.Select(c => "\n• " + _chips[(int)c.Badge]!.Name));
+        _moreTip!.Text = MoreHeader(rest.Count) + string.Concat(rest.Select(c => "\n• " + _chips[(int)c.Badge]!.Name));
         return new Size(used + (count > 0 ? gap : 0) + moreWidth, size);
     }
 
@@ -302,7 +322,7 @@ internal sealed class CardBadges : Panel
             else chip.Arrange(new Rect(0, y, 0, size));
         }
         foreach (var child in Children) if (!child.IsVisible) child.Arrange(default);
-        if (_more.IsVisible) _more.Arrange(new Rect(x, y, _more.DesiredSize.Width, size));
+        if (_more is { IsVisible: true }) _more.Arrange(new Rect(x, y, _more.DesiredSize.Width, size));
     }
 
     // Lines: the chips of a group side by side; the next group after a wider gap on the same line if all of it fits there
@@ -339,7 +359,7 @@ internal sealed class CardBadges : Panel
     private Size MeasureLines(double width)
     {
         var placed = Flow(width);
-        _more.IsVisible = false;
+        if (_more is not null) _more.IsVisible = false;
         if (placed.Count == 0) return default;
         double right = placed.Max(p => p.At.X + p.Chip.DesiredSize.Width), bottom = placed[^1].At.Y + Size;
         return new Size(right, bottom);

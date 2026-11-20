@@ -149,9 +149,9 @@ internal partial class MainWindow
     }
 
     /// <summary>"Move to the folder ▸" of a stored card's menu: no folder, each folder (the one they are all in ticked), a new one</summary>
-    private void FillMoveToFolderMenu(Control card)
+    /// <summary>"Move to a folder ▸" of the cards' menu: no folder, the storage's folders, "New folder"</summary>
+    private void FillMoveToFolderMenu(MenuItem menu)
     {
-        if (card.ContextMenu?.Items.OfType<MenuItem>().FirstOrDefault(m => Equals(m.Tag, "moveToFolder")) is not { } menu) return;
         menu.Items.Clear();
         if (!_mainViewModel.IsStorageMode) return;
         var targets = _mainViewModel.Gallery.SelectedEntries.Where(e => e.IsStored).ToList();

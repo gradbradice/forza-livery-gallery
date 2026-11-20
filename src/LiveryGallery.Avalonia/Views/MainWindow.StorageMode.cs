@@ -39,10 +39,6 @@ internal partial class MainWindow
         _storageWatcher = new StorageFolderWatcher(_mainViewModel.FindPlacedByHandAsync, _mainViewModel.LookForStorageFolderAsync);
         Closed += (_, _) => _storageWatcher?.Dispose();
         _mainViewModel.ChooseReturnRoomAsync = room => ReturnRoomDialog.AskAsync(this, room);
-        _mainViewModel.ConfirmRestoreDuplicatesAsync = message => ConfirmDialog.AskAsync(
-            this, Strings.RestoreDuplicateTitle, message, Strings.RestoreAnywayButton, Strings.RestoreSkipDuplicatesButton);
-        _mainViewModel.ConfirmRestoreIntoCurrentAccountAsync = message => ConfirmDialog.AskAsync(
-            this, Strings.RestoreFromOtherAccountTitle, message, Strings.RestoreIntoCurrentAccountButton, Strings.ButtonCancel);
     }
 
     private void ApplyModeTexts()
@@ -105,7 +101,7 @@ internal partial class MainWindow
         var notes = new List<string>(2);
         if (failed > 0) notes.Add(string.Format(Strings.StorageLayoutFailedFormat, failed.ToString("N0", culture)));
         if (away.Count > 0) notes.Add(string.Format(Strings.StorageLayoutAwayFormat, away.Count.ToString("N0", culture)));
-        if (notes.Count > 0) await InfoDialog.ShowAsync(owner, Strings.StorageLayoutTitle, string.Join(Environment.NewLine + Environment.NewLine, notes));
+        if (notes.Count > 0) await Warn(string.Join(Environment.NewLine + Environment.NewLine, notes), owner, Strings.StorageLayoutTitle);
         _mainViewModel.Status.SetStatusText(string.Format(Strings.StorageLayoutDoneFormat, moved.ToString("N0", culture)));
         return true;
     }

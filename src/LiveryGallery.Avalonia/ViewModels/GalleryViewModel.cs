@@ -1,12 +1,14 @@
+using ForzaToolkit.Core.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using LiveryGallery.Localisation;
+using LiveryGallery.Models;
 using LiveryGallery.Services;
 using System.Collections.ObjectModel;
 
 namespace LiveryGallery.ViewModels;
 
-internal sealed partial class GalleryViewModel : ObservableObject
+internal sealed partial class GalleryViewModel : ObservableObject, ISelectionChange<LiveryEntry>
 {
     private readonly FavoriteService favoriteService;
     private readonly LockService lockService;
@@ -36,6 +38,56 @@ internal sealed partial class GalleryViewModel : ObservableObject
             ApplyGroupWidthToDisplayedGroups();
         }
     }
+
+    private CardLayout _cardLayout = CardLayout.For(1200, CardSize.Normal);
+
+    /// <summary>
+    /// The cards' layout (<see cref="CardLayout"/>): the window sets it from the list's width and the cards' size. The
+    /// groups take its width and step; the cards bind <see cref="CardWidth"/> and <see cref="CardPictureHeight"/>
+    /// </summary>
+    /// <returns>True when the number of columns changed: the rows are to be built again</returns>
+    public bool SetCardLayout(CardLayout layout)
+    {
+        if (_cardLayout == layout && _groupWidth == layout.RowWidth) return false;
+        bool columnsChanged = layout.Columns != _cardLayout.Columns;
+        bool widthChanged = layout.CardWidth != _cardLayout.CardWidth;
+        _cardLayout = layout;
+        _groupWidth = layout.RowWidth;
+        ApplyGroupWidthToDisplayedGroups();
+        if (widthChanged)
+        {
+            OnPropertyChanged(nameof(CardWidth));
+            OnPropertyChanged(nameof(CardPictureHeight));
+        }
+        return columnsChanged;
+    }
+
+    /// <summary>The cards' layout now</summary>
+    public CardLayout CardLayout => _cardLayout;
+
+    /// <summary>A card's width (without its margins)</summary>
+    public double CardWidth => _cardLayout.CardWidth;
+
+    /// <summary>A card's picture's height: the game preview's proportions at <see cref="CardWidth"/></summary>
+    public double CardPictureHeight => _cardLayout.PictureHeight;
+
+    private CardSize _cardSize;
+
+    /// <summary>How big the cards are (the setting); the window lays them out again when it changes</summary>
+    public CardSize CardSize
+    {
+        get => _cardSize;
+        set
+        {
+            if (_cardSize == value) return;
+            _cardSize = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsSmallCards));
+        }
+    }
+
+    /// <summary>The small cards: their buttons only under the pointer, no date or tags</summary>
+    public bool IsSmallCards => _cardSize == CardSize.Small;
 
     public event Action? GroupsReplaced;
     public event Action<LiveryEntry>? AuthorRowRequested;
@@ -74,43 +126,20 @@ internal sealed partial class GalleryViewModel : ObservableObject
     }
 
     /// <summary>
-    /// What a card's action works on: every selected livery when the card is one of several selected, else the card
-    /// alone. The context menu selects its card first, so there it is the selection. No card (a menu whose card was
-    /// reused for another livery while it was open: the gallery regrouped meanwhile) — the selection
+    /// What an action on the selection works on (the menu, the keys, the bar, the panel: <see cref="GalleryActions"/>):
+    /// the selection. A livery that is not selected, given by a caller of its own, alone. A card's own buttons are
+    /// that card's: they have commands of their own (the star, the lock, the tags of one card)
     /// </summary>
     public IReadOnlyList<LiveryEntry> TargetsOf(LiveryEntry? entry) =>
         entry is null || (entry.IsSelected && SelectedEntries.Count > 1) ? [.. SelectedEntries] : [entry];
 
-    private int MenuCount => Math.Max(1, SelectedEntries.Count);
+    /// <summary>
+    /// The selected liveries' stars, locks or authors changed, or the selection did: the actions' words follow
+    /// (<see cref="GalleryActions"/>)
+    /// </summary>
+    public event Action? SelectionStateChanged;
 
-    private static string WithCount(string text, int count) => count > 1 ? $"{text} ({count})" : text;
-
-    /// <summary>Every selected livery is a favorite: the context menu offers to remove them</summary>
-    public bool FavoriteMenuRemoves => SelectedEntries.Count > 0 && SelectedEntries.All(e => e.IsFavorite);
-
-    public string FavoriteMenuHeader => WithCount(
-        FavoriteMenuRemoves ? Strings.ContextMenuRemoveFromFavorites : Strings.ContextMenuAddToFavorites, MenuCount);
-
-    /// <summary>Every selected livery is locked: the context menu offers to unlock them</summary>
-    public bool LockMenuRemoves => SelectedEntries.Count > 0 && SelectedEntries.All(e => e.IsLocked);
-
-    public string LockMenuHeader => WithCount(LockMenuRemoves ? Strings.ContextMenuUnlock : Strings.ContextMenuLock, MenuCount);
-
-    public string EditTagsMenuHeader => WithCount(Strings.ContextMenuEditTags, MenuCount);
-
-    private void OnSelectionMenuChanged()
-    {
-        OnPropertyChanged(nameof(FavoriteMenuRemoves));
-        OnPropertyChanged(nameof(FavoriteMenuHeader));
-        OnPropertyChanged(nameof(LockMenuRemoves));
-        OnPropertyChanged(nameof(LockMenuHeader));
-        OnPropertyChanged(nameof(EditTagsMenuHeader));
-        OnPropertyChanged(nameof(View3DNewWindowMenuHeader));
-        OnPropertyChanged(nameof(AssignAuthorMenuVisible));
-        OnPropertyChanged(nameof(AssignAuthorMenuHeader));
-        OnPropertyChanged(nameof(UnassignAuthorMenuVisible));
-        OnPropertyChanged(nameof(UnassignAuthorMenuHeader));
-    }
+    private void OnSelectionMenuChanged() => SelectionStateChanged?.Invoke();
 
     /// <summary>
     /// A part of the liveries the grid shows before any filter (the storage's folder); all when null. The caller shows
@@ -242,12 +271,20 @@ internal sealed partial class GalleryViewModel : ObservableObject
     [RelayCommand]
     private void ShowAuthorRow(LiveryEntry entry) => AuthorRowRequested?.Invoke(entry);
 
-    /// <summary>The card's tag button or the context menu: the card, or every selected livery when it is one of them</summary>
+    /// <summary>The menu, T, the bar: the tags of every selected livery</summary>
     [RelayCommand]
     private void EditTags(LiveryEntry? entry)
     {
         var targets = TargetsOf(entry);
         if (targets.Count > 0) EditTagsRequested?.Invoke(targets);
+    }
+
+    /// <summary>The card's tag button: that card's tags, the card alone selected (as a click on it selects it)</summary>
+    [RelayCommand]
+    private void EditCardTags(LiveryEntry entry)
+    {
+        SelectOnly(entry);
+        EditTagsRequested?.Invoke([entry]);
     }
 
     /// <summary>The liveries whose author the user may say: each selected one, or the card alone (never empty)</summary>
@@ -276,18 +313,11 @@ internal sealed partial class GalleryViewModel : ObservableObject
         if (targets.Count > 0) UnassignAuthorRequested?.Invoke(targets);
     }
 
-    private int AssignableSelectedCount => SelectedEntries.Count(CanAssign);
-    private int AssignedSelectedCount => SelectedEntries.Count(e => e.IsAuthorAssigned);
+    /// <summary>The selected liveries whose author the user may say</summary>
+    public int AssignableCount => SelectedEntries.Count(CanAssign);
 
-    /// <summary>Some selected livery's author can be said (the menu selects its card first)</summary>
-    public bool AssignAuthorMenuVisible => AssignableSelectedCount > 0;
-
-    public string AssignAuthorMenuHeader => WithCount(Strings.ContextMenuAssignAuthor, AssignableSelectedCount);
-
-    /// <summary>Some selected livery has an author the user said</summary>
-    public bool UnassignAuthorMenuVisible => AssignedSelectedCount > 0;
-
-    public string UnassignAuthorMenuHeader => WithCount(Strings.ContextMenuUnassignAuthor, AssignedSelectedCount);
+    /// <summary>The selected liveries with an author the user said</summary>
+    public int AssignedCount => SelectedEntries.Count(e => e.IsAuthorAssigned);
 
     /// <summary>The menu's author items after the user changed whose liveries they are</summary>
     public void RefreshAuthorMenu() => OnSelectionMenuChanged();
@@ -390,7 +420,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
         var filtered = GetFilteredEntries();
         var groups = GalleryGroupingService.Group(
             filtered, filter.SortMode, filter.FavoriteMode, filter.MineMode, filter.AuctionFilterMode,
-            filter.GroupingEnabled, GroupWidth, filter.InstalledMode);
+            filter.GroupingEnabled, GroupWidth, filter.InstalledMode, _cardLayout.CardStep);
         ReplaceGroups(groups);
         CountsUpdated?.Invoke(new GalleryCountsSnapshot(filtered, ScopedCount, filter.SearchText));
     }
@@ -398,7 +428,10 @@ internal sealed partial class GalleryViewModel : ObservableObject
     private void ApplyGroupWidthToDisplayedGroups()
     {
         foreach (var group in DisplayedGroups)
+        {
+            group.CardStep = _cardLayout.CardStep;
             group.GroupWidth = GroupWidth;
+        }
     }
 
     public void RefreshCountsOnly() =>
@@ -464,7 +497,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
 
     /// <summary>What the gallery shows of one mode of the main window: the selection, the tags that filter, the cursor</summary>
     public GalleryViewState CaptureView() =>
-        new([.. _selectedFolderNames], [.. _selectedTags], [.. _excludedTags], _cursorFolderName, _anchorFolderName);
+        new([.. _selectedFolderNames], [.. _selectedTags], [.. _excludedTags], _cursorFolderName, _rules.Anchor?.FolderName);
 
     /// <summary>
     /// Shows another mode's liveries (the game's, the storage's) with what was selected and filtered by tags there
@@ -480,7 +513,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
         _selectedTags.Clear();
         _excludedTags.Clear();
         _cursorFolderName = view?.Cursor;
-        _anchorFolderName = view?.Anchor;
+        _rules.Anchor = view?.Anchor is { } anchor ? entries.FirstOrDefault(e => string.Equals(e.FolderName, anchor, StringComparison.Ordinal)) : null;
         _cursorRow = -1;
         if (view is not null)
         {
@@ -567,9 +600,14 @@ internal sealed partial class GalleryViewModel : ObservableObject
         SelectedEntries.Add(entry);
     }
 
-    // Where a Shift-click range starts: the last card clicked without Shift (as in Explorer). Kept when the selection is
-    // cleared; a range from a card no longer shown is the clicked card alone
-    private string? _anchorFolderName;
+    // The rules of clicks and keys, as in Explorer and as the screenshots' tiles have them; they keep the anchor (where a
+    // Shift range starts: the last card clicked without Shift), kept when the selection is cleared. Cards are the same
+    // livery by folder: a range from a card no longer shown is the clicked card alone
+    private readonly ExplorerSelection<LiveryEntry> _rules = new(GallerySelection.SameLivery);
+
+    void ISelectionChange<LiveryEntry>.Choose(IReadOnlyList<LiveryEntry> items, bool add) => SelectMany(items, add);
+
+    void ISelectionChange<LiveryEntry>.Toggle(LiveryEntry item) => ToggleSelection(item);
 
     /// <summary>The liveries on screen, in their order: the groups as shown, a folded group's liveries left out</summary>
     public List<LiveryEntry> ShownEntries()
@@ -593,18 +631,14 @@ internal sealed partial class GalleryViewModel : ObservableObject
     public void ClickSelect(LiveryEntry entry, bool ctrl, bool shift)
     {
         ArgumentNullException.ThrowIfNull(entry);
-        if (shift)
+        if (!shift)
         {
-            SelectMany(GallerySelection.Range(ShownEntries(), _anchorFolderName, entry), add: ctrl);
-            return;
+            // The keys go on from the card clicked; the cursor is shown again once they move it
+            _cursorFolderName = entry.FolderName;
+            _cursorRow = -1;
+            ShowCursorOn(null);
         }
-        _anchorFolderName = entry.FolderName;
-        // The keys go on from the card clicked; the cursor is shown again once they move it
-        _cursorFolderName = entry.FolderName;
-        _cursorRow = -1;
-        ShowCursorOn(null);
-        if (ctrl) ToggleSelection(entry);
-        else SelectOnly(entry);
+        _rules.Click(ShownEntries(), entry, ctrl, shift, this);
     }
 
     // The cursor of the keys: the card last clicked or moved to, and its row on screen (a livery in two groups is on
@@ -626,7 +660,7 @@ internal sealed partial class GalleryViewModel : ObservableObject
     /// </summary>
     /// <param name="pageRows">How many rows a page holds</param>
     /// <param name="firstInView">The first row in view: a cursor not on screen starts there</param>
-    public GalleryRow? MoveCursor(GalleryMove move, GalleryMoveSelection selection, int pageRows, GalleryRow? firstInView)
+    public GalleryRow? MoveCursor(GalleryMove move, SelectionMove selection, int pageRows, GalleryRow? firstInView)
     {
         var rows = ShownRows();
         var (row, column) = FindCursor(rows);
@@ -635,22 +669,11 @@ internal sealed partial class GalleryViewModel : ObservableObject
             || rows[target.Row].Items.Count == 0)
             return null;
         var entry = rows[target.Row].Items[target.Column];
-        // Shift from a cursor without an anchor: the range starts where the cursor was
-        if (_anchorFolderName is null && row >= 0) _anchorFolderName = rows[row].Items[column].FolderName;
+        var from = row >= 0 ? rows[row].Items[column] : null;
         _cursorFolderName = entry.FolderName;
         _cursorRow = target.Row;
         ShowCursorOn(entry);
-        switch (selection)
-        {
-            case GalleryMoveSelection.SelectOnly:
-                _anchorFolderName = entry.FolderName;
-                SelectOnly(entry);
-                break;
-            case GalleryMoveSelection.Extend:
-            case GalleryMoveSelection.ExtendAdd:
-                SelectMany(GallerySelection.Range(ShownEntries(), _anchorFolderName, entry), add: selection == GalleryMoveSelection.ExtendAdd);
-                break;
-        }
+        _rules.Move(ShownEntries(), entry, from, selection, this);
         return rows[target.Row];
     }
 
@@ -671,9 +694,8 @@ internal sealed partial class GalleryViewModel : ObservableObject
         var entry = rows[row].Items[column];
         _cursorFolderName = entry.FolderName;
         _cursorRow = row;
-        _anchorFolderName = entry.FolderName;
         ShowCursorOn(entry);
-        ToggleSelection(entry);
+        _rules.Toggle(entry, this);
         return rows[row];
     }
 
@@ -700,7 +722,11 @@ internal sealed partial class GalleryViewModel : ObservableObject
         if (_cursorShownOn is not null) _cursorShownOn.IsCurrent = false;
         _cursorShownOn = entry;
         if (entry is not null) entry.IsCurrent = true;
+        OnPropertyChanged(nameof(CursorEntry));
     }
+
+    /// <summary>The card the keys' cursor is on (the grey ring); null when none is</summary>
+    public LiveryEntry? CursorEntry => _cursorShownOn;
 
     /// <summary>
     /// The selection becomes <paramref name="entries"/> (with <paramref name="add"/>, gets them too), as one change of

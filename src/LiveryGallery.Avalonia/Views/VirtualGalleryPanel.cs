@@ -2,6 +2,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using Avalonia.Layout;
+using Avalonia.Media;
 using Avalonia.VisualTree;
 
 namespace LiveryGallery.Views;
@@ -29,7 +30,7 @@ public sealed class VirtualGalleryPanel : Panel
     public Func<object, IEnumerable<string>>? AnchorKeySelector { get; set; }
 
     private const double DefaultHeaderHeight = 56;
-    private const double DefaultRowHeight = 340;
+    private const double DefaultRowHeight = 300;
     private const double MinBuffer = 300;
     private const int MaxPooledPerKind = 12;
     // Once realized, the viewport may move this far inside the realized area before a new
@@ -59,7 +60,10 @@ public sealed class VirtualGalleryPanel : Panel
     private readonly Stack<Control> _rowPool = new();
 
     private Rect _viewport;
-    private double _pendingScrollDelta;
+    // Where the list is to be scrolled once laid out (NaN: nowhere), as an offset, not a distance: the scroll viewer
+    // may move by itself in the meantime (a shorter list, a taller view clamp its offset), and a distance added to where
+    // it then is would land that far off the place to come back to
+    private double _pendingScrollTo = double.NaN;
     private sealed record AnchorSnapshot(List<(string[] Keys, double RelativeTop)> Candidates, int HintIndex);
 
     private AnchorSnapshot? _pendingAnchor;
@@ -130,6 +134,7 @@ public sealed class VirtualGalleryPanel : Panel
         _topsDirty = true;
         RecomputeTops();
         _coveredBottom = -1;
+        _pinnedIndex = -1;
         InvalidateMeasure();
     }
 
@@ -197,19 +202,44 @@ public sealed class VirtualGalleryPanel : Panel
         if (e.EffectiveViewport == previous) return;
         _viewport = e.EffectiveViewport;
 
-        if (IsCoveredByRealizedArea(previous, _viewport)) return;
+        if (IsCoveredByRealizedArea(previous, _viewport))
+        {
+            UpdatePinnedHeader();
+            return;
+        }
         InvalidateMeasure();
     }
 
     private bool IsCoveredByRealizedArea(Rect previous, Rect viewport)
     {
-        if (_pendingAnchor is not null || _pendingTop || _pendingScrollDelta != 0 || _coveredBottom < 0) return false;
+        if (_pendingAnchor is not null || _pendingTop || !double.IsNaN(_pendingScrollTo) || _coveredBottom < 0) return false;
         if (viewport.Height <= 0 || viewport.Width != previous.Width || viewport.Height != previous.Height) return false;
 
         double total = _tops[^1];
         bool topCovered = viewport.Y - RemeasureMargin >= _coveredTop || _coveredTop <= 0.5;
         bool bottomCovered = viewport.Bottom + RemeasureMargin <= _coveredBottom || _coveredBottom >= total - 0.5;
         return topCovered && bottomCovered;
+    }
+
+    /// <summary>
+    /// The heights measured so far are no longer right (the cards became wider or narrower, or another size): every row
+    /// is measured again as it comes into view, and the estimates of those not seen start afresh
+    /// </summary>
+    public void ForgetHeights()
+    {
+        ForgetHeightsCore();
+        InvalidateMeasure();
+    }
+
+    // The averages too: estimates mixing the old width's heights with the new made the scroll bar jump until the rows
+    // were measured (docs/plans.md, «Оценка высоты строк»)
+    private void ForgetHeightsCore()
+    {
+        _knownHeights.Clear();
+        Array.Fill(_heights, double.NaN);
+        _headerHeightSum = _rowHeightSum = 0;
+        _headerHeightCount = _rowHeightCount = 0;
+        _topsDirty = true;
     }
 
     protected override Size MeasureOverride(Size availableSize)
@@ -221,12 +251,7 @@ public sealed class VirtualGalleryPanel : Panel
         if (width != _measureWidth)
         {
             _measureWidth = width;
-            if (_knownHeights.Count > 0)
-            {
-                _knownHeights.Clear();
-                Array.Fill(_heights, double.NaN);
-                _topsDirty = true;
-            }
+            if (_knownHeights.Count > 0) ForgetHeightsCore();
         }
 
         int n = _items.Count;
@@ -250,7 +275,7 @@ public sealed class VirtualGalleryPanel : Panel
         if (_pendingTop)
         {
             _pendingTop = false;
-            _pendingScrollDelta += -viewport.Y;
+            _pendingScrollTo = 0;
             viewport = new Rect(viewport.X, 0, viewport.Width, viewport.Height);
         }
         if (_pendingAnchor is { } anchor)
@@ -259,7 +284,7 @@ public sealed class VirtualGalleryPanel : Panel
             if (TryResolveAnchor(anchor, out int anchorIndex, out double relativeTop))
             {
                 double targetY = Math.Max(0, _tops[anchorIndex] - relativeTop);
-                _pendingScrollDelta += targetY - viewport.Y;
+                _pendingScrollTo = targetY;
                 viewport = new Rect(viewport.X, targetY, viewport.Width, viewport.Height);
             }
         }
@@ -318,8 +343,10 @@ public sealed class VirtualGalleryPanel : Panel
         _coveredTop = _tops[first];
         _coveredBottom = y;
         double correction = _tops[visibleFirst] - visibleFirstTopBefore;
-        if (Math.Abs(correction) > 0.01) _pendingScrollDelta += correction;
+        if (Math.Abs(correction) > 0.01) _pendingScrollTo = viewport.Y + correction;
 
+        UpdatePinnedHeader();
+        if (_pinned is { IsVisible: true }) _pinned.Measure(measureSize);
         return new Size(0, _tops[n]);
     }
 
@@ -330,18 +357,84 @@ public sealed class VirtualGalleryPanel : Panel
             double height = double.IsNaN(_heights[index]) ? control.DesiredSize.Height : _heights[index];
             control.Arrange(new Rect(0, _tops[index], finalSize.Width, height));
         }
+        if (_pinned is { IsVisible: true }) _pinned.Arrange(new Rect(0, 0, finalSize.Width, _pinned.DesiredSize.Height));
         return finalSize;
     }
 
+    // The header of the group at the top of the view, kept at the view's top once the group's own header has scrolled
+    // away, so the rows below always say whose they are. The next group's header pushes it up as it comes. A control
+    // of its own (from HeaderTemplate, class "pinned"), above the rows; moved by a transform as the list scrolls, with
+    // no layout pass
+    private Control? _pinned;
+    private int _pinnedIndex = -1;
+    private readonly TranslateTransform _pinnedOffset = new();
+
+    private void UpdatePinnedHeader()
+    {
+        int index = PinnedHeaderIndex(out double y);
+        if (index < 0)
+        {
+            if (_pinned is not null) _pinned.IsVisible = false;
+            _pinnedIndex = -1;
+            return;
+        }
+        if (_pinned is null)
+        {
+            _pinned = HeaderTemplate?.Build(_items[index]);
+            if (_pinned is null) return;
+            _pinned.Classes.Add("pinned");
+            _pinned.Focusable = false;
+            _pinned.ZIndex = 1;
+            _pinned.RenderTransform = _pinnedOffset;
+            _pinned.DataContext = _items[index];
+            Children.Add(_pinned);
+        }
+        if (_pinnedIndex != index)
+        {
+            _pinned.DataContext = _items[index];
+            _pinnedIndex = index;
+        }
+        if (!_pinned.IsVisible)
+        {
+            _pinned.IsVisible = true;
+            InvalidateMeasure();
+        }
+        // Pushed up by the next header as it reaches the pinned one's bottom
+        double height = _pinned.DesiredSize.Height > 0 ? _pinned.DesiredSize.Height : EffectiveHeight(index);
+        int n = _items.Count, next = index + 1;
+        while (next < n && !_isHeader[next]) next++;
+        double top = next < n ? Math.Min(y, _tops[next] - height) : y;
+        _pinnedOffset.Y = top;
+    }
+
+    // The header to pin: of the group whose rows are at the top of the view, when its own is above it; -1 when the
+    // header at the top is in view (or there are no headers). y: the view's top
+    private int PinnedHeaderIndex(out double y)
+    {
+        y = Math.Max(0, double.IsNaN(_pendingScrollTo) ? _viewport.Y : _pendingScrollTo);
+        int n = _items.Count;
+        if (n == 0 || HeaderTemplate is null || _viewport.Height <= 0) return -1;
+        RecomputeTops();
+        int at = FindIndexAt(y), header = at;
+        while (header >= 0 && !_isHeader[header]) header--;
+        if (header < 0 || _tops[header] >= y - 0.5) return -1;
+        // A header partly above the top, the next item a header too: nothing of its group shows, nothing to pin
+        if (header == at && (at + 1 >= n || _isHeader[at + 1])) return -1;
+        return header;
+    }
+
+    /// <summary>The header pinned at the top of the view, or null when none is (tests)</summary>
+    internal Control? PinnedHeader => _pinned is { IsVisible: true } ? _pinned : null;
+
     private void OnLayoutUpdated(object? sender, EventArgs e)
     {
-        if (_pendingScrollDelta == 0 || _scrollViewer is not { } scrollViewer) return;
+        if (double.IsNaN(_pendingScrollTo) || _scrollViewer is not { } scrollViewer) return;
 
-        double delta = _pendingScrollDelta;
-        _pendingScrollDelta = 0;
+        double target = _pendingScrollTo;
+        _pendingScrollTo = double.NaN;
 
         double maxY = Math.Max(0, scrollViewer.Extent.Height - scrollViewer.Viewport.Height);
-        double newY = Math.Clamp(scrollViewer.Offset.Y + delta, 0, maxY);
+        double newY = Math.Clamp(target, 0, maxY);
         if (Math.Abs(newY - scrollViewer.Offset.Y) > 0.01)
             scrollViewer.Offset = new Vector(scrollViewer.Offset.X, newY);
     }
@@ -423,7 +516,9 @@ public sealed class VirtualGalleryPanel : Panel
         RecomputeTops();
 
         // The cards' slots, from a row that is built: every row starts at the same place and has cards of one width
-        double left = 0, pitch = 286, margin = 8;
+        // Without one: the layout's own step (one for every group)
+        double left = 0, margin = Models.CardLayout.Margin;
+        double pitch = _items.OfType<Models.GalleryRow>().FirstOrDefault()?.Group.CardStep ?? 286;
         foreach (var control in _realized.Values)
         {
             if (RowOf(control) is not { Children.Count: > 0 } presenter || presenter.Children[0] is not { IsVisible: true } card) continue;
@@ -530,7 +625,8 @@ public sealed class VirtualGalleryPanel : Panel
             double fallbackHeight = _scrollViewer is { Viewport.Height: > 0 } scrollViewer ? scrollViewer.Viewport.Height : 1000;
             viewport = new Rect(0, Math.Max(0, viewport.Y), width, fallbackHeight);
         }
-        return new Rect(viewport.X, Math.Max(0, viewport.Y + _pendingScrollDelta), viewport.Width, viewport.Height);
+        double y = double.IsNaN(_pendingScrollTo) ? viewport.Y : _pendingScrollTo;
+        return new Rect(viewport.X, Math.Max(0, y), viewport.Width, viewport.Height);
     }
 
     private AnchorSnapshot? CaptureAnchor()

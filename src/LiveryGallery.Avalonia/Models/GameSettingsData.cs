@@ -39,7 +39,13 @@ internal sealed class GameSettingsData
     /// not pixels: never a row cut in half, the same at another scale
     /// </summary>
     public int? TagsBarRows { get; set; }
-    public bool ServerConnectionEnabled { get; set; }
+    /// <summary>
+    /// The game's own switch of the livery server, as 1.7.x and 1.8.0-beta.1 wrote it: read once into
+    /// <see cref="AppSettingsData.ServerConnectionEnabled"/> (one switch for every game) and then not written again
+    /// </summary>
+    [JsonPropertyName("ServerConnectionEnabled")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? ServerConnectionOfGame { get; set; }
     public bool WarnArchiveWithoutInstalledData { get; set; } = true;
     public bool WarnArchiveWithOutdatedInstalledData { get; set; } = true;
     public string? GameInstallPath { get; set; }

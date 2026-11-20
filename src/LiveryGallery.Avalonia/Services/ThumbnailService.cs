@@ -47,6 +47,7 @@ internal static class ThumbnailService
             string? dir = Path.GetDirectoryName(destPngPath);
             if (dir is not null) Directory.CreateDirectory(dir);
             AtomicFile.WriteViaStream(destPngPath, stream => bitmap.Save(stream, PngBitmapEncoderOptions.Default));
+            PreviewColors.Learn(destPngPath, bitmap); // the card's colour while the picture loads
             return true;
         }
         catch (Exception ex)

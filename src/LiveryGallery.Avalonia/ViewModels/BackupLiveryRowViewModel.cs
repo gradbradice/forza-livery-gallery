@@ -1,37 +1,31 @@
-using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
 using LiveryGallery.Services;
 
 namespace LiveryGallery.ViewModels;
 
-internal sealed partial class BackupLiveryRowViewModel : ObservableObject, IThumbnailHost
+/// <summary>A livery of a backup that the save no longer has (to restore), or one the save has that the backup has not</summary>
+internal sealed class BackupLiveryRowViewModel : LiveryRowViewModel
 {
-    private BackupLiveryRowViewModel(LiveryData data, string? thumbnailPath)
+    private readonly string? _thumbnailPath;
+    private readonly bool _canCheck;
+
+    private BackupLiveryRowViewModel(LiveryData data, string? thumbnailPath, bool canCheck) : base(data)
     {
-        Data = data;
-        ThumbnailPath = thumbnailPath;
+        _thumbnailPath = thumbnailPath;
+        _canCheck = canCheck;
     }
 
+    /// <summary>A livery of the backup, to restore: its preview from the backup's previews when made already</summary>
     public static BackupLiveryRowViewModel FromBackup(LiveryData data, BackupPreviews previews, string? previewPath = null) =>
-        new(data, previewPath ?? previews.FindExisting(data.ThumbnailPath));
+        new(data, previewPath ?? previews.FindExisting(data.ThumbnailPath), canCheck: true);
 
-    public bool NeedsPreview => ThumbnailPath is null && !string.IsNullOrEmpty(Data.ThumbnailPath);
+    /// <summary>A livery of the save the backup has not: only shown</summary>
     public static BackupLiveryRowViewModel FromCurrent(LiveryData data) =>
-        new(data, data.ThumbnailPath is { Length: > 0 } path ? path : null);
+        new(data, data.ThumbnailPath is { Length: > 0 } path ? path : null, canCheck: false);
 
-    public LiveryData Data { get; }
+    /// <summary>Its preview is still to be made from the backup</summary>
+    public bool NeedsPreview => ThumbnailPath is null && !string.IsNullOrEmpty(Data.ThumbnailPath);
 
-    public string FolderName => Data.FolderName;
-    public string LiveryName => Data.DisplayLiveryName;
-    public string LiveryIdText => LiveryRestoreConflicts.FormatLiveryId(Data.LiveryId);
-    public string AuthorRaw => Data.DisplayAuthorRaw;
-    public string CarManufacturer => Data.CarManufacturerRaw;
-    public string CarModelName => Data.CarModelNameRaw;
-    public string? ThumbnailPath { get; }
+    public override string? ThumbnailPath => _thumbnailPath;
 
-    [ObservableProperty]
-    private bool _isSelected;
-
-    [ObservableProperty]
-    private Bitmap? _thumbnail;
+    public override bool CanCheck => _canCheck;
 }

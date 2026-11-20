@@ -4,6 +4,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
+using LiveryGallery.Models;
 using LiveryGallery.Configuration;
 using LiveryGallery.Controller;
 using LiveryGallery.Localisation;
@@ -117,13 +118,17 @@ internal partial class MainWindow : Window
         };
 
         DataContext = _mainViewModel;
+        ((CardScope)Resources["CardScope"]!).Main = _mainViewModel;
         rendered.KeepStored = _mainViewModel.KeepDrawnPreview;
         _saveFolderWatcher = new SaveFolderWatcher(ct => _mainViewModel.RunAutoRefreshAsync(ct), profile);
         _mainViewModel.SavePathChanged += SyncSaveFolderWatcher;
 
+        var profileData = new ProfileDataLocator(profile.Saves, profile.SaveLayout);
+        // FH3 to FH5: the server is told which build's files the save is (Steam or Microsoft Store)
+        if (serverClient is ISaveStoreAware storeAware) storeAware.SaveStore = () => profileData.StoreKindOf(_savePathService.SavePath);
         _serverConnection = new ServerConnectionController(
             serverClient,
-            new ProfileDataLocator(profile.Saves),
+            profileData,
             new InstalledLiveriesCache(Path.Combine(storage.Paths.Root, InstalledLiveriesCache.DefaultFileName)),
             _mainViewModel.ServerStatus,
             () => _savePathService.ResolveSaveDataPath(),
@@ -153,7 +158,7 @@ internal partial class MainWindow : Window
                 _serverConnection.SetWindowVisible(WindowState != WindowState.Minimized);
         };
         _mainViewModel.Gallery.AuthorRowRequested += entry => RunUiTask(() => ShowAuthorRowAsync(entry), "author card");
-        _mainViewModel.Gallery.EditTagsRequested += entries => RunUiTask(() => ShowEditTagsAsync(entries), "edit tags");
+        _mainViewModel.Gallery.EditTagsRequested += _ => ShowTagsInPanel();
         // From the selection: the selected liveries left out (an account's id) are counted in the dialog
         _mainViewModel.Gallery.AssignAuthorRequested += entries => RunUiTask(() => AssignAuthorAsync(entries, null,
             entries.All(e => e.IsSelected) ? _mainViewModel.Gallery.SelectedCount - entries.Count : 0), "assign author");
@@ -172,7 +177,7 @@ internal partial class MainWindow : Window
         _mainViewModel.ChangesSinceLastLaunchFound += changes =>
             RunUiTask(() => ShowChangesSinceLastLaunchAsync(changes), "changes since last launch");
         _mainViewModel.ErrorMessageRequested += message =>
-            RunUiTask(() => InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, message), "error message");
+            RunUiTask(() => Warn(message), "error message");
         _mainViewModel.ConfirmArchiveWithoutInstalledDataAsync = (count, toStorage) => AskArchiveWarningAsync(toStorage
             ? count == 1 ? Strings.StorageInstalledUnknownMessage : Strings.StorageInstalledUnknownMessageMany
             : count == 1 ? Strings.ArchiveInstalledUnknownMessage : Strings.ArchiveInstalledUnknownMessageMany, toStorage);
@@ -180,15 +185,22 @@ internal partial class MainWindow : Window
             ? count == 1 ? Strings.StorageInstalledOutdatedMessage : Strings.StorageInstalledOutdatedMessageMany
             : count == 1 ? Strings.ArchiveInstalledOutdatedMessage : Strings.ArchiveInstalledOutdatedMessageMany, toStorage);
         _mainViewModel.IsInstalledDataOutdatedAsync = () => _serverConnection.IsInstalledResultOutdatedAsync(_shutdownCts.Token);
-        _mainViewModel.ConfirmWhileGameRunningAsync = () => ConfirmDialog.AskAsync(
-            this, string.Format(Strings.GameRunningTitleFormat, _profile.Game.Name), Strings.GameRunningFileChangeMessage, Strings.GameRunningContinueButton, Strings.ButtonCancel);
+        _mainViewModel.Ask.AskOver(this, _profile.Game.Name);
         _mainViewModel.GameFolderStateProvider = () => new GameFolderState(_viewer3D.IsChecking, _viewer3D.GameDirectory);
         InitializeRoom();
+        InitializeCardSize();
+        InitializeAccessibility();
+        InitializeSelectionBar();
         InitializeStorageMode();
         InitializeStorageFolders();
 
         GalleryPanel.AnchorKeySelector = GetGalleryAnchorKeys;
         _mainViewModel.Gallery.GroupsReplaced += OnGroupsReplaced;
+        // Another size of cards: other columns, or the same ones with cards of another height
+        _mainViewModel.Gallery.PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(GalleryViewModel.CardSize) && _isLoaded) UpdateGroupWidthsOnly(sizeChanged: true);
+        };
 
         ApplyLocalizedTexts();
 
@@ -208,6 +220,17 @@ internal partial class MainWindow : Window
         {
             _resizeDebounceTimer.Stop();
             _resizeDebounceTimer.Start();
+        };
+        // The list's room narrows without the window: a scroll bar comes (the rows first laid out without it), the
+        // storage's folders. The cards are laid out again at once, so they do not run under the bar. Not when it widens
+        // (the bar goes): laid out wider, the list could grow its bar again and swing between the two. A resize of the
+        // window lays out anyway, after it
+        GalleryScroll.PropertyChanged += (_, e) =>
+        {
+            if (e.Property != ScrollViewer.ViewportProperty || _resizeDebounceTimer.IsEnabled || !_isLoaded) return;
+            double before = e.GetOldValue<Size>().Width, now = e.GetNewValue<Size>().Width;
+            if (!(now > 0) || !(now < before - 0.5)) return;
+            Dispatcher.UIThread.Post(() => { if (_isLoaded) UpdateGroupWidthsOnly(); }, DispatcherPriority.Background);
         };
 
         Loaded += MainWindow_Loaded;
@@ -306,12 +329,17 @@ internal partial class MainWindow : Window
         }
     }
 
-    private void UpdateGroupWidthsOnly()
+    // The cards' layout for the list's width and the cards' size (Models/CardLayout): the rows are built again only
+    // when the number of columns changes; else only the cards' width changes, and with it their heights
+    /// <param name="sizeChanged">The cards' size changed: their height too, even in as many columns</param>
+    private void UpdateGroupWidthsOnly(bool sizeChanged = false)
     {
-        double width = ComputeGroupWidth();
-        if (_mainViewModel.Gallery.GroupWidth == width) return;
-        _mainViewModel.Gallery.GroupWidth = width;
-        RebuildGalleryItems(preservePosition: true);
+        var layout = CardLayout.For(GalleryWidth(), _mainViewModel.Gallery.CardSize);
+        var before = _mainViewModel.Gallery.CardLayout;
+        if (_mainViewModel.Gallery.SetCardLayout(layout))
+            RebuildGalleryItems(preservePosition: true);
+        else if (sizeChanged || layout.CardWidth != before.CardWidth)
+            GalleryPanel.ForgetHeights();
     }
 
     private readonly HashSet<string> _collapsedGroupKeys = new(StringComparer.Ordinal);
@@ -428,18 +456,31 @@ internal partial class MainWindow : Window
 
     private void MainWindow_Loaded(object? sender, RoutedEventArgs e) => RunUiTask(OnLoadedAsync, "startup");
 
+    // The pointer over a short message holds it; its time starts again when the pointer leaves
+    private void Toast_PointerEntered(object? sender, Avalonia.Input.PointerEventArgs e) => _mainViewModel.Notices.HoldToast(true);
+
+    private void Toast_PointerExited(object? sender, Avalonia.Input.PointerEventArgs e) => _mainViewModel.Notices.HoldToast(false);
+
     private async Task OnLoadedAsync()
     {
         _isLoaded = true;
         // Card previews are decoded for this screen's scale; a move to another screen changes it
-        ThumbnailCacheService.DisplayScaling = RenderScaling;
-        ScalingChanged += (_, _) => ThumbnailCacheService.DisplayScaling = RenderScaling;
+        // The previews' pixels: the screen's scale times the interface's own
+        ThumbnailCacheService.DisplayScaling = RenderScaling * ForzaToolkit.UI.UiScale.Current;
+        ScalingChanged += (_, _) => ThumbnailCacheService.DisplayScaling = RenderScaling * ForzaToolkit.UI.UiScale.Current;
+        ForzaToolkit.UI.UiScale.Changed += OnUiScaleChanged;
+        Closed += (_, _) => ForzaToolkit.UI.UiScale.Changed -= OnUiScaleChanged; // a static event would hold the window
         UpdateGroupWidthsOnly();
         // The data of 1.6.0 could not be copied at start: said once, the gallery runs on and tries again next time
+        // What needs telling at start goes to the notices' bar over the gallery, not to windows: the gallery works meanwhile
         if (DataMigration.FailedFrom is { } oldFolder)
-            await InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, string.Format(Strings.MigrationFailedMessageFormat, oldFolder));
+            _mainViewModel.Notices.Add(NoticeKind.Warning, Configuration.AppSettings.Identity.Name,
+                string.Format(Strings.MigrationFailedMessageFormat, oldFolder));
         if (_mainViewModel.WasSavedPathMissing)
-            await InfoDialog.ShowAsync(this, Strings.FolderNotFoundTitle, Strings.SavedPathNotFoundNotice);
+            _mainViewModel.Notices.Add(NoticeKind.Warning, Strings.FolderNotFoundTitle, Strings.SavedPathNotFoundNotice,
+                new NoticeAction(Strings.NoticeChooseFolder, () => RunUiTask(() => _mainViewModel.PromptForSavePathAsync(initial: false), "save folder")));
+        // Tags, notes, favourites, locks that did not read: held by another program (not written over), or broken
+        ShowUserDataProblems();
         if (_isClosing) return;
 
         RunUiTask(ApplyGamePathAsync, "game folder");
@@ -564,7 +605,7 @@ internal partial class MainWindow : Window
     {
         if (!_viewer3D.IsAvailable)
         {
-            await InfoDialog.ShowAsync(this, Strings.View3DDialogTitle, entries[0].View3DTooltip);
+            await Tell(entries[0].View3DTooltip);
             return;
         }
         var shown = _mainViewModel.Gallery.ShownEntries();
@@ -594,7 +635,7 @@ internal partial class MainWindow : Window
     {
         if (!_viewer3D.IsAvailable)
         {
-            await InfoDialog.ShowAsync(this, Strings.View3DDialogTitle, entry.View3DTooltip);
+            await Tell(entry.View3DTooltip);
             return;
         }
 
@@ -605,7 +646,7 @@ internal partial class MainWindow : Window
             : _savePathService.ResolveSaveDataPath() is { } savePath ? _profile.Liveries.GetFiles(savePath, entry.FolderName).LiveryPath : null;
         if (liveryPath is null)
         {
-            await InfoDialog.ShowAsync(this, Strings.View3DDialogTitle, Strings.View3DReadFailed);
+            await Warn(Strings.View3DReadFailed, title: Strings.View3DDialogTitle);
             return;
         }
         var result = await _viewer3D.ShowAsync(this, new Livery3DRequest(entry.LiveryName, entry.CarId, liveryPath, _profile.Game.Name, entry.CarTitleWithId)
@@ -621,7 +662,7 @@ internal partial class MainWindow : Window
             Livery3DProblem.ParseFailed => string.Format(Strings.View3DParseFailedFormat, result.Detail ?? "?"),
             _ => null,
         };
-        if (problem is not null) await InfoDialog.ShowAsync(this, Strings.View3DDialogTitle, problem);
+        if (problem is not null) await Warn(problem, title: Strings.View3DDialogTitle);
     }
 
     private Task<(bool Confirmed, bool DontShowAgain)> AskArchiveWarningAsync(string message, bool toStorage = false) =>
@@ -660,21 +701,33 @@ internal partial class MainWindow : Window
 
     private void RefreshGallery() => _mainViewModel.RefreshGallery();
 
-    private const double CardStep = 286;
-    private const double Reserve = 32;
-
-    private double ComputeGroupWidth()
+    // The width the cards share: the list's, less a point so that rounding never makes a row wider than it
+    private void OnUiScaleChanged(object? sender, EventArgs e)
     {
-        double viewportWidth = GalleryScroll.Viewport.Width;
-        if (viewportWidth <= 0)
-            viewportWidth = ClientSize.Width;
+        if (_isClosing) return;
+        ThumbnailCacheService.DisplayScaling = RenderScaling * ForzaToolkit.UI.UiScale.Current;
+        // The window's room in points changed: the cards are laid out for it, once the window is (its viewport is the
+        // old one until then)
+        Dispatcher.UIThread.Post(() => { if (_isLoaded && !_isClosing) UpdateGroupWidthsOnly(); }, DispatcherPriority.Background);
+    }
 
-        double usable = viewportWidth - Reserve;
-        int columns = Math.Max(1, (int)(usable / CardStep));
-        if ((columns + 1) * CardStep <= viewportWidth)
-            columns += 1;
+    // The vertical scroll bar's width, as last seen shown (the theme's, until then)
+    private double _scrollBarWidth = 16;
 
-        return Math.Max(columns * CardStep, CardStep);
+    private double GalleryWidth()
+    {
+        // The scroll viewer's viewport takes in its padding: the rows have the room inside it. The scroll bar has a
+        // column of its own (the toolkit's style): its room is kept whether it shows or not, so the cards do not move
+        // when it comes with the first rows or goes with a filter
+        double width = GalleryScroll.Viewport.Width;
+        if (width <= 0) width = ClientSize.Width;
+        // In the template's grid, beside the content (not the whole tree of cards)
+        var bar = GalleryScroll.GetVisualChildren().SelectMany(c => c.GetVisualChildren()).OfType<Avalonia.Controls.Primitives.ScrollBar>()
+            .FirstOrDefault(b => b.Orientation == Avalonia.Layout.Orientation.Vertical);
+        if (bar is { IsVisible: true, Bounds.Width: > 0 }) _scrollBarWidth = bar.Bounds.Width;
+        else width -= _scrollBarWidth;
+        width -= GalleryScroll.Padding.Left + GalleryScroll.Padding.Right;
+        return Math.Max(0, Math.Floor(width) - 1);
     }
 
     /// <param name="entry">A livery of the author</param>
@@ -694,7 +747,7 @@ internal partial class MainWindow : Window
             await AssignAuthorAsync(entry, owner);
             return;
         }
-        await InfoDialog.ShowAsync(owner, Strings.AuthorCardViewNoCardTitle, Strings.AuthorUnknownMessage);
+        await Tell(Strings.AuthorUnknownMessage, owner, Strings.AuthorCardViewNoCardTitle);
     }
 
     private AuthorCardViewActions AuthorCardActions() => new(
@@ -723,7 +776,7 @@ internal partial class MainWindow : Window
         if (!saved || dialog.Result is not { } result) return null;
         if (!await _mainViewModel.TrySaveAuthorCard(result))
         {
-            await InfoDialog.ShowAsync(owner, Strings.AssignAuthorDialogTitle, Strings.AssignAuthorFailedMessage);
+            await Warn(Strings.AssignAuthorFailedMessage, owner, Strings.AssignAuthorDialogTitle);
             return null;
         }
         return _authorCardService.FindCard(result.Id) ?? result;
@@ -746,20 +799,18 @@ internal partial class MainWindow : Window
             over => EditAuthorCardAsync(over, null), skipped);
         if (!await dialog.ShowDialog<bool>(owner) || dialog.Result is not { } card) return;
         if (!await _mainViewModel.AssignAuthorAsync(entries, card))
-            await InfoDialog.ShowAsync(owner, Strings.AssignAuthorDialogTitle, Strings.AssignAuthorFailedMessage);
+            await Warn(Strings.AssignAuthorFailedMessage, owner, Strings.AssignAuthorDialogTitle);
     }
 
     /// <summary>
-    /// Every tag of the gallery as a box, ticked when the livery has it (with several: on all, some or none of them),
-    /// and new tags typed as a list
+    /// The tags of the selection (T, the menu, the bar, a card's tag button: it selects its card): the properties panel
+    /// opens, the cursor in its tag field. The panel stays open, as if the user had opened it
     /// </summary>
-    private async Task ShowEditTagsAsync(IReadOnlyList<LiveryEntry> entries, Window? owner = null)
+    private void ShowTagsInPanel()
     {
-        owner ??= this;
-        var knownTags = _mainViewModel.TagsBar.AllTags.Select(t => t.Tag).ToList();
-        var dialog = new TagEditDialog(entries.Select(e => e.Tags).ToList(), knownTags);
-        if (await dialog.ShowDialog<bool>(owner))
-            _mainViewModel.ApplyTagsChange(entries, dialog.TagsToAdd, dialog.TagsToRemove);
+        if (_showingScreenshots) return;
+        _mainViewModel.IsPropertiesOpen = true;
+        Dispatcher.UIThread.Post(PropertiesPanel.FocusTags, DispatcherPriority.Loaded);
     }
 
     /// <summary>A right click on a tag in the tags row hides its liveries (or shows them again)</summary>
@@ -809,12 +860,14 @@ internal partial class MainWindow : Window
             SetNote: _mainViewModel.SetNote,
             ToggleFavorite: e => _mainViewModel.Gallery.ToggleFavoriteCommand.Execute(e),
             ToggleLock: e => _mainViewModel.Gallery.ToggleLockCommand.Execute(e),
+            ApplyTags: _mainViewModel.ApplyTagsChange,
+            StorageBlocked: _mainViewModel.StorageBlockedReasonFor,
+            ArchiveBlocked: _mainViewModel.ArchiveBlockedReasonFor,
             Screenshots: _mainViewModel.Screenshots,
             ScreenshotFormat: () => (_settings.ScreenshotsWebP ? Services.Screenshots.ScreenshotFormat.WebP : Services.Screenshots.ScreenshotFormat.Original,
                 _settings.ScreenshotsWebPQuality));
         var vm = new LiveryDetailsViewModel(source, _mainViewModel.Gallery.ShownEntries(), entry);
         var dialog = new LiveryDetailsDialog(vm, new LiveryDetailsDialogActions(
-            EditTags: (owner, e) => ShowEditTagsAsync([e], owner),
             OpenAuthor: (owner, e) => ShowAuthorRowAsync(e, owner),
             EditAuthorCard: EditAuthorCardAsync));
         await dialog.ShowDialog(this);
@@ -822,7 +875,7 @@ internal partial class MainWindow : Window
         var outcome = dialog.Outcome;
         // The double click selected the card it opened: one livery selected goes back to none (the archive keeps it, it
         // archives what is selected)
-        if (!_isClosing && outcome.Next != LiveryDetailsNext.Archive && _mainViewModel.Gallery.SelectedCount == 1)
+        if (!_isClosing && outcome.Next is not (LiveryDetailsNext.Archive or LiveryDetailsNext.Storage) && _mainViewModel.Gallery.SelectedCount == 1)
             _mainViewModel.Gallery.ClearSelectionCommand.Execute(null);
         if (_isClosing || outcome.Entry is not { } target) return;
         switch (outcome.Next)
@@ -838,6 +891,11 @@ internal partial class MainWindow : Window
                 _mainViewModel.Gallery.SelectOnlyCommand.Execute(target);
                 if (_mainViewModel.MoveSelectedToArchiveCommand.CanExecute(null))
                     await _mainViewModel.MoveSelectedToArchiveCommand.ExecuteAsync(null);
+                break;
+            case LiveryDetailsNext.Storage:
+                _mainViewModel.Gallery.SelectOnlyCommand.Execute(target);
+                if (_mainViewModel.MoveSelectedToStorageCommand.CanExecute(null))
+                    await _mainViewModel.MoveSelectedToStorageCommand.ExecuteAsync(null);
                 break;
             case LiveryDetailsNext.Filter when outcome.Filter is { } filter:
                 _mainViewModel.ApplyQuickFilter(filter);
@@ -863,7 +921,7 @@ internal partial class MainWindow : Window
         string? webpPath = PreviewPathOf(entry);
         if (webpPath is null)
         {
-            await InfoDialog.ShowAsync(this, Strings.PreviewDialogTitle, Strings.PreviewNotFoundMessage);
+            await Tell(Strings.PreviewNotFoundMessage);
             return;
         }
 
@@ -921,7 +979,7 @@ internal partial class MainWindow : Window
             card.ContextMenu = menu;
             _cardMenuOwner = card;
         }
-        if (entry.IsStored) FillMoveToFolderMenu(card);
+        FillCardMenu(menu, entry);
         e.Handled = true;
         menu.Open(card);
     }
@@ -952,7 +1010,8 @@ internal partial class MainWindow : Window
             new AccountDataActions(_mainViewModel.ListStoredAccountsAsync, _mainViewModel.ForgetAccountAsync,
                 _mainViewModel.ListAccountsAsync, _mainViewModel.AddAccountAsync),
             _mainViewModel.CarTextLanguages, _mainViewModel.Screenshots,
-            new StorageActions(_mainViewModel.ListStoragesAsync, ChangeStorageFolderAsync, () => _storage.FoldersOnDisk, SetStorageFoldersOnDiskAsync));
+            new StorageActions(_mainViewModel.ListStoragesAsync, ChangeStorageFolderAsync, () => _storage.FoldersOnDisk, SetStorageFoldersOnDiskAsync),
+            () => _viewer3D.DrawnWithNote);
         await dlg.ShowDialog(this);
         if (_isClosing) return;
         if (dlg.SavePathChanged) await _mainViewModel.HandleSavePathChangedFromSettingsAsync();
@@ -999,7 +1058,7 @@ internal partial class MainWindow : Window
         // Each account has its own archive: there is none to show before a save folder is chosen
         if (CurrentAccountKey is not { } accountKey)
         {
-            RunUiTask(() => InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, Strings.ArchiveNoSavePathMessage), "archive without a save");
+            RunUiTask(() => Tell(Strings.ArchiveNoSavePathMessage), "archive without a save");
             return;
         }
         var dialog = new ArchiveDialog(_storage.ArchiveOf(accountKey), _savePathService,
@@ -1019,7 +1078,7 @@ internal partial class MainWindow : Window
         SettingsButton.Flyout?.Hide();
         if (CurrentAccountKey is not { } accountKey)
         {
-            RunUiTask(() => InfoDialog.ShowAsync(this, Configuration.AppSettings.Identity.Name, Strings.ArchiveNoSavePathMessage), "backups without a save");
+            RunUiTask(() => Tell(Strings.ArchiveNoSavePathMessage), "backups without a save");
             return;
         }
         var dialog = new BackupsDialog(

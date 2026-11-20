@@ -14,7 +14,7 @@ internal partial class ContactsDialog : Window
         InitializeComponent();
 
         Title = Strings.ContactsTitle;
-        TitleBarText.Text = Strings.ContactsTitle;
+        Bar.Title = Strings.ContactsTitle;
         TitleText.Text = Strings.ContactsTitle;
         GithubLinkButton.Content = Strings.ContactsGithubLabel;
         TwitterRow.IsVisible = AppSettings.Identity.XUrl is not null;
@@ -25,8 +25,6 @@ internal partial class ContactsDialog : Window
         EmailText.Text = AppSettings.Identity.Email;
         CloseDialogButton.Content = Strings.ButtonClose;
     }
-
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
 
     private void GithubLink_Click(object? sender, RoutedEventArgs e) => TrustedUrlLauncher.TryOpen(AppSettings.Identity.GitHubUrl);
 
@@ -40,5 +38,6 @@ internal partial class ContactsDialog : Window
         if (AppSettings.Identity.DiscordUrl is { } url) TrustedUrlLauncher.TryOpen(url);
     }
 
-    private void CloseButton_Click(object? sender, RoutedEventArgs e) => Close();
+    // The "Close" button at the bottom (the cross is the title bar's)
+    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 }

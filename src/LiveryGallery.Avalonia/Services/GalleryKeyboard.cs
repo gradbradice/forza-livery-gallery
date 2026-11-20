@@ -1,3 +1,4 @@
+using ForzaToolkit.Core.Collections;
 using Avalonia.Input;
 
 namespace LiveryGallery.Services;
@@ -15,22 +16,6 @@ internal enum GalleryMove
     End,
 }
 
-/// <summary>What a key of the arrows does with the selection, as in Explorer</summary>
-internal enum GalleryMoveSelection
-{
-    /// <summary>No modifier: the card moved to is selected alone</summary>
-    SelectOnly,
-
-    /// <summary>Shift: the cards from the anchor to the one moved to are selected</summary>
-    Extend,
-
-    /// <summary>Ctrl: only the cursor moves; Space then adds the card to the selection or takes it out</summary>
-    CursorOnly,
-
-    /// <summary>Ctrl+Shift: the cards from the anchor to the one moved to are added to the selection</summary>
-    ExtendAdd,
-}
-
 /// <summary>
 /// The arrows, Home, End, Page Up and Page Down of the gallery: from a card to another in the rows on screen (a folded
 /// group's cards left out). ← and → go on to the row before or after, ↑ and ↓ keep the column (the last card of a
@@ -39,7 +24,7 @@ internal enum GalleryMoveSelection
 internal static class GalleryKeyboard
 {
     /// <summary>The move and the selection of a key; null for a key that is not one of them (or with Alt, Win)</summary>
-    public static (GalleryMove Move, GalleryMoveSelection Selection)? Match(Key key, KeyModifiers modifiers)
+    public static (GalleryMove Move, SelectionMove Selection)? Match(Key key, KeyModifiers modifiers)
     {
         GalleryMove? move = key switch
         {
@@ -54,12 +39,12 @@ internal static class GalleryKeyboard
             _ => null,
         };
         if (move is null) return null;
-        GalleryMoveSelection? selection = modifiers switch
+        SelectionMove? selection = modifiers switch
         {
-            KeyModifiers.None => GalleryMoveSelection.SelectOnly,
-            KeyModifiers.Shift => GalleryMoveSelection.Extend,
-            KeyModifiers.Control => GalleryMoveSelection.CursorOnly,
-            KeyModifiers.Control | KeyModifiers.Shift => GalleryMoveSelection.ExtendAdd,
+            KeyModifiers.None => SelectionMove.SelectOnly,
+            KeyModifiers.Shift => SelectionMove.Extend,
+            KeyModifiers.Control => SelectionMove.CursorOnly,
+            KeyModifiers.Control | KeyModifiers.Shift => SelectionMove.ExtendAdd,
             _ => null,
         };
         return selection is null ? null : (move.Value, selection.Value);

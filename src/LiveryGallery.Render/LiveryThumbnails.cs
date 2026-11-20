@@ -16,7 +16,9 @@ internal sealed class LiveryThumbnails : ILiveryThumbnails
     private static readonly TimeSpan IdleRelease = TimeSpan.FromSeconds(10);
 
     // The game's preview camera and size, so a drawn preview sits among the game's ones
-    private static readonly RenderOptions Options = new();
+    private readonly RenderOptions _options;
+    // The format the livery files are read in: the game's
+    private readonly ForzaToolkit.Formats.ForzaGame _format;
 
     private readonly LiveryRenderService _service;
     private readonly DispatcherTimer _idleTimer;
@@ -25,9 +27,14 @@ internal sealed class LiveryThumbnails : ILiveryThumbnails
     private int _running;
     private bool _shuttingDown;
 
-    public LiveryThumbnails(LiveryRenderService service)
+    /// <param name="service">The renderer shared with the 3D windows</param>
+    /// <param name="format">The game of the livery files</param>
+    /// <param name="options">The game's preview size and camera (<see cref="LiveryFileDrawing.PreviewOptions"/>)</param>
+    public LiveryThumbnails(LiveryRenderService service, ForzaToolkit.Formats.ForzaGame format, RenderOptions options)
     {
         _service = service;
+        _format = format;
+        _options = options;
         _idleTimer = new DispatcherTimer { Interval = IdleRelease };
         _idleTimer.Tick += (_, _) =>
         {
@@ -50,7 +57,7 @@ internal sealed class LiveryThumbnails : ILiveryThumbnails
         try
         {
             byte[] bytes = await File.ReadAllBytesAsync(request.LiveryFilePath, ct);
-            var drawing = await Task.Run(() => LiveryDrawings.FromCLivery((uint)request.CarId, bytes), ct);
+            var drawing = await Task.Run(() => LiveryFileDrawing.Read(_format, (uint)request.CarId, bytes), ct);
             if (!drawing.HasValue)
             {
                 AppLog.LogWarning($"Preview from 3D: '{request.LiveryFilePath}' not parsed ({drawing.Error?.Code})");
@@ -59,7 +66,7 @@ internal sealed class LiveryThumbnails : ILiveryThumbnails
 
             var renderer = await AcquireAsync();
             if (renderer is null || _shuttingDown) return null;
-            var image = await renderer.RenderThumbnailAsync(drawing.Value!, Options, ct: ct);
+            var image = await renderer.RenderThumbnailAsync(drawing.Value!, _options, ct: ct);
             if (!image.HasValue)
             {
                 AppLog.LogWarning($"Preview from 3D: car {request.CarId}, '{request.LiveryFilePath}': {image.Error}");

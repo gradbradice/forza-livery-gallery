@@ -1,5 +1,4 @@
 using Avalonia.Media.Imaging;
-using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ForzaToolkit.Liveries.History;
 using LiveryGallery.Localisation;
@@ -18,7 +17,10 @@ internal sealed record LiveryDetailsSource(
     Action<LiveryEntry> ToggleFavorite,
     Action<LiveryEntry> ToggleLock,
     Services.Screenshots.ScreenshotStore? Screenshots = null,
-    Func<(Services.Screenshots.ScreenshotFormat Format, int Quality)>? ScreenshotFormat = null);
+    Func<(Services.Screenshots.ScreenshotFormat Format, int Quality)>? ScreenshotFormat = null,
+    Action<IReadOnlyList<LiveryEntry>, IReadOnlyCollection<string>, IReadOnlyCollection<string>>? ApplyTags = null,
+    Func<LiveryEntry, string?>? StorageBlocked = null,
+    Func<LiveryEntry, string?>? ArchiveBlocked = null);
 
 /// <summary>A small card of another livery (the author's, a similar one): a click opens it in the same window</summary>
 internal sealed partial class LiveryThumbItem(LiveryEntry entry, string detail, bool isExact) : ObservableObject
@@ -46,20 +48,21 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
 
     private readonly LiveryDetailsSource _source;
     private readonly IReadOnlyList<LiveryEntry> _shown;
-    private readonly DispatcherTimer _noteTimer = new() { Interval = TimeSpan.FromMilliseconds(600) };
     private CancellationTokenSource _loadCts = new();
-    private bool _noteDirty;
-    private bool _loadingNote;
     private IReadOnlyList<LiveryBackupManifest?>? _manifests;
 
     public LiveryDetailsViewModel(LiveryDetailsSource source, IReadOnlyList<LiveryEntry> shown, LiveryEntry start)
     {
         _source = source;
         _shown = shown;
-        _noteTimer.Tick += (_, _) => SaveNote();
         _entry = start;
+        Note = new NoteEditorViewModel((entry, note) => source.SetNote(entry, note));
+        TagEditor = new TagEditorViewModel(() => [Entry], () => source.AllEntries(), (entries, add, remove) => source.ApplyTags?.Invoke(entries, add, remove));
         Load(start);
     }
+
+    /// <summary>The livery's tags, as the properties panel edits them</summary>
+    public TagEditorViewModel TagEditor { get; }
 
     [ObservableProperty] private LiveryEntry _entry;
     [ObservableProperty] private Bitmap? _preview;
@@ -68,6 +71,23 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
     [ObservableProperty] private bool _hasPosition;
     [ObservableProperty] private bool _canGoPrevious;
     [ObservableProperty] private bool _canGoNext;
+
+    /// <summary>"Move to the storage" shown: a livery of the game (a stored one is there already)</summary>
+    [ObservableProperty] private bool _showMoveToStorage;
+
+    /// <summary>Why the livery cannot go into the storage (the button greyed out, this its tooltip); null when it can</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanMoveToStorage))]
+    private string? _storageBlockedReason;
+
+    /// <summary>Why the livery cannot go to the trash (FH3 to FH5: only shown; locked…); null when it can</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanMoveToArchive))]
+    private string? _archiveBlockedReason;
+
+    public bool CanMoveToStorage => StorageBlockedReason is null;
+
+    public bool CanMoveToArchive => ArchiveBlockedReason is null;
     [ObservableProperty] private string _carLine = "";
     [ObservableProperty] private string _authorText = "";
     /// <summary>The livery's badges, the card's (Views/LiveryBadges.cs): each with its name and what it means here</summary>
@@ -82,8 +102,6 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
     [ObservableProperty] private string _layersText = "";
     [ObservableProperty] private string _backupsText = Strings.LiveryDetailsCounting;
     [ObservableProperty] private bool _backupsMissing;
-    [ObservableProperty] private string _noteStatus = "";
-    [ObservableProperty] private string _noteCount = "";
     [ObservableProperty] private bool _hasAuthorCard;
     [ObservableProperty] private string _authorNoteText = "";
     [ObservableProperty] private bool _hasAuthorNote;
@@ -99,28 +117,8 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
     [ObservableProperty] private IReadOnlyList<LiveryThumbItem> _similar = [];
     [ObservableProperty] private bool _hasSimilar;
 
-    private string _noteText = "";
-    /// <summary>The note as typed; saved a moment after typing stops</summary>
-    public string NoteText
-    {
-        get => _noteText;
-        set
-        {
-            value ??= "";
-            if (value.Length > NoteService.MaxLength) value = value[..NoteService.MaxLength];
-            if (_noteText == value) return;
-            _noteText = value;
-            OnPropertyChanged();
-            NoteCount = $"{value.Length} / {NoteService.MaxLength}";
-            if (_loadingNote) return;
-            _noteDirty = true;
-            NoteStatus = "";
-            _noteTimer.Stop();
-            _noteTimer.Start();
-        }
-    }
-
-    public int NoteMaxLength => NoteService.MaxLength;
+    /// <summary>The livery's note as it is typed, saved by itself (the same editor as the properties panel's)</summary>
+    public NoteEditorViewModel Note { get; }
 
     /// <summary>The window title</summary>
     public string Title => string.Format(Strings.LiveryDetailsTitleFormat, Entry.LiveryName);
@@ -145,7 +143,7 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
     public void Show(LiveryEntry entry)
     {
         if (ReferenceEquals(entry, Entry)) return;
-        SaveNote();
+        Note.Save();
         Entry = entry;
         Load(entry);
     }
@@ -168,14 +166,7 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
     public AuthorCard? AuthorCard() => _source.AuthorCard(Entry);
 
     /// <summary>Saves a note typed and not saved yet</summary>
-    public void SaveNote()
-    {
-        _noteTimer.Stop();
-        if (!_noteDirty) return;
-        _noteDirty = false;
-        _source.SetNote(Entry, _noteText);
-        NoteStatus = Strings.LiveryDetailsNoteSaved;
-    }
+    public void SaveNote() => Note.Save();
 
     private int IndexOf(LiveryEntry entry)
     {
@@ -186,6 +177,12 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
 
     private void Load(LiveryEntry entry, bool reloadImages = true)
     {
+        // What it can be moved to, as the gallery's menu says (a lock set in this window changes it: Refresh)
+        ShowMoveToStorage = !entry.IsStored && _source.StorageBlocked is not null;
+        StorageBlockedReason = ShowMoveToStorage ? _source.StorageBlocked!(entry) : null;
+        ArchiveBlockedReason = _source.ArchiveBlocked?.Invoke(entry);
+
+        TagEditor.Refresh();
         var all = _source.AllEntries();
         int index = IndexOf(entry);
         HasPosition = index >= 0;
@@ -194,11 +191,7 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
         CanGoNext = index >= 0 && index < _shown.Count - 1;
         OnPropertyChanged(nameof(Title));
 
-        CarLine = string.Join(" · ", new[]
-        {
-            entry.CarYear is { } year ? $"{entry.CarManufacturer} {entry.CarModelName} {year}" : $"{entry.CarManufacturer} {entry.CarModelName}",
-            entry.CarCountry, entry.CarType,
-        }.Where(s => !string.IsNullOrWhiteSpace(s)));
+        CarLine = entry.CarLine;
         AuthorText = entry.Author;
         Badges = Views.LiveryBadges.Of(entry);
 
@@ -212,12 +205,8 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
         LayersText = entry.LayerCount is { } layers ? layers.ToString("N0", AppLocalisationService.Culture) : "—";
         ShowBackups(entry);
 
-        _loadingNote = true;
-        NoteText = entry.Note ?? "";
-        _loadingNote = false;
-        _noteDirty = false;
-        NoteStatus = "";
-        NoteCount = $"{NoteText.Length} / {NoteService.MaxLength}";
+        if (ReferenceEquals(Note.Entry, entry)) Note.Refresh();
+        else Note.Show(entry);
 
         var card = _source.AuthorCard(entry);
         HasAuthorCard = card is not null;
@@ -349,8 +338,7 @@ internal sealed partial class LiveryDetailsViewModel : ObservableObject, IDispos
 
     public void Dispose()
     {
-        SaveNote();
-        _noteTimer.Stop();
+        Note.Save();
         _loadCts.Cancel();
         _loadCts.Dispose();
         Preview?.Dispose();

@@ -201,12 +201,6 @@
   <data name="ButtonClose" xml:space="preserve">
     <value>Schließen</value>
   </data>
-  <data name="TagsDialogTitle" xml:space="preserve">
-    <value>Tags</value>
-  </data>
-  <data name="TagsDialogHint" xml:space="preserve">
-    <value>Tags durch Kommas trennen, zum Beispiel: Drift, Anime, Rennen</value>
-  </data>
   <data name="ButtonSave" xml:space="preserve">
     <value>Speichern</value>
   </data>
@@ -599,19 +593,19 @@ Eine Karte fasst die Nicknames eines Autors unter einem Namen zusammen.</value>
     <value>Keine Autorenkarte</value>
   </data>
   <data name="ContextMenuMoveToArchive" xml:space="preserve">
-    <value>Ins Archiv verschieben</value>
+    <value>In den Papierkorb verschieben</value>
   </data>
   <data name="MenuOpenArchive" xml:space="preserve">
-    <value>Archiv</value>
+    <value>Papierkorb</value>
   </data>
   <data name="MenuOpenBackups" xml:space="preserve">
     <value>Backups</value>
   </data>
   <data name="ArchiveDialogTitle" xml:space="preserve">
-    <value>Archiv</value>
+    <value>Papierkorb</value>
   </data>
   <data name="ArchiveEmptyHint" xml:space="preserve">
-    <value>Das Archiv ist leer</value>
+    <value>Der Papierkorb ist leer</value>
   </data>
   <data name="ArchiveSelectedCountFormat" xml:space="preserve">
     <value>Ausgewählt: {0}</value>
@@ -629,7 +623,7 @@ Eine Karte fasst die Nicknames eines Autors unter einem Namen zusammen.</value>
     <value>{0} werden in den Papierkorb verschoben. Die Galerie kann dies nicht rückgängig machen.</value>
   </data>
   <data name="ArchivedOnFormat" xml:space="preserve">
-    <value>Archiviert am {0}</value>
+    <value>Im Papierkorb seit {0}</value>
   </data>
   <data name="ArchiveNoSavePathMessage" xml:space="preserve">
     <value>Wählen Sie vor dem Wiederherstellen den Spielstandordner in den Einstellungen</value>
@@ -647,7 +641,7 @@ Eine Karte fasst die Nicknames eines Autors unter einem Namen zusammen.</value>
     <value>Originalvorschau öffnen</value>
   </data>
   <data name="LoadingMovingToArchive" xml:space="preserve">
-    <value>Verschieben ins Archiv…</value>
+    <value>Verschieben in den Papierkorb…</value>
   </data>
   <data name="ArchiveSelectAllButton" xml:space="preserve">
     <value>Alle auswählen</value>
@@ -824,10 +818,10 @@ Diese Lackierungen trotzdem wiederherstellen?</value>
   </data>
   <data name="AuctionBadgeTooltip" xml:space="preserve">
     <value>Im Auktionshaus gekauft.
-Sie kann erst ins Archiv verschoben werden, wenn der Lackierungsserver bestätigt, dass kein Auto sie verwendet.</value>
+Sie kann erst in den Papierkorb verschoben werden, wenn der Lackierungsserver bestätigt, dass kein Auto sie verwendet.</value>
   </data>
   <data name="ArchiveAuctionNotAllowedTooltip" xml:space="preserve">
-    <value>Auktionslackierungen können erst ins Archiv verschoben werden, wenn der Lackierungsserver bestätigt, dass kein Auto sie verwendet</value>
+    <value>Auktionslackierungen können erst in den Papierkorb verschoben werden, wenn der Lackierungsserver bestätigt, dass kein Auto sie verwendet</value>
   </data>
   <data name="ArchiveAuctionSkippedFormat" xml:space="preserve">
     <value>Ausgewählte Auktionslackierungen, die im Spiel bleiben: {0}. Es ist nicht bestätigt, dass kein Auto sie verwendet. Sie können verschoben werden, sobald der Lackierungsserver den aktuellen Spielstand hat.</value>
@@ -996,7 +990,7 @@ Sie kann erst ins Archiv verschoben werden, wenn der Lackierungsserver bestätig
 Aktualisiert um {1}</value>
   </data>
   <data name="ServerSyncProfileNotFound" xml:space="preserve">
-    <value>Der Spielstandordner enthält keine Profildatei C_ProfileData.</value>
+    <value>Der Spielstandordner enthält keine Profildatei ProfileData.</value>
   </data>
   <data name="ServerSyncSaveNotSupported" xml:space="preserve">
     <value>Der Server kann diesen Spielstand noch nicht lesen. Vermutlich wurde das Spiel aktualisiert. Die Unterstützung wird nachgereicht.</value>
@@ -1023,14 +1017,17 @@ Aktualisiert um {1}</value>
     <value>Server verwenden, um Lackierungen auf Autos zu erkennen</value>
   </data>
   <data name="ServerConnectionDescription" xml:space="preserve">
-    <value>Um festzustellen, welche Lackierungen auf Ihren Autos sind und wie Ihr Konto heißt, sendet die Galerie die Spielstanddatei C_ProfileData an den Server. Der Server verwendet die Datei nur dafür und speichert sie nicht.
+    <value>Um festzustellen, welche Lackierungen auf Ihren Autos sind und wie Ihr Konto heißt, sendet die Galerie die Spielstanddatei ProfileData an den Server. Der Server verwendet die Datei nur dafür und speichert sie nicht.
 
 Die Daten aus der Datei werden weder aufbewahrt noch für andere Zwecke verwendet. Der Server bewahrt die Schlüssel, die zum Entschlüsseln der Spielstanddatei nötig sind, sicher auf.
 
 Der Server steht in keiner Verbindung zu den offiziellen Servern von Forza Horizon, Xbox oder Microsoft.</value>
   </data>
+  <data name="ServerConnectionAllGames" xml:space="preserve">
+    <value>Die Einstellung gilt für alle Spiele in der Galerie: FH6, FH5, FH4 und FH3.</value>
+  </data>
   <data name="ServerConsentMessage" xml:space="preserve">
-    <value>Um festzustellen, welche Lackierungen auf Ihren Autos sind und wie Ihr Konto heißt, sendet die Galerie die Spielstanddatei C_ProfileData an den Server. Der Server verwendet die Datei nur dafür und speichert sie nicht.
+    <value>Um festzustellen, welche Lackierungen auf Ihren Autos sind und wie Ihr Konto heißt, sendet die Galerie die Spielstanddatei ProfileData an den Server. Der Server verwendet die Datei nur dafür und speichert sie nicht.
 
 Die Daten aus der Datei werden weder aufbewahrt noch für andere Zwecke verwendet. Der Server bewahrt die Schlüssel, die zum Entschlüsseln der Spielstanddatei nötig sind, sicher auf.
 
@@ -1082,36 +1079,36 @@ Daten werden nur mit Ihrer Zustimmung an den Server gesendet. Verbindung zum Ser
 {0}</value>
   </data>
   <data name="ArchiveInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Lackierungen, die im Spiel auf Autos sind, können nicht ins Archiv verschoben werden</value>
+    <value>Lackierungen, die im Spiel auf Autos sind, können nicht in den Papierkorb verschoben werden</value>
   </data>
   <data name="ArchiveInstalledSkippedFormat" xml:space="preserve">
-    <value>Lackierungen, die im Spiel auf Autos sind, können nicht ins Archiv verschoben werden. Ausgewählte Lackierungen, die im Spiel bleiben: {0}.</value>
+    <value>Lackierungen, die im Spiel auf Autos sind, können nicht in den Papierkorb verschoben werden. Ausgewählte Lackierungen, die im Spiel bleiben: {0}.</value>
   </data>
   <data name="ArchiveInstalledUnknownMessage" xml:space="preserve">
-    <value>Es ist nicht bekannt, welche Lackierungen auf Autos sind. Daher ist das Verschieben dieser Lackierung ins Archiv nicht sicher: Sie könnte im Spiel auf einem Auto sein.
+    <value>Es ist nicht bekannt, welche Lackierungen auf Autos sind. Daher ist das Verschieben dieser Lackierung in den Papierkorb nicht sicher: Sie könnte im Spiel auf einem Auto sein.
 
-Lackierung ins Archiv verschieben?</value>
+Lackierung in den Papierkorb verschieben?</value>
   </data>
   <data name="ArchiveInstalledUnknownMessageMany" xml:space="preserve">
-    <value>Es ist nicht bekannt, welche Lackierungen auf Autos sind. Daher ist das Verschieben dieser Lackierungen ins Archiv nicht sicher: Einige davon könnten im Spiel auf Autos sein.
+    <value>Es ist nicht bekannt, welche Lackierungen auf Autos sind. Daher ist das Verschieben dieser Lackierungen in den Papierkorb nicht sicher: Einige davon könnten im Spiel auf Autos sein.
 
-Lackierungen ins Archiv verschieben?</value>
+Lackierungen in den Papierkorb verschieben?</value>
   </data>
   <data name="DontShowAgainCheckBox" xml:space="preserve">
     <value>Nicht mehr anzeigen</value>
   </data>
   <data name="ArchiveAuctionOrInstalledNotAllowedTooltip" xml:space="preserve">
-    <value>Lackierungen, die im Spiel auf Autos sind, können nicht ins Archiv verschoben werden. Auktionslackierungen erst, wenn der Lackierungsserver bestätigt, dass kein Auto sie verwendet.</value>
+    <value>Lackierungen, die im Spiel auf Autos sind, können nicht in den Papierkorb verschoben werden. Auktionslackierungen erst, wenn der Lackierungsserver bestätigt, dass kein Auto sie verwendet.</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessage" xml:space="preserve">
-    <value>Der Spielstand hat sich seit der letzten Synchronisierung geändert, und die neuen Daten sind noch nicht beim Lackierungsserver. Die Liste der Lackierungen auf Autos ist möglicherweise veraltet, daher ist das Verschieben dieser Lackierung ins Archiv nicht sicher: Sie könnte im Spiel auf einem Auto sein.
+    <value>Der Spielstand hat sich seit der letzten Synchronisierung geändert, und die neuen Daten sind noch nicht beim Lackierungsserver. Die Liste der Lackierungen auf Autos ist möglicherweise veraltet, daher ist das Verschieben dieser Lackierung in den Papierkorb nicht sicher: Sie könnte im Spiel auf einem Auto sein.
 
-Warten Sie besser die Synchronisierung ab, die automatisch läuft und einige Minuten dauern kann, und versuchen Sie es dann erneut. Lackierung jetzt ins Archiv verschieben?</value>
+Warten Sie besser die Synchronisierung ab, die automatisch läuft und einige Minuten dauern kann, und versuchen Sie es dann erneut. Lackierung jetzt in den Papierkorb verschieben?</value>
   </data>
   <data name="ArchiveInstalledOutdatedMessageMany" xml:space="preserve">
-    <value>Der Spielstand hat sich seit der letzten Synchronisierung geändert, und die neuen Daten sind noch nicht beim Lackierungsserver. Die Liste der Lackierungen auf Autos ist möglicherweise veraltet, daher ist das Verschieben dieser Lackierungen ins Archiv nicht sicher: Einige davon könnten im Spiel auf Autos sein.
+    <value>Der Spielstand hat sich seit der letzten Synchronisierung geändert, und die neuen Daten sind noch nicht beim Lackierungsserver. Die Liste der Lackierungen auf Autos ist möglicherweise veraltet, daher ist das Verschieben dieser Lackierungen in den Papierkorb nicht sicher: Einige davon könnten im Spiel auf Autos sein.
 
-Warten Sie besser die Synchronisierung ab, die automatisch läuft und einige Minuten dauern kann, und versuchen Sie es dann erneut. Lackierungen jetzt ins Archiv verschieben?</value>
+Warten Sie besser die Synchronisierung ab, die automatisch läuft und einige Minuten dauern kann, und versuchen Sie es dann erneut. Lackierungen jetzt in den Papierkorb verschieben?</value>
   </data>
   <data name="ContextMenuNavigateInGame" xml:space="preserve">
     <value>Im Spiel finden</value>
@@ -1199,29 +1196,41 @@ Berühren Sie Maus und Tastatur nicht, solange sich der Cursor bewegt: Eine Maus
   <data name="NavigationRowsAuto" xml:space="preserve">
     <value>Automatisch</value>
   </data>
+  <data name="NavigationRowsOne" xml:space="preserve">
+    <value>1 Reihe</value>
+  </data>
   <data name="NavigationRowsTwo" xml:space="preserve">
-    <value>2 Reihen, Standardmenü</value>
+    <value>2 Reihen</value>
   </data>
   <data name="NavigationRowsThree" xml:space="preserve">
-    <value>3 Reihen, Menü-Mod</value>
+    <value>3 Reihen</value>
   </data>
-  <data name="NavigationRowsDetectedVanilla" xml:space="preserve">
-    <value>Erkannt: 2 Reihen, Standardmenü.</value>
+  <data name="NavigationRowsStandardFormat" xml:space="preserve">
+    <value>{0}, Standardmenü</value>
+  </data>
+  <data name="NavigationRowsDetectedStandardFormat" xml:space="preserve">
+    <value>Erkannt: {0}, Standardmenü.</value>
   </data>
   <data name="NavigationRowsDetectedModFormat" xml:space="preserve">
-    <value>Erkannt: {0} Reihen, ein Mod hat das Menü geändert.</value>
+    <value>Erkannt: {0}, ein Mod hat das Menü geändert.</value>
   </data>
-  <data name="NavigationRowsDetectedNoGameFolder" xml:space="preserve">
-    <value>Der Spielordner ist nicht festgelegt, daher werden 2 Reihen angenommen. Legen Sie den Spielordner fest, um Menü-Mods zu erkennen.</value>
+  <data name="NavigationRowsDetectedNoGameFolderFormat" xml:space="preserve">
+    <value>Der Spielordner ist nicht festgelegt, daher wird das Standardmenü angenommen ({0}). Legen Sie den Spielordner fest, um Menü-Mods zu erkennen.</value>
   </data>
   <data name="NavigationRowsDetectedUnknown" xml:space="preserve">
-    <value>Die Reihen konnten nicht erkannt werden: Die Menüdatei wurde auf unbekannte Weise geändert. Wählen Sie 2 oder 3 Reihen.</value>
+    <value>Die Reihen konnten nicht erkannt werden: Das Menü wurde auf unbekannte Weise geändert. Wählen Sie die Reihen von Hand.</value>
   </data>
   <data name="NavigationKeyIntervalLabel" xml:space="preserve">
     <value>Pause zwischen Tastendrücken</value>
   </data>
   <data name="NavigationKeyIntervalHint" xml:space="preserve">
     <value>Erhöhen Sie den Wert, wenn der Cursor vor der Lackierung stehen bleibt: Zu schnelle Tastendrücke überspringt das Spiel.</value>
+  </data>
+  <data name="NavigationMenuOpenDelayLabel" xml:space="preserve">
+    <value>Wartezeit nach dem Öffnen von „Meine Designs“</value>
+  </data>
+  <data name="NavigationMenuOpenDelayHint" xml:space="preserve">
+    <value>Vor der Suche schließt die Galerie „Meine Designs“ und öffnet es erneut. Erhöhen Sie die Wartezeit, wenn das Spiel bei vielen Designs das Menü noch öffnet, während sich der Cursor schon bewegt. Bis zu 10 Sekunden.</value>
   </data>
   <data name="MillisecondsFormat" xml:space="preserve">
     <value>{0} ms</value>
@@ -1266,7 +1275,7 @@ Berühren Sie Maus und Tastatur nicht, solange sich der Cursor bewegt: Eine Maus
     <value>Speichert eine ZIP-Datei mit dem Protokoll, den Einstellungen ohne Pfade und IDs und den Lesefehlern der Lackierungen, um sie einem Fehlerbericht beizufügen. Es wird nichts gesendet.</value>
   </data>
   <data name="ExportDiagnosticsButton" xml:space="preserve">
-    <value>Diagnose exportieren…</value>
+    <value>Diagnose exportieren</value>
   </data>
   <data name="DiagnosticsSaveDialogTitle" xml:space="preserve">
     <value>Diagnose speichern</value>
@@ -1379,7 +1388,7 @@ Alle Konten und Nicknames dieser Autoren gehören dann zu einer Karte. Sie könn
     <value>Kontodaten</value>
   </data>
   <data name="AccountDataHint" xml:space="preserve">
-    <value>Jedes Spielkonto hat einen eigenen Scan-Cache und eigene Vorschauen. Wenn Sie ein Konto vergessen, wird dieser Platz frei. Taucht das Konto wieder auf, werden seine Lackierungen erneut gescannt. Archiv und Backups sind nicht betroffen.</value>
+    <value>Jedes Spielkonto hat einen eigenen Scan-Cache und eigene Vorschauen. Wenn Sie ein Konto vergessen, wird dieser Platz frei. Taucht das Konto wieder auf, werden seine Lackierungen erneut gescannt. Papierkorb und Backups sind nicht betroffen.</value>
   </data>
   <data name="AccountDataCurrent" xml:space="preserve">
     <value>Aktuelles Konto</value>
@@ -1400,7 +1409,7 @@ Alle Konten und Nicknames dieser Autoren gehören dann zu einer Karte. Sie könn
     <value>Konto vergessen</value>
   </data>
   <data name="AccountDataForgetMessage" xml:space="preserve">
-    <value>Konto {0} vergessen? Sein Scan-Cache und seine Vorschauen, etwa {1}, werden gelöscht. Archiv und Backups bleiben erhalten. Taucht das Konto wieder auf, werden seine Lackierungen erneut gescannt.</value>
+    <value>Konto {0} vergessen? Sein Scan-Cache und seine Vorschauen, etwa {1}, werden gelöscht. Papierkorb und Backups bleiben erhalten. Taucht das Konto wieder auf, werden seine Lackierungen erneut gescannt.</value>
   </data>
   <data name="AccountDataForgetFailedMessage" xml:space="preserve">
     <value>Die Daten des Kontos konnten nicht gelöscht werden. Details stehen im Protokoll.</value>
@@ -1483,8 +1492,8 @@ Alle Konten und Nicknames dieser Autoren gehören dann zu einer Karte. Sie könn
   <data name="GameFolderProblemNoStringTables" xml:space="preserve">
     <value>keine Sprachdateien StringTables: Autonamen stammen aus der Autodatenbank</value>
   </data>
-  <data name="AboutDescriptionFormat" xml:space="preserve">
-    <value>Eine Galerie der Lackierungen aus Spielständen von {0}.</value>
+  <data name="AboutDescription" xml:space="preserve">
+    <value>Eine Galerie der Lackierungen aus Spielständen der Forza-Spiele.</value>
   </data>
   <data name="FolderNotFoundMessageFormat" xml:space="preserve">
     <value>Der Spielstandordner von {0} konnte nicht automatisch gefunden werden.
@@ -1542,7 +1551,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>das Motiv ähnelt „{1}“ zu {0} %</value>
   </data>
   <data name="ContextMenuAssignAuthor" xml:space="preserve">
-    <value>Autor angeben…</value>
+    <value>Autor angeben</value>
   </data>
   <data name="ContextMenuUnassignAuthor" xml:space="preserve">
     <value>Angegebenen Autor entfernen</value>
@@ -1743,7 +1752,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Gelöscht</value>
   </data>
   <data name="StatsLegendArchived" xml:space="preserve">
-    <value>Archiviert</value>
+    <value>In den Papierkorb</value>
   </data>
   <data name="StatsSizeTooltipFormat" xml:space="preserve">
     <value>Lackierungen am Monatsende: {0}</value>
@@ -1929,16 +1938,16 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Ungenutzt</value>
   </data>
   <data name="StatsHealthUnusedNote" xml:space="preserve">
-    <value>Auf keinem Auto, kein Favorit, nicht gesperrt, nicht eigene und nicht aus der Auktion. Das sind die ersten Kandidaten fürs Archiv.</value>
+    <value>Auf keinem Auto, kein Favorit, nicht gesperrt, nicht eigene und nicht aus der Auktion. Das sind die ersten Kandidaten für den Papierkorb.</value>
   </data>
   <data name="StatsHealthUnused" xml:space="preserve">
     <value>Ungenutzte Lackierungen</value>
   </data>
   <data name="StatsHealthArchiveTitle" xml:space="preserve">
-    <value>Archiv</value>
+    <value>Papierkorb</value>
   </data>
   <data name="StatsHealthArchived" xml:space="preserve">
-    <value>Im Archiv</value>
+    <value>Im Papierkorb</value>
   </data>
   <data name="StatsHealthLastArchived" xml:space="preserve">
     <value>Zuletzt verschoben</value>
@@ -2052,7 +2061,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Wessen Lackierungen Sie entfernen</value>
   </data>
   <data name="StatsDeparturesCellFormat" xml:space="preserve">
-    <value>{0} + {1} archiviert</value>
+    <value>{0} + {1} in den Papierkorb</value>
   </data>
   <data name="StatsNoJournalShort" xml:space="preserve">
     <value>Im Verlauf gibt es noch keine Entfernungen</value>
@@ -2118,10 +2127,10 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Exportieren</value>
   </data>
   <data name="StatsExportLiveries" xml:space="preserve">
-    <value>Lackierungen als CSV…</value>
+    <value>Lackierungen als CSV</value>
   </data>
   <data name="StatsExportAuthors" xml:space="preserve">
-    <value>Autoren als CSV…</value>
+    <value>Autoren als CSV</value>
   </data>
   <data name="StatsExportLiveriesFileName" xml:space="preserve">
     <value>lackierungen</value>
@@ -2133,7 +2142,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Die Datei konnte nicht gespeichert werden.</value>
   </data>
   <data name="StatsSaveChart" xml:space="preserve">
-    <value>Als PNG speichern…</value>
+    <value>Als PNG speichern</value>
   </data>
   <data name="StatsAuthorsTopTooltipFormat" xml:space="preserve">
     <value>{1} von {2} Lackierungen mit bekanntem Autor stammen von den {0} Autoren, von denen Sie die meisten Lackierungen haben</value>
@@ -2145,22 +2154,10 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Aus Favoriten entfernen</value>
   </data>
   <data name="ContextMenuEditTags" xml:space="preserve">
-    <value>Tags bearbeiten…</value>
+    <value>Tags bearbeiten</value>
   </data>
   <data name="TagChipTooltip" xml:space="preserve">
     <value>Klicken: nur Lackierungen mit diesem Tag anzeigen. Rechtsklick: diese Lackierungen ausblenden. Erneut klicken, um es aufzuheben.</value>
-  </data>
-  <data name="TagsDialogManyTitleFormat" xml:space="preserve">
-    <value>Tags der ausgewählten Lackierungen: {0}</value>
-  </data>
-  <data name="TagsDialogManyHint" xml:space="preserve">
-    <value>Ein Haken fügt den Tag allen ausgewählten Lackierungen hinzu, ein leeres Kästchen entfernt ihn bei allen. Ein gefülltes Kästchen bedeutet, dass nur einige den Tag haben. Er bleibt unverändert.</value>
-  </data>
-  <data name="TagsDialogNewTagsLabel" xml:space="preserve">
-    <value>Neue Tags, durch Kommas getrennt. Sie werden allen ausgewählten Lackierungen hinzugefügt.</value>
-  </data>
-  <data name="TagsDialogPartialTooltipFormat" xml:space="preserve">
-    <value>Bei {0} von {1} ausgewählten</value>
   </data>
   <data name="ContextMenuLock" xml:space="preserve">
     <value>Sperren</value>
@@ -2169,16 +2166,16 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Entsperren</value>
   </data>
   <data name="LockToggleTooltip" xml:space="preserve">
-    <value>Lackierung sperren, damit sie nicht ins Archiv verschoben werden kann</value>
+    <value>Lackierung sperren, damit sie nicht in den Papierkorb verschoben werden kann</value>
   </data>
   <data name="LockedTooltip" xml:space="preserve">
-    <value>Gesperrt: Die Lackierung kann nicht ins Archiv verschoben werden. Klicken, um sie zu entsperren.</value>
+    <value>Gesperrt: Die Lackierung kann nicht in den Papierkorb verschoben werden. Klicken, um sie zu entsperren.</value>
   </data>
   <data name="ArchiveLockedNotAllowedTooltip" xml:space="preserve">
-    <value>Gesperrte Lackierungen können nicht ins Archiv verschoben werden. Entsperren Sie sie zuerst.</value>
+    <value>Gesperrte Lackierungen können nicht in den Papierkorb verschoben werden. Entsperren Sie sie zuerst.</value>
   </data>
   <data name="ArchiveLockedSkippedFormat" xml:space="preserve">
-    <value>Gesperrte Lackierungen können nicht ins Archiv verschoben werden. Ausgewählte gesperrte Lackierungen, die im Spiel bleiben: {0}.</value>
+    <value>Gesperrte Lackierungen können nicht in den Papierkorb verschoben werden. Ausgewählte gesperrte Lackierungen, die im Spiel bleiben: {0}.</value>
   </data>
   <data name="AuthorLabelOwnFormat" xml:space="preserve">
     <value>{0} (Sie)</value>
@@ -2265,16 +2262,16 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Buchstaben, Ziffern, {0} und {1} wirken nicht, solange der Cursor in einem Textfeld steht. Enter, 3 und G wirken, wenn genau eine Lackierung ausgewählt ist.</value>
   </data>
   <data name="SlotsCounterClickHint" xml:space="preserve">
-    <value>Klicken, um Platz zu schaffen: Die überzähligen Kopien doppelter Lackierungen kommen ins Archiv.</value>
+    <value>Klicken, um Platz zu schaffen: Die überzähligen Kopien doppelter Lackierungen kommen in den Papierkorb.</value>
   </data>
   <data name="FreeSpaceMenuItem" xml:space="preserve">
-    <value>Platz schaffen…</value>
+    <value>Platz schaffen</value>
   </data>
   <data name="FreeSpaceTitle" xml:space="preserve">
     <value>Platz schaffen</value>
   </data>
   <data name="FreeSpaceNote" xml:space="preserve">
-    <value>Von jeder doppelten Lackierung bleibt eine Kopie: zuerst eine mit Tags oder eine eigene, sonst die zuerst heruntergeladene. Gesperrte Lackierungen, Lackierungen auf einem Auto, Auktionslackierungen und Favoriten bleiben ebenfalls. Eine Kopie ohne Häkchen bleibt. Alles, was geht, lässt sich aus dem Archiv zurückholen.</value>
+    <value>Von jeder doppelten Lackierung bleibt eine Kopie: zuerst eine mit Tags oder eine eigene, sonst die zuerst heruntergeladene. Gesperrte Lackierungen, Lackierungen auf einem Auto, Auktionslackierungen und Favoriten bleiben ebenfalls. Eine Kopie ohne Häkchen bleibt. Alles, was geht, lässt sich aus dem Papierkorb zurückholen.</value>
   </data>
   <data name="FreeSpaceDownloadedFormat" xml:space="preserve">
     <value>Heruntergeladen: {0}</value>
@@ -2304,31 +2301,31 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Jetzt im Spielstand: {0} von {1}.</value>
   </data>
   <data name="FreeSpaceAfterFormat" xml:space="preserve">
-    <value>Ins Archiv: {0}, danach frei: {1}.</value>
+    <value>In den Papierkorb: {0}, danach frei: {1}.</value>
   </data>
   <data name="FreeSpaceAfterNoLimitFormat" xml:space="preserve">
-    <value>Ins Archiv: {0}.</value>
+    <value>In den Papierkorb: {0}.</value>
   </data>
   <data name="FreeSpaceApplyFormat" xml:space="preserve">
-    <value>Ins Archiv verschieben ({0})</value>
+    <value>In den Papierkorb verschieben ({0})</value>
   </data>
   <data name="FewFreeSlotsMessageFormat" xml:space="preserve">
-    <value>Im Spielstand sind nur noch {0} von {1} Plätzen frei. Am Limit lässt das Spiel weder Lackierungen herunterladen noch erstellen. Jetzt Platz schaffen und die überzähligen Kopien doppelter Lackierungen ins Archiv verschieben?</value>
+    <value>Im Spielstand sind nur noch {0} von {1} Plätzen frei. Am Limit lässt das Spiel weder Lackierungen herunterladen noch erstellen. Jetzt Platz schaffen und die überzähligen Kopien doppelter Lackierungen in den Papierkorb verschieben?</value>
   </data>
   <data name="FewFreeSlotsFullMessageFormat" xml:space="preserve">
-    <value>Der Spielstand ist voll: Alle {0} Plätze sind belegt, und das Spiel lässt weder Lackierungen herunterladen noch erstellen. Jetzt Platz schaffen und die überzähligen Kopien doppelter Lackierungen ins Archiv verschieben?</value>
+    <value>Der Spielstand ist voll: Alle {0} Plätze sind belegt, und das Spiel lässt weder Lackierungen herunterladen noch erstellen. Jetzt Platz schaffen und die überzähligen Kopien doppelter Lackierungen in den Papierkorb verschieben?</value>
   </data>
   <data name="AutoBackupFailedTitle" xml:space="preserve">
     <value>Backup</value>
   </data>
   <data name="AutoBackupFailedMessage" xml:space="preserve">
-    <value>Das Backup vor dem Verschieben ins Archiv konnte nicht erstellt werden. Die Lackierungen ohne Backup ins Archiv verschieben?</value>
+    <value>Das Backup vor dem Verschieben in den Papierkorb konnte nicht erstellt werden. Die Lackierungen ohne Backup in den Papierkorb verschieben?</value>
   </data>
   <data name="AutoBackupFailedContinueButton" xml:space="preserve">
     <value>Ohne Backup verschieben</value>
   </data>
   <data name="LoadingBackupBeforeArchive" xml:space="preserve">
-    <value>Backup vor dem Verschieben ins Archiv wird erstellt…</value>
+    <value>Backup vor dem Verschieben in den Papierkorb wird erstellt…</value>
   </data>
   <data name="StatusAutoBackupMade" xml:space="preserve">
     <value>Ein automatisches Backup wurde erstellt</value>
@@ -2337,7 +2334,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Automatische Backups</value>
   </data>
   <data name="AutoBackupBeforeArchiveLabel" xml:space="preserve">
-    <value>Vor dem Verschieben von Lackierungen ins Archiv</value>
+    <value>Vor dem Verschieben von Lackierungen in den Papierkorb</value>
   </data>
   <data name="AutoBackupOnChangeLabel" xml:space="preserve">
     <value>Wenn sich die Lackierungen im Spielstand ändern, höchstens einmal am Tag</value>
@@ -2358,7 +2355,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Automatisch</value>
   </data>
   <data name="BackupKindBeforeArchive" xml:space="preserve">
-    <value>Vor dem Verschieben von Lackierungen ins Archiv erstellt</value>
+    <value>Vor dem Verschieben von Lackierungen in den Papierkorb erstellt</value>
   </data>
   <data name="BackupKindSaveChanged" xml:space="preserve">
     <value>Erstellt, nachdem sich die Lackierungen im Spielstand geändert hatten</value>
@@ -2407,12 +2404,6 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
   </data>
   <data name="BetaUpdatesHint" xml:space="preserve">
     <value>Betas erscheinen vor den Releases und können Fehler enthalten. Schalten Sie dies in einer Beta aus, bietet die Galerie die Rückkehr zur neuesten stabilen Version an.</value>
-  </data>
-  <data name="TagsDialogOneHint" xml:space="preserve">
-    <value>Ein Haken setzt den Tag auf die Lackierung, ein leeres Kästchen entfernt ihn.</value>
-  </data>
-  <data name="TagsDialogOneNewTagsLabel" xml:space="preserve">
-    <value>Neue Tags, durch Kommas getrennt.</value>
   </data>
   <data name="KeyClick" xml:space="preserve">
     <value>Klick</value>
@@ -2495,9 +2486,6 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
   <data name="LiveryDetailsUnknown" xml:space="preserve">
     <value>unbekannt</value>
   </data>
-  <data name="LiveryDetailsAddTag" xml:space="preserve">
-    <value>+ Tag</value>
-  </data>
   <data name="LiveryDetailsNoteLabel" xml:space="preserve">
     <value>Notiz</value>
   </data>
@@ -2532,7 +2520,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Im Spielstand aufgetaucht</value>
   </data>
   <data name="HistoryRestoredFromArchive" xml:space="preserve">
-    <value>Aus dem Archiv zurückgeholt</value>
+    <value>Aus dem Papierkorb zurückgeholt</value>
   </data>
   <data name="HistoryReturned" xml:space="preserve">
     <value>Zurückgekehrt: aus einem Backup oder erneut heruntergeladen</value>
@@ -2541,7 +2529,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Aus dem Spielstand verschwunden</value>
   </data>
   <data name="HistoryArchived" xml:space="preserve">
-    <value>Ins Archiv verschoben</value>
+    <value>In den Papierkorb verschoben</value>
   </data>
   <data name="HistoryChanged" xml:space="preserve">
     <value>Datei geändert</value>
@@ -2571,7 +2559,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Diesem Konto zuordnen</value>
   </data>
   <data name="ArchiveUnassignedTooltip" xml:space="preserve">
-    <value>Eine frühere Version hat diese archiviert, ohne das Konto zu speichern, und es gab mehrere Konten. Verschieben Sie sie hierher, wenn sie von diesem Konto stammen.</value>
+    <value>Eine frühere Version hat diese in den Papierkorb verschoben, ohne das Konto zu speichern, und es gab mehrere Konten. Verschieben Sie sie hierher, wenn sie von diesem Konto stammen.</value>
   </data>
   <data name="BackupsUnassignedTooltip" xml:space="preserve">
     <value>Eine frühere Version hat diese Backups erstellt, ohne das Konto zu speichern, und es gab mehrere Konten. Verschieben Sie sie hierher, wenn sie von diesem Konto stammen.</value>
@@ -2586,7 +2574,7 @@ Sehen Sie die Dateien vor dem Senden durch. Werte, die die Galerie nicht kennt, 
     <value>Spielstand nicht gefunden</value>
   </data>
   <data name="ChooseSaveFolderButton" xml:space="preserve">
-    <value>Ordner wählen…</value>
+    <value>Ordner wählen</value>
   </data>
   <data name="SearchSaveAgainButton" xml:space="preserve">
     <value>Erneut suchen</value>
@@ -2638,16 +2626,16 @@ Aktualisiert am {1} um {2}</value>
     <value>Konto</value>
   </data>
   <data name="ArchiveWarningsSectionLabel" xml:space="preserve">
-    <value>Archiv</value>
+    <value>Papierkorb</value>
   </data>
   <data name="WarnArchiveWithoutInstalledDataLabel" xml:space="preserve">
-    <value>Vor dem Archivieren fragen, wenn unbekannt ist, welche Lackierungen auf Autos sind</value>
+    <value>Vor dem Verschieben in den Papierkorb fragen, wenn unbekannt ist, welche Lackierungen auf Autos sind</value>
   </data>
   <data name="WarnArchiveWithOutdatedInstalledDataLabel" xml:space="preserve">
-    <value>Vor dem Archivieren fragen, wenn die Liste der Lackierungen auf Autos veraltet sein kann</value>
+    <value>Vor dem Verschieben in den Papierkorb fragen, wenn die Liste der Lackierungen auf Autos veraltet sein kann</value>
   </data>
   <data name="ArchiveWarningsHint" xml:space="preserve">
-    <value>Eine Lackierung, die im Spiel auf einem Auto ist, sollte nicht ins Archiv. „Nicht mehr anzeigen“ in diesen Fragen schaltet sie ab, hier lassen sie sich wieder einschalten.</value>
+    <value>Eine Lackierung, die im Spiel auf einem Auto ist, sollte nicht in den Papierkorb. „Nicht mehr anzeigen“ in diesen Fragen schaltet sie ab, hier lassen sie sich wieder einschalten.</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Pos1</value>
@@ -2693,7 +2681,7 @@ Aktualisiert am {1} um {2}</value>
 oder Strg+V</value>
   </data>
   <data name="ScreenshotsLocalHint" xml:space="preserve">
-    <value>Nur auf diesem PC gespeichert. Sie gehen mit der Lackierung ins Archiv und kommen mit ihr zurück.</value>
+    <value>Nur auf diesem PC gespeichert. Sie gehen mit der Lackierung in den Papierkorb und kommen mit ihr zurück.</value>
   </data>
   <data name="ScreenshotsPickTitle" xml:space="preserve">
     <value>Screenshots der Lackierung</value>
@@ -2756,7 +2744,7 @@ oder Strg+V</value>
     <value>Belegt: {0} · Screenshots: {1} · Lackierungen: {2}</value>
   </data>
   <data name="ScreenshotsConvertButton" xml:space="preserve">
-    <value>Hinzugefügte komprimieren…</value>
+    <value>Hinzugefügte komprimieren</value>
   </data>
   <data name="ScreenshotsOpenFolder" xml:space="preserve">
     <value>Ordner öffnen</value>
@@ -2852,7 +2840,7 @@ oder Strg+V</value>
     <value>Zum Album hinzufügen</value>
   </data>
   <data name="ScreenshotsNewAlbumMenu" xml:space="preserve">
-    <value>Neues Album…</value>
+    <value>Neues Album</value>
   </data>
   <data name="ScreenshotsRemoveFromAlbumFormat" xml:space="preserve">
     <value>Aus „{0}“ entfernen</value>
@@ -2879,7 +2867,7 @@ oder Strg+V</value>
     <value>Umbenennen</value>
   </data>
   <data name="CollectionDelete" xml:space="preserve">
-    <value>Löschen…</value>
+    <value>Löschen</value>
   </data>
   <data name="CollectionMoveUp" xml:space="preserve">
     <value>Nach oben</value>
@@ -2942,7 +2930,7 @@ oder Strg+V</value>
     <value>Einfg</value>
   </data>
   <data name="ShortcutStoredToArchive" xml:space="preserve">
-    <value>Aus dem Lager ins Archiv</value>
+    <value>Aus dem Lager in den Papierkorb</value>
   </data>
   <data name="ContextMenuReturnToGame" xml:space="preserve">
     <value>Zurück ins Spiel</value>
@@ -2975,16 +2963,16 @@ oder Strg+V</value>
     <value>Im Lager: {0}</value>
   </data>
   <data name="StorageKeysHintFormat" xml:space="preserve">
-    <value>{0}: ins Spiel · {1}: ins Archiv</value>
+    <value>{0}: ins Spiel · {1}: in den Papierkorb</value>
   </data>
   <data name="StatusReturnedToGameFormat" xml:space="preserve">
     <value>Zurück im Spiel: {0}</value>
   </data>
   <data name="StatusStoredToArchiveFormat" xml:space="preserve">
-    <value>Aus dem Lager ins Archiv: {0}</value>
+    <value>Aus dem Lager in den Papierkorb: {0}</value>
   </data>
   <data name="StoredToArchiveSkippedFormat" xml:space="preserve">
-    <value>Im Lager geblieben: {0}. Das Archiv hat schon eine Lackierung mit demselben Schlüssel.</value>
+    <value>Im Lager geblieben: {0}. Im Papierkorb liegt schon eine Lackierung mit demselben Schlüssel.</value>
   </data>
   <data name="LoadingReturningToGame" xml:space="preserve">
     <value>Lackierungen kommen zurück ins Spiel…</value>
@@ -3092,7 +3080,7 @@ oder Strg+V</value>
     <value>Den leeren Ordner „{0}“ löschen?</value>
   </data>
   <data name="StorageFolderDeleteToArchive" xml:space="preserve">
-    <value>Seine Lackierungen ins Archiv schicken</value>
+    <value>Seine Lackierungen in den Papierkorb schicken</value>
   </data>
   <data name="StorageReturnFolder" xml:space="preserve">
     <value>Ordner zurück ins Spiel</value>
@@ -3101,7 +3089,7 @@ oder Strg+V</value>
     <value>In den Ordner legen</value>
   </data>
   <data name="ContextMenuNewFolder" xml:space="preserve">
-    <value>Neuer Ordner…</value>
+    <value>Neuer Ordner</value>
   </data>
   <data name="StatusMovedToFolderFormat" xml:space="preserve">
     <value>Nach „{0}“ gelegt: {1}</value>
@@ -3230,7 +3218,7 @@ oder Strg+V</value>
     <value>hier ist das Lager eines anderen Kontos ({0}).</value>
   </data>
   <data name="StoragePlaceRule" xml:space="preserve">
-    <value>Das Lager kann nicht in einem Spielstand, im Archiv, im Ordner des Programms oder im Lager eines anderen Kontos liegen.</value>
+    <value>Das Lager kann nicht in einem Spielstand, im Papierkorb, im Ordner des Programms oder im Lager eines anderen Kontos liegen.</value>
   </data>
   <data name="StorageNotSuitable" xml:space="preserve">
     <value>Dieser Ordner passt nicht:</value>
@@ -3339,7 +3327,7 @@ oder Strg+V</value>
     <value>Der Ordner ist nicht erreichbar</value>
   </data>
   <data name="SettingsStorageChangeButton" xml:space="preserve">
-    <value>Ordner ändern…</value>
+    <value>Ordner ändern</value>
   </data>
   <data name="SettingsStorageOpenButton" xml:space="preserve">
     <value>Ordner des Lagers öffnen</value>
@@ -3447,7 +3435,7 @@ oder Strg+V</value>
     <value>Erneut prüfen</value>
   </data>
   <data name="StorageChooseOtherButton" xml:space="preserve">
-    <value>Anderen Ordner wählen…</value>
+    <value>Anderen Ordner wählen</value>
   </data>
   <data name="StorageUnavailableReasonFormat" xml:space="preserve">
     <value>Der Ordner des Lagers ist nicht erreichbar: {0}</value>
@@ -3467,7 +3455,7 @@ oder Strg+V</value>
 {1}</value>
   </data>
   <data name="ArchiveFailedFormat" xml:space="preserve">
-    <value>Diese Lackierungen konnten nicht ins Archiv verschoben werden ({0}). Vielleicht verwendet das Spiel ihre Dateien oder der Datenträger ist voll. Details stehen im Protokoll:
+    <value>Diese Lackierungen konnten nicht in den Papierkorb verschoben werden ({0}). Vielleicht verwendet das Spiel ihre Dateien oder der Datenträger ist voll. Details stehen im Protokoll:
 {1}</value>
   </data>
   <data name="SettingsStorageFoldersOnDisk" xml:space="preserve">
@@ -3582,9 +3570,6 @@ oder Strg+V</value>
   <data name="ResetFiltersTooltip" xml:space="preserve">
     <value>Filter zurücksetzen: leert die Suche und die Filter. Die Reihenfolge bleibt</value>
   </data>
-  <data name="UndoLabel" xml:space="preserve">
-    <value>Rückgängig</value>
-  </data>
   <data name="UndoTooltipFormat" xml:space="preserve">
     <value>Rückgängig: {0}</value>
   </data>
@@ -3613,7 +3598,7 @@ oder Strg+V</value>
     <value>Gespeicherte Filtersätze</value>
   </data>
   <data name="FilterPresetSave" xml:space="preserve">
-    <value>Aktuelle Filter speichern…</value>
+    <value>Aktuelle Filter speichern</value>
   </data>
   <data name="FilterPresetDelete" xml:space="preserve">
     <value>Satz löschen</value>
@@ -3641,5 +3626,236 @@ oder Strg+V</value>
   </data>
   <data name="TagsGripTooltip" xml:space="preserve">
     <value>Nach oben oder unten ziehen, um mehr oder weniger Reihen von Tags anzuzeigen. Doppelklick: alle Tags oder eine Reihe.</value>
+  </data>
+  <data name="SaveReadOnlyLabel" xml:space="preserve">
+    <value>Nur Ansicht</value>
+  </data>
+  <data name="SaveReadOnlyNoticeFormat" xml:space="preserve">
+    <value>In dieser Version werden Lackierungen aus {0} nur angezeigt: Verschieben in den Papierkorb oder ins Lager, Zurück ins Spiel und Wiederherstellen aus einem Backup sind noch nicht verfügbar.</value>
+  </data>
+  <data name="RenderBorrowedFormat" xml:space="preserve">
+    <value>Mit Automodellen und Lacken aus {1} gezeichnet: Die Spieldateien von {0} sind nicht lesbar. Autos, Logos und Lacke können von {0} abweichen.</value>
+  </data>
+  <data name="ServerStatusGameNotSupported" xml:space="preserve">
+    <value>Server: dieses Spiel wird noch nicht unterstützt</value>
+  </data>
+  <data name="ServerStatusGameNotSupportedHint" xml:space="preserve">
+    <value>Der Server liest die Spielstände dieses Spiels oder dieser Version (Steam oder Microsoft Store) noch nicht. Welche Lackierungen auf Ihren Autos sind, wird nicht angezeigt. Die Galerie prüft alle 30 Minuten erneut.</value>
+  </data>
+  <data name="DisplayFilterLabel" xml:space="preserve">
+    <value>Anzeigen</value>
+  </data>
+  <data name="FilterPresetsLabel" xml:space="preserve">
+    <value>Sets</value>
+  </data>
+  <data name="MenuRefresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="CardSizeSmall" xml:space="preserve">
+    <value>Kleine Karten</value>
+  </data>
+  <data name="CardSizeNormal" xml:space="preserve">
+    <value>Normale Karten</value>
+  </data>
+  <data name="CardSizeLarge" xml:space="preserve">
+    <value>Große Karten</value>
+  </data>
+  <data name="ShortcutsGroupView" xml:space="preserve">
+    <value>Ansicht</value>
+  </data>
+  <data name="ShortcutCardsLarger" xml:space="preserve">
+    <value>Größere Karten (Screenshots)</value>
+  </data>
+  <data name="ShortcutCardsSmaller" xml:space="preserve">
+    <value>Kleinere Karten (Screenshots)</value>
+  </data>
+  <data name="ShortcutCardsNormal" xml:space="preserve">
+    <value>Normale Größe der Karten (Screenshots)</value>
+  </data>
+  <data name="ShortcutCardsWheel" xml:space="preserve">
+    <value>Kartengröße</value>
+  </data>
+  <data name="KeyWheel" xml:space="preserve">
+    <value>Mausrad</value>
+  </data>
+  <data name="UserDataProblemTitle" xml:space="preserve">
+    <value>Tags, Notizen und Favoriten</value>
+  </data>
+  <data name="UserDataUnreadableMessageFormat" xml:space="preserve">
+    <value>Diese Dateien ließen sich beim Start nicht öffnen. Vielleicht hält ein anderes Programm sie fest (ein Synchronisierungsdienst wie OneDrive, ein Virenschutz):
+{0}
+
+Die Galerie hat sie unverändert gelassen. Tags, Notizen, Favoriten und Sperren, die Sie jetzt ändern, werden nicht gespeichert. Schließen Sie das Programm, das sie festhält, und starten Sie die Galerie neu.</value>
+  </data>
+  <data name="UserDataSetAsideMessageFormat" xml:space="preserve">
+    <value>Diese Dateien waren beschädigt und ließen sich nicht lesen:
+{0}
+
+Eine Kopie jeder Datei liegt daneben, mit dem Datum im Namen. Die Galerie hat sie leer neu begonnen.</value>
+  </data>
+  <data name="GalleryAccessibleName" xml:space="preserve">
+    <value>Lackierungen</value>
+  </data>
+  <data name="CardAccessibleSelected" xml:space="preserve">
+    <value>ausgewählt</value>
+  </data>
+  <data name="CardAccessibleFavorite" xml:space="preserve">
+    <value>Favorit</value>
+  </data>
+  <data name="CardAccessibleLocked" xml:space="preserve">
+    <value>gesperrt</value>
+  </data>
+  <data name="NoticesTitle" xml:space="preserve">
+    <value>Hinweise</value>
+  </data>
+  <data name="NoticesNone" xml:space="preserve">
+    <value>Noch nichts</value>
+  </data>
+  <data name="NoticeCounterFormat" xml:space="preserve">
+    <value>{0} von {1}</value>
+  </data>
+  <data name="NoticeNextTooltip" xml:space="preserve">
+    <value>Nächster Hinweis</value>
+  </data>
+  <data name="NoticeCloseTooltip" xml:space="preserve">
+    <value>Schließen (bleibt unter der Glocke)</value>
+  </data>
+  <data name="NoticeShowFile" xml:space="preserve">
+    <value>Datei zeigen</value>
+  </data>
+  <data name="NoticeChooseFolder" xml:space="preserve">
+    <value>Ordner wählen</value>
+  </data>
+  <data name="ToastUndo" xml:space="preserve">
+    <value>Rückgängig</value>
+  </data>
+  <data name="ToastUndoDetail" xml:space="preserve">
+    <value>Strg+Z macht es auch rückgängig</value>
+  </data>
+  <data name="ToastClose" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="PropertiesTitle" xml:space="preserve">
+    <value>Eigenschaften</value>
+  </data>
+  <data name="PropertiesToggleTooltip" xml:space="preserve">
+    <value>Leiste der ausgewählten Lackierungen</value>
+  </data>
+  <data name="PropertiesEmpty" xml:space="preserve">
+    <value>Wählen Sie eine Lackierung, um sie hier zu sehen. Bei mehreren erscheint, was sie gemeinsam haben.</value>
+  </data>
+  <data name="PropertiesAuthorsFormat" xml:space="preserve">
+    <value>Autoren: {0}</value>
+  </data>
+  <data name="PropertiesFavorite" xml:space="preserve">
+    <value>Favorit</value>
+  </data>
+  <data name="PropertiesLock" xml:space="preserve">
+    <value>Sperre</value>
+  </data>
+  <data name="PropertiesTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="PropertiesTagsPartHint" xml:space="preserve">
+    <value>gestrichelt: nur bei einigen, Klick gibt ihn allen</value>
+  </data>
+  <data name="PropertiesAddTagPlaceholder" xml:space="preserve">
+    <value>Tag hinzufügen, Enter</value>
+  </data>
+  <data name="PropertiesCreateTagFormat" xml:space="preserve">
+    <value>Neuer Tag „{0}“</value>
+  </data>
+  <data name="PropertiesRemoveTagFormat" xml:space="preserve">
+    <value>Tag {0} entfernen</value>
+  </data>
+  <data name="PropertiesNote" xml:space="preserve">
+    <value>Notiz</value>
+  </data>
+  <data name="PropertiesNoteSavesItself" xml:space="preserve">
+    <value>wird beim Tippen gespeichert</value>
+  </data>
+  <data name="PropertiesNotesOwnFormat" xml:space="preserve">
+    <value>{0} von {1} haben eine eigene Notiz.</value>
+  </data>
+  <data name="PropertiesNoteForAllPlaceholder" xml:space="preserve">
+    <value>Eine Notiz für alle</value>
+  </data>
+  <data name="PropertiesNoteAppend" xml:space="preserve">
+    <value>Anhängen</value>
+  </data>
+  <data name="PropertiesNoteReplace" xml:space="preserve">
+    <value>Ersetzen</value>
+  </data>
+  <data name="PropertiesFindInGame" xml:space="preserve">
+    <value>Im Spiel finden</value>
+  </data>
+  <data name="PropertiesToStorage" xml:space="preserve">
+    <value>Ins Lager</value>
+  </data>
+  <data name="PropertiesToGame" xml:space="preserve">
+    <value>Ins Spiel</value>
+  </data>
+  <data name="PropertiesDetails" xml:space="preserve">
+    <value>Mehr</value>
+  </data>
+  <data name="PropertiesClose" xml:space="preserve">
+    <value>Leiste ausblenden</value>
+  </data>
+  <data name="ShortcutProperties" xml:space="preserve">
+    <value>Leiste der ausgewählten Lackierungen</value>
+  </data>
+  <data name="SelectionBarTags" xml:space="preserve">
+    <value>Tags</value>
+  </data>
+  <data name="SelectionBarMore" xml:space="preserve">
+    <value>Weitere Aktionen</value>
+  </data>
+  <data name="SelectionBarClear" xml:space="preserve">
+    <value>Auswahl aufheben</value>
+  </data>
+  <data name="EmptyNoFilterResults" xml:space="preserve">
+    <value>Keine Lackierung passt zu den Filtern</value>
+  </data>
+  <data name="EmptyNoResultsWithFilters" xml:space="preserve">
+    <value>Nichts gefunden für „{0}“ mit den aktiven Filtern</value>
+  </data>
+  <data name="EmptyClearSearch" xml:space="preserve">
+    <value>Suche leeren</value>
+  </data>
+  <data name="EmptyResetFilters" xml:space="preserve">
+    <value>Filter zurücksetzen</value>
+  </data>
+  <data name="EmptyShowGame" xml:space="preserve">
+    <value>Lackierungen des Spiels zeigen</value>
+  </data>
+  <data name="EmptyLookAgain" xml:space="preserve">
+    <value>Erneut prüfen</value>
+  </data>
+  <data name="ScreenshotsShowAllAlbums" xml:space="preserve">
+    <value>Alle Screenshots</value>
+  </data>
+  <data name="NoticeProblemTitle" xml:space="preserve">
+    <value>Das hat nicht geklappt</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptioned" xml:space="preserve">
+    <value>Mit Beschriftung</value>
+  </data>
+  <data name="ScreenshotsLayoutTiles" xml:space="preserve">
+    <value>Kacheln</value>
+  </data>
+  <data name="ScreenshotsSizeSmall" xml:space="preserve">
+    <value>Kleine Screenshots</value>
+  </data>
+  <data name="ScreenshotsSizeNormal" xml:space="preserve">
+    <value>Normale Screenshots</value>
+  </data>
+  <data name="ScreenshotsSizeLarge" xml:space="preserve">
+    <value>Große Screenshots</value>
+  </data>
+  <data name="ScreenshotsLayoutCaptionedTooltip" xml:space="preserve">
+    <value>Unter jedem Screenshot stehen seine Lackierung oder die Uhrzeit</value>
+  </data>
+  <data name="ScreenshotsLayoutTilesTooltip" xml:space="preserve">
+    <value>Nur die Bilder, dicht beieinander. Die Beschriftung steht im Tooltip</value>
   </data>
 </root>

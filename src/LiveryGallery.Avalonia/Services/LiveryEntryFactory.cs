@@ -25,9 +25,11 @@ internal sealed class LiveryEntryFactory(
     {
         var list = cacheEntries as IReadOnlyCollection<LiveryCacheEntry> ?? [.. cacheEntries];
         _authorInference = AuthorNameInference.Build(list, PlaceholderTexts.IsAuthorMissing);
+        // The game's names join those of the other games (AuthorCardService.Names): a card shows every name its author
+        // had in any game, and a rename between two games makes an automatic card
         authorCardService.ReconcileAutoCards(list
             .Where(c => !PlaceholderTexts.IsAuthorMissing(c))
-            .Select(c => new AuthorObservation(c.Author, c.AuthorIdentityTagHex, c.DownloadDate)));
+            .Select(c => new AuthorObservation(c.Author, c.AuthorIdentityTagHex, c.DownloadDate)), profile.Game.Id);
     }
 
     public (string Name, bool IsInferred, bool IsUnknown) ResolveRawAuthor(LiveryCacheEntry c) =>

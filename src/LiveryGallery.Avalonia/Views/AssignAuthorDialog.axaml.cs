@@ -38,7 +38,8 @@ internal partial class AssignAuthorDialog : Window
         _viewModel.NewCardRequested += () => _ = CreateCardAsync();
 
         Title = _viewModel.TitleText;
-        TitleBarText.Text = _viewModel.TitleText;
+        Bar.Title = _viewModel.TitleText;
+        Bar.CloseRequested += (_, _) => _viewModel.CancelCommand.Execute(null); // the cross is Cancel
         TitleText.Text = _viewModel.TitleText;
         SearchBox.PlaceholderText = Strings.AssignAuthorSearchWatermark;
         NewCardButton.Content = Strings.AssignAuthorNewCardButton;
@@ -60,5 +61,4 @@ internal partial class AssignAuthorDialog : Window
         }
     }
 
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDrag(e);
 }

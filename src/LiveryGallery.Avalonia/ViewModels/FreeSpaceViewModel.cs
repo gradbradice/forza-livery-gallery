@@ -84,7 +84,7 @@ internal sealed partial class FreeSpaceViewModel : ObservableObject
             .. plan.Select(g =>
             {
                 var first = g.Stay[0].Entry;
-                string title = $"{first.CarManufacturer} {first.CarModelName}".Trim() is { Length: > 0 } car
+                string title = first.CarName is { Length: > 0 } car
                     ? $"{car} · {first.Author}" : first.Author;
                 int copies = g.Stay.Count + g.Go.Count;
                 return new FreeSpaceGroupViewModel(title, string.Format(Strings.FreeSpaceCopiesFormat, copies.ToString("N0", culture)),

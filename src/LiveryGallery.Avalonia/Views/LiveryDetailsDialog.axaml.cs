@@ -16,6 +16,9 @@ internal enum LiveryDetailsNext
     FindInGame,
     View3D,
     Archive,
+
+    /// <summary>Into the storage</summary>
+    Storage,
     Filter,
 
     /// <summary>The gallery's screenshots view with an album (<see cref="LiveryDetailsOutcome.AlbumId"/>)</summary>
@@ -30,13 +33,12 @@ internal sealed record LiveryDetailsOutcome(LiveryDetailsNext Next, LiveryEntry?
 
 /// <summary>The dialogs the livery window opens over itself</summary>
 internal sealed record LiveryDetailsDialogActions(
-    Func<Window, LiveryEntry, Task> EditTags,
     Func<Window, LiveryEntry, Task> OpenAuthor,
     Func<Window, AuthorCard, Task<AuthorCard?>> EditAuthorCard);
 
 /// <summary>
 /// One livery and everything the gallery knows about it (<see cref="LiveryDetailsViewModel"/>). Left and right show the
-/// neighbours on screen, Esc closes. Finding in the game, the 3D view, the archive and a filter close the window first
+/// neighbours on screen, Esc closes. Finding in the game, the 3D view, the storage, the trash and a filter close the window first
 /// and are done by the gallery (<see cref="Outcome"/>)
 /// </summary>
 internal partial class LiveryDetailsDialog : Window
@@ -61,6 +63,7 @@ internal partial class LiveryDetailsDialog : Window
 
         FindButton.Content = Strings.ContextMenuNavigateInGame;
         View3DButton.Content = Strings.LiveryDetailsView3D;
+        StorageButton.Content = Strings.ContextMenuMoveToStorage;
         ArchiveButton.Content = Strings.ContextMenuMoveToArchive;
         OtherByAuthorLabel.Text = Strings.LiveryDetailsOtherByAuthor;
         NoOtherByAuthorText.Text = Strings.LiveryDetailsNoOtherByAuthor;
@@ -71,8 +74,6 @@ internal partial class LiveryDetailsDialog : Window
         DatesLabel.Text = Strings.LiveryDetailsDatesLabel;
         LayersLabel.Text = Strings.LiveryDetailsLayersLabel;
         BackupsLabel.Text = Strings.MenuOpenBackups;
-        TagsLabel.Text = Strings.TagsFilterLabel;
-        AddTagButton.Content = Strings.LiveryDetailsAddTag;
         NoteLabel.Text = Strings.LiveryDetailsNoteLabel;
         NoteHint.Text = Strings.LiveryDetailsNoteHint;
         NoteBox.PlaceholderText = Strings.LiveryDetailsNotePlaceholder;
@@ -230,6 +231,8 @@ internal partial class LiveryDetailsDialog : Window
 
     private void Archive_Click(object? sender, RoutedEventArgs e) => CloseWith(LiveryDetailsNext.Archive);
 
+    private void Storage_Click(object? sender, RoutedEventArgs e) => CloseWith(LiveryDetailsNext.Storage);
+
     private void AllByAuthor_Click(object? sender, RoutedEventArgs e) =>
         CloseWith(LiveryDetailsNext.Filter, QuickFilter.ForKeys(_vm.AuthorLiveryKeys, _vm.AuthorText));
 
@@ -272,21 +275,6 @@ internal partial class LiveryDetailsDialog : Window
         }
     }
 
-    private async void EditTags_Click(object? sender, RoutedEventArgs e)
-    {
-        try
-        {
-            await _actions.EditTags(this, _vm.Entry);
-        }
-        catch (Exception ex)
-        {
-            AppLog.LogError("Livery window: editing the tags failed", ex);
-        }
-    }
-
-    private void TitleBar_PointerPressed(object? sender, PointerPressedEventArgs e) => this.HandleTitleBarDragOrMaximize(e, MaximizeIcon);
-
-    private void MaximizeButton_Click(object? sender, RoutedEventArgs e) => this.ToggleMaximize(MaximizeIcon);
-
-    private void CloseButton_Click(object? sender, RoutedEventArgs e) => Close();
+    // The "Close" button at the bottom (the cross is the title bar's)
+    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e) => Close();
 }

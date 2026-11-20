@@ -36,6 +36,37 @@ internal sealed partial class MainViewModel : ObservableObject
 
     public ServerStatusViewModel ServerStatus { get; } = new();
 
+    /// <summary>The notices' bar, the bell and the short messages after an action (NoticesViewModel)</summary>
+    public NoticesViewModel Notices { get; } = new();
+
+    /// <summary>The actions on the selected liveries: the menu's, the bar's, the panel's and the keys' (GalleryActions)</summary>
+    public GalleryActions Actions { get; }
+
+    /// <summary>The properties panel: what it shows (PropertiesViewModel) and whether it is open</summary>
+    public PropertiesViewModel Properties { get; }
+
+    public bool IsPropertiesOpen
+    {
+        get => settings.PropertiesPanelOpen;
+        set
+        {
+            if (settings.PropertiesPanelOpen == value) return;
+            if (!value) Properties.Release();
+            settings.PropertiesPanelOpen = value;
+            AppSettingsService.Save(settings);
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(IsSelectionBarVisible));
+        }
+    }
+
+    /// <summary>
+    /// The bar of actions over the gallery when several liveries are selected and the panel (which has them all) is closed
+    /// </summary>
+    public bool IsSelectionBarVisible => !IsPropertiesOpen && Gallery.SelectedCount > 1;
+
+    [RelayCommand]
+    private void ToggleProperties() => IsPropertiesOpen = !IsPropertiesOpen;
+
     public event Action? ScanCompleted;
 
     /// <summary>Once per launch, after the first scan, when liveries appeared or disappeared while the gallery was closed</summary>
@@ -62,6 +93,22 @@ internal sealed partial class MainViewModel : ObservableObject
 
     /// <summary>The cards' badges at their bottom (the setting); every card follows it (Views/CardBadges.cs)</summary>
     public bool BadgesAtBottom => settings.BadgesAtBottom;
+    /// <summary>
+    /// The cards' size (the switch in the status bar, Ctrl with the wheel, Ctrl+"+" and Ctrl+"-"), kept for the next launch.
+    /// False when it is already that size
+    /// </summary>
+    public bool SetCardSize(Models.CardSize size)
+    {
+        if (!Enum.IsDefined(size) || Gallery.CardSize == size) return false;
+        Gallery.CardSize = size;
+        settings.CardSize = size;
+        AppSettingsService.Save(settings);
+        return true;
+    }
+
+    /// <summary>A step larger (1) or smaller (-1): small, normal, large; false at either end</summary>
+    public bool StepCardSize(int step) => SetCardSize(Models.CardSizes.Step(Gallery.CardSize, step));
+
     public void RefreshDisplaySettings()
     {
         OnPropertyChanged(nameof(ShowFolderNames));
@@ -154,6 +201,9 @@ internal sealed partial class MainViewModel : ObservableObject
         LiveryEntry.IsFindInGameAvailable = savePathService.Profile.MyDesigns is not null;
         Status = new GalleryStatusViewModel();
         Gallery = new GalleryViewModel(favoriteService, lockService);
+        Gallery.CardSize = Enum.IsDefined(settings.CardSize) ? settings.CardSize : Models.CardSize.Normal;
+        Properties = new PropertiesViewModel(this);
+        Gallery.SelectedEntries.CollectionChanged += (_, _) => OnPropertyChanged(nameof(IsSelectionBarVisible));
         TagsBar = new TagsBarViewModel(Gallery.TagState, Gallery.SetTagState);
         Gallery.SelectedTagsChanged += TagsBar.SyncSelection;
         // Downloaded at once only when the user chose so; otherwise it waits for Install in "What's new"
@@ -162,7 +212,8 @@ internal sealed partial class MainViewModel : ObservableObject
         Gallery.CountsUpdated += snapshot =>
         {
             Status.UpdateCountsAndEmptyState(snapshot.FilteredEntries, snapshot.TotalCount, snapshot.SearchText, IsStorageMode,
-                IsStorageMode && StorageFolderView != AllStoredView ? Strings.StorageFolderEmptyHint : null);
+                IsStorageMode && StorageFolderView != AllStoredView ? Strings.StorageFolderEmptyHint : null,
+                otherFilters: FilterBar.HasFiltersBesideSearch || Gallery.HasTagFilter);
             UpdateSlots();
         };
         Gallery.SelectedEntries.CollectionChanged += (_, __) => RefreshArchiveAvailability();
@@ -171,8 +222,8 @@ internal sealed partial class MainViewModel : ObservableObject
         Gallery.FlagsChanged += RememberFlagsForUndo;
         FilterBar.FiltersChanged += RefreshGallery;
         RefreshCommand = new AsyncRelayCommand(RefreshButtonClickedAsync);
-        InitializeNavigation();
         InitializeScreenshots();
+        Actions = new GalleryActions(this);
     }
 
     private GalleryFilterState CurrentFilterState() => new(
@@ -710,16 +761,19 @@ internal sealed partial class MainViewModel : ObservableObject
     public Func<int, bool, Task<(bool Confirmed, bool DontShowAgain)>>? ConfirmArchiveWithOutdatedInstalledDataAsync { get; set; }
 
     public Func<Task<bool>>? IsInstalledDataOutdatedAsync { get; set; }
-    /// <summary>Asked before archiving when the game is running; true to archive anyway</summary>
-    public Func<Task<bool>>? ConfirmWhileGameRunningAsync { get; set; }
+    /// <summary>
+    /// What moving liveries in and out of the save asks (the game running; for a return from the storage, a copy in the
+    /// game and another account's liveries too): the same questions as the archive's and a backup's, asked by the window
+    /// </summary>
+    public RestoreQuestions Ask { get; } = new();
 
     private ArchiveBlock ArchiveBlockOf(LiveryEntry entry) =>
         ArchiveRules.Check(entry.IsLocked, entry.IsAuction, entry.IsInstalled, Gallery.IsInstalledDataKnown);
 
-    private bool CanArchive(LiveryEntry entry) => ArchiveBlockOf(entry) == ArchiveBlock.None;
+    private bool CanArchive(LiveryEntry entry) => !IsSaveReadOnly && ArchiveBlockOf(entry) == ArchiveBlock.None;
 
-    // In the storage every livery may go to the archive: none is in the save
-    private bool CanMoveSelectedToArchive() => IsStorageMode ? Gallery.HasSelection : Gallery.SelectedEntries.Any(CanArchive);
+    // In the storage every livery may go to the archive: none is in the save. Nothing moves in a game only shown
+    private bool CanMoveSelectedToArchive() => !IsSaveReadOnly && (IsStorageMode ? Gallery.HasSelection : Gallery.SelectedEntries.Any(CanArchive));
 
     private void RefreshArchiveAvailability()
     {
@@ -731,11 +785,24 @@ internal sealed partial class MainViewModel : ObservableObject
     }
 
     public string? ArchiveBlockedTooltip =>
-        Gallery.HasSelection && !CanMoveSelectedToArchive() && !IsStorageMode ? ArchiveBlockedReason(Gallery.SelectedEntries) : null;
+        Gallery.HasSelection && !CanMoveSelectedToArchive() && (!IsStorageMode || IsSaveReadOnly) ? ArchiveBlockedReason(Gallery.SelectedEntries) : null;
+
+    /// <summary>
+    /// Why <paramref name="entry"/> cannot go to the trash (the livery window's button), null when it can: the save only
+    /// shown (FH3 to FH5 in 1.8.0-beta.1), or the livery locked, on a car or an auction one whose car is not known. A
+    /// stored livery always can
+    /// </summary>
+    public string? ArchiveBlockedReasonFor(LiveryEntry entry)
+    {
+        if (IsSaveReadOnly) return ReadOnlySaveNotice.For(savePathService.Profile);
+        if (entry.IsStored || CanArchive(entry)) return null;
+        return ArchiveBlockedReason([entry]);
+    }
 
     /// <summary>Why none of <paramref name="blocked"/> can go: one line per kind of block among them</summary>
     private string ArchiveBlockedReason(IEnumerable<LiveryEntry> blocked)
     {
+        if (IsSaveReadOnly) return ReadOnlySaveNotice.For(savePathService.Profile);
         bool anyLocked = false, anyAuction = false, anyInstalled = false;
         foreach (var entry in blocked)
         {
@@ -871,7 +938,7 @@ internal sealed partial class MainViewModel : ObservableObject
         }
 
         if (!await ConfirmArchiveRiskAsync(entries)) return false;
-        if (!await savePathService.Profile.RunningGuard.ConfirmAsync(ConfirmWhileGameRunningAsync)) return false;
+        if (!await savePathService.Profile.RunningGuard.ConfirmAsync(Ask.WhileGameRunning)) return false;
         var selected = entries.ToList();
 
         // An auction livery goes only when the list of applied liveries is from the current save: a car may have

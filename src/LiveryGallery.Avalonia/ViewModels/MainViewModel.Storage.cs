@@ -15,7 +15,7 @@ internal sealed partial class MainViewModel
 {
     private StorageBlock StorageBlockOf(LiveryEntry entry) => StorageRules.Check(entry.IsLocked, entry.IsAuction, entry.IsInstalled);
 
-    private bool CanStore(LiveryEntry entry) => StorageBlockOf(entry) == StorageBlock.None;
+    private bool CanStore(LiveryEntry entry) => !IsSaveReadOnly && StorageBlockOf(entry) == StorageBlock.None;
 
     private bool CanMoveSelectedToStorage() => !IsStorageMode && !IsStorageUnavailable && Gallery.SelectedEntries.Any(CanStore);
 
@@ -25,6 +25,7 @@ internal sealed partial class MainViewModel
         get
         {
             if (!Gallery.HasSelection || IsStorageMode || CanMoveSelectedToStorage()) return null;
+            if (IsSaveReadOnly) return ReadOnlySaveNotice.For(savePathService.Profile);
             if (IsStorageUnavailable) return string.Format(Strings.StorageUnavailableReasonFormat, StorageUnavailablePath);
             var selected = Gallery.SelectedEntries;
             return string.Join(Environment.NewLine, StorageSkipNotes(
@@ -32,6 +33,25 @@ internal sealed partial class MainViewModel
                 selected.Count(e => StorageBlockOf(e) == StorageBlock.Installed),
                 selected.Count(e => StorageBlockOf(e) == StorageBlock.Auction)));
         }
+    }
+
+    /// <summary>
+    /// Why <paramref name="entry"/> cannot go into the storage (the livery window's button), null when it can: the save
+    /// only shown (FH3 to FH5 in 1.8.0-beta.1), the storage's folder missing, or the livery locked, on a car or bought
+    /// at the auction house. A stored livery is there already: null
+    /// </summary>
+    public string? StorageBlockedReasonFor(LiveryEntry entry)
+    {
+        if (entry.IsStored) return null;
+        if (IsSaveReadOnly) return ReadOnlySaveNotice.For(savePathService.Profile);
+        if (IsStorageUnavailable) return string.Format(Strings.StorageUnavailableReasonFormat, StorageUnavailablePath);
+        return StorageBlockOf(entry) switch
+        {
+            StorageBlock.None => null,
+            StorageBlock.Locked => string.Join(Environment.NewLine, StorageSkipNotes(1, 0, 0)),
+            StorageBlock.Installed => string.Join(Environment.NewLine, StorageSkipNotes(0, 1, 0)),
+            _ => string.Join(Environment.NewLine, StorageSkipNotes(0, 0, 1)),
+        };
     }
 
     /// <summary>Why liveries stayed in the game: a line per kind, with how many</summary>
@@ -72,6 +92,11 @@ internal sealed partial class MainViewModel
             ErrorMessageRequested?.Invoke(string.Format(Strings.StorageUnavailableReasonFormat, StorageUnavailablePath));
             return false;
         }
+        if (IsSaveReadOnly)
+        {
+            ErrorMessageRequested?.Invoke(ReadOnlySaveNotice.For(savePathService.Profile));
+            return false;
+        }
 
         var selected = entries.ToList();
         int locked = selected.Count(e => StorageBlockOf(e) == StorageBlock.Locked);
@@ -87,7 +112,7 @@ internal sealed partial class MainViewModel
         // The rule "never from a car" holds only as far as the list of the cars' liveries is known and new: the same
         // questions (and settings) as before the archive
         if (!await ConfirmArchiveRiskAsync(toStore, toStorage: true)) return false;
-        if (!await savePathService.Profile.RunningGuard.ConfirmAsync(ConfirmWhileGameRunningAsync)) return false;
+        if (!await savePathService.Profile.RunningGuard.ConfirmAsync(Ask.WhileGameRunning)) return false;
         if (ShutdownToken.IsCancellationRequested) return false;
         if (!await BackUpBeforeArchiveAsync(savePath)) return false;
 

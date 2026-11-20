@@ -279,9 +279,11 @@ internal sealed partial class FilterBarViewModel : ObservableObject
     /// <see cref="ShowEverything"/> undoes, so the "Reset filters" button shows while there is something to reset.
     /// The order, and what is put first or apart, is not a filter
     /// </summary>
-    public bool HasActiveFilters =>
-        !string.IsNullOrEmpty(SearchText)
-        || QuickFilters.Count > 0
+    public bool HasActiveFilters => !string.IsNullOrEmpty(SearchText) || HasFiltersBesideSearch;
+
+    /// <summary>A quick filter or an "only …" filter hides liveries now (the search aside)</summary>
+    public bool HasFiltersBesideSearch =>
+        QuickFilters.Count > 0
         || FavoriteMode == FavoriteMode.OnlyFavorites
         || MineMode == MineMode.OnlyMine
         || EffectiveInstalledMode is InstalledMode.OnlyInstalled or InstalledMode.OnlyNotInstalled

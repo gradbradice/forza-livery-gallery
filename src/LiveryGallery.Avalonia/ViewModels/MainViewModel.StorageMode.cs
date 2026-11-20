@@ -82,12 +82,6 @@ internal sealed partial class MainViewModel
     /// </summary>
     public Func<ReturnRoomViewModel, Task<ReturnRoomChoice?>>? ChooseReturnRoomAsync { get; set; }
 
-    /// <summary>Asked when a livery to return is a copy of one in the game; true to return it anyway</summary>
-    public Func<string, Task<bool>>? ConfirmRestoreDuplicatesAsync { get; set; }
-
-    /// <summary>Asked when liveries to return came from another account; true to bring them here</summary>
-    public Func<string, Task<bool>>? ConfirmRestoreIntoCurrentAccountAsync { get; set; }
-
     // The account's storage; null without an account, and while its folder of its own is not there
     private LiveryArchive? CurrentStorage =>
         CurrentAccountKey is { } key && AccountHasStorage(key) ? storage.StorageOf(key) : null;
@@ -258,7 +252,7 @@ internal sealed partial class MainViewModel
         }
     }
 
-    private bool CanReturnSelectedToGame() => IsStorageMode && Gallery.HasSelection;
+    private bool CanReturnSelectedToGame() => IsStorageMode && Gallery.HasSelection && !IsSaveReadOnly;
 
     /// <summary>Ins, "Return to the game": the selected liveries of the storage</summary>
     [RelayCommand(CanExecute = nameof(CanReturnSelectedToGame))]
@@ -300,7 +294,7 @@ internal sealed partial class MainViewModel
         var undoBefore = _undo;
 
         if (await LiveryRestoreConflicts.PrepareAsync(savePathService, GetAccountContext(), chosen.Select(c => c.SourceAccount),
-                ConfirmRestoreIntoCurrentAccountAsync, ConfirmWhileGameRunningAsync, ErrorMessageRequested) is not { } savePath)
+                Ask, ErrorMessageRequested) is not { } savePath)
             return false;
 
         ArchiveOperationResult result;
@@ -308,7 +302,7 @@ internal sealed partial class MainViewModel
         try
         {
             plan = await LiveryRestoreConflicts.PlanAsync([.. chosen.Select(c => c.Data)], [.. GameEntries.Select(e => e.Data)],
-                savePath, savePathService.Profile.Liveries, ConfirmRestoreDuplicatesAsync);
+                savePath, savePathService.Profile.Liveries, Ask.Duplicates);
             IReadOnlyList<LiveryData> toRestore = plan.ToRestore;
             if (toRestore.Count > 0 && savePathService.Profile.MaxLiveries is { } limit)
             {
@@ -394,6 +388,11 @@ internal sealed partial class MainViewModel
     public async Task<bool> MoveStoredToArchiveAsync(IReadOnlyList<LiveryEntry> entries)
     {
         if (entries.Count == 0 || CurrentStorage is not { } store || CurrentAccountKey is not { } accountKey) return false;
+        if (IsSaveReadOnly)
+        {
+            ErrorMessageRequested?.Invoke(ReadOnlySaveNotice.For(savePathService.Profile));
+            return false;
+        }
         IReadOnlyList<string> moved;
         var archive = storage.ArchiveOf(accountKey);
         // The keys the archive has already: those stay in the storage for that, the others only when their files did not move

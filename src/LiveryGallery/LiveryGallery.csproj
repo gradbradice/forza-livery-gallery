@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="LiveryGallery.Tests" />
+    <InternalsVisibleTo Include="LiveryGallery.Card.Tests" />
   </ItemGroup>
 
   <ItemGroup>

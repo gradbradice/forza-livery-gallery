@@ -114,7 +114,7 @@ internal static class ScreenshotGrouping
     public static string CarText(LiveryEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
-        string car = $"{entry.CarManufacturer} {entry.CarModelName}".Trim();
+        string car = entry.CarName;
         return entry.CarYear is { } year ? $"{car} ({year})" : car;
     }
 }

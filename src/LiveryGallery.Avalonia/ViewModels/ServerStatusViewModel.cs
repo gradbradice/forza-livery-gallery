@@ -21,6 +21,7 @@ internal sealed partial class ServerStatusViewModel : ObservableObject, IServerS
     public bool IsVisible => _state != ServerIndicatorState.Hidden;
     public bool IsGreen => _state == ServerIndicatorState.Online && !HasSyncProblem;
     public bool IsYellow => _state is ServerIndicatorState.Degraded or ServerIndicatorState.RateLimited or ServerIndicatorState.UpdateRequired
+        or ServerIndicatorState.GameNotSupported
         || (_state == ServerIndicatorState.Online && HasSyncProblem);
     public bool IsBlue => _state == ServerIndicatorState.Maintenance;
     public bool IsRed => _state is ServerIndicatorState.AppRejected or ServerIndicatorState.CertificateError or ServerIndicatorState.ServerError;
@@ -44,6 +45,7 @@ internal sealed partial class ServerStatusViewModel : ObservableObject, IServerS
         ServerIndicatorState.CertificateError => Strings.ServerStatusCertificateError,
         ServerIndicatorState.ServerError => Strings.ServerStatusServerError,
         ServerIndicatorState.NotConfigured => Strings.ServerStatusNotConfigured,
+        ServerIndicatorState.GameNotSupported => Strings.ServerStatusGameNotSupported,
         _ => string.Empty
     };
 
@@ -75,6 +77,7 @@ internal sealed partial class ServerStatusViewModel : ObservableObject, IServerS
                     string.Format(Strings.ServerStatusRetryInFormat, Math.Max(1, (int)Math.Ceiling(wait.TotalSeconds))),
                 ServerIndicatorState.UpdateRequired => Strings.ServerStatusUpdateHint,
                 ServerIndicatorState.CertificateError => Strings.ServerStatusCertificateHint,
+                ServerIndicatorState.GameNotSupported => Strings.ServerStatusGameNotSupportedHint,
                 _ => null
             });
             Line(_sync switch

@@ -1,5 +1,6 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:ForzaToolkit.UI.Controls;assembly=ForzaToolkit.UI.Avalonia"
         xmlns:views="clr-namespace:LiveryGallery.Views"
         xmlns:loc="clr-namespace:LiveryGallery.Localisation"
         xmlns:vm="clr-namespace:LiveryGallery.ViewModels"
@@ -70,23 +71,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Border Grid.Row="0" Background="{DynamicResource ToolbarBrush}" Height="36"
-                PointerPressed="TitleBar_PointerPressed">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="12,0,0,0"
-                            VerticalAlignment="Center" IsHitTestVisible="False">
-                    <TextBlock x:Name="TitleBarText" FontSize="12"
-                               Foreground="{DynamicResource TextSecondaryBrush}" />
-                </StackPanel>
-                <Button Grid.Column="1" Classes="titlebar close" Click="CloseButton_Click">
-                    <TextBlock Text="&#xE8BB;" FontFamily="Segoe MDL2 Assets" FontSize="10" />
-                </Button>
-            </Grid>
-        </Border>
+        <ui:TitleBar x:Name="Bar" Grid.Row="0" />
 
         <Grid Grid.Row="1" Margin="20,14,20,20">
             <Grid.RowDefinitions>
@@ -102,14 +87,8 @@
                 <TabItem Header="{Binding AddedTabHeader}">
                     <Grid>
                         <ScrollViewer Classes="gutter" IsVisible="{Binding !ShowNoAddedHint}" Margin="0,10,0,0">
-                            <ItemsControl ItemsSource="{Binding AddedRows}"
-                                          ItemTemplate="{StaticResource ChangedLiveryRowTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel Orientation="Vertical" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
+                            <ItemsControl Classes="rowList" ItemsSource="{Binding AddedRows}"
+                                          ItemTemplate="{StaticResource ChangedLiveryRowTemplate}" />
                         </ScrollViewer>
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"
@@ -121,14 +100,8 @@
                 <TabItem Header="{Binding RemovedTabHeader}">
                     <Grid>
                         <ScrollViewer Classes="gutter" IsVisible="{Binding !ShowNoRemovedHint}" Margin="0,10,0,0">
-                            <ItemsControl ItemsSource="{Binding RemovedRows}"
-                                          ItemTemplate="{StaticResource ChangedLiveryRowTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <VirtualizingStackPanel Orientation="Vertical" />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
+                            <ItemsControl Classes="rowList" ItemsSource="{Binding RemovedRows}"
+                                          ItemTemplate="{StaticResource ChangedLiveryRowTemplate}" />
                         </ScrollViewer>
                         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
                                    Foreground="{DynamicResource TextSecondaryBrush}" FontSize="13"

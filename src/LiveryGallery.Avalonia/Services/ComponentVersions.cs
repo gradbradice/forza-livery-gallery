@@ -13,7 +13,7 @@ internal static class ComponentVersions
             typeof(global::ForzaToolkit.Core.AppVersion),
             typeof(global::ForzaToolkit.AppHost.AppLog),
             typeof(global::ForzaToolkit.Games.ForzaGame),
-            profile.Liveries.GetType(), // the game's package: ForzaToolkit.Games.FH6 for FH6
+            profile.GamePackage, // the game's package: ForzaToolkit.Games.FH6 for FH6, ForzaToolkit.Games.FH4 for FH4
             typeof(global::ForzaToolkit.Saves.SaveFolderPointers),
             typeof(global::ForzaToolkit.Liveries.LiveryData),
             typeof(global::ForzaToolkit.Liveries.Server.LiveryServerConnection),

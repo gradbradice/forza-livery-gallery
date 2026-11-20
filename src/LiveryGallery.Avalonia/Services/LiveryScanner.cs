@@ -96,6 +96,12 @@ internal sealed class LiveryScanner
     /// <summary>The scan cache of an account (another account's, for the statistics); empty when it has none</summary>
     public IReadOnlyCollection<LiveryCacheEntry> CacheOf(string accountKey) => _appCacheService.Load(accountKey).Cache.Values;
 
+    /// <summary>True when the account has a scan cache</summary>
+    public bool HasCache(string accountKey) => _appCacheService.HasCache(accountKey);
+
+    /// <summary>Deletes the account's scan cache only (a long gone account): its previews go with the next orphan cleanup</summary>
+    public Task<bool> DropCacheAsync(string accountKey) => _appCacheService.DropCacheAsync(accountKey);
+
     /// <summary>The journal every scan is recorded in; null without one</summary>
     public LiveryHistoryStore? History { get; }
 
